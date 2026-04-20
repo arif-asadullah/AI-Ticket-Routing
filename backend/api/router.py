@@ -1,0 +1,10 @@
+"""Central API router — include all route modules here."""
+
+from fastapi import APIRouter
+
+from backend.api.health import router as health_router
+from backend.api.tickets import router as tickets_router
+
+api_router = APIRouter()
+api_router.include_router(health_router)
+api_router.include_router(tickets_router)
