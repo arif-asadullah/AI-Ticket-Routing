@@ -97,4 +97,5 @@ data/processed/
 *.pt
 *.bin
 *.gguf
-models/
+# Downloaded/cached ML model files at repo root only (not backend/models, which is a Python package)
+/models/
