@@ -5,5 +5,7 @@ spacy
 python-arango
 redis
 pydantic
+pydantic-settings
+python-dotenv
 httpx
 python-jose[cryptography]
