@@ -14,7 +14,7 @@
   <circle cx="200" cy="132" r="7" fill="#F97316"/>
   <circle cx="230" cy="132" r="7" fill="#FB923C"/>
 
-  <text x="200" y="180" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="400" fill="#FAFAF9" letter-spacing="1">deskmind</text>
+  <text x="200" y="180" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="400" fill="#FAFAF9" letter-spacing="1">DeskMind</text>
 
   <text x="200" y="206" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" fill="#78716C" letter-spacing="3">CLASSIFY · ROUTE · RESOLVE</text>
 

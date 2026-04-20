@@ -46,7 +46,7 @@ const DeskMindSplash = ({ onFinished, duration = 3200 }) => {
         .dm-splash {
           position: fixed; inset: 0; z-index: 9999;
           display: flex; align-items: center; justify-content: center; flex-direction: column;
-          background: #FAFAF9;
+          background: #0C0C0F;
           animation: splashOut 0.5s ease-in 2.7s forwards;
         }
         .dm-splash .top { transform-origin: center; transform: scale(0); animation: dotPulse 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s forwards }
@@ -71,7 +71,7 @@ const DeskMindSplash = ({ onFinished, duration = 3200 }) => {
           <circle className="el" cx="88" cy="122" r="8" fill="#EA580C" />
           <circle className="ec" cx="120" cy="122" r="8" fill="#F97316" />
           <circle className="er" cx="152" cy="122" r="8" fill="#FB923C" />
-          <text className="wordmark" x="120" y="162" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="28" fontWeight="400" fill="#1C1917" letterSpacing="1">deskmind</text>
+          <text className="wordmark" x="120" y="162" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="28" fontWeight="400" fill="#F5F5F4" letterSpacing="1">DeskMind</text>
         </svg>
         <p className="tagline" style={{ marginTop: 4, fontFamily: "system-ui, sans-serif", fontSize: 11, color: "#A8A29E", letterSpacing: 3 }}>
           CLASSIFY · ROUTE · RESOLVE
