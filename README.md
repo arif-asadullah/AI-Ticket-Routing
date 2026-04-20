@@ -23,11 +23,10 @@ docs/        Architecture and operator docs
 k8s/         Kubernetes manifests
 ```
 
-## Branching
+## Branching (GitHub Flow)
 
-- `main` — protected; release-ready. PR + 1 review required.
-- `develop` — integration branch; features merge here first.
-- `feature/*`, `fix/*`, `chore/*` — short-lived branches off `develop`.
+- `main` — protected; always release-ready. PR + 1 review required.
+- `feature/*`, `fix/*`, `chore/*` — short-lived branches off `main`, merged back via PR.
 
 ## Getting started
 
