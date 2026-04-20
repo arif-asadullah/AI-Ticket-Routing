@@ -1,0 +1,32 @@
+# CODEOWNERS — AI-Ticket-Routing
+#
+# Syntax: <path-pattern> <@owner> [<@owner> ...]
+# First matching pattern wins. Owners are auto-requested on PRs touching their paths.
+#
+# TODO: replace @arif-asadullah placeholders once the 5 team members are added as
+# collaborators and assigned owning directories.
+
+# Default fallback — entire repo
+*                   @arif-asadullah
+
+# Backend
+/backend/           @arif-asadullah
+/backend/api/       @arif-asadullah
+/backend/services/  @arif-asadullah
+
+# Frontend
+/frontend/          @arif-asadullah
+
+# Data / ML
+/data/              @arif-asadullah
+
+# Infra / ops
+/k8s/               @arif-asadullah
+/scripts/           @arif-asadullah
+/docker-compose*.yml @arif-asadullah
+/Dockerfile*        @arif-asadullah
+
+# Docs
+/docs/              @arif-asadullah
+/README.md          @arif-asadullah
+/CODEOWNERS         @arif-asadullah

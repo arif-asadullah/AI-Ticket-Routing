@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sentence-transformers
+spacy
+python-arango
+redis
+pydantic
+httpx
+python-jose[cryptography]
