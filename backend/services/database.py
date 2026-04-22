@@ -37,13 +37,26 @@ def connect_arango() -> StandardDatabase | None:
 
     try:
         _client = ArangoClient(hosts=settings.ARANGO_URL)
+
+        # Connect to _system first to ensure the target database exists
+        sys_db = _client.db(
+            "_system",
+            username=settings.ARANGO_USER,
+            password=settings.ARANGO_PASSWORD,
+        )
+
+        if not sys_db.has_database(settings.ARANGO_DB):
+            sys_db.create_database(settings.ARANGO_DB)
+            logger.info("Created database '%s'", settings.ARANGO_DB)
+
+        # Now connect to the target database
         _db = _client.db(
             settings.ARANGO_DB,
             username=settings.ARANGO_USER,
             password=settings.ARANGO_PASSWORD,
         )
         _db.version()  # verify connectivity
-        logger.info("Connected to ArangoDB at %s", settings.ARANGO_URL)
+        logger.info("Connected to ArangoDB at %s (db: %s)", settings.ARANGO_URL, settings.ARANGO_DB)
         return _db
     except Exception as exc:
         logger.warning("ArangoDB unavailable: %s", exc)
