@@ -47,6 +47,7 @@ services:
     environment:
       ARANGO_URL: http://arangodb:8529
       REDIS_URL: redis://redis:6379
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
     depends_on:
       arangodb:
         condition: service_healthy
