@@ -408,3 +408,103 @@ For each of the 6 categories, there are 4 rules (one per priority level). All cu
 | Database | db-admin | db-admin | db-admin | db-admin |
 | Storage | storage-ops | storage-ops | storage-ops | storage-ops |
 | Network | network-eng | network-eng | network-eng | network-eng |
+
+---
+
+## 11. `audit_log`
+
+### What it is
+A log of every action taken on every ticket — by AI or by humans. Think of it as a security camera recording for your ticket system.
+
+### Why it exists
+When the AI classifies a ticket, you need to know: what did it decide? Why? How confident was it? And if a human overrides the AI's decision, you need a record of that too. Without audit_log, you have no visibility into what happened to a ticket between submission and resolution.
+
+### Real-world analogy
+A patient's medical chart. Every doctor visit, every test, every prescription is recorded with the date, who did it, and why. If something goes wrong, you can trace back exactly what happened.
+
+### Fields
+
+| Field | Type | Example | Why it exists |
+|-------|------|---------|---------------|
+| `_key` | string (auto) | `"99001"` | Unique log entry ID. |
+| `ticket_id` | string | `"12345"` | Which ticket this action is about. Indexed for fast lookup: "show me everything that happened to ticket #12345." |
+| `action` | string | `"classified"` | What happened: `classified` (AI assigned category), `routed` (sent to team), `escalated` (AI not confident), `overridden` (human changed AI's decision), `resolved` (ticket fixed), `cache_hit` (used cached result), `fallback_triggered` (AI failed, used backup method). |
+| `actor` | string | `"ai-phi3"` or `"alex.chen@company.com"` | Who did it — an AI model name or a human's email. Helps distinguish: "the AI classified it, then a human overrode it." |
+| `old_value` | object | `{"category": "Network"}` | What it was before. Only for changes — if the AI classified as Network but a human changed it to Database, old_value = Network. |
+| `new_value` | object | `{"category": "Database"}` | What it became after the action. |
+| `confidence_score` | float | `0.62` | AI's confidence at that moment. Especially useful for escalations — "the AI was only 62% sure, so it escalated." |
+| `confidence_signals` | object | `{"logprob": -1.2, "centroid_sim": 0.78, "knn_agreement": 0.6}` | Detailed breakdown of how the AI calculated its confidence. For debugging and improving the AI model. |
+| `reasoning` | string | `"Ticket mentions VPN but root cause is firewall rule change"` | Human-readable explanation of why this action was taken. |
+| `created_at` | datetime | `"2026-04-23T10:05:00Z"` | When the action happened. Indexed for time-ordered queries. |
+
+### Example document — AI classifies a ticket
+
+```json
+{
+  "_key": "99001",
+  "ticket_id": "12345",
+  "action": "classified",
+  "actor": "ai-phi3",
+  "old_value": null,
+  "new_value": {
+    "category": "Database",
+    "priority": "high"
+  },
+  "confidence_score": 0.92,
+  "confidence_signals": {
+    "logprob": -0.8,
+    "centroid_sim": 0.91,
+    "knn_agreement": 0.88
+  },
+  "reasoning": "PostgreSQL connection issue on production database server. Mentions max_connections limit.",
+  "created_at": "2026-04-23T10:00:05Z"
+}
+```
+
+### Example document — Human overrides AI decision
+
+```json
+{
+  "_key": "99002",
+  "ticket_id": "12345",
+  "action": "overridden",
+  "actor": "alex.chen@company.com",
+  "old_value": {
+    "category": "Database",
+    "assigned_team": "db-admin"
+  },
+  "new_value": {
+    "category": "Infrastructure",
+    "assigned_team": "infra-ops"
+  },
+  "confidence_score": null,
+  "confidence_signals": null,
+  "reasoning": "Root cause is server hardware failure, not database software issue.",
+  "created_at": "2026-04-23T10:15:00Z"
+}
+```
+
+### Example query — Show full history of a ticket
+
+```aql
+FOR log IN audit_log
+  FILTER log.ticket_id == "12345"
+  SORT log.created_at ASC
+  RETURN {
+    time: log.created_at,
+    action: log.action,
+    by: log.actor,
+    details: log.new_value,
+    confidence: log.confidence_score
+  }
+```
+
+**Result:**
+```json
+[
+  { "time": "2026-04-23T10:00:05Z", "action": "classified", "by": "ai-phi3", "details": {"category": "Database"}, "confidence": 0.92 },
+  { "time": "2026-04-23T10:00:06Z", "action": "routed", "by": "ai-phi3", "details": {"team": "db-admin"}, "confidence": 0.92 },
+  { "time": "2026-04-23T10:15:00Z", "action": "overridden", "by": "alex.chen@company.com", "details": {"category": "Infrastructure"}, "confidence": null },
+  { "time": "2026-04-23T12:30:00Z", "action": "resolved", "by": "raj.kumar@company.com", "details": {"resolution": "Replaced failed DIMM"}, "confidence": null }
+]
+```
