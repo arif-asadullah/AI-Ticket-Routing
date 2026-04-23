@@ -10,6 +10,7 @@ from backend.api.router import api_router
 from backend.core.config import settings
 from backend.services.cache import close_redis, connect_redis
 from backend.services.database import close_arango, connect_arango
+from backend.services.schema import init_schema
 
 
 @asynccontextmanager
@@ -24,11 +25,9 @@ async def lifespan(app: FastAPI):
     app.state.arango_db = connect_arango()
     app.state.redis = await connect_redis()
 
-    # Ensure tickets collection exists
+    # Initialize full schema (collections, edges, graph, indexes)
     if app.state.arango_db is not None:
-        if not app.state.arango_db.has_collection("tickets"):
-            app.state.arango_db.create_collection("tickets")
-            logger.info("Created 'tickets' collection in ArangoDB")
+        init_schema(app.state.arango_db)
 
     yield
 

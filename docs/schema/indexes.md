@@ -149,7 +149,9 @@ This finds the 5 tickets most similar in meaning to the query embedding. The vec
 | 7 | runbooks | Vector (384) | `embedding` | Find relevant runbooks |
 | 8 | resolutions | Vector (384) | `embedding` | Find similar fixes |
 | 9 | routing_rules | Persistent | `category`, `priority` | Fast rule lookup |
+| 10 | audit_log | Persistent | `ticket_id` | Find all actions for a ticket |
+| 11 | audit_log | Persistent | `created_at` | Time-ordered audit trail |
 
 ## When are indexes created?
 
-Indexes are created once when the database is initialized (in the `seed_db.py` script). After that, ArangoDB automatically maintains them — every time you insert, update, or delete a document, the index updates itself. You don't need to do anything.
+Indexes are created automatically when the backend starts (in `backend/services/schema.py`). After that, ArangoDB maintains them — every time you insert, update, or delete a document, the index updates itself. You don't need to do anything.

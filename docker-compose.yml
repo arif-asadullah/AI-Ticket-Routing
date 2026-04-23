@@ -3,6 +3,7 @@ services:
   arangodb:
     image: arangodb:3.12
     mem_limit: 1g
+    command: ["--vector-index", "true"]
     ports:
       - "8530:8529"
     environment:

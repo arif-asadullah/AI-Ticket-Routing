@@ -54,7 +54,7 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 
 ## Quick Reference
 
-### Document Collections (10 total)
+### Document Collections (11 total)
 
 | Collection | What it stores | Example |
 |-----------|---------------|---------|
@@ -68,6 +68,7 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 | `runbooks` | Documented fix procedures | "How to handle PostgreSQL connection limit" |
 | `resolutions` | Actual fixes applied to tickets | "Increased max_connections from 100 to 200" |
 | `routing_rules` | Category-to-team mapping | "Database + high → db-admin" |
+| `audit_log` | Action history for every ticket | "AI classified → routed → human overrode → resolved" |
 
 ### Edge Collections (9 total)
 
@@ -93,6 +94,8 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 | Vector (384-dim) | runbooks | embedding | Find relevant runbooks |
 | Vector (384-dim) | resolutions | embedding | Find similar past fixes |
 | Persistent | routing_rules | category, priority | Fast rule lookup |
+| Persistent | audit_log | ticket_id | Find all actions for a ticket |
+| Persistent | audit_log | created_at | Time-ordered audit trail |
 
 ### 6 Ticket Categories
 
@@ -236,7 +239,7 @@ This is why we need all 10 collections, 9 edges, and 3 types of indexes working 
 
 ## Detailed Documentation
 
-- [collections.md](collections.md) — All 10 document collections explained field-by-field
+- [collections.md](collections.md) — All 11 document collections explained field-by-field
 - [edges.md](edges.md) — All 9 edge collections with examples
 - [indexes.md](indexes.md) — Index types and why each is needed
 - [graph.md](graph.md) — Graph definition + real query examples
