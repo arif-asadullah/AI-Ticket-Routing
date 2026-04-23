@@ -4,6 +4,7 @@ import DeskMindSpinner from "./components/DeskMindSpinner";
 import LandingPage from "./components/LandingPage";
 import StatusBar from "./components/StatusBar";
 import TicketList from "./components/TicketList";
+import ChatPanel from "./components/ChatPanel";
 import { fetchTickets, createTicket, deleteTicket, fetchHealth } from "./services/api";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
@@ -60,6 +61,7 @@ function FocusInput({ as: Tag = "input", style, ...props }) {
 export default function App() {
   const [splashDone, setSplashDone] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
+  const [activeTab, setActiveTab] = useState("tickets");
   const [isClassifying, setIsClassifying] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [health, setHealth] = useState(null);
@@ -178,13 +180,18 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <StatusBar health={health} />
               <nav style={{ display: "flex", gap: 20, fontSize: 13, fontWeight: 500 }}>
-                <a href="#tickets" style={{ color: T.accent }}>Tickets</a>
+                <a href="#tickets" onClick={(e) => { e.preventDefault(); setActiveTab("tickets"); }} style={{ color: activeTab === "tickets" ? T.accent : T.textMuted, cursor: "pointer" }}>Tickets</a>
+                <a href="#chat" onClick={(e) => { e.preventDefault(); setActiveTab("chat"); }} style={{ color: activeTab === "chat" ? T.accent : T.textMuted, cursor: "pointer" }}>Chat AI</a>
                 <a href="#dashboard" style={{ color: T.textMuted }}>Dashboard</a>
-                <a href="#evaluation" style={{ color: T.textMuted }}>Evaluation</a>
               </nav>
             </div>
           </header>
 
+          {/* ── Chat Tab ── */}
+          {activeTab === "chat" && <ChatPanel />}
+
+          {/* ── Tickets Tab ── */}
+          {activeTab === "tickets" && (
           <main style={{ maxWidth: 860, margin: "0 auto", padding: "40px 24px 80px" }}>
 
             {/* Error */}
@@ -418,6 +425,7 @@ export default function App() {
               <TicketList tickets={tickets} onDelete={handleDelete} />
             </div>
           </main>
+          )}
         </div>
       )}
     </>
