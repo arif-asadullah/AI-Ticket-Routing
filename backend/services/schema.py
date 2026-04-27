@@ -19,6 +19,7 @@ DOCUMENT_COLLECTIONS = [
     "resolutions",
     "routing_rules",
     "audit_log",
+    "category_centroids",
 ]
 
 # ── Edge collections ──
