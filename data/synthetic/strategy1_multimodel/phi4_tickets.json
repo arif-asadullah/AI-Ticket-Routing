@@ -1,0 +1,287 @@
+[
+  {
+    "title": "MY EMAIL IS GONE!!!",
+    "description": "HELP!! I can't find my emails for work\u2026 tried every app but nothing shows up!!!!! NEED HELP ASAP!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check your account settings",
+      "Re-sync the service",
+      "Contact support if issue persists"
+    ],
+    "resolution_effectiveness": 0.6,
+    "source_model": "phi4-mini",
+    "persona": "frustrated_user",
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "WEIRD LOGIN PROBLEM!",
+    "description": "WHY ISN'T MY ACCOUNT WORKING??? I keep getting kicked out after logging in\u2026 it's driving me crazy!!!! PLEASE HELP!!!",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "/home/IT/runbook/KB-0011 to reset LDAP credentials",
+      "/home/IT/setup/kb-0023 for further assistance if issue persists after resetting credentials"
+    ],
+    "resolution_effectiveness": 0.7,
+    "source_model": "phi4-mini",
+    "persona": "frustrated_user",
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "can't access homepage",
+    "description": "my browser is broken\u2026 NEEDS help! can't load my email page in time for a meeting!!!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "KB-0001",
+      "reset web server connections"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0006",
+    "source_model": "phi4-mini",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "email not sending",
+    "description": "my emails aren't going out!!! trying to send them but nothing happens\u2026 really need this fixed!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [],
+    "resolution_effectiveness": 0.7,
+    "references_runbook": null,
+    "source_model": "phi4-mini",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "PostgreSQL Connection Pool Exhaustion",
+    "description": "At 2023-10-01T11:45Z, prod-db-02 experienced a FATAL error indicating 'too many connections at 47/50'. Suspect connection leaks following deployment CHG-8856. Postgresql configuration max_connections set to 50.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-PG-001",
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Review recent changelogs for deployment CHG-8856.",
+      "Increase max_connections setting in postgresql.conf if necessary, and restart the service.",
+      "Monitor logs to identify repeated connection leaks."
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "phi4-mini",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Redis Service Connectivity Failure Post-restart",
+    "description": "At 2023-09-22T11:45Z, Redis service on prod-db-02 went down with ERR-NGINX-001. Log snippet shows 'connect() failed (111): Connection refused by server' shortly after the system restart that occurred at 10:30 AM due to routine maintenance KB-0002. Cross-check network connectivity and firewall settings.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "redis",
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Validate network connectivity between prod-db-02 and Redis.",
+      "Review firewall rules to ensure proper access for inbound connections from Nginx."
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "phi4-mini",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "PostgreSQL Connection Pool Exhausted on prod-db-02",
+    "description": "At timestamp T+0000-04-14T03:22Z, postgresql service on server 'prod-db-02' encountered FATAL error ERR-SYS-003 due to an exhausted connection pool. The observed metric indicated 47 active connections out of a maximum threshold of 50 ('max_connections=50 in postgresql.conf'). This issue potentially correlates with recent deployment CHG-8834 which may have caused unintended increases in concurrent database requests.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Review recent changes, especially CHG-8834 deployment for unintended increases in concurrent database requests.",
+      "Monitor the 'max_connections' setting and connection pool usage to establish an optimal value that maintains system performance without causing exhaustion."
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "source_model": "phi4-mini",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Critical Exchange Downtime Affects Client Billing",
+    "description": "The exchange service is down since mid-morning, causing disruptions in client billing systems. This affects both our sales team and the revenue recognition processes for Q1 payments.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [],
+    "references_runbook": null,
+    "affects_servers": [],
+    "source_model": "phi4-mini",
+    "persona": "manager",
+    "resolution_effectiveness": 0.85,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Network Latency Spike Impacting User Experience on Prod-Web-01 and Prod-K8s-Master",
+    "description": "Recent spike in network latency is degrading user experience across our web platform. This could potentially result in decreased customer engagement metrics, impacting revenue generation by up to 10%. Urgent investigation required.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-k8s-master"
+    ],
+    "error_codes": [],
+    "resolution_steps": [],
+    "references_runbook": null,
+    "affects_services": [],
+    "source_model": "phi4-mini",
+    "persona": "manager",
+    "resolution_effectiveness": 0.85,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Critical Production Database Down",
+    "description": "Production database servers (prod-db-01, prod-db-02) are down since last night. This outage is severely affecting our billing system operations for a major client with an approaching deadline. We need immediate updates on the status and estimated time to recovery.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-db-02"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Initiate runbook KB-0010 for emergency database restoration procedures."
+    ],
+    "references_runbook": null,
+    "affects_services": [],
+    "source_model": "phi4-mini",
+    "persona": "manager",
+    "resolution_effectiveness": 0.85,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Kubernetes Master Service Unavailable",
+    "description": "The Kubernetes master service on prod-k8s-master has been unavailable since this morning, causing significant disruption to our CI/CD pipelines. This is impacting multiple development teams and delaying the delivery of new features due for release next week.",
+    "category": "Application",
+    "priority": "high",
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Follow runbook KB-0001 to check Kubernetes master service status."
+    ],
+    "references_runbook": null,
+    "affects_servers": [],
+    "source_model": "phi4-mini",
+    "persona": "manager",
+    "resolution_effectiveness": 0.85,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NFS Storage Service Outage on Prod-Nfs-01",
+    "description": "The NFS storage service hosted on prod-nfs-01 is experiencing intermittent outages, affecting our application teams' ability to access critical data. This directly threatens the completion of ongoing projects with tight deadlines and significant revenue impacts.",
+    "category": "Network",
+    "priority": "high",
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Execute runbook KB-0007 to perform a full NFS service diagnosis."
+    ],
+    "references_runbook": null,
+    "affects_servers": [],
+    "source_model": "phi4-mini",
+    "persona": "manager",
+    "resolution_effectiveness": 0.85,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Auth-Service Authentication Failure Post-Migration",
+    "description": "The authentication services (prod-auth-service) are failing after migrating our user database. Our security team is unable to authenticate users, impacting internal access controls and possibly exposing sensitive data risks.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Perform integrity check using runbook KB-0012 on the authentication services."
+    ],
+    "references_runbook": null,
+    "affects_servers": [],
+    "source_model": "phi4-mini",
+    "persona": "manager",
+    "resolution_effectiveness": 0.85,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  }
+]

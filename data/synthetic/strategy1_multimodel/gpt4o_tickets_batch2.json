@@ -1,0 +1,5135 @@
+[
+  {
+    "title": "EMAIL WON'T SEND!!",
+    "description": "My emails are stuck in the outbox!! urgent work docs need to go out, FIX THIS NOW!!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check mail server logs",
+      "Restart Exchange service"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CAN'T LOGIN HELP",
+    "description": "i keep getting login errors, NEED TO GET TO MY FILES URGENTLY!!!",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Verify user credentials",
+      "Check LDAP server status"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SITE DOWN OMG",
+    "description": "website isn't loading at all!! need to access it for a client meeting. FIX THIS!",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Restart Nginx service",
+      "Check for server overload"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "ORDER SYSTEM IS A MESS",
+    "description": "orders not processing, clients angry\u2026 what\u2019s happening?!!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Check order service logs",
+      "Restart service"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DATA GONE!!",
+    "description": "can't find my files in the system, they're just GONE! NEED HELP NOW!",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Check NFS mount points",
+      "Verify file system integrity"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NETWORK IS SLOWWWW",
+    "description": "everything is lagging, can't get anything done! need it smooth ASAP!",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check network traffic",
+      "Identify and fix bottlenecks"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "PASSWORD RESET NOT WORKING",
+    "description": "tried resetting my password but keep getting errors. PLZ FIX THIS, can\u2019t access accounts.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Verify password reset protocol",
+      "Check LDAP server"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "VPN NOT CONNECTING",
+    "description": "Need to access office network but VPN won't connect!! missed deadline now :(",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Check VPN server",
+      "Verify VPN configuration"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DOCKER ISSUES",
+    "description": "containers not starting, can't deploy anything. NEED THIS FOR APP TESTING!!",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check Kubernetes node status",
+      "Restart Docker daemon"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CAN'T SAVE DOCUMENTS",
+    "description": "every time i hit save it just spins and nothing happens. NEED THESE DOCS SAVED!!",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Investigate NFS write operations",
+      "Check file permissions"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "RESTART EVERYTHING",
+    "description": "i tried restarting but nothing comes back online. PANICKING HERE!",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check server power status",
+      "Check monitoring service"
+    ],
+    "resolution_effectiveness": 0.7,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CAN'T ACCESS DATABASE",
+    "description": "systems say can't connect to database, work is halted!! FIX ASAP!!",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Check PostgreSQL server status",
+      "Verify network connections"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "FILE PERMISSIONS ERROR",
+    "description": "can't access my own files, system says permission denied?? what's going on??",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Verify file permissions",
+      "Check user access rights"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CERTIFICATE ERROR",
+    "description": "browser keeps saying certificate expired, can't access internal sites!!",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Renew SSL certificates",
+      "Update Nginx configuration"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0002",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "REDIS IS DOWN",
+    "description": "Caching is not working, system is running slow. HELP!!",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Restart Redis service",
+      "Check service logs"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NO RESPONSE FROM DATABASE",
+    "description": "queries just hang, can't retrieve any data. urgent fix needed!!",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Check database server load",
+      "Optimize queries"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NO INTERNET CONNECTION",
+    "description": "nothing is loading, say no connection. I NEED INTERNET NOW!!",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-DNS-001"
+    ],
+    "resolution_steps": [
+      "Check DNS settings",
+      "Reset network devices"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "AUTH SERVICE FAILURE",
+    "description": "system not recognizing my logins, NEED TO GET TO MY WORK NOW!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Check auth service logs",
+      "Restart service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DATABASE BACKUP FAILED",
+    "description": "backup didn't complete, worried about data loss!!",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-003"
+    ],
+    "resolution_steps": [
+      "Investigate backup logs",
+      "Retry backup process"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "FIREWALL BLOCKING EMAILS",
+    "description": "emails not going through, firewall says blocked? NEED THIS SORTED!!",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-FW-001"
+    ],
+    "resolution_steps": [
+      "Review firewall rules",
+      "Whitelisting mail server IP"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "APPS NOT LOADING",
+    "description": "all my apps just keep loading forever, can't work like this!!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01",
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check application logs",
+      "Restart affected services"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "API GATEWAY TIMEOUT",
+    "description": "api calls just hang, nothing goes through. it's a nightmare!!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check API gateway logs",
+      "Adjust timeout settings"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "FILE SERVER DOWN",
+    "description": "can't access any shared drives, files are gone! need to fix this now!!",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check NFS server status",
+      "Restart NFS service"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SECURITY BREACH ALERT",
+    "description": "got a security alert email, is my info safe?? NEED TO KNOW WHAT'S HAPPENING!",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigate alert details",
+      "Run security diagnostics"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SERVICE UNAVAILABLE",
+    "description": "can't access the main portal, service says down. NEED THIS UP NOW!!",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check server status",
+      "Restart affected services"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "PRINTER JAM AGAIN",
+    "description": "PRINTERS ARE EATING PAPER! NEED TO PRINT REPORTS FOR MEETING IN 5 MINUTES!!",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Open printer and remove jammed paper",
+      "Restart printer",
+      "Test print a page"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NO CONNECTION TO SERVER",
+    "description": "CAN'T ACCESS THE SERVER, SCARY ERROR MESSAGES, NOTHING WORKS, HELP!",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SYS-001"
+    ],
+    "resolution_steps": [
+      "Check network cables",
+      "Restart network switch",
+      "Ping server"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "EMAILS NOT ARRIVING",
+    "description": "WAITING FOR AN IMPORTANT EMAIL, IT'S NOT SHOWING UP, ALREADY REFRESHED A HUNDRED TIMES!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check mail server status",
+      "Inspect email queue",
+      "Verify spam filter settings"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "WEB PAGE LOAD ERROR",
+    "description": "EVERY TIME I TRY TO OPEN A PAGE, I GET AN ERROR! EVERYTHING IS BROKEN!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Restart web server",
+      "Check error logs",
+      "Clear cache"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SECURITY UPDATE REQUIRED",
+    "description": "SYSTEMS SAY SOMETHING ABOUT A SECURITY UPDATE. IS EVERYTHING SAFE??",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Review security patch notes",
+      "Apply necessary updates",
+      "Reboot systems"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0001",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "FILES NOT SYNCING",
+    "description": "MY FILES WON'T SYNC, I'M LOSING IMPORTANT CHANGES! PLEASE FIX NOW!",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Restart NFS service",
+      "Check server logs",
+      "Verify network connection"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "LOUD FAN NOISES",
+    "description": "SERVER ROOM IS LOUD, FANS ARE GOING CRAZY, IS SOMETHING OVERHEATING?",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Inspect server fans",
+      "Check temperature sensors",
+      "Ensure proper ventilation"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DATABASE CONNECTION ERROR",
+    "description": "CAN'T CONNECT TO DATABASE! EVERYTHING IS FROZEN, PLEASE FIX FAST!",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Restart database server",
+      "Check connection parameters",
+      "Review database logs"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0002",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SSL CERTIFICATE EXPIRED",
+    "description": "WEBSITE SAYS CERTIFICATE IS EXPIRED, USERS CAN'T LOGIN! PANIC!",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Renew SSL certificate",
+      "Apply new certificate",
+      "Restart web server"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "USER PROFILE NOT LOADING",
+    "description": "CAN'T SEE MY PROFILE INFORMATION, IT'S ALL BLANK! HELP!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Restart authentication service",
+      "Inspect user session logs",
+      "Verify database connection"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "GATEWAY ERROR MESSAGE",
+    "description": "API IS BROKEN, GETTING STRANGE GATEWAY ERRORS, EVERYONE'S STUCK!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check API Gateway logs",
+      "Restart pods in Kubernetes",
+      "Verify configuration settings"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "BIZARRE POP-UP ALERTS",
+    "description": "WEIRD POP-UPS ON MY SCREEN, SOMETHING'S NOT RIGHT, DO I HAVE A VIRUS?!",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Run antivirus scan",
+      "Check for malicious software",
+      "Update security definitions"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NO BACKUPS RUNNING",
+    "description": "BACKUPS NOT WORKING, WHAT IF WE LOSE EVERYTHING?!",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Restart backup service",
+      "Verify backup logs",
+      "Configure cron jobs"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "KUBERNETES CLUSTER FAILING",
+    "description": "KUBERNETES NODES ALL RED, WHAT'S WRONG?? NOTHING IS RUNNING!",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master",
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check cluster health",
+      "Restart problematic nodes",
+      "Review cluster logs"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CAN'T SAVE CHANGES",
+    "description": "MADE CHANGES BUT CAN'T SAVE, EVERYTHING IS STUCK! FIX IT!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Clear application cache",
+      "Restart application",
+      "Verify database connection"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "ACTIVE DIRECTORY UNAVAILABLE",
+    "description": "CANNOT ACCESS ACTIVE DIRECTORY, USERS CAN'T LOGIN! MAJOR ISSUE!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "Restart LDAP service",
+      "Check LDAP logs",
+      "Verify network connectivity"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "WEBSITE CERTIFICATE WARNING",
+    "description": "BROWSER SAYS SITE UNSAFE, IS THE CERTIFICATE BROKEN? USERS PANICING!",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Renew SSL certificate",
+      "Apply changes",
+      "Restart web server"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DATABASE CRASHED",
+    "description": "DATABASE WENT DOWN, NOTHING WORKS, ALL OUR DATA IS GONE!",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Restart database server",
+      "Check error logs",
+      "Restore from latest backup"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CANNOT ACCESS FILES",
+    "description": "FILES NOT OPENING, I'M LOCKED OUT, CAN'T DO ANYTHING!",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Restart NFS service",
+      "Verify file permissions",
+      "Check server logs"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "PROMETHEUS NOT SENDING ALERTS",
+    "description": "NO ALERTS FROM PROMETHEUS, IS IT DOWN? CAN'T MONITOR ANYTHING!",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Restart Prometheus service",
+      "Check alerting rules",
+      "Review log files"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SERVER NOT RESPONDING",
+    "description": "SERVER IS DEAD, NO RESPONSE, CAN'T CONNECT TO ANYTHING!",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Check physical server connections",
+      "Reboot server",
+      "Ping test"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "VPN ACCESS ISSUES",
+    "description": "CANNOT ACCESS VPN, HOW AM I SUPPOSED TO WORK REMOTELY?!",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Verify VPN server status",
+      "Check user credentials",
+      "Restart VPN service"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DNS NOT RESOLVING",
+    "description": "CAN'T OPEN ANY WEBSITES, SAYS DNS NOT WORKING, INTERNET IS BROKEN!",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-DNS-001"
+    ],
+    "resolution_steps": [
+      "Restart DNS service",
+      "Flush DNS cache",
+      "Check DNS server settings"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NO ACCESS TO SHARED FOLDERS",
+    "description": "SHARED FOLDERS ARE GONE, CAN'T OPEN ANYTHING I NEED!",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Verify network connectivity",
+      "Check file permissions",
+      "Restart NFS service"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "REDIS CACHE FAILURE",
+    "description": "CACHE IS NOT WORKING, EVERYTHING'S SLOW AND UNRESPONSIVE!",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Restart Redis service",
+      "Check Redis logs",
+      "Verify memory usage"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "EMAILS WON'T SEND",
+    "description": "HELP!! emails stuck in outbox, urgent meeting soon, can't reach anyone. tried restarting computer, nothing",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [
+      "ERR-SYS-001"
+    ],
+    "resolution_steps": [
+      "Restart mail server",
+      "Check server logs",
+      "Test email sending"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CAN'T LOGIN TO APP",
+    "description": "Keeps saying wrong password, but it's correct! Tried resetting, still no luck. NEED ACCESS!",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Check LDAP server",
+      "Reset user password",
+      "Test login functionality"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "WEBSITE IS DOWN",
+    "description": "OMG, website won't load for anyone! Customers calling nonstop! NEED FIX NOW!",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Restart web servers",
+      "Check load balancer settings",
+      "Monitor web traffic"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "ORDER SYSTEM BROKEN",
+    "description": "WHAT IS GOING ON?? Orders not processing, customers angry, sales going DOWN",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01",
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Check application logs",
+      "Verify database connections",
+      "Restart order service"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "LOST ALL DATA",
+    "description": "WHERE IS EVERYTHING?? Files gone, can't find anything I saved, HELP ME!",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Check NFS server status",
+      "Verify data backups",
+      "Restore files from backup"
+    ],
+    "resolution_effectiveness": 0.7,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "INTERNET DEAD SLOW",
+    "description": "Why is everything so slow?? Takes forever to load anything, I can't work like this!",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check network bandwidth",
+      "Inspect router settings",
+      "Reset network connections"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "PASSWORD RESET FAILING",
+    "description": "Reset link broken!! Can't change password, stuck OUT, need access now!",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Check password reset script",
+      "Verify email server status",
+      "Test password reset process"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "CONNECTING VPN ISSUES",
+    "description": "VPN won't connect, tried multiple times. NEED IT for work, pls fix!!",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Restart VPN server",
+      "Check VPN configurations",
+      "Test connection from client side"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DOCKER NOT LAUNCHING",
+    "description": "Can't get Docker running, needed for my project, running late, pls help!",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01",
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check Docker daemon",
+      "Restart Kubernetes nodes",
+      "Inspect cluster logs"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DOCUMENTS NOT SAVING",
+    "description": "Trying to save work, keeps saying error. Losing my changes, need this fixed!!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Check application logs",
+      "Verify database connections",
+      "Test saving functionality"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SERVERS ACTING UP",
+    "description": "Servers keep restarting, losing access, can't keep working like this!",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check cluster health",
+      "Inspect server logs",
+      "Restart Kubernetes master"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "DATABASE CONNECTION LOST",
+    "description": "Can't connect to database, everything on hold! NEED THIS FIXED FAST",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Check database status",
+      "Verify network connections",
+      "Restart database server"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "PERMISSIONS DENIED",
+    "description": "Can't access files, keeps saying I don't have permission. This is urgent!",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Check file permissions",
+      "Verify user access levels",
+      "Test file access"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SSL ERROR EVERYWHERE",
+    "description": "All sites showing SSL error, can't access anything, what's going on??",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Renew SSL certificates",
+      "Restart web servers",
+      "Check certificate validity"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "REDIS CACHE NOT WORKING",
+    "description": "Cache is down, everything slow, can't work like this!! Fix pls!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Restart Redis server",
+      "Check Redis configurations",
+      "Clear Redis cache"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NO DATABASE RESPONSE",
+    "description": "Database isn't responding, can't retrieve data, urgent work on hold!!",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Check database logs",
+      "Verify network connectivity",
+      "Restart database service"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "frustrated_user",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "nginx load balancer timeout",
+    "description": "prod-web-01 and prod-web-02 experienced 504 Gateway Timeout errors at 2023-10-12T14:45Z. Recent deploy CHG-9021 increased incoming request load by 30%. Current latency exceeds 2 seconds. Logs indicate possible misconfiguration in nginx.conf.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "revert configuration changes",
+      "increase timeout settings",
+      "monitor for 24 hours"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "high memory usage on prod-app-01",
+    "description": "prod-app-01 recorded a sudden spike in memory usage at 2023-10-13T09:30Z. Usage peaked at 98% of total RAM capacity. Investigation attributes the issue to a memory leak in auth-service following release CHG-9055. Heap dump analysis required.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "rollback recent changes",
+      "perform garbage collection",
+      "analyze heap dumps"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-01 disk space alert",
+    "description": "prod-db-01 triggered disk space alert at 2023-10-13T11:55Z. Data directory utilization reached 95%. Logs suggest incremental backups not clearing up properly post completion. Check backup script cron configurations.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "free up disk space",
+      "correct backup script",
+      "schedule cleanup policies"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "network latency on prod-nfs-01",
+    "description": "High network latency detected on prod-nfs-01 at 2023-10-14T08:00Z. Latency averages 250ms, exceeding the 100ms threshold. Recent changes in routing policies CHG-9012 may be affecting traffic flow. Network path analysis needed.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "review routing changes",
+      "adjust network paths",
+      "monitor traffic flow"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "unauthorized access attempt detected",
+    "description": "Multiple unauthorized access attempts detected on prod-ldap-01 at 2023-10-12T16:20Z. Login failures noted from multiple IPs within a short timeframe. Potential brute-force attack. Immediate security protocols advised.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "block offending IPs",
+      "enhance access monitoring",
+      "initiate security audit"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "order-service high response time",
+    "description": "Increased response times noticed in the order-service on prod-app-02 as of 2023-10-13T13:15Z. Metrics indicate 95th percentile latency exceeds 3s. Root cause traced to excessive database query times post-release CHG-9044.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "optimize database queries",
+      "review recent code changes",
+      "increase application cache"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "postgresql replication lag",
+    "description": "Significant replication lag detected between prod-db-01 and prod-db-02 as of 2023-10-13T10:05Z. Lag time exceeds 180s, deviating from normal operations. Network bandwidth saturation suspected due to backup operations.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "reduce backup frequency",
+      "increase replication bandwidth",
+      "monitor replication lag"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prometheus data retention issue",
+    "description": "Data retention in prometheus service on prod-mon-01 not meeting expected timelines as of 2023-10-14T12:00Z. Metrics show data being purged under the 15-day requirement. Suspected misconfiguration in prometheus.yml.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "edit retention configuration",
+      "restart prometheus service",
+      "validate data preservation"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "high CPU usage on prod-k8s-node-02",
+    "description": "prod-k8s-node-02 exhibiting high CPU usage since 2023-10-12T09:40Z. Metrics show CPU usage consistently over 95%, impacting pod performance. Suspected workload imbalance following recent cluster changes CHG-9037.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "redistribute workloads",
+      "increase node resource capacity",
+      "review recent cluster changes"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "database transaction lock",
+    "description": "prod-db-02 experiencing transaction lock contention as of 2023-10-12T11:30Z. Logs show frequent locking on specific tables. Recent application update CHG-9072 likely introduced inefficient transaction handling.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-003"
+    ],
+    "resolution_steps": [
+      "analyze locking queries",
+      "optimize transaction processing",
+      "revise application logic"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": "KB-0002",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "nfs stale file handle error",
+    "description": "Stale file handle errors encountered on prod-nfs-01 as of 2023-10-14T15:10Z. Errors suggest potential inode mismatch. Recent mount operations may not have completed successfully. Affects file access for dependent services.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "remount affected directories",
+      "clear inode cache",
+      "verify mount configurations"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "unexpected server reboot on prod-app-03",
+    "description": "prod-app-03 underwent an unexpected reboot at 2023-10-14T07:30Z. Kernel logs indicate possible panic due to memory allocation failure. Memory diagnostics and hardware checks required to confirm root cause.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "analyze kernel logs",
+      "run memory diagnostics",
+      "check hardware health"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "database configuration drift",
+    "description": "prod-db-01 configuration drift detected on 2023-10-14T10:45Z. Database parameters misaligned with configuration baseline post-change CHG-9088. Critical settings such as max_connections altered without authorization.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "reset configuration to baseline",
+      "audit recent configuration changes",
+      "apply configuration lock"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "exchange server queue buildup",
+    "description": "Message queue buildup observed on prod-mail-01 as of 2023-10-13T14:00Z. Queue length exceeds 500 messages, indicating potential SMTP delivery issues. Logs suggest possible DNS resolution delays affecting external email flow.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "clear message queue",
+      "check DNS resolution",
+      "review SMTP relay configurations"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "persistent API request errors",
+    "description": "API gateway on prod-app-01 returning 500 Internal Server Error for multiple endpoints since 2023-10-13T18:35Z. Backend auth-service shows increased error rates. Logs indicate malformed request payloads after recent client update.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "api-gateway",
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "validate request payloads",
+      "revert client update",
+      "enhance input validation"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "network packet loss on prod-k8s-master",
+    "description": "Intermittent packet loss detected on prod-k8s-master starting from 2023-10-14T11:25Z. Loss rates up to 5%. Recent network hardware changes CHG-9101 potentially impacting node interconnectivity. Diagnostic checks required.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "review network hardware changes",
+      "conduct connectivity tests",
+      "increase monitoring frequency"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "invalid SSL certificate on prod-web-01",
+    "description": "prod-web-01 serving invalid SSL certificate since 2023-10-12T17:50Z. Browsers returning certificate mismatch errors. Issue traced to recent certificate update not applied correctly. Immediate attention required to restore secure connections.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "update SSL certificate",
+      "restart nginx service",
+      "validate secure connections"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "high latency in active-directory",
+    "description": "prod-ldap-01 active-directory service experiencing high authentication latency since 2023-10-12T15:00Z. Latency exceeds 200ms threshold, impacting user logins. Logs indicate high load conditions post-group policy changes CHG-9080.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "review group policy changes",
+      "optimize authentication paths",
+      "monitor user login metrics"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "unauthorized file access attempt",
+    "description": "Unauthorized file access attempt logged on prod-nfs-01 at 2023-10-13T12:45Z. Access attempted on sensitive directories without proper permissions. Security protocols triggered to audit access logs and verify user credentials.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "review access logs",
+      "verify user credentials",
+      "tighten directory permissions"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "storage pool depletion on prod-nfs-01",
+    "description": "prod-nfs-01 storage pool nearing capacity since 2023-10-14T09:00Z. Utilization at 92%, with growth rate exceeding 5% weekly. Immediate space reclamation required, including archival of unused files and cleanup of temp directories.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "archive unused files",
+      "clean up temp directories",
+      "expand storage capacity"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "redis instance high latency",
+    "description": "Redis service on prod-app-02 experiencing high latency since 2023-10-13T06:50Z. Latency peaks at 500ms, impacting application performance. Suspected blockages in event loop post-deploy CHG-9063. Immediate intervention required.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "analyze event loop",
+      "review recent deploy",
+      "increase instance capacity"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "network bandwidth saturation",
+    "description": "Bandwidth saturation detected on staging-db-01 network interface as of 2023-10-13T17:00Z. Traffic loads exceed 95% capacity, likely due to simultaneous large data transfers. Prioritization of critical traffic advised.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "throttle non-critical traffic",
+      "increase bandwidth allocation",
+      "monitor for abnormal spikes"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "increased error rates in grafana",
+    "description": "prod-mon-01 shows increased error rates in grafana dashboards since 2023-10-13T19:20Z. Error logs indicate issues with data source connections post-CHG-9050. Immediate review of datasource configurations required.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "review datasource configurations",
+      "restart grafana service",
+      "validate dashboard queries"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "auth-service token expiration issue",
+    "description": "Tokens generated by auth-service on prod-app-01 expiring prematurely since 2023-10-12T20:30Z. Logs confirm expiration settings reverted post-patch CHG-9092. Review token management configurations urgently.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "correct expiration settings",
+      "deploy configuration patch",
+      "verify token generation"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "High CPU Load on prod-web-02",
+    "description": "The server prod-web-02 is experiencing high CPU load since 2026-05-12T14:37Z, with CPU utilization consistently exceeding 85%. This started after the deployment of CHG-8920. Possible cause is a poorly optimized nginx configuration. Monitoring reveals an increase in incoming HTTP requests by 60%.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Review nginx access logs",
+      "Optimize nginx worker_processes",
+      "Consider scaling horizontally"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-01 Memory Usage Alert",
+    "description": "Memory usage on prod-k8s-node-01 spiked to 92% at 2026-05-11T02:18Z. This follows deployment CHG-8915. Investigating logs indicates a potential memory leak in auth-service pods. Kubernetes dashboard shows pod restarts due to OutOfMemory errors.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes",
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Inspect auth-service pod logs",
+      "Restart affected pods",
+      "Increase memory limits for pods"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Unauthorized DNS Modification Attempt",
+    "description": "An unauthorized attempt to modify DNS entries was detected on 2026-05-13T09:22Z. The logs show multiple failed access attempts from IP 192.168.10.45 targeting prod-dns-server. The source IP has been blocked, and security has been notified.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Block offending IP",
+      "Notify security team",
+      "Review DNS security policies"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Slow Query Execution on prod-db-02",
+    "description": "Queries running on prod-db-02 have experienced slow execution times since 2026-05-12T11:45Z. The average execution time has increased by 150% post deployment of CHG-8922. Investigations suggest non-optimal query plans and missing indexes.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Analyze slow queries",
+      "Create necessary indexes",
+      "Optimize query plans"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0002",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Kubernetes Pod Eviction on prod-k8s-node-02",
+    "description": "Pods on prod-k8s-node-02 are being evicted frequently since 2026-05-13T15:32Z due to insufficient disk space. The node's available disk dropped below 10%. Recent deployment CHG-8925 increased log verbosity, causing excessive disk usage.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Increase node disk space",
+      "Reduce log verbosity",
+      "Clean up old logs"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Exchange Mailbox Database Mount Failure",
+    "description": "The mailbox database on prod-mail-01 failed to mount on 2026-05-13T10:08Z. Error logs indicate corruption in the EDB file following a sudden power failure. Data consistency checks must be performed to assess damage.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Run ESEUTIL to check database integrity",
+      "Attempt database repair",
+      "Restore from backup if necessary"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NFS Mount Timeout on prod-nfs-01",
+    "description": "There are frequent NFS mount timeouts on prod-nfs-01 as of 2026-05-14T06:23Z. The issue arose after changes in network configuration (CHG-8929). Latency increased by 200% on NFS mounts. Network path needs investigation.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Check network routes",
+      "Verify NFS configuration",
+      "Optimize network path"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Unauthorized LDAP Access Attempt Detected",
+    "description": "A suspicious unauthorized access attempt to prod-ldap-01 was detected on 2026-05-12T04:50Z. Multiple failed login attempts noted from IP 203.0.113.5. Account lockout policy triggered, and IP blacklisted.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "Blacklist offending IP",
+      "Lock account after multiple fails",
+      "Review LDAP security"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Increased Load on api-gateway",
+    "description": "api-gateway is experiencing an increased load since 2026-05-14T07:15Z with traffic volume up by 70%. This follows a promotional campaign launch. Response time has exceeded service level agreements (SLA) by 30%.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Scale api-gateway horizontally",
+      "Optimize rate limiting",
+      "Review load balancing"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Multiple Login Failures Detected on auth-service",
+    "description": "auth-service on prod-app-02 reported multiple login failures starting 2026-05-13T20:40Z. Failed login attempts have increased by 200% compared to the last 24-hour period. Possible brute force attack detected.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Implement CAPTCHA",
+      "Enable account lockout",
+      "Review authentication logs"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-nfs-01 Performance Degradation",
+    "description": "Performance degradation observed on prod-nfs-01 from 2026-05-14T08:42Z. I/O operations latency increased by 150%. A sharp rise in write operations post deployment CHG-8930 is the likely cause.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Analyze I/O patterns",
+      "Consider adding more disks",
+      "Balance load across NFS servers"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SSL Handshake Failure on prod-web-02",
+    "description": "There is an SSL handshake failure on prod-web-02 observed since 2026-05-12T12:00Z with ERR-SSL-001 errors. Recent deployment involved changes to SSL certificates, potentially misconfigured.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Verify SSL certificate configuration",
+      "Check certificate validity dates",
+      "Update nginx SSL settings"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Kubernetes API Latency Spike",
+    "description": "A significant latency spike in Kubernetes API has been noted since 2026-05-14T11:15Z. Requests to the API are taking up to 3 seconds due to high load from recent deployments (CHG-8933).",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Scale Kubernetes master nodes",
+      "Optimize API server settings",
+      "Distribute load evenly"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Grafana Dashboard Load Failure",
+    "description": "Grafana dashboards are failing to load since 2026-05-13T13:45Z. The issue aligns with a spike in query volume post-update CHG-8927. Error ERR-GRAF-001 indicates query timeout.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Optimize Grafana queries",
+      "Increase query timeout",
+      "Review backend data source performance"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-01 Replication Failure",
+    "description": "Replication from prod-db-01 to its standby server failed at 2026-05-14T09:10Z, with the last WAL file transfer error logged as ERR-PG-003. This is following a network configuration change CHG-8932.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-003"
+    ],
+    "resolution_steps": [
+      "Review WAL transfer configurations",
+      "Verify network settings",
+      "Restart replication process"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "High Disk I/O Wait on prod-app-02",
+    "description": "The server prod-app-02 is experiencing high disk I/O wait times since 2026-05-12T21:33Z. Logs show increased read/write operations correlating with the release of update CHG-8924. Disk utilization is at 95%.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Analyze disk I/O patterns",
+      "Consider disk upgrade",
+      "Balance disk usage"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-02 Network Interface Error",
+    "description": "Frequent network interface errors observed on prod-k8s-node-02 since 2026-05-13T00:48Z. Logs indicate packet drops and link reset errors following network hardware change (CHG-8921).",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check network cables and hardware",
+      "Review network interface settings",
+      "Run diagnostics on NIC"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": "KB-0001",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Exchange Mail Delays Due to Queue Build-up",
+    "description": "Email delays reported on prod-mail-01 with messages queued since 2026-05-14T10:22Z. The queue size grew by 150% post security patch (CHG-8928). Connection timeouts logged frequently.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Monitor queue growth",
+      "Increase queue handling capacity",
+      "Optimize email server connections"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Unauthorized VPN Access Attempt",
+    "description": "Detected an unauthorized VPN access attempt on 2026-05-13T16:55Z. Multiple failed login attempts logged from suspicious IP 198.51.100.22. VPN access locked temporarily.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Blacklist IP address",
+      "Enable VPN access alerting",
+      "Review VPN security settings"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-01 High Network Latency",
+    "description": "High network latency observed on prod-app-01 since 2026-05-12T18:25Z. Recent deployment CHG-8926 coincided with a 120% increase in outbound traffic. Investigating potential network congestion.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Analyze network traffic patterns",
+      "Optimize outbound traffic",
+      "Increase bandwidth allocation"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-02 Connection Pool Exhaustion",
+    "description": "Connection pool exhaustion on prod-db-02 with error ERR-PG-001 noted since 2026-05-13T11:30Z. Pool max_connections set to 100, currently 120 active connections post batch job CHG-8923.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Analyze active connections",
+      "Increase max_connections in postgresql.conf",
+      "Review connection handling in applications"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0002",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Redis Memory Usage Alarm on prod-app-03",
+    "description": "Memory usage on Redis instance in prod-app-03 exceeded 85% since 2026-05-12T19:45Z. Triggered by increasing cache volume post update CHG-8920. Potential need for memory upgrade.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Review cache storage requirements",
+      "Increase Redis memory allocation",
+      "Implement eviction policy"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-web-01 HTTP 500 Errors",
+    "description": "Frequent HTTP 500 errors on prod-web-01 since 2026-05-14T05:30Z. Logs reveal ERR-NGINX-002 errors post nginx configuration changes (CHG-8924). Possible misconfiguration causing server instability.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-002"
+    ],
+    "resolution_steps": [
+      "Review nginx error logs",
+      "Check configuration files for syntax errors",
+      "Roll back recent changes if necessary"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0001",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-mon-01 Data Collection Failures",
+    "description": "Prometheus on prod-mon-01 is failing to collect data from some nodes since 2026-05-13T17:10Z. This aligns with the addition of new endpoints in CHG-8931. Network connection issues suspected.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Verify network connectivity to new endpoints",
+      "Update Prometheus target configurations",
+      "Monitor data collection logs"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Network Throttling on prod-k8s-master",
+    "description": "Network throttling detected on prod-k8s-master since 2026-05-14T14:10Z. Following a surge in cluster API calls due to CHG-8929, traffic congestion has increased by 200%.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Increase bandwidth allocation",
+      "Optimize API call frequency",
+      "Implement rate limiting"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-02 Application Crash",
+    "description": "prod-app-02 application crashed due to segmentation fault at 2026-05-06T14:33Z. Core dump generated. Recent deploy CHG-8857 may have introduced memory leaks. Free memory dropped to 200MB from 2GB.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Analyze core dump",
+      "Check recent code changes",
+      "Rollback if necessary"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-web-02 SSL Certificate Expiry",
+    "description": "SSL certificate on prod-web-02 expired on 2026-04-20T00:00Z. Users experience secure connection errors. SSL certificate renewal missed post-scheduled outage CHG-8821. Immediate renewal required.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Renew SSL certificate",
+      "Update nginx configuration",
+      "Restart nginx service"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "High TCP Retransmissions on prod-k8s-node-01",
+    "description": "prod-k8s-node-01 experiencing 15% TCP retransmissions since 2026-05-07T12:00Z. Suspected network congestion post network switch upgrade CHG-8842. Normal threshold is 2%.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Verify network switch configuration",
+      "Check for any ongoing network congestion",
+      "Coordinate with network team for analysis"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-ldap-01 High CPU Utilization",
+    "description": "prod-ldap-01 CPU usage at 95% since 2026-05-05T10:00Z. Normal usage is 30-40%. Suspected increased load from large directory queries after CHG-8838. LDAP logs show multiple queries per second.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Optimize LDAP queries",
+      "Ensure connection caching is enabled",
+      "Analyze query patterns for optimization"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Degraded NFS Performance on staging-db-01",
+    "description": "staging-db-01 experiencing degraded NFS performance with read latency exceeding 100ms since 2026-05-07T14:00Z. Possible network bottleneck detected. Normal latency is under 10ms.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Monitor network traffic",
+      "Check NFS server health",
+      "Optimize NFS client settings"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-mail-01 SMTP Authentication Failures",
+    "description": "Multiple SMTP authentication failures reported on prod-mail-01 since 2026-04-30T08:00Z. Logs indicate incorrect credentials being used possibly due to outdated passwords post CHG-8845.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Verify user credentials",
+      "Update expired passwords",
+      "Inform users of password policy"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-02 High Lock Contention",
+    "description": "High lock contention detected on prod-db-02. Queries waiting over 2000ms for locks as of 2026-05-05T16:00Z. Investigation needed into transaction isolation levels post-deploy CHG-8849.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-003"
+    ],
+    "resolution_steps": [
+      "Analyze pg_locks table",
+      "Optimize query plans",
+      "Adjust transaction isolation levels"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Slow Disk I/O on prod-app-02",
+    "description": "prod-app-02 disk I/O has slowed significantly since 2026-05-04T09:00Z, with average wait times exceeding 150ms. This coincides with recent storage upgrade CHG-8835. Normal I/O wait is below 10ms.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check disk health",
+      "Verify storage configuration",
+      "Coordinate with storage team for analysis"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-mon-01 Inconsistent Metrics Collection",
+    "description": "Prometheus on prod-mon-01 shows gaps in metrics collection since 2026-05-03T07:00Z. Potential issue with scrape intervals post configuration change CHG-8833. Normal interval is 15s.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check Prometheus configuration for scrape intervals",
+      "Verify targets are reachable",
+      "Observe logs for any collector errors"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-web-01 SSE Connection Drops",
+    "description": "prod-web-01 experiencing server-sent events (SSE) connection drops intermittently since 2026-05-06T11:00Z. Possible network-related issue post firewall update CHG-8847.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Review firewall ruleset",
+      "Check for network congestion",
+      "Analyze server logs for connection errors"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-02 Pod Scheduling Failures",
+    "description": "Pod scheduling failures observed on prod-k8s-node-02 since 2026-05-05T12:00Z. Resource requests exceed available capacity possibly due to recent resource allocation changes CHG-8852.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Verify resource requests and limits",
+      "Rebalance workloads across nodes",
+      "Consider increasing node capacity"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-01 Backup Failure Alert",
+    "description": "Scheduled backups on prod-db-01 failed at 2026-05-07T02:00Z. Backup tasks stuck due to insufficient disk space. Recent data growth post-deploy CHG-8854 may be contributing factor.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Free up disk space on backup partition",
+      "Adjust backup job configurations",
+      "Monitor for successful completion"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-mail-01 High Memory Usage",
+    "description": "Memory usage on prod-mail-01 at 90% since 2026-05-06T12:00Z. Exchange service using excessive memory post patch update CHG-8850. Prior levels were stable around 50%.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Analyze memory usage patterns",
+      "Check for memory leaks in recent updates",
+      "Consider increasing available memory"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-nfs-01 Overloaded I/O Operations",
+    "description": "prod-nfs-01 experiencing overloaded I/O operations exceeding 500 ops/s since 2026-05-06T14:00Z. Application changes post CHG-8853 suspected to increase load. Normal ops/s range is 100-200.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Monitor I/O operations",
+      "Review recent application changes",
+      "Optimize application to reduce load"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-web-02 Excessive Error Logs",
+    "description": "prod-web-02 generating excessive error logs since 2026-05-05T11:00Z. Log analysis shows repeated 404 errors due to incorrect URL mappings post deploy CHG-8856.",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-002"
+    ],
+    "resolution_steps": [
+      "Verify URL mappings",
+      "Update nginx configurations",
+      "Inform dev team about incorrect mappings"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-01 Service Restart Loop",
+    "description": "prod-app-01 stuck in a service restart loop since 2026-05-07T13:00Z. Suspected misconfiguration after service update CHG-8859. Restart cycle every 5 minutes observed.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Check service configuration",
+      "Revert to previous stable configuration",
+      "Monitor for stability"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-03 Network Port Blocked",
+    "description": "Network port 8080 on prod-app-03 is blocked since 2026-05-06T10:00Z. Affected service unable to communicate with external clients. Port blockage possibly due to firewall misconfiguration post CHG-8860.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-FW-001"
+    ],
+    "resolution_steps": [
+      "Review firewall rules",
+      "Unblock port 8080",
+      "Verify connectivity post-unblock"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "l2_engineer",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Critical Network Outage on prod-k8s-master",
+    "description": "Our development team is unable to deploy updates due to a network outage on prod-k8s-master. This impacts the release schedule and may delay upcoming features. Request immediate assessment and recovery plan.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Restart network interfaces",
+      "Check switch configuration",
+      "Review firewall settings"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-nfs-01 File System Corruption",
+    "description": "Engineering can't access essential files due to file system corruption on prod-nfs-01. This may halt development tasks and affect project timelines. Please diagnose immediately and report on the resolution progress.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Run fsck on affected volumes",
+      "Check RAID configuration",
+      "Restore from latest backup"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-01 Unexpected Shutdown",
+    "description": "Our e-commerce portal on prod-app-01 experienced an unexpected shutdown. This affects customer access and could lead to revenue loss. Investigate the cause and ensure quick recovery.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Analyze application logs",
+      "Review recent updates",
+      "Restart application services"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Database Connection Timeout on staging-db-01",
+    "description": "QA team reports database connection timeouts on staging-db-01, halting test environments and delaying feature validation. Need immediate resolution to maintain testing schedule.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-003"
+    ],
+    "resolution_steps": [
+      "Check network connectivity",
+      "Review timeout settings",
+      "Increase connection pool size"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Unauthorized Login Attempt on prod-ldap-01",
+    "description": "Security alert: unauthorized login attempt detected on prod-ldap-01. Our IT security team needs to assess and block any potential breaches to protect sensitive data. Escalate as needed.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "Block suspicious IP address",
+      "Update security credentials",
+      "Monitor subsequent login attempts"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Slow Response from prod-web-01",
+    "description": "Marketing reports slow website response times on prod-web-01, impacting user engagement and conversion rates. Request expedited investigation and resolution.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Optimize server load",
+      "Clear server cache",
+      "Check network latency"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-mon-01 Metrics Dropped",
+    "description": "Our monitoring service on prod-mon-01 is dropping critical metrics. This hampers our ability to track system performance and SLA compliance. Urgent resolution required.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Increase memory allocation",
+      "Check scrape intervals",
+      "Restart prometheus service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-01 Resource Contention",
+    "description": "Resource contention on prod-k8s-node-01 is affecting container performance. This may degrade microservices and impact customer experience. Please provide a mitigation plan.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Adjust resource limits",
+      "Balance workload across nodes",
+      "Monitor resource usage"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-01 Data Corruption Detected",
+    "description": "Finance team reports data corruption on prod-db-01, jeopardizing financial reporting accuracy. Immediate diagnosis and remediation are required to ensure data integrity.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Restore from last known good backup",
+      "Run data integrity checks",
+      "Verify application logs"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-02 Memory Leak Detection",
+    "description": "Detected a memory leak on prod-app-02, affecting application stability. This could lead to service disruptions and negatively impact user satisfaction. Require immediate attention.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Deploy memory profiling tools",
+      "Patch memory allocation issues",
+      "Increase memory resources"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Firewall Misconfiguration on prod-app-03",
+    "description": "A firewall misconfiguration on prod-app-03 is preventing external API requests, affecting third-party integrations. This may disrupt partner services and agreements. Escalate to IT security.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-FW-001"
+    ],
+    "resolution_steps": [
+      "Review firewall rules",
+      "Correct misconfigured settings",
+      "Test external API access"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-master Pod Scheduling Delays",
+    "description": "Development environment on prod-k8s-master is experiencing pod scheduling delays, affecting iterative deployments. This could set back our product release schedule. Please expedite resolution.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Review node resource allocation",
+      "Optimize scheduler configuration",
+      "Increase available nodes"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-02 High Packet Loss",
+    "description": "High packet loss detected on prod-k8s-node-02, impacting service reliability and user experience. Please investigate and resolve to restore normal operations.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check network interfaces",
+      "Monitor network traffic",
+      "Adjust QoS settings"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-02 Index Fragmentation",
+    "description": "Index fragmentation on prod-db-02 is causing slow query performance, affecting data retrieval times for critical applications. Request database optimization review and corrective actions.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Rebuild fragmented indexes",
+      "Analyze query performance",
+      "Optimize database configurations"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Unauthorized Access Attempt on prod-mail-01",
+    "description": "Detected unauthorized access attempt on prod-mail-01. This risks exposing sensitive communication and could breach data privacy regulations. Immediate security protocol review needed.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Update access credentials",
+      "Conduct security audit",
+      "Implement additional logging"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-01 Disk Utilization Warning",
+    "description": "Disk utilization has reached critical levels on prod-k8s-node-01, which could lead to service interruptions. Request immediate disk space optimization and monitoring.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Audit disk usage",
+      "Clear redundant data",
+      "Configure disk alerts"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-03 Service Interruption",
+    "description": "An unexpected service interruption on prod-app-03 has disrupted order processing. This impacts customer satisfaction and revenue. Please restore service as a priority.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Check service dependencies",
+      "Restart application services",
+      "Review recent changes"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "SSL Certificate Misconfiguration on prod-web-01",
+    "description": "A misconfiguration of the SSL certificate on prod-web-01 is blocking secure transactions, potentially affecting sales. Request immediate correction and validation.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Review SSL configurations",
+      "Update certificate files",
+      "Test secure connections"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-nfs-01 Data Transfer Bottleneck",
+    "description": "Data transfer bottleneck on prod-nfs-01 is affecting file access speed for the R&D team. This may delay product development timelines. Require analysis and resolution of transfer issues.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Check network throughput",
+      "Optimize NFS configurations",
+      "Implement load balancing"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-02 Authentication Service Downtime",
+    "description": "Authentication service downtime on prod-app-02 is preventing users from accessing the platform. This could lead to a loss of active users. Urgent restoration is required.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Review authentication logs",
+      "Restart authentication services",
+      "Verify user credentials database"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-02 Latency Issues",
+    "description": "Experiencing latency issues on prod-k8s-node-02 that are degrading application performance. This affects customer interactions and satisfaction. Please address this quickly.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Monitor network latency",
+      "Optimize data routing",
+      "Upgrade network hardware"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-web-01 DDoS Attack Mitigation",
+    "description": "Detected a potential DDoS attack on prod-web-01, leading to service interruptions for customers. This could have significant revenue impact. Immediate protective measures required.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Implement rate limiting",
+      "Activate DDoS protection services",
+      "Monitor incoming traffic"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-nfs-01 I/O Performance Lag",
+    "description": "Our teams are experiencing I/O performance lags on prod-nfs-01, which could slow down project delivery. Request a detailed performance analysis and resolution plan.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Evaluate disk throughput",
+      "Check file system integrity",
+      "Balance I/O load"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-01 High API Error Rates",
+    "description": "High API error rates detected on prod-app-01, which may affect user transactions and lower service satisfaction. Please coordinate an urgent analysis and fix.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Check API gateway logs",
+      "Review error handling code",
+      "Deploy bug fixes"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-master Service Registry Failure",
+    "description": "Service registry failure on prod-k8s-master is affecting microservice discovery, potentially impacting application availability. Request immediate troubleshooting and service restoration.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Restart service registry",
+      "Check service dependencies",
+      "Update service discovery settings"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": "KB-0001",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Database Replication Lag Detected",
+    "description": "Our financial reporting team is experiencing delays in receiving up-to-date data due to replication lag in the database. This is impacting our ability to generate timely reports. Please prioritize with an ETA.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Check replication status",
+      "Investigate network latency",
+      "Optimize replication settings"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Network Latency Affecting API Gateway",
+    "description": "High network latency is causing significant delays for client requests through the API Gateway. This could impact partner integrations and revenue generating activities. Please provide an urgent update.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Analyze network traffic",
+      "Increase bandwidth",
+      "Reconfigure routing"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0002",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Active Directory Authentication Failures",
+    "description": "Our HR department is unable to perform essential tasks due to authentication issues with Active Directory. This affects onboarding and payroll processing. Need escalation and a swift resolution.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Verify LDAP configuration",
+      "Check AD sync status",
+      "Restart authentication services"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Prometheus Data Collection Lag",
+    "description": "Our systems monitoring team is observing a lag in data collection via Prometheus. This issue could lead to undetected system outages. Please expedite the resolution process.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Review scrape intervals",
+      "Check network latency",
+      "Reconfigure Prometheus settings"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Data Breach Attempt Detected",
+    "description": "Our security system has detected an attempt to breach company data which could compromise sensitive information. This requires immediate attention to prevent potential data loss.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Analyze security logs",
+      "Initiate incident response",
+      "Strengthen firewall rules"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0003",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "NFS Server Overutilization",
+    "description": "The engineering team is reporting slow file access due to overutilization of the NFS server. This is hindering development and testing activities. Please resolve this at the earliest.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Monitor NFS load",
+      "Optimize file access patterns",
+      "Add additional NFS nodes"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Kubernetes Node Out of Disk Space",
+    "description": "The Kubernetes node is running out of disk space, causing service disruptions. This impacts application availability. We need immediate resolution and a report on the root cause.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Increase disk space",
+      "Clean up unused containers",
+      "Implement resource quotas"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": "KB-0004",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "API Gateway Unauthorized Access Attempt",
+    "description": "Security alerts indicate unauthorized access attempts on the API Gateway, potentially leading to data breaches. This requires immediate escalation and action.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Enhance API security policies",
+      "Audit access logs",
+      "Implement additional authentication measures"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Postgresql Indexing Issues",
+    "description": "Our sales analytics team is reporting slow query performance due to indexing issues in our Postgresql database. This is affecting our ability to generate timely sales insights. Please expedite.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Analyze index usage",
+      "Rebuild fragmented indexes",
+      "Optimize query performance"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Firewall Configuration Error",
+    "description": "A misconfiguration in the firewall is causing connectivity issues for remote employees, affecting productivity. This requires immediate attention to restore access.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-FW-001"
+    ],
+    "resolution_steps": [
+      "Review firewall rules",
+      "Test connectivity",
+      "Adjust policies for remote access"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Redis Cache Saturation",
+    "description": "Our marketing platform's performance is degraded due to Redis cache saturation, leading to slower transaction times. This impacts customer experience. Please provide an ETA on resolution.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Review cache eviction policies",
+      "Increase Redis memory allocation",
+      "Optimize cache data storage"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Grafana Dashboard Access Issues",
+    "description": "Teams are unable to access Grafana dashboards, affecting our ability to monitor key system metrics. This needs to be resolved quickly to regain visibility into operations.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [
+      "ERR-SYS-001"
+    ],
+    "resolution_steps": [
+      "Verify Grafana configuration",
+      "Check user permissions",
+      "Restart Grafana service"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Unauthorized Database Access Attempt",
+    "description": "An unauthorized access attempt was detected on our production database. This poses a serious threat to data security and integrity. Immediate investigation and mitigation are required.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Audit database access logs",
+      "Strengthen database security measures",
+      "Implement IP whitelisting"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Exchange Service Interruption",
+    "description": "The customer service team is unable to access their emails due to a service interruption in Exchange. This is directly affecting customer communications and response times. Please provide an ETA.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [
+      "ERR-SYS-003"
+    ],
+    "resolution_steps": [
+      "Check Exchange service status",
+      "Review recent configuration changes",
+      "Restart services as needed"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Nginx Load Balancer Malfunction",
+    "description": "Our e-commerce site is experiencing traffic distribution issues due to a malfunction in the Nginx load balancer. Customer transactions may be affected. Please resolve urgently.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Review load balancer configuration",
+      "Distribute traffic evenly",
+      "Restart Nginx services"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Kubernetes Service Discovery Failure",
+    "description": "Kubernetes service discovery is failing, causing downtime for several microservices. This disrupts continuous integration and deployment. Need immediate resolution with a status update.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check service registry",
+      "Restart affected pods",
+      "Update DNS configurations"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Order-Service API Timeout",
+    "description": "The sales team is reporting timeouts when accessing the order-service API, preventing order placement. This could significantly impact daily sales targets. Requesting priority escalation.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Monitor API response times",
+      "Increase timeout settings",
+      "Optimize backend processing"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Staging Database Disk Space Alert",
+    "description": "Our QA team is unable to proceed with testing due to insufficient disk space on the staging database server. This delays release timelines. Please address and provide an ETA.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Free up disk space",
+      "Archive old logs",
+      "Expand storage capacity"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "LDAP Sync Failure Notice",
+    "description": "There are synchronization failures with our LDAP server affecting user authentication and access control across departments. This needs immediate attention to prevent further disruptions.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "Verify LDAP sync configuration",
+      "Check network connectivity",
+      "Restart LDAP services"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Security Threat from Unpatched Vulnerability",
+    "description": "A critical vulnerability was detected in one of our core systems that remains unpatched. This poses a severe security risk and requires immediate remediation to prevent exploitation.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Identify affected systems",
+      "Apply security patches",
+      "Run vulnerability scans"
+    ],
+    "resolution_effectiveness": 0.96,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Grafana Alert Configuration Error",
+    "description": "Incorrect alert configurations in Grafana are causing missed notifications for critical system events. This impacts our incident response time. Please correct the configuration promptly.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [
+      "ERR-SYS-001"
+    ],
+    "resolution_steps": [
+      "Review alert settings",
+      "Test alert triggers",
+      "Update notification channels"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "High Memory Utilization on prod-app-03",
+    "description": "The application server is experiencing high memory utilization, affecting performance and user experience. This is critical for maintaining service levels. Please prioritize resolution.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Investigate memory leaks",
+      "Optimize application processes",
+      "Upgrade server memory"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Network Routing Loop Detected",
+    "description": "A routing loop in our network is causing significant packet loss and service disruptions. This affects all business operations reliant on network connectivity. Immediate intervention is necessary.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-NGINX-002"
+    ],
+    "resolution_steps": [
+      "Identify loop source",
+      "Reconfigure routing tables",
+      "Monitor network performance"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0006",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Redis Cluster Shard Failure",
+    "description": "A shard failure in our Redis cluster is impacting session management for our web applications. This disrupts user sessions and could lead to loss of data. Please provide urgent resolution.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Redistribute shard load",
+      "Repair failed shard",
+      "Monitor cluster health"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "High CPU Load on prod-k8s-node-01",
+    "description": "Our Kubernetes node is experiencing high CPU load, impacting pod performance and overall cluster health. This delays deployments and affects uptime. Immediate action is requested.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-SYS-003"
+    ],
+    "resolution_steps": [
+      "Redistribute workloads",
+      "Optimize resource allocation",
+      "Upgrade node hardware"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-web-02 SSL Handshake Failure",
+    "description": "Our marketing team is reporting that the website checkout process is failing due to SSL handshake issues, causing potential revenue loss. Urgently need an ETA on resolution to maintain customer trust.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Verify SSL certificate validity",
+      "Check server SSL configuration",
+      "Restart nginx service"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-01 High Latency in Order Processing",
+    "description": "Order processing is delayed significantly, affecting our e-commerce operations and customer satisfaction. Sales team reports delays in order confirmations, impacting revenue. Need immediate escalation.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-APP-001"
+    ],
+    "resolution_steps": [
+      "Check application logs for errors",
+      "Increase server resources temporarily",
+      "Optimize database queries"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": "KB-0007",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-master API Server Connection Refused",
+    "description": "Development team is unable to deploy new releases due to API server connection issues, delaying product updates. This could affect our competitive edge. Please provide an ETA for resolution.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Verify API server status",
+      "Check network connectivity",
+      "Restart API server"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-nfs-01 Mount Point Unavailable",
+    "description": "Our analytics team is unable to access shared data due to NFS mount point issues, impacting data processing for daily reports. We need a swift resolution to keep stakeholders informed.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Verify NFS server status",
+      "Check client mount configurations",
+      "Restart NFS service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-03 API Rate Limiting Misconfiguration",
+    "description": "The compliance team reports system slowdowns due to excessive API rate limits, affecting service deliverables and user experience. Please adjust settings and provide ETA for a fix.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Review API rate limiting settings",
+      "Adjust limits based on traffic analysis",
+      "Monitor for performance improvements"
+    ],
+    "resolution_effectiveness": 0.7,
+    "references_runbook": "KB-0009",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-02 Automated Backup Failure",
+    "description": "Finance department reports data backup failures which could risk financial reporting accuracy. Immediate action required to prevent data loss and maintain compliance.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Check backup configurations",
+      "Run manual backup",
+      "Review system logs for errors"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-ldap-01 Authentication Delays",
+    "description": "HR team reports significant delays in employee logins, potentially affecting productivity and daily operations. A quick solution is needed to restore normal access patterns.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "Check LDAP server resources",
+      "Optimize LDAP queries",
+      "Restart LDAP service"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-web-02 Traffic Spike Alert",
+    "description": "Increased traffic on our website is straining resources and may lead to service degradation. Marketing campaigns are at risk, and customer experience could be impacted. Need immediate scaling solutions.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-002"
+    ],
+    "resolution_steps": [
+      "Increase server capacity",
+      "Optimize load balancing",
+      "Monitor traffic patterns"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-02 Service Disruption",
+    "description": "Service outage on one of our Kubernetes nodes is impacting application availability. Product releases might be stalled, affecting deadlines. Require prompt escalation.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check node health",
+      "Rebalance workloads",
+      "Restart affected services"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0010",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-db-01 Query Performance Degradation",
+    "description": "Reports from the analytics team indicate slow query performance, affecting data processing timelines. This could delay strategic decision-making if not resolved promptly.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Analyze slow queries",
+      "Optimize database indexes",
+      "Adjust resource allocations"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-mail-01 Incorrect Email Routing",
+    "description": "Sales notifications are misrouted, impacting client communication and potentially losing sales opportunities. Immediate attention required to fix routing rules.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Check email routing configurations",
+      "Update DNS and MX records",
+      "Test mail flow"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Unusual Traffic Patterns Detected",
+    "description": "Security team reports unusual traffic patterns that could indicate a potential breach. Immediate investigation and protective measures are critical to safeguarding data.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Analyze traffic logs",
+      "Implement DDoS protection",
+      "Enhance firewall rules"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-node-01 Node Unresponsive",
+    "description": "A Kubernetes node is unresponsive, affecting application deployment schedules and potentially delaying customer updates. Need an immediate fix and preventive measures.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Check node connectivity",
+      "Restart node services",
+      "Monitor node health"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0008",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "Network Congestion Affecting prod-mon-01",
+    "description": "Monitoring system alerts indicate network congestion, delaying crucial alerts and potentially affecting service uptime. Immediate resolution needed to ensure proactive system management.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Analyze network traffic",
+      "Optimize routing paths",
+      "Expand bandwidth allocation"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-app-01 Unauthorized Access Alert",
+    "description": "Unauthorized access attempt detected on a crucial server hosting key applications. This poses a significant security risk and requires immediate lockdown and investigation.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Check access logs",
+      "Block unauthorized IPs",
+      "Enhance authentication protocols"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0005",
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  },
+  {
+    "title": "prod-k8s-master Load Distribution Issues",
+    "description": "Core applications are experiencing load distribution problems, affecting performance and user experience. Timely intervention required to balance the load and meet service levels.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Evaluate load balancer configurations",
+      "Redistribute workloads",
+      "Monitor performance metrics"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "source_model": "gpt-4o",
+    "persona": "manager",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null
+  }
+]
