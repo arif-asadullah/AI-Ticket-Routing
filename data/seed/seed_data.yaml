@@ -1,1667 +1,1943 @@
-# =============================================================================
-# DeskMind Seed Data
-# =============================================================================
-# This file contains all the initial data for the DeskMind knowledge graph.
-# Load it with: python scripts/seed_db.py
-# =============================================================================
-
-# ── Teams (6) ──
 teams:
-  - _key: "infra-ops"
-    name: "Infrastructure Ops"
-    domain: "Infrastructure"
-    escalation_contact: "infra-lead@company.com"
-    sla_hours: { critical: 2, high: 4, medium: 8, low: 24 }
-
-  - _key: "app-support"
-    name: "Application Support"
-    domain: "Application"
-    escalation_contact: "app-lead@company.com"
-    sla_hours: { critical: 2, high: 4, medium: 8, low: 24 }
-
-  - _key: "security-ops"
-    name: "Security Ops"
-    domain: "Security"
-    escalation_contact: "security-lead@company.com"
-    sla_hours: { critical: 2, high: 4, medium: 8, low: 24 }
-
-  - _key: "db-admin"
-    name: "Database Admin"
-    domain: "Database"
-    escalation_contact: "db-lead@company.com"
-    sla_hours: { critical: 2, high: 4, medium: 8, low: 24 }
-
-  - _key: "storage-ops"
-    name: "Storage Ops"
-    domain: "Storage"
-    escalation_contact: "storage-lead@company.com"
-    sla_hours: { critical: 2, high: 4, medium: 8, low: 24 }
-
-  - _key: "network-eng"
-    name: "Network Engineering"
-    domain: "Network"
-    escalation_contact: "network-lead@company.com"
-    sla_hours: { critical: 2, high: 4, medium: 8, low: 24 }
-
-# ── Servers (15) ──
+- _key: infra-ops
+  name: Infrastructure Ops
+  domain: Infrastructure
+  escalation_contact: infra-lead@company.com
+  sla_hours:
+    critical: 2
+    high: 4
+    medium: 8
+    low: 24
+- _key: app-support
+  name: Application Support
+  domain: Application
+  escalation_contact: app-lead@company.com
+  sla_hours:
+    critical: 2
+    high: 4
+    medium: 8
+    low: 24
+- _key: security-ops
+  name: Security Ops
+  domain: Security
+  escalation_contact: security-lead@company.com
+  sla_hours:
+    critical: 2
+    high: 4
+    medium: 8
+    low: 24
+- _key: db-admin
+  name: Database Admin
+  domain: Database
+  escalation_contact: db-lead@company.com
+  sla_hours:
+    critical: 2
+    high: 4
+    medium: 8
+    low: 24
+- _key: storage-ops
+  name: Storage Ops
+  domain: Storage
+  escalation_contact: storage-lead@company.com
+  sla_hours:
+    critical: 2
+    high: 4
+    medium: 8
+    low: 24
+- _key: network-eng
+  name: Network Engineering
+  domain: Network
+  escalation_contact: network-lead@company.com
+  sla_hours:
+    critical: 2
+    high: 4
+    medium: 8
+    low: 24
 servers:
-  - _key: "prod-db-01"
-    ip: "10.0.1.10"
-    type: "database"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 8
-    ram_gb: 32
-
-  - _key: "prod-db-02"
-    ip: "10.0.1.11"
-    type: "database"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 8
-    ram_gb: 32
-
-  - _key: "prod-app-01"
-    ip: "10.0.2.10"
-    type: "application"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 4
-    ram_gb: 16
-
-  - _key: "prod-app-02"
-    ip: "10.0.2.11"
-    type: "application"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 4
-    ram_gb: 16
-
-  - _key: "prod-app-03"
-    ip: "10.0.2.12"
-    type: "application"
-    datacenter: "ap-south-2"
-    os: "Ubuntu 22.04"
-    cpu: 4
-    ram_gb: 16
-
-  - _key: "prod-web-01"
-    ip: "10.0.3.10"
-    type: "web"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 4
-    ram_gb: 8
-
-  - _key: "prod-web-02"
-    ip: "10.0.3.11"
-    type: "web"
-    datacenter: "ap-south-2"
-    os: "Ubuntu 22.04"
-    cpu: 4
-    ram_gb: 8
-
-  - _key: "prod-ldap-01"
-    ip: "10.0.4.10"
-    type: "auth"
-    datacenter: "ap-south-1"
-    os: "Windows Server 2022"
-    cpu: 4
-    ram_gb: 16
-
-  - _key: "prod-mail-01"
-    ip: "10.0.4.11"
-    type: "application"
-    datacenter: "ap-south-1"
-    os: "Windows Server 2022"
-    cpu: 4
-    ram_gb: 16
-
-  - _key: "prod-mon-01"
-    ip: "10.0.5.10"
-    type: "monitoring"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 8
-    ram_gb: 32
-
-  - _key: "prod-k8s-master"
-    ip: "10.0.6.10"
-    type: "application"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 8
-    ram_gb: 16
-
-  - _key: "prod-k8s-node-01"
-    ip: "10.0.6.11"
-    type: "application"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 16
-    ram_gb: 64
-
-  - _key: "prod-k8s-node-02"
-    ip: "10.0.6.12"
-    type: "application"
-    datacenter: "ap-south-2"
-    os: "Ubuntu 22.04"
-    cpu: 16
-    ram_gb: 64
-
-  - _key: "prod-nfs-01"
-    ip: "10.0.7.10"
-    type: "storage"
-    datacenter: "ap-south-1"
-    os: "Ubuntu 22.04"
-    cpu: 4
-    ram_gb: 16
-
-  - _key: "staging-db-01"
-    ip: "10.0.8.10"
-    type: "database"
-    datacenter: "ap-south-2"
-    os: "Ubuntu 22.04"
-    cpu: 4
-    ram_gb: 16
-
-# ── Services (12) ──
+- _key: prod-db-01
+  ip: 10.0.1.10
+  type: database
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 8
+  ram_gb: 32
+- _key: prod-db-02
+  ip: 10.0.1.11
+  type: database
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 8
+  ram_gb: 32
+- _key: prod-app-01
+  ip: 10.0.2.10
+  type: application
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 4
+  ram_gb: 16
+- _key: prod-app-02
+  ip: 10.0.2.11
+  type: application
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 4
+  ram_gb: 16
+- _key: prod-app-03
+  ip: 10.0.2.12
+  type: application
+  datacenter: ap-south-2
+  os: Ubuntu 22.04
+  cpu: 4
+  ram_gb: 16
+- _key: prod-web-01
+  ip: 10.0.3.10
+  type: web
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 4
+  ram_gb: 8
+- _key: prod-web-02
+  ip: 10.0.3.11
+  type: web
+  datacenter: ap-south-2
+  os: Ubuntu 22.04
+  cpu: 4
+  ram_gb: 8
+- _key: prod-ldap-01
+  ip: 10.0.4.10
+  type: auth
+  datacenter: ap-south-1
+  os: Windows Server 2022
+  cpu: 4
+  ram_gb: 16
+- _key: prod-mail-01
+  ip: 10.0.4.11
+  type: application
+  datacenter: ap-south-1
+  os: Windows Server 2022
+  cpu: 4
+  ram_gb: 16
+- _key: prod-mon-01
+  ip: 10.0.5.10
+  type: monitoring
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 8
+  ram_gb: 32
+- _key: prod-k8s-master
+  ip: 10.0.6.10
+  type: application
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 8
+  ram_gb: 16
+- _key: prod-k8s-node-01
+  ip: 10.0.6.11
+  type: application
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 16
+  ram_gb: 64
+- _key: prod-k8s-node-02
+  ip: 10.0.6.12
+  type: application
+  datacenter: ap-south-2
+  os: Ubuntu 22.04
+  cpu: 16
+  ram_gb: 64
+- _key: prod-nfs-01
+  ip: 10.0.7.10
+  type: storage
+  datacenter: ap-south-1
+  os: Ubuntu 22.04
+  cpu: 4
+  ram_gb: 16
+- _key: staging-db-01
+  ip: 10.0.8.10
+  type: database
+  datacenter: ap-south-2
+  os: Ubuntu 22.04
+  cpu: 4
+  ram_gb: 16
 services:
-  - _key: "postgresql"
-    name: "PostgreSQL"
-    version: "15.4"
-    port: 5432
-    protocol: "tcp"
-
-  - _key: "redis"
-    name: "Redis"
-    version: "7.2"
-    port: 6379
-    protocol: "tcp"
-
-  - _key: "nginx"
-    name: "NGINX"
-    version: "1.24"
-    port: 443
-    protocol: "https"
-
-  - _key: "order-service"
-    name: "OrderService"
-    version: "2.3.1"
-    port: 8080
-    protocol: "http"
-
-  - _key: "auth-service"
-    name: "AuthService"
-    version: "1.5.0"
-    port: 8081
-    protocol: "http"
-
-  - _key: "api-gateway"
-    name: "APIGateway"
-    version: "3.1.0"
-    port: 443
-    protocol: "https"
-
-  - _key: "active-directory"
-    name: "Active Directory"
-    version: "2022"
-    port: 389
-    protocol: "ldap"
-
-  - _key: "exchange"
-    name: "Exchange Server"
-    version: "2019"
-    port: 443
-    protocol: "https"
-
-  - _key: "prometheus"
-    name: "Prometheus"
-    version: "2.48"
-    port: 9090
-    protocol: "http"
-
-  - _key: "kubernetes"
-    name: "Kubernetes"
-    version: "1.28"
-    port: 6443
-    protocol: "https"
-
-  - _key: "grafana"
-    name: "Grafana"
-    version: "10.2"
-    port: 3000
-    protocol: "http"
-
-  - _key: "nfs"
-    name: "NFS"
-    version: "4.2"
-    port: 2049
-    protocol: "tcp"
-
-# ── Engineers (12, 2 per team) ──
+- _key: postgresql
+  name: PostgreSQL
+  version: '15.4'
+  port: 5432
+  protocol: tcp
+- _key: redis
+  name: Redis
+  version: '7.2'
+  port: 6379
+  protocol: tcp
+- _key: nginx
+  name: NGINX
+  version: '1.24'
+  port: 443
+  protocol: https
+- _key: order-service
+  name: OrderService
+  version: 2.3.1
+  port: 8080
+  protocol: http
+- _key: auth-service
+  name: AuthService
+  version: 1.5.0
+  port: 8081
+  protocol: http
+- _key: api-gateway
+  name: APIGateway
+  version: 3.1.0
+  port: 443
+  protocol: https
+- _key: active-directory
+  name: Active Directory
+  version: '2022'
+  port: 389
+  protocol: ldap
+- _key: exchange
+  name: Exchange Server
+  version: '2019'
+  port: 443
+  protocol: https
+- _key: prometheus
+  name: Prometheus
+  version: '2.48'
+  port: 9090
+  protocol: http
+- _key: kubernetes
+  name: Kubernetes
+  version: '1.28'
+  port: 6443
+  protocol: https
+- _key: grafana
+  name: Grafana
+  version: '10.2'
+  port: 3000
+  protocol: http
+- _key: nfs
+  name: NFS
+  version: '4.2'
+  port: 2049
+  protocol: tcp
 engineers:
-  - _key: "eng-001"
-    name: "Arjun Nair"
-    role: "Senior DBA"
-    expertise: ["PostgreSQL", "Redis", "backup-recovery"]
-    email: "arjun.nair@company.com"
-
-  - _key: "eng-002"
-    name: "Meera Patel"
-    role: "DBA"
-    expertise: ["PostgreSQL", "replication", "performance-tuning"]
-    email: "meera.patel@company.com"
-
-  - _key: "eng-003"
-    name: "Priya Sharma"
-    role: "Infrastructure Engineer"
-    expertise: ["Linux", "Kubernetes", "Docker", "monitoring"]
-    email: "priya.sharma@company.com"
-
-  - _key: "eng-004"
-    name: "Raj Kumar"
-    role: "Senior SysAdmin"
-    expertise: ["VMware", "Ubuntu", "hardware", "networking"]
-    email: "raj.kumar@company.com"
-
-  - _key: "eng-005"
-    name: "Kavitha Rajan"
-    role: "Application Engineer"
-    expertise: ["Java", "Spring Boot", "microservices", "debugging"]
-    email: "kavitha.rajan@company.com"
-
-  - _key: "eng-006"
-    name: "Vikram Singh"
-    role: "DevOps Engineer"
-    expertise: ["CI/CD", "Docker", "Kubernetes", "deployments"]
-    email: "vikram.singh@company.com"
-
-  - _key: "eng-007"
-    name: "Ayesha Khan"
-    role: "Security Analyst"
-    expertise: ["firewall", "IDS", "vulnerability-scanning", "compliance"]
-    email: "ayesha.khan@company.com"
-
-  - _key: "eng-008"
-    name: "Imran Sheikh"
-    role: "Security Engineer"
-    expertise: ["PKI", "certificates", "encryption", "IAM"]
-    email: "imran.sheikh@company.com"
-
-  - _key: "eng-009"
-    name: "Deepak Verma"
-    role: "Network Engineer"
-    expertise: ["Cisco", "Palo Alto", "VPN", "DNS", "routing"]
-    email: "deepak.verma@company.com"
-
-  - _key: "eng-010"
-    name: "Farhana Begum"
-    role: "Network Analyst"
-    expertise: ["Wireshark", "TCP/IP", "load-balancing", "monitoring"]
-    email: "farhana.begum@company.com"
-
-  - _key: "eng-011"
-    name: "Amit Joshi"
-    role: "Storage Engineer"
-    expertise: ["NFS", "SAN", "backup", "RAID", "Ceph"]
-    email: "amit.joshi@company.com"
-
-  - _key: "eng-012"
-    name: "Zainab Siddiqui"
-    role: "Storage Admin"
-    expertise: ["NetApp", "NFS", "disaster-recovery", "archival"]
-    email: "zainab.siddiqui@company.com"
-
-# ── Network Devices (5) ──
+- _key: eng-001
+  name: Arjun Nair
+  role: Senior DBA
+  expertise:
+  - PostgreSQL
+  - Redis
+  - backup-recovery
+  email: arjun.nair@company.com
+- _key: eng-002
+  name: Meera Patel
+  role: DBA
+  expertise:
+  - PostgreSQL
+  - replication
+  - performance-tuning
+  email: meera.patel@company.com
+- _key: eng-003
+  name: Priya Sharma
+  role: Infrastructure Engineer
+  expertise:
+  - Linux
+  - Kubernetes
+  - Docker
+  - monitoring
+  email: priya.sharma@company.com
+- _key: eng-004
+  name: Raj Kumar
+  role: Senior SysAdmin
+  expertise:
+  - VMware
+  - Ubuntu
+  - hardware
+  - networking
+  email: raj.kumar@company.com
+- _key: eng-005
+  name: Kavitha Rajan
+  role: Application Engineer
+  expertise:
+  - Java
+  - Spring Boot
+  - microservices
+  - debugging
+  email: kavitha.rajan@company.com
+- _key: eng-006
+  name: Vikram Singh
+  role: DevOps Engineer
+  expertise:
+  - CI/CD
+  - Docker
+  - Kubernetes
+  - deployments
+  email: vikram.singh@company.com
+- _key: eng-007
+  name: Ayesha Khan
+  role: Security Analyst
+  expertise:
+  - firewall
+  - IDS
+  - vulnerability-scanning
+  - compliance
+  email: ayesha.khan@company.com
+- _key: eng-008
+  name: Imran Sheikh
+  role: Security Engineer
+  expertise:
+  - PKI
+  - certificates
+  - encryption
+  - IAM
+  email: imran.sheikh@company.com
+- _key: eng-009
+  name: Deepak Verma
+  role: Network Engineer
+  expertise:
+  - Cisco
+  - Palo Alto
+  - VPN
+  - DNS
+  - routing
+  email: deepak.verma@company.com
+- _key: eng-010
+  name: Farhana Begum
+  role: Network Analyst
+  expertise:
+  - Wireshark
+  - TCP/IP
+  - load-balancing
+  - monitoring
+  email: farhana.begum@company.com
+- _key: eng-011
+  name: Amit Joshi
+  role: Storage Engineer
+  expertise:
+  - NFS
+  - SAN
+  - backup
+  - RAID
+  - Ceph
+  email: amit.joshi@company.com
+- _key: eng-012
+  name: Zainab Siddiqui
+  role: Storage Admin
+  expertise:
+  - NetApp
+  - NFS
+  - disaster-recovery
+  - archival
+  email: zainab.siddiqui@company.com
 network_devices:
-  - _key: "fw-prod-01"
-    type: "firewall"
-    ip: "10.0.0.1"
-    model: "Palo Alto PA-3260"
-
-  - _key: "fw-prod-02"
-    type: "firewall"
-    ip: "10.0.0.2"
-    model: "Palo Alto PA-3260"
-
-  - _key: "sw-core-01"
-    type: "switch"
-    ip: "10.0.0.10"
-    model: "Cisco Nexus 9300"
-
-  - _key: "lb-web-01"
-    type: "load_balancer"
-    ip: "10.0.0.20"
-    model: "F5 BIG-IP i2600"
-
-  - _key: "vpn-gw-01"
-    type: "router"
-    ip: "10.0.0.30"
-    model: "Cisco ASR 1001-X"
-
-# ── Error Codes (20) ──
+- _key: fw-prod-01
+  type: firewall
+  ip: 10.0.0.1
+  model: Palo Alto PA-3260
+- _key: fw-prod-02
+  type: firewall
+  ip: 10.0.0.2
+  model: Palo Alto PA-3260
+- _key: sw-core-01
+  type: switch
+  ip: 10.0.0.10
+  model: Cisco Nexus 9300
+- _key: lb-web-01
+  type: load_balancer
+  ip: 10.0.0.20
+  model: F5 BIG-IP i2600
+- _key: vpn-gw-01
+  type: router
+  ip: 10.0.0.30
+  model: Cisco ASR 1001-X
 error_codes:
-  # Infrastructure
-  - _key: "ERR-SYS-001"
-    pattern: "kernel panic - not syncing"
-    service: "linux"
-    severity: "critical"
-  - _key: "ERR-SYS-002"
-    pattern: "No space left on device"
-    service: "linux"
-    severity: "high"
-  - _key: "ERR-SYS-003"
-    pattern: "Out of memory: Kill process"
-    service: "linux"
-    severity: "critical"
-  - _key: "ERR-K8S-001"
-    pattern: "OOMKilled"
-    service: "kubernetes"
-    severity: "critical"
-  # Application
-  - _key: "ERR-NGINX-001"
-    pattern: "502 Bad Gateway"
-    service: "nginx"
-    severity: "high"
-  - _key: "ERR-NGINX-002"
-    pattern: "504 Gateway Time-out"
-    service: "nginx"
-    severity: "high"
-  - _key: "ERR-APP-001"
-    pattern: "Connection refused on port 8080"
-    service: "order-service"
-    severity: "high"
-  # Database
-  - _key: "ERR-PG-001"
-    pattern: "FATAL: too many connections"
-    service: "postgresql"
-    severity: "high"
-  - _key: "ERR-PG-002"
-    pattern: "FATAL: Peer authentication failed"
-    service: "postgresql"
-    severity: "medium"
-  - _key: "ERR-PG-003"
-    pattern: "FATAL: the database system is starting up"
-    service: "postgresql"
-    severity: "high"
-  - _key: "ERR-REDIS-001"
-    pattern: "OOM command not allowed when used memory > maxmemory"
-    service: "redis"
-    severity: "high"
-  # Network
-  - _key: "ERR-DNS-001"
-    pattern: "NXDOMAIN"
-    service: "dns"
-    severity: "medium"
-  - _key: "ERR-SSL-001"
-    pattern: "certificate has expired"
-    service: "nginx"
-    severity: "high"
-  - _key: "ERR-VPN-001"
-    pattern: "IKE phase 1 negotiation failed"
-    service: "vpn"
-    severity: "high"
-  - _key: "ERR-FW-001"
-    pattern: "Deny action from policy"
-    service: "firewall"
-    severity: "medium"
-  # Security
-  - _key: "ERR-LDAP-001"
-    pattern: "LDAP error: Invalid credentials"
-    service: "active-directory"
-    severity: "medium"
-  - _key: "ERR-AUTH-001"
-    pattern: "Account locked out after 5 failed attempts"
-    service: "active-directory"
-    severity: "medium"
-  - _key: "ERR-SEC-001"
-    pattern: "Unauthorized access attempt detected"
-    service: "api-gateway"
-    severity: "critical"
-  # Storage
-  - _key: "ERR-NFS-001"
-    pattern: "NFS: stale file handle"
-    service: "nfs"
-    severity: "high"
-  - _key: "ERR-NFS-002"
-    pattern: "mount.nfs: access denied by server"
-    service: "nfs"
-    severity: "medium"
-
-# ── Runbooks (10) ──
+- _key: ERR-SYS-001
+  pattern: kernel panic - not syncing
+  service: linux
+  severity: critical
+- _key: ERR-SYS-002
+  pattern: No space left on device
+  service: linux
+  severity: high
+- _key: ERR-SYS-003
+  pattern: 'Out of memory: Kill process'
+  service: linux
+  severity: critical
+- _key: ERR-K8S-001
+  pattern: OOMKilled
+  service: kubernetes
+  severity: critical
+- _key: ERR-NGINX-001
+  pattern: 502 Bad Gateway
+  service: nginx
+  severity: high
+- _key: ERR-NGINX-002
+  pattern: 504 Gateway Time-out
+  service: nginx
+  severity: high
+- _key: ERR-APP-001
+  pattern: Connection refused on port 8080
+  service: order-service
+  severity: high
+- _key: ERR-PG-001
+  pattern: 'FATAL: too many connections'
+  service: postgresql
+  severity: high
+- _key: ERR-PG-002
+  pattern: 'FATAL: Peer authentication failed'
+  service: postgresql
+  severity: medium
+- _key: ERR-PG-003
+  pattern: 'FATAL: the database system is starting up'
+  service: postgresql
+  severity: high
+- _key: ERR-REDIS-001
+  pattern: OOM command not allowed when used memory > maxmemory
+  service: redis
+  severity: high
+- _key: ERR-DNS-001
+  pattern: NXDOMAIN
+  service: dns
+  severity: medium
+- _key: ERR-SSL-001
+  pattern: certificate has expired
+  service: nginx
+  severity: high
+- _key: ERR-VPN-001
+  pattern: IKE phase 1 negotiation failed
+  service: vpn
+  severity: high
+- _key: ERR-FW-001
+  pattern: Deny action from policy
+  service: firewall
+  severity: medium
+- _key: ERR-LDAP-001
+  pattern: 'LDAP error: Invalid credentials'
+  service: active-directory
+  severity: medium
+- _key: ERR-AUTH-001
+  pattern: Account locked out after 5 failed attempts
+  service: active-directory
+  severity: medium
+- _key: ERR-SEC-001
+  pattern: Unauthorized access attempt detected
+  service: api-gateway
+  severity: critical
+- _key: ERR-NFS-001
+  pattern: 'NFS: stale file handle'
+  service: nfs
+  severity: high
+- _key: ERR-NFS-002
+  pattern: 'mount.nfs: access denied by server'
+  service: nfs
+  severity: medium
 runbooks:
-  - _key: "KB-0001"
-    title: "PostgreSQL connection limit exceeded"
-    steps:
-      - "Check current connections: SELECT count(*) FROM pg_stat_activity;"
-      - "Identify idle connections: SELECT * FROM pg_stat_activity WHERE state = 'idle';"
-      - "Kill idle connections: SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'idle' AND query_start < now() - interval '30 minutes';"
-      - "Increase max_connections in postgresql.conf if needed"
-      - "Restart PostgreSQL: sudo systemctl restart postgresql"
-    category: "Database"
-
-  - _key: "KB-0002"
-    title: "NGINX 502 Bad Gateway troubleshooting"
-    steps:
-      - "Check if upstream service is running: systemctl status order-service"
-      - "Check NGINX error log: tail -100 /var/log/nginx/error.log"
-      - "Verify upstream port is correct in /etc/nginx/conf.d/upstream.conf"
-      - "Test upstream directly: curl http://localhost:8080/health"
-      - "Restart NGINX if config changed: sudo nginx -t && sudo systemctl restart nginx"
-    category: "Application"
-
-  - _key: "KB-0003"
-    title: "VPN connectivity troubleshooting"
-    steps:
-      - "Check VPN gateway status: show vpn ike-sa"
-      - "Verify IKE certificates are valid: show pki certificates"
-      - "Check firewall rules allow UDP 500 and 4500"
-      - "Test IKE phase 1: ipsec statusall"
-      - "Restart VPN tunnel: ipsec restart"
-    category: "Network"
-
-  - _key: "KB-0004"
-    title: "Kubernetes pod OOMKilled recovery"
-    steps:
-      - "Check pod status: kubectl describe pod <name> -n <namespace>"
-      - "Review container memory limits: kubectl get pod <name> -o yaml | grep -A5 resources"
-      - "Check container logs before crash: kubectl logs <name> --previous"
-      - "Increase memory limits in deployment YAML"
-      - "Apply changes: kubectl apply -f deployment.yaml"
-    category: "Infrastructure"
-
-  - _key: "KB-0005"
-    title: "SSL certificate renewal process"
-    steps:
-      - "Check certificate expiry: openssl s_client -connect host:443 2>/dev/null | openssl x509 -noout -dates"
-      - "Generate new CSR: openssl req -new -key server.key -out server.csr"
-      - "Submit CSR to Certificate Authority"
-      - "Install new certificate: cp new-cert.pem /etc/ssl/certs/"
-      - "Reload service: sudo systemctl reload nginx"
-    category: "Security"
-
-  - _key: "KB-0006"
-    title: "NFS mount failure recovery"
-    steps:
-      - "Check NFS server is running: systemctl status nfs-server"
-      - "Verify exports: showmount -e prod-nfs-01"
-      - "Check client mount: mount | grep nfs"
-      - "Unmount stale mount: umount -f /mnt/shared"
-      - "Remount: mount -t nfs prod-nfs-01:/export/shared /mnt/shared"
-    category: "Storage"
-
-  - _key: "KB-0007"
-    title: "Redis memory management"
-    steps:
-      - "Check memory usage: redis-cli INFO memory"
-      - "Identify large keys: redis-cli --bigkeys"
-      - "Check current maxmemory policy: redis-cli CONFIG GET maxmemory-policy"
-      - "Set eviction policy: redis-cli CONFIG SET maxmemory-policy allkeys-lru"
-      - "Restart Redis if config persisted: sudo systemctl restart redis"
-    category: "Database"
-
-  - _key: "KB-0008"
-    title: "Linux disk space recovery"
-    steps:
-      - "Check disk usage: df -h"
-      - "Find largest directories: du -sh /var/* | sort -rh | head"
-      - "Clean old logs: find /var/log -name '*.gz' -mtime +30 -delete"
-      - "Clean package cache: apt-get clean"
-      - "Remove old kernels: apt-get autoremove"
-    category: "Infrastructure"
-
-  - _key: "KB-0009"
-    title: "LDAP account lockout resolution"
-    steps:
-      - "Check lockout policy: Get-ADDefaultDomainPasswordPolicy"
-      - "Find user in AD: Get-ADUser -Identity username -Properties LockedOut"
-      - "Unlock account: Unlock-ADAccount -Identity username"
-      - "Reset password if needed: Set-ADAccountPassword -Identity username"
-      - "Verify login: Test-ADAuthentication -Username username"
-    category: "Security"
-
-  - _key: "KB-0010"
-    title: "Firewall rule change procedure"
-    steps:
-      - "Submit change request in ticketing system"
-      - "Backup current rules: show running-config | redirect tftp://backup/fw-rules"
-      - "Apply new rule: set rulebase security rules <name> from <zone> to <zone> action allow"
-      - "Test connectivity: ping target && curl target:port"
-      - "Document change in change log"
-    category: "Network"
-
-# ── Routing Rules (24 = 6 categories x 4 priorities) ──
+- _key: KB-0001
+  title: PostgreSQL connection limit exceeded
+  steps:
+  - 'Check current connections: SELECT count(*) FROM pg_stat_activity;'
+  - 'Identify idle connections: SELECT * FROM pg_stat_activity WHERE state = ''idle'';'
+  - 'Kill idle connections: SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = ''idle'' AND query_start < now() - interval ''30 minutes'';'
+  - Increase max_connections in postgresql.conf if needed
+  - 'Restart PostgreSQL: sudo systemctl restart postgresql'
+  category: Database
+- _key: KB-0002
+  title: NGINX 502 Bad Gateway troubleshooting
+  steps:
+  - 'Check if upstream service is running: systemctl status order-service'
+  - 'Check NGINX error log: tail -100 /var/log/nginx/error.log'
+  - Verify upstream port is correct in /etc/nginx/conf.d/upstream.conf
+  - 'Test upstream directly: curl http://localhost:8080/health'
+  - 'Restart NGINX if config changed: sudo nginx -t && sudo systemctl restart nginx'
+  category: Application
+- _key: KB-0003
+  title: VPN connectivity troubleshooting
+  steps:
+  - 'Check VPN gateway status: show vpn ike-sa'
+  - 'Verify IKE certificates are valid: show pki certificates'
+  - Check firewall rules allow UDP 500 and 4500
+  - 'Test IKE phase 1: ipsec statusall'
+  - 'Restart VPN tunnel: ipsec restart'
+  category: Network
+- _key: KB-0004
+  title: Kubernetes pod OOMKilled recovery
+  steps:
+  - 'Check pod status: kubectl describe pod <name> -n <namespace>'
+  - 'Review container memory limits: kubectl get pod <name> -o yaml | grep -A5 resources'
+  - 'Check container logs before crash: kubectl logs <name> --previous'
+  - Increase memory limits in deployment YAML
+  - 'Apply changes: kubectl apply -f deployment.yaml'
+  category: Infrastructure
+- _key: KB-0005
+  title: SSL certificate renewal process
+  steps:
+  - 'Check certificate expiry: openssl s_client -connect host:443 2>/dev/null | openssl x509 -noout -dates'
+  - 'Generate new CSR: openssl req -new -key server.key -out server.csr'
+  - Submit CSR to Certificate Authority
+  - 'Install new certificate: cp new-cert.pem /etc/ssl/certs/'
+  - 'Reload service: sudo systemctl reload nginx'
+  category: Security
+- _key: KB-0006
+  title: NFS mount failure recovery
+  steps:
+  - 'Check NFS server is running: systemctl status nfs-server'
+  - 'Verify exports: showmount -e prod-nfs-01'
+  - 'Check client mount: mount | grep nfs'
+  - 'Unmount stale mount: umount -f /mnt/shared'
+  - 'Remount: mount -t nfs prod-nfs-01:/export/shared /mnt/shared'
+  category: Storage
+- _key: KB-0007
+  title: Redis memory management
+  steps:
+  - 'Check memory usage: redis-cli INFO memory'
+  - 'Identify large keys: redis-cli --bigkeys'
+  - 'Check current maxmemory policy: redis-cli CONFIG GET maxmemory-policy'
+  - 'Set eviction policy: redis-cli CONFIG SET maxmemory-policy allkeys-lru'
+  - 'Restart Redis if config persisted: sudo systemctl restart redis'
+  category: Database
+- _key: KB-0008
+  title: Linux disk space recovery
+  steps:
+  - 'Check disk usage: df -h'
+  - 'Find largest directories: du -sh /var/* | sort -rh | head'
+  - 'Clean old logs: find /var/log -name ''*.gz'' -mtime +30 -delete'
+  - 'Clean package cache: apt-get clean'
+  - 'Remove old kernels: apt-get autoremove'
+  category: Infrastructure
+- _key: KB-0009
+  title: LDAP account lockout resolution
+  steps:
+  - 'Check lockout policy: Get-ADDefaultDomainPasswordPolicy'
+  - 'Find user in AD: Get-ADUser -Identity username -Properties LockedOut'
+  - 'Unlock account: Unlock-ADAccount -Identity username'
+  - 'Reset password if needed: Set-ADAccountPassword -Identity username'
+  - 'Verify login: Test-ADAuthentication -Username username'
+  category: Security
+- _key: KB-0010
+  title: Firewall rule change procedure
+  steps:
+  - Submit change request in ticketing system
+  - 'Backup current rules: show running-config | redirect tftp://backup/fw-rules'
+  - 'Apply new rule: set rulebase security rules <name> from <zone> to <zone> action allow'
+  - 'Test connectivity: ping target && curl target:port'
+  - Document change in change log
+  category: Network
 routing_rules:
-  - category: "Infrastructure"
-    priority: "critical"
-    target_team: "infra-ops"
-    is_active: true
-  - category: "Infrastructure"
-    priority: "high"
-    target_team: "infra-ops"
-    is_active: true
-  - category: "Infrastructure"
-    priority: "medium"
-    target_team: "infra-ops"
-    is_active: true
-  - category: "Infrastructure"
-    priority: "low"
-    target_team: "infra-ops"
-    is_active: true
-  - category: "Application"
-    priority: "critical"
-    target_team: "app-support"
-    is_active: true
-  - category: "Application"
-    priority: "high"
-    target_team: "app-support"
-    is_active: true
-  - category: "Application"
-    priority: "medium"
-    target_team: "app-support"
-    is_active: true
-  - category: "Application"
-    priority: "low"
-    target_team: "app-support"
-    is_active: true
-  - category: "Security"
-    priority: "critical"
-    target_team: "security-ops"
-    is_active: true
-  - category: "Security"
-    priority: "high"
-    target_team: "security-ops"
-    is_active: true
-  - category: "Security"
-    priority: "medium"
-    target_team: "security-ops"
-    is_active: true
-  - category: "Security"
-    priority: "low"
-    target_team: "security-ops"
-    is_active: true
-  - category: "Database"
-    priority: "critical"
-    target_team: "db-admin"
-    is_active: true
-  - category: "Database"
-    priority: "high"
-    target_team: "db-admin"
-    is_active: true
-  - category: "Database"
-    priority: "medium"
-    target_team: "db-admin"
-    is_active: true
-  - category: "Database"
-    priority: "low"
-    target_team: "db-admin"
-    is_active: true
-  - category: "Storage"
-    priority: "critical"
-    target_team: "storage-ops"
-    is_active: true
-  - category: "Storage"
-    priority: "high"
-    target_team: "storage-ops"
-    is_active: true
-  - category: "Storage"
-    priority: "medium"
-    target_team: "storage-ops"
-    is_active: true
-  - category: "Storage"
-    priority: "low"
-    target_team: "storage-ops"
-    is_active: true
-  - category: "Network"
-    priority: "critical"
-    target_team: "network-eng"
-    is_active: true
-  - category: "Network"
-    priority: "high"
-    target_team: "network-eng"
-    is_active: true
-  - category: "Network"
-    priority: "medium"
-    target_team: "network-eng"
-    is_active: true
-  - category: "Network"
-    priority: "low"
-    target_team: "network-eng"
-    is_active: true
-
-# ── Tickets (55 = 50 historical + 5 demo) ──
+- category: Infrastructure
+  priority: critical
+  target_team: infra-ops
+  is_active: true
+- category: Infrastructure
+  priority: high
+  target_team: infra-ops
+  is_active: true
+- category: Infrastructure
+  priority: medium
+  target_team: infra-ops
+  is_active: true
+- category: Infrastructure
+  priority: low
+  target_team: infra-ops
+  is_active: true
+- category: Application
+  priority: critical
+  target_team: app-support
+  is_active: true
+- category: Application
+  priority: high
+  target_team: app-support
+  is_active: true
+- category: Application
+  priority: medium
+  target_team: app-support
+  is_active: true
+- category: Application
+  priority: low
+  target_team: app-support
+  is_active: true
+- category: Security
+  priority: critical
+  target_team: security-ops
+  is_active: true
+- category: Security
+  priority: high
+  target_team: security-ops
+  is_active: true
+- category: Security
+  priority: medium
+  target_team: security-ops
+  is_active: true
+- category: Security
+  priority: low
+  target_team: security-ops
+  is_active: true
+- category: Database
+  priority: critical
+  target_team: db-admin
+  is_active: true
+- category: Database
+  priority: high
+  target_team: db-admin
+  is_active: true
+- category: Database
+  priority: medium
+  target_team: db-admin
+  is_active: true
+- category: Database
+  priority: low
+  target_team: db-admin
+  is_active: true
+- category: Storage
+  priority: critical
+  target_team: storage-ops
+  is_active: true
+- category: Storage
+  priority: high
+  target_team: storage-ops
+  is_active: true
+- category: Storage
+  priority: medium
+  target_team: storage-ops
+  is_active: true
+- category: Storage
+  priority: low
+  target_team: storage-ops
+  is_active: true
+- category: Network
+  priority: critical
+  target_team: network-eng
+  is_active: true
+- category: Network
+  priority: high
+  target_team: network-eng
+  is_active: true
+- category: Network
+  priority: medium
+  target_team: network-eng
+  is_active: true
+- category: Network
+  priority: low
+  target_team: network-eng
+  is_active: true
 tickets:
-  # --- Infrastructure (10) ---
-  - title: "Server prod-app-01 CPU at 100%"
-    description: "Production application server prod-app-01 showing sustained 100% CPU usage for the last 30 minutes. OrderService response times have degraded from 200ms to 8 seconds. Users reporting checkout page timeouts."
-    category: "Infrastructure"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "kavitha.rajan@company.com"
-    created_at: "2026-03-01T08:15:00Z"
-    resolved_at: "2026-03-01T09:30:00Z"
-    affects_servers: ["prod-app-01"]
-    affects_services: ["order-service"]
-    error_codes: []
-
-  - title: "Kernel panic on prod-k8s-node-02"
-    description: "Production Kubernetes node prod-k8s-node-02 in ap-south-2 experienced a kernel panic and rebooted unexpectedly. All pods on this node were evicted. Cluster is running on reduced capacity."
-    category: "Infrastructure"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "priya.sharma@company.com"
-    created_at: "2026-03-03T02:45:00Z"
-    resolved_at: "2026-03-03T06:00:00Z"
-    affects_servers: ["prod-k8s-node-02"]
-    affects_services: ["kubernetes"]
-    error_codes: ["ERR-SYS-001"]
-
-  - title: "Kubernetes pod OOMKilled repeatedly"
-    description: "OrderService pods on prod-k8s-node-01 are getting OOMKilled every 2-3 hours. Memory limit is set to 512Mi but the Java heap is growing beyond that. Rolling restarts are masking the issue."
-    category: "Infrastructure"
-    priority: "high"
-    status: "closed"
-    submitted_by: "vikram.singh@company.com"
-    created_at: "2026-03-05T10:00:00Z"
-    resolved_at: "2026-03-05T12:30:00Z"
-    affects_servers: ["prod-k8s-node-01"]
-    affects_services: ["kubernetes", "order-service"]
-    error_codes: ["ERR-K8S-001"]
-
-  - title: "Disk space critical on prod-mon-01"
-    description: "Monitoring server prod-mon-01 has 95% disk usage. Prometheus TSDB is consuming 180GB. Grafana dashboards are loading slowly. Alert: No space left on device appearing in logs."
-    category: "Infrastructure"
-    priority: "high"
-    status: "closed"
-    submitted_by: "priya.sharma@company.com"
-    created_at: "2026-03-07T14:20:00Z"
-    resolved_at: "2026-03-07T16:00:00Z"
-    affects_servers: ["prod-mon-01"]
-    affects_services: ["prometheus", "grafana"]
-    error_codes: ["ERR-SYS-002"]
-
-  - title: "Ubuntu security patch failed on prod-web-01"
-    description: "Automated Ubuntu security update on prod-web-01 failed midway. apt-get is stuck in a broken state. NGINX is still running but the server is in an inconsistent state."
-    category: "Infrastructure"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "raj.kumar@company.com"
-    created_at: "2026-03-10T06:00:00Z"
-    resolved_at: "2026-03-10T08:00:00Z"
-    affects_servers: ["prod-web-01"]
-    affects_services: ["nginx"]
-    error_codes: []
-
-  - title: "Docker daemon not responding on prod-app-02"
-    description: "Docker daemon on prod-app-02 is not responding to any commands. docker ps hangs indefinitely. All containers on this server are inaccessible. OrderService failover to prod-app-01 is active."
-    category: "Infrastructure"
-    priority: "high"
-    status: "closed"
-    submitted_by: "vikram.singh@company.com"
-    created_at: "2026-03-12T11:30:00Z"
-    resolved_at: "2026-03-12T13:00:00Z"
-    affects_servers: ["prod-app-02"]
-    affects_services: ["order-service"]
-    error_codes: []
-
-  - title: "Grafana dashboard not loading"
-    description: "Grafana on prod-mon-01 is returning 504 timeout when loading dashboards. Prometheus API seems slow. The on-call team has no visibility into system metrics."
-    category: "Infrastructure"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "priya.sharma@company.com"
-    created_at: "2026-03-14T09:00:00Z"
-    resolved_at: "2026-03-14T10:30:00Z"
-    affects_servers: ["prod-mon-01"]
-    affects_services: ["grafana", "prometheus"]
-    error_codes: []
-
-  - title: "Prometheus alerting not firing"
-    description: "Prometheus alert rules on prod-mon-01 are not triggering despite conditions being met. The alertmanager is running but no alerts are being received. On-call team missed a disk space warning."
-    category: "Infrastructure"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "raj.kumar@company.com"
-    created_at: "2026-03-16T13:00:00Z"
-    resolved_at: "2026-03-16T14:30:00Z"
-    affects_servers: ["prod-mon-01"]
-    affects_services: ["prometheus"]
-    error_codes: []
-
-  - title: "Server prod-k8s-node-01 high memory usage"
-    description: "prod-k8s-node-01 memory usage at 92%. Multiple pods are competing for memory resources. Swap is disabled per Kubernetes requirements. Risk of OOMKilled pods if memory increases further."
-    category: "Infrastructure"
-    priority: "high"
-    status: "closed"
-    submitted_by: "priya.sharma@company.com"
-    created_at: "2026-03-18T15:00:00Z"
-    resolved_at: "2026-03-18T17:00:00Z"
-    affects_servers: ["prod-k8s-node-01"]
-    affects_services: ["kubernetes"]
-    error_codes: ["ERR-SYS-003"]
-
-  - title: "Staging server staging-db-01 unreachable"
-    description: "Staging database server staging-db-01 in ap-south-2 is not responding to SSH or ping. The staging environment is down. Development team cannot run integration tests."
-    category: "Infrastructure"
-    priority: "low"
-    status: "closed"
-    submitted_by: "meera.patel@company.com"
-    created_at: "2026-03-20T10:00:00Z"
-    resolved_at: "2026-03-20T14:00:00Z"
-    affects_servers: ["staging-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  # --- Application (9) ---
-  - title: "NGINX returning 502 after deployment"
-    description: "After deploying v2.3.1 of OrderService, NGINX on prod-web-01 started returning 502 Bad Gateway for all /api/orders endpoints. Rollback has not been attempted yet. Customer checkout is completely broken."
-    category: "Application"
-    priority: "high"
-    status: "closed"
-    submitted_by: "kavitha.rajan@company.com"
-    created_at: "2026-03-02T14:00:00Z"
-    resolved_at: "2026-03-02T15:30:00Z"
-    affects_servers: ["prod-web-01"]
-    affects_services: ["nginx", "order-service"]
-    error_codes: ["ERR-NGINX-001"]
-
-  - title: "OrderService timeout on checkout API"
-    description: "OrderService on prod-app-01 is timing out on POST /api/orders/checkout. Response time exceeds 30 seconds. Database queries are taking 15+ seconds. Customers unable to complete purchases."
-    category: "Application"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "kavitha.rajan@company.com"
-    created_at: "2026-03-04T16:00:00Z"
-    resolved_at: "2026-03-04T18:00:00Z"
-    affects_servers: ["prod-app-01"]
-    affects_services: ["order-service", "postgresql"]
-    error_codes: ["ERR-NGINX-002"]
-
-  - title: "API Gateway returning 504 for /api/users"
-    description: "API Gateway is returning 504 Gateway Timeout for all requests to /api/users. AuthService behind the gateway appears to be unresponsive. User login and registration are broken."
-    category: "Application"
-    priority: "high"
-    status: "closed"
-    submitted_by: "vikram.singh@company.com"
-    created_at: "2026-03-06T09:30:00Z"
-    resolved_at: "2026-03-06T11:00:00Z"
-    affects_servers: ["prod-app-03"]
-    affects_services: ["api-gateway", "auth-service"]
-    error_codes: ["ERR-NGINX-002"]
-
-  - title: "OrderService throwing NullPointerException"
-    description: "OrderService on prod-app-02 is throwing NullPointerException in the payment processing module. Affects about 10% of orders. Stack trace points to PaymentGateway.processPayment() line 234."
-    category: "Application"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "kavitha.rajan@company.com"
-    created_at: "2026-03-08T11:00:00Z"
-    resolved_at: "2026-03-08T14:00:00Z"
-    affects_servers: ["prod-app-02"]
-    affects_services: ["order-service"]
-    error_codes: []
-
-  - title: "Deployment v2.4.0 rollback needed"
-    description: "OrderService v2.4.0 deployed to prod-app-01 is causing memory leak. Heap usage growing 100MB per hour. Need to rollback to v2.3.2 immediately."
-    category: "Application"
-    priority: "high"
-    status: "closed"
-    submitted_by: "vikram.singh@company.com"
-    created_at: "2026-03-11T08:00:00Z"
-    resolved_at: "2026-03-11T09:00:00Z"
-    affects_servers: ["prod-app-01"]
-    affects_services: ["order-service"]
-    error_codes: []
-
-  - title: "AuthService JWT token validation failing"
-    description: "AuthService on prod-app-03 is rejecting all JWT tokens with 'Invalid signature' error. Likely caused by key rotation that happened yesterday. All authenticated API calls are failing."
-    category: "Application"
-    priority: "high"
-    status: "closed"
-    submitted_by: "kavitha.rajan@company.com"
-    created_at: "2026-03-13T07:00:00Z"
-    resolved_at: "2026-03-13T08:30:00Z"
-    affects_servers: ["prod-app-03"]
-    affects_services: ["auth-service", "api-gateway"]
-    error_codes: []
-
-  - title: "NGINX config syntax error after update"
-    description: "NGINX on prod-web-02 failed to reload after config update. Syntax error in upstream.conf. Currently serving stale config but new backend servers are not load balanced."
-    category: "Application"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "vikram.singh@company.com"
-    created_at: "2026-03-15T13:00:00Z"
-    resolved_at: "2026-03-15T14:00:00Z"
-    affects_servers: ["prod-web-02"]
-    affects_services: ["nginx"]
-    error_codes: []
-
-  - title: "Application logs filling disk on prod-app-03"
-    description: "OrderService on prod-app-03 is generating excessive debug logs at 500MB per hour. Log rotation is not configured properly. Disk is at 88% and rising."
-    category: "Application"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "kavitha.rajan@company.com"
-    created_at: "2026-03-17T10:00:00Z"
-    resolved_at: "2026-03-17T11:30:00Z"
-    affects_servers: ["prod-app-03"]
-    affects_services: ["order-service"]
-    error_codes: ["ERR-SYS-002"]
-
-  - title: "Health check endpoint returning 500"
-    description: "OrderService health check endpoint /health on prod-app-01 is returning HTTP 500. Load balancer has marked the server as unhealthy but the service is actually running fine for users."
-    category: "Application"
-    priority: "low"
-    status: "closed"
-    submitted_by: "vikram.singh@company.com"
-    created_at: "2026-03-19T15:00:00Z"
-    resolved_at: "2026-03-20T09:00:00Z"
-    affects_servers: ["prod-app-01"]
-    affects_services: ["order-service"]
-    error_codes: []
-
-  # --- Database (9) ---
-  - title: "PostgreSQL not accepting connections on prod-db-01"
-    description: "Production database server prod-db-01 is refusing new connections. Application team reports 502 errors on checkout page. max_connections limit of 100 has been reached. 45 idle connections from stale app instances are consuming the pool."
-    category: "Database"
-    priority: "high"
-    status: "closed"
-    submitted_by: "arjun.nair@company.com"
-    created_at: "2026-03-02T09:30:00Z"
-    resolved_at: "2026-03-02T11:00:00Z"
-    affects_servers: ["prod-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: ["ERR-PG-001"]
-
-  - title: "Database replication lag exceeding 30 seconds"
-    description: "PostgreSQL streaming replication between prod-db-01 (primary) and prod-db-02 (replica) has a lag of 30+ seconds. Read queries on the replica are returning stale data. Reports dashboard showing outdated numbers."
-    category: "Database"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "meera.patel@company.com"
-    created_at: "2026-03-04T11:00:00Z"
-    resolved_at: "2026-03-04T14:00:00Z"
-    affects_servers: ["prod-db-01", "prod-db-02"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  - title: "Slow queries blocking production traffic"
-    description: "Multiple long-running queries on prod-db-01 are blocking other transactions. The orders table has a sequential scan on a query that should use an index. Query time is 15 seconds instead of 50ms."
-    category: "Database"
-    priority: "high"
-    status: "closed"
-    submitted_by: "arjun.nair@company.com"
-    created_at: "2026-03-06T14:00:00Z"
-    resolved_at: "2026-03-06T15:30:00Z"
-    affects_servers: ["prod-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  - title: "Redis OOM on prod-app-01"
-    description: "Redis instance on prod-app-01 is throwing OOM errors. Used memory is 4.2GB with maxmemory set to 4GB. Session cache and rate limiting data are being rejected. Users experiencing slow responses."
-    category: "Database"
-    priority: "high"
-    status: "closed"
-    submitted_by: "arjun.nair@company.com"
-    created_at: "2026-03-08T08:00:00Z"
-    resolved_at: "2026-03-08T09:30:00Z"
-    affects_servers: ["prod-app-01"]
-    affects_services: ["redis"]
-    error_codes: ["ERR-REDIS-001"]
-
-  - title: "PostgreSQL backup job failed overnight"
-    description: "Nightly pg_dump backup job on prod-db-01 failed at 3 AM. Error: connection to server was lost. The backup file is incomplete at 12GB out of expected 45GB. No valid backup for today."
-    category: "Database"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "meera.patel@company.com"
-    created_at: "2026-03-10T07:00:00Z"
-    resolved_at: "2026-03-10T09:00:00Z"
-    affects_servers: ["prod-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  - title: "Database migration script failed on staging"
-    description: "Migration script for v2.4.0 schema changes failed on staging-db-01. The migration added a NOT NULL column without a default value, breaking existing rows. Staging database is in an inconsistent state."
-    category: "Database"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "meera.patel@company.com"
-    created_at: "2026-03-12T14:00:00Z"
-    resolved_at: "2026-03-12T16:00:00Z"
-    affects_servers: ["staging-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: ["ERR-PG-003"]
-
-  - title: "Redis connection pool exhausted"
-    description: "Redis connection pool on prod-app-02 is fully exhausted. All 50 connections are in use. New connection attempts are timing out after 5 seconds. Application is falling back to database queries."
-    category: "Database"
-    priority: "high"
-    status: "closed"
-    submitted_by: "arjun.nair@company.com"
-    created_at: "2026-03-14T16:00:00Z"
-    resolved_at: "2026-03-14T17:30:00Z"
-    affects_servers: ["prod-app-02"]
-    affects_services: ["redis"]
-    error_codes: []
-
-  - title: "PostgreSQL autovacuum not running"
-    description: "Autovacuum on prod-db-02 appears to be stalled. Table bloat on the orders table has grown from 2GB to 8GB. Query performance is degrading as the table scans more dead tuples."
-    category: "Database"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "meera.patel@company.com"
-    created_at: "2026-03-16T10:00:00Z"
-    resolved_at: "2026-03-16T12:00:00Z"
-    affects_servers: ["prod-db-02"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  - title: "Database deadlock on orders table"
-    description: "Frequent deadlocks detected on the orders table in prod-db-01. Two concurrent transactions are locking rows in opposite order. About 5% of checkout transactions are failing with deadlock detected error."
-    category: "Database"
-    priority: "high"
-    status: "closed"
-    submitted_by: "arjun.nair@company.com"
-    created_at: "2026-03-18T09:00:00Z"
-    resolved_at: "2026-03-18T12:00:00Z"
-    affects_servers: ["prod-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  # --- Network (9) ---
-  - title: "VPN connection dropping intermittently"
-    description: "Remote employees reporting VPN disconnections every 15-20 minutes. VPN gateway vpn-gw-01 logs show IKE rekey failures. About 50 remote workers affected. Workaround is to reconnect manually."
-    category: "Network"
-    priority: "high"
-    status: "closed"
-    submitted_by: "deepak.verma@company.com"
-    created_at: "2026-03-01T11:00:00Z"
-    resolved_at: "2026-03-01T14:00:00Z"
-    affects_servers: []
-    affects_services: []
-    error_codes: ["ERR-VPN-001"]
-
-  - title: "DNS resolution failing for internal services"
-    description: "Internal DNS resolution is failing intermittently. Services cannot resolve hostnames like prod-db-01.internal. Affects service-to-service communication. External DNS working fine."
-    category: "Network"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "deepak.verma@company.com"
-    created_at: "2026-03-03T08:00:00Z"
-    resolved_at: "2026-03-03T10:00:00Z"
-    affects_servers: ["prod-ldap-01"]
-    affects_services: ["active-directory"]
-    error_codes: ["ERR-DNS-001"]
-
-  - title: "Firewall blocking traffic to prod-db-01"
-    description: "Application servers cannot connect to prod-db-01 on port 5432. Firewall fw-prod-01 is dropping packets. This started after yesterday's firewall rule change. All database-dependent services are down."
-    category: "Network"
-    priority: "high"
-    status: "closed"
-    submitted_by: "deepak.verma@company.com"
-    created_at: "2026-03-05T07:00:00Z"
-    resolved_at: "2026-03-05T08:30:00Z"
-    affects_servers: ["prod-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: ["ERR-FW-001"]
-
-  - title: "Load balancer health check failing for prod-web-02"
-    description: "F5 load balancer lb-web-01 has marked prod-web-02 as down. Health check on port 443 is failing. All traffic routed to prod-web-01 only. Single point of failure for web tier."
-    category: "Network"
-    priority: "high"
-    status: "closed"
-    submitted_by: "farhana.begum@company.com"
-    created_at: "2026-03-07T12:00:00Z"
-    resolved_at: "2026-03-07T13:30:00Z"
-    affects_servers: ["prod-web-02"]
-    affects_services: ["nginx"]
-    error_codes: []
-
-  - title: "High latency between ap-south-1 and ap-south-2"
-    description: "Network latency between Mumbai (ap-south-1) and Hyderabad (ap-south-2) datacenters has increased from 15ms to 200ms. Cross-DC database replication and service communication severely impacted."
-    category: "Network"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "deepak.verma@company.com"
-    created_at: "2026-03-09T14:00:00Z"
-    resolved_at: "2026-03-09T18:00:00Z"
-    affects_servers: []
-    affects_services: []
-    error_codes: []
-
-  - title: "SSL certificate expired on api-gateway"
-    description: "SSL certificate on the API Gateway has expired. All HTTPS requests are failing with certificate has expired error. Mobile app and web frontend cannot communicate with backend."
-    category: "Network"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "imran.sheikh@company.com"
-    created_at: "2026-03-11T06:00:00Z"
-    resolved_at: "2026-03-11T07:30:00Z"
-    affects_servers: []
-    affects_services: ["api-gateway"]
-    error_codes: ["ERR-SSL-001"]
-
-  - title: "Packet loss on core switch sw-core-01"
-    description: "Core switch sw-core-01 showing 3% packet loss on uplink interfaces. Affecting all servers in ap-south-1 datacenter. Network monitoring shows intermittent drops during peak hours."
-    category: "Network"
-    priority: "high"
-    status: "closed"
-    submitted_by: "farhana.begum@company.com"
-    created_at: "2026-03-13T10:00:00Z"
-    resolved_at: "2026-03-13T14:00:00Z"
-    affects_servers: []
-    affects_services: []
-    error_codes: []
-
-  - title: "DHCP lease exhaustion in ap-south-1"
-    description: "DHCP pool in ap-south-1 datacenter is running out of available leases. New servers and containers cannot obtain IP addresses. Current utilization at 95% of the /22 subnet."
-    category: "Network"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "deepak.verma@company.com"
-    created_at: "2026-03-15T11:00:00Z"
-    resolved_at: "2026-03-15T15:00:00Z"
-    affects_servers: []
-    affects_services: []
-    error_codes: []
-
-  - title: "BGP peering down with ISP"
-    description: "BGP peering session with primary ISP is down on vpn-gw-01. All external traffic is routing through backup ISP with higher latency. Customer-facing services experiencing 100ms additional latency."
-    category: "Network"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "deepak.verma@company.com"
-    created_at: "2026-03-17T04:00:00Z"
-    resolved_at: "2026-03-17T06:00:00Z"
-    affects_servers: []
-    affects_services: []
-    error_codes: []
-
-  # --- Security (9) ---
-  - title: "Multiple failed login attempts on admin account"
-    description: "Active Directory shows 47 failed login attempts on the domain admin account in the last hour from IP 10.0.2.15. Account is now locked out. Possible brute force attack or compromised credentials."
-    category: "Security"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "ayesha.khan@company.com"
-    created_at: "2026-03-01T03:00:00Z"
-    resolved_at: "2026-03-01T05:00:00Z"
-    affects_servers: ["prod-ldap-01"]
-    affects_services: ["active-directory"]
-    error_codes: ["ERR-AUTH-001"]
-
-  - title: "LDAP user locked out after password change"
-    description: "User meera.patel@company.com is locked out of all systems after changing their password. LDAP showing invalid credentials error. Password change may not have replicated to all domain controllers."
-    category: "Security"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "meera.patel@company.com"
-    created_at: "2026-03-03T09:00:00Z"
-    resolved_at: "2026-03-03T09:30:00Z"
-    affects_servers: ["prod-ldap-01"]
-    affects_services: ["active-directory"]
-    error_codes: ["ERR-LDAP-001"]
-
-  - title: "Vulnerability scan found critical CVE on prod-web-01"
-    description: "Weekly vulnerability scan identified CVE-2024-1234 (CVSS 9.8) on NGINX 1.24 on prod-web-01. Remote code execution vulnerability. Public exploit available. Patch required within 24 hours per security policy."
-    category: "Security"
-    priority: "high"
-    status: "closed"
-    submitted_by: "ayesha.khan@company.com"
-    created_at: "2026-03-05T16:00:00Z"
-    resolved_at: "2026-03-06T10:00:00Z"
-    affects_servers: ["prod-web-01"]
-    affects_services: ["nginx"]
-    error_codes: []
-
-  - title: "Unauthorized SSH access attempt on prod-db-01"
-    description: "Security monitoring detected SSH brute force attempts on prod-db-01 from external IP 203.0.113.42. 1200 failed attempts in 30 minutes. Root login is disabled but the attack is generating noise in logs."
-    category: "Security"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "imran.sheikh@company.com"
-    created_at: "2026-03-07T22:00:00Z"
-    resolved_at: "2026-03-08T00:30:00Z"
-    affects_servers: ["prod-db-01"]
-    affects_services: []
-    error_codes: ["ERR-SEC-001"]
-
-  - title: "API Gateway token expired for service account"
-    description: "Service account svc-orderservice has an expired JWT token on the API Gateway. All service-to-service calls from OrderService are being rejected with 401 Unauthorized."
-    category: "Security"
-    priority: "high"
-    status: "closed"
-    submitted_by: "imran.sheikh@company.com"
-    created_at: "2026-03-09T08:00:00Z"
-    resolved_at: "2026-03-09T09:00:00Z"
-    affects_servers: []
-    affects_services: ["api-gateway"]
-    error_codes: []
-
-  - title: "TLS certificate mismatch on Exchange"
-    description: "Exchange Server on prod-mail-01 is showing certificate mismatch warning. The CN on the certificate is mail.oldcompany.com but should be mail.company.com. Outlook clients showing security warnings."
-    category: "Security"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "imran.sheikh@company.com"
-    created_at: "2026-03-11T10:00:00Z"
-    resolved_at: "2026-03-11T14:00:00Z"
-    affects_servers: ["prod-mail-01"]
-    affects_services: ["exchange"]
-    error_codes: []
-
-  - title: "Audit log shows privilege escalation attempt"
-    description: "Kubernetes audit logs on prod-k8s-master show a pod attempting to mount the host filesystem and access /etc/shadow. The pod belongs to a test deployment in the staging namespace."
-    category: "Security"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "ayesha.khan@company.com"
-    created_at: "2026-03-13T15:00:00Z"
-    resolved_at: "2026-03-13T17:00:00Z"
-    affects_servers: ["prod-k8s-master"]
-    affects_services: ["kubernetes"]
-    error_codes: ["ERR-SEC-001"]
-
-  - title: "Expired service account credentials blocking CI/CD"
-    description: "CI/CD pipeline cannot deploy to Kubernetes because the service account token for the deploy-bot has expired. All deployments are stuck in pending state. 3 releases waiting."
-    category: "Security"
-    priority: "high"
-    status: "closed"
-    submitted_by: "vikram.singh@company.com"
-    created_at: "2026-03-15T08:00:00Z"
-    resolved_at: "2026-03-15T09:30:00Z"
-    affects_servers: ["prod-k8s-master"]
-    affects_services: ["kubernetes"]
-    error_codes: []
-
-  - title: "Phishing email reported by multiple employees"
-    description: "12 employees reported receiving a phishing email impersonating IT support asking to reset their password via a suspicious link. Email originated from an external domain. Exchange spam filter did not catch it."
-    category: "Security"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "ayesha.khan@company.com"
-    created_at: "2026-03-17T11:00:00Z"
-    resolved_at: "2026-03-17T14:00:00Z"
-    affects_servers: ["prod-mail-01"]
-    affects_services: ["exchange"]
-    error_codes: []
-
-  # --- Storage (9) ---
-  - title: "NFS mount failing on prod-app-01"
-    description: "NFS mount point /mnt/shared on prod-app-01 is not accessible. mount command returns 'NFS: stale file handle'. Application cannot write uploaded files. Affects file upload feature."
-    category: "Storage"
-    priority: "high"
-    status: "closed"
-    submitted_by: "amit.joshi@company.com"
-    created_at: "2026-03-02T08:00:00Z"
-    resolved_at: "2026-03-02T09:30:00Z"
-    affects_servers: ["prod-nfs-01", "prod-app-01"]
-    affects_services: ["nfs"]
-    error_codes: ["ERR-NFS-001"]
-
-  - title: "Stale NFS file handle on shared storage"
-    description: "Multiple application servers reporting stale NFS file handles when accessing /mnt/shared. The NFS server prod-nfs-01 was restarted yesterday for maintenance but clients were not remounted."
-    category: "Storage"
-    priority: "high"
-    status: "closed"
-    submitted_by: "zainab.siddiqui@company.com"
-    created_at: "2026-03-04T10:00:00Z"
-    resolved_at: "2026-03-04T11:30:00Z"
-    affects_servers: ["prod-nfs-01"]
-    affects_services: ["nfs"]
-    error_codes: ["ERR-NFS-001"]
-
-  - title: "Backup storage quota exceeded"
-    description: "Backup storage on prod-nfs-01 has exceeded the 2TB quota. New backup jobs are failing with 'Disk quota exceeded'. Last 3 nightly backups did not complete. Data retention policy needs review."
-    category: "Storage"
-    priority: "medium"
-    status: "closed"
-    submitted_by: "amit.joshi@company.com"
-    created_at: "2026-03-06T07:00:00Z"
-    resolved_at: "2026-03-06T10:00:00Z"
-    affects_servers: ["prod-nfs-01"]
-    affects_services: ["nfs"]
-    error_codes: []
-
-  - title: "NFS server prod-nfs-01 not responding"
-    description: "NFS server prod-nfs-01 is completely unresponsive. All NFS clients are hung waiting for I/O. This is affecting all application servers that depend on shared storage. File uploads, logs, and shared configs are inaccessible."
-    category: "Storage"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "zainab.siddiqui@company.com"
-    created_at: "2026-03-08T06:00:00Z"
-    resolved_at: "2026-03-08T08:00:00Z"
-    affects_servers: ["prod-nfs-01"]
-    affects_services: ["nfs"]
-    error_codes: []
-
-  - title: "SAN LUN mapping incorrect after firmware update"
-    description: "After SAN firmware update on prod-nfs-01, LUN mappings changed. The /data partition is now mounted from the wrong LUN. Data integrity check needed before any writes are allowed."
-    category: "Storage"
-    priority: "high"
-    status: "closed"
-    submitted_by: "amit.joshi@company.com"
-    created_at: "2026-03-10T14:00:00Z"
-    resolved_at: "2026-03-10T18:00:00Z"
-    affects_servers: ["prod-nfs-01"]
-    affects_services: []
-    error_codes: []
-
-  - title: "File system corruption detected on /data partition"
-    description: "fsck on prod-db-01 detected file system corruption on the /data partition where PostgreSQL data directory resides. Read-only mode engaged. Database is serving stale reads only."
-    category: "Storage"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "zainab.siddiqui@company.com"
-    created_at: "2026-03-12T03:00:00Z"
-    resolved_at: "2026-03-12T08:00:00Z"
-    affects_servers: ["prod-db-01"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  - title: "RAID array degraded on prod-nfs-01"
-    description: "RAID-5 array on prod-nfs-01 is in degraded state. One disk has failed (slot 3). Array is still operational but with no redundancy. Another disk failure will cause data loss."
-    category: "Storage"
-    priority: "critical"
-    status: "closed"
-    submitted_by: "amit.joshi@company.com"
-    created_at: "2026-03-14T09:00:00Z"
-    resolved_at: "2026-03-14T14:00:00Z"
-    affects_servers: ["prod-nfs-01"]
-    affects_services: []
-    error_codes: []
-
-  - title: "Disk I/O latency spike on prod-db-02"
-    description: "Disk I/O latency on prod-db-02 has spiked from 2ms to 45ms. PostgreSQL replica is falling behind due to slow WAL replay. iostat shows 100% disk utilization on /dev/sda."
-    category: "Storage"
-    priority: "high"
-    status: "closed"
-    submitted_by: "zainab.siddiqui@company.com"
-    created_at: "2026-03-16T12:00:00Z"
-    resolved_at: "2026-03-16T15:00:00Z"
-    affects_servers: ["prod-db-02"]
-    affects_services: ["postgresql"]
-    error_codes: []
-
-  - title: "Snapshot cleanup needed — 500GB reclaimable"
-    description: "Old VM snapshots on prod-nfs-01 are consuming 500GB of storage. These are from 3 months ago when we did the server migration. They can be safely deleted to reclaim space."
-    category: "Storage"
-    priority: "low"
-    status: "closed"
-    submitted_by: "amit.joshi@company.com"
-    created_at: "2026-03-18T10:00:00Z"
-    resolved_at: "2026-03-19T10:00:00Z"
-    affects_servers: ["prod-nfs-01"]
-    affects_services: []
-    error_codes: []
-
-# ── Resolutions (30) ──
+- title: Server prod-app-01 CPU at 100%
+  description: Production application server prod-app-01 showing sustained 100% CPU usage for the last 30 minutes. OrderService response times have degraded from 200ms to 8 seconds. Users reporting checkout
+    page timeouts.
+  category: Infrastructure
+  priority: critical
+  status: closed
+  submitted_by: kavitha.rajan@company.com
+  created_at: '2026-03-01T08:15:00Z'
+  resolved_at: '2026-03-01T09:30:00Z'
+  affects_servers:
+  - prod-app-01
+  affects_services:
+  - order-service
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Kernel panic on prod-k8s-node-02
+  description: Production Kubernetes node prod-k8s-node-02 in ap-south-2 experienced a kernel panic and rebooted unexpectedly. All pods on this node were evicted. Cluster is running on reduced capacity.
+  category: Infrastructure
+  priority: critical
+  status: closed
+  submitted_by: priya.sharma@company.com
+  created_at: '2026-03-03T02:45:00Z'
+  resolved_at: '2026-03-03T06:00:00Z'
+  affects_servers:
+  - prod-k8s-node-02
+  affects_services:
+  - kubernetes
+  error_codes:
+  - ERR-SYS-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Kubernetes pod OOMKilled repeatedly
+  description: OrderService pods on prod-k8s-node-01 are getting OOMKilled every 2-3 hours. Memory limit is set to 512Mi but the Java heap is growing beyond that. Rolling restarts are masking the issue.
+  category: Infrastructure
+  priority: high
+  status: closed
+  submitted_by: vikram.singh@company.com
+  created_at: '2026-03-05T10:00:00Z'
+  resolved_at: '2026-03-05T12:30:00Z'
+  affects_servers:
+  - prod-k8s-node-01
+  affects_services:
+  - kubernetes
+  - order-service
+  error_codes:
+  - ERR-K8S-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Disk space critical on prod-mon-01
+  description: 'Monitoring server prod-mon-01 has 95% disk usage. Prometheus TSDB is consuming 180GB. Grafana dashboards are loading slowly. Alert: No space left on device appearing in logs.'
+  category: Infrastructure
+  priority: high
+  status: closed
+  submitted_by: priya.sharma@company.com
+  created_at: '2026-03-07T14:20:00Z'
+  resolved_at: '2026-03-07T16:00:00Z'
+  affects_servers:
+  - prod-mon-01
+  affects_services:
+  - prometheus
+  - grafana
+  error_codes:
+  - ERR-SYS-002
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Ubuntu security patch failed on prod-web-01
+  description: Automated Ubuntu security update on prod-web-01 failed midway. apt-get is stuck in a broken state. NGINX is still running but the server is in an inconsistent state.
+  category: Infrastructure
+  priority: medium
+  status: closed
+  submitted_by: raj.kumar@company.com
+  created_at: '2026-03-10T06:00:00Z'
+  resolved_at: '2026-03-10T08:00:00Z'
+  affects_servers:
+  - prod-web-01
+  affects_services:
+  - nginx
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Docker daemon not responding on prod-app-02
+  description: Docker daemon on prod-app-02 is not responding to any commands. docker ps hangs indefinitely. All containers on this server are inaccessible. OrderService failover to prod-app-01 is active.
+  category: Infrastructure
+  priority: high
+  status: closed
+  submitted_by: vikram.singh@company.com
+  created_at: '2026-03-12T11:30:00Z'
+  resolved_at: '2026-03-12T13:00:00Z'
+  affects_servers:
+  - prod-app-02
+  affects_services:
+  - order-service
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Grafana dashboard not loading
+  description: Grafana on prod-mon-01 is returning 504 timeout when loading dashboards. Prometheus API seems slow. The on-call team has no visibility into system metrics.
+  category: Infrastructure
+  priority: medium
+  status: closed
+  submitted_by: priya.sharma@company.com
+  created_at: '2026-03-14T09:00:00Z'
+  resolved_at: '2026-03-14T10:30:00Z'
+  affects_servers:
+  - prod-mon-01
+  affects_services:
+  - grafana
+  - prometheus
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Prometheus alerting not firing
+  description: Prometheus alert rules on prod-mon-01 are not triggering despite conditions being met. The alertmanager is running but no alerts are being received. On-call team missed a disk space warning.
+  category: Infrastructure
+  priority: medium
+  status: closed
+  submitted_by: raj.kumar@company.com
+  created_at: '2026-03-16T13:00:00Z'
+  resolved_at: '2026-03-16T14:30:00Z'
+  affects_servers:
+  - prod-mon-01
+  affects_services:
+  - prometheus
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Server prod-k8s-node-01 high memory usage
+  description: prod-k8s-node-01 memory usage at 92%. Multiple pods are competing for memory resources. Swap is disabled per Kubernetes requirements. Risk of OOMKilled pods if memory increases further.
+  category: Infrastructure
+  priority: high
+  status: closed
+  submitted_by: priya.sharma@company.com
+  created_at: '2026-03-18T15:00:00Z'
+  resolved_at: '2026-03-18T17:00:00Z'
+  affects_servers:
+  - prod-k8s-node-01
+  affects_services:
+  - kubernetes
+  error_codes:
+  - ERR-SYS-003
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Staging server staging-db-01 unreachable
+  description: Staging database server staging-db-01 in ap-south-2 is not responding to SSH or ping. The staging environment is down. Development team cannot run integration tests.
+  category: Infrastructure
+  priority: low
+  status: closed
+  submitted_by: meera.patel@company.com
+  created_at: '2026-03-20T10:00:00Z'
+  resolved_at: '2026-03-20T14:00:00Z'
+  affects_servers:
+  - staging-db-01
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: NGINX returning 502 after deployment
+  description: After deploying v2.3.1 of OrderService, NGINX on prod-web-01 started returning 502 Bad Gateway for all /api/orders endpoints. Rollback has not been attempted yet. Customer checkout is completely
+    broken.
+  category: Application
+  priority: high
+  status: closed
+  submitted_by: kavitha.rajan@company.com
+  created_at: '2026-03-02T14:00:00Z'
+  resolved_at: '2026-03-02T15:30:00Z'
+  affects_servers:
+  - prod-web-01
+  affects_services:
+  - nginx
+  - order-service
+  error_codes:
+  - ERR-NGINX-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: OrderService timeout on checkout API
+  description: OrderService on prod-app-01 is timing out on POST /api/orders/checkout. Response time exceeds 30 seconds. Database queries are taking 15+ seconds. Customers unable to complete purchases.
+  category: Application
+  priority: critical
+  status: closed
+  submitted_by: kavitha.rajan@company.com
+  created_at: '2026-03-04T16:00:00Z'
+  resolved_at: '2026-03-04T18:00:00Z'
+  affects_servers:
+  - prod-app-01
+  affects_services:
+  - order-service
+  - postgresql
+  error_codes:
+  - ERR-NGINX-002
+  quality_score: HIGH
+  secondary_category: Database
+  classifier_votes: null
+- title: API Gateway returning 504 for /api/users
+  description: API Gateway is returning 504 Gateway Timeout for all requests to /api/users. AuthService behind the gateway appears to be unresponsive. User login and registration are broken.
+  category: Application
+  priority: high
+  status: closed
+  submitted_by: vikram.singh@company.com
+  created_at: '2026-03-06T09:30:00Z'
+  resolved_at: '2026-03-06T11:00:00Z'
+  affects_servers:
+  - prod-app-03
+  affects_services:
+  - api-gateway
+  - auth-service
+  error_codes:
+  - ERR-NGINX-002
+  quality_score: HIGH
+  secondary_category: Security
+  classifier_votes: null
+- title: OrderService throwing NullPointerException
+  description: OrderService on prod-app-02 is throwing NullPointerException in the payment processing module. Affects about 10% of orders. Stack trace points to PaymentGateway.processPayment() line 234.
+  category: Application
+  priority: medium
+  status: closed
+  submitted_by: kavitha.rajan@company.com
+  created_at: '2026-03-08T11:00:00Z'
+  resolved_at: '2026-03-08T14:00:00Z'
+  affects_servers:
+  - prod-app-02
+  affects_services:
+  - order-service
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Deployment v2.4.0 rollback needed
+  description: OrderService v2.4.0 deployed to prod-app-01 is causing memory leak. Heap usage growing 100MB per hour. Need to rollback to v2.3.2 immediately.
+  category: Application
+  priority: high
+  status: closed
+  submitted_by: vikram.singh@company.com
+  created_at: '2026-03-11T08:00:00Z'
+  resolved_at: '2026-03-11T09:00:00Z'
+  affects_servers:
+  - prod-app-01
+  affects_services:
+  - order-service
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: AuthService JWT token validation failing
+  description: AuthService on prod-app-03 is rejecting all JWT tokens with 'Invalid signature' error. Likely caused by key rotation that happened yesterday. All authenticated API calls are failing.
+  category: Application
+  priority: high
+  status: closed
+  submitted_by: kavitha.rajan@company.com
+  created_at: '2026-03-13T07:00:00Z'
+  resolved_at: '2026-03-13T08:30:00Z'
+  affects_servers:
+  - prod-app-03
+  affects_services:
+  - auth-service
+  - api-gateway
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: NGINX config syntax error after update
+  description: NGINX on prod-web-02 failed to reload after config update. Syntax error in upstream.conf. Currently serving stale config but new backend servers are not load balanced.
+  category: Application
+  priority: medium
+  status: closed
+  submitted_by: vikram.singh@company.com
+  created_at: '2026-03-15T13:00:00Z'
+  resolved_at: '2026-03-15T14:00:00Z'
+  affects_servers:
+  - prod-web-02
+  affects_services:
+  - nginx
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Application logs filling disk on prod-app-03
+  description: OrderService on prod-app-03 is generating excessive debug logs at 500MB per hour. Log rotation is not configured properly. Disk is at 88% and rising.
+  category: Application
+  priority: medium
+  status: closed
+  submitted_by: kavitha.rajan@company.com
+  created_at: '2026-03-17T10:00:00Z'
+  resolved_at: '2026-03-17T11:30:00Z'
+  affects_servers:
+  - prod-app-03
+  affects_services:
+  - order-service
+  error_codes:
+  - ERR-SYS-002
+  quality_score: HIGH
+  secondary_category: Infrastructure
+  classifier_votes: null
+- title: Health check endpoint returning 500
+  description: OrderService health check endpoint /health on prod-app-01 is returning HTTP 500. Load balancer has marked the server as unhealthy but the service is actually running fine for users.
+  category: Application
+  priority: low
+  status: closed
+  submitted_by: vikram.singh@company.com
+  created_at: '2026-03-19T15:00:00Z'
+  resolved_at: '2026-03-20T09:00:00Z'
+  affects_servers:
+  - prod-app-01
+  affects_services:
+  - order-service
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: PostgreSQL not accepting connections on prod-db-01
+  description: Production database server prod-db-01 is refusing new connections. Application team reports 502 errors on checkout page. max_connections limit of 100 has been reached. 45 idle connections
+    from stale app instances are consuming the pool.
+  category: Database
+  priority: high
+  status: closed
+  submitted_by: arjun.nair@company.com
+  created_at: '2026-03-02T09:30:00Z'
+  resolved_at: '2026-03-02T11:00:00Z'
+  affects_servers:
+  - prod-db-01
+  affects_services:
+  - postgresql
+  error_codes:
+  - ERR-PG-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Database replication lag exceeding 30 seconds
+  description: PostgreSQL streaming replication between prod-db-01 (primary) and prod-db-02 (replica) has a lag of 30+ seconds. Read queries on the replica are returning stale data. Reports dashboard showing
+    outdated numbers.
+  category: Database
+  priority: critical
+  status: closed
+  submitted_by: meera.patel@company.com
+  created_at: '2026-03-04T11:00:00Z'
+  resolved_at: '2026-03-04T14:00:00Z'
+  affects_servers:
+  - prod-db-01
+  - prod-db-02
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Slow queries blocking production traffic
+  description: Multiple long-running queries on prod-db-01 are blocking other transactions. The orders table has a sequential scan on a query that should use an index. Query time is 15 seconds instead of
+    50ms.
+  category: Database
+  priority: high
+  status: closed
+  submitted_by: arjun.nair@company.com
+  created_at: '2026-03-06T14:00:00Z'
+  resolved_at: '2026-03-06T15:30:00Z'
+  affects_servers:
+  - prod-db-01
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Redis OOM on prod-app-01
+  description: Redis instance on prod-app-01 is throwing OOM errors. Used memory is 4.2GB with maxmemory set to 4GB. Session cache and rate limiting data are being rejected. Users experiencing slow responses.
+  category: Database
+  priority: high
+  status: closed
+  submitted_by: arjun.nair@company.com
+  created_at: '2026-03-08T08:00:00Z'
+  resolved_at: '2026-03-08T09:30:00Z'
+  affects_servers:
+  - prod-app-01
+  affects_services:
+  - redis
+  error_codes:
+  - ERR-REDIS-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: PostgreSQL backup job failed overnight
+  description: 'Nightly pg_dump backup job on prod-db-01 failed at 3 AM. Error: connection to server was lost. The backup file is incomplete at 12GB out of expected 45GB. No valid backup for today.'
+  category: Database
+  priority: medium
+  status: closed
+  submitted_by: meera.patel@company.com
+  created_at: '2026-03-10T07:00:00Z'
+  resolved_at: '2026-03-10T09:00:00Z'
+  affects_servers:
+  - prod-db-01
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Database migration script failed on staging
+  description: Migration script for v2.4.0 schema changes failed on staging-db-01. The migration added a NOT NULL column without a default value, breaking existing rows. Staging database is in an inconsistent
+    state.
+  category: Database
+  priority: medium
+  status: closed
+  submitted_by: meera.patel@company.com
+  created_at: '2026-03-12T14:00:00Z'
+  resolved_at: '2026-03-12T16:00:00Z'
+  affects_servers:
+  - staging-db-01
+  affects_services:
+  - postgresql
+  error_codes:
+  - ERR-PG-003
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Redis connection pool exhausted
+  description: Redis connection pool on prod-app-02 is fully exhausted. All 50 connections are in use. New connection attempts are timing out after 5 seconds. Application is falling back to database queries.
+  category: Database
+  priority: high
+  status: closed
+  submitted_by: arjun.nair@company.com
+  created_at: '2026-03-14T16:00:00Z'
+  resolved_at: '2026-03-14T17:30:00Z'
+  affects_servers:
+  - prod-app-02
+  affects_services:
+  - redis
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: PostgreSQL autovacuum not running
+  description: Autovacuum on prod-db-02 appears to be stalled. Table bloat on the orders table has grown from 2GB to 8GB. Query performance is degrading as the table scans more dead tuples.
+  category: Database
+  priority: medium
+  status: closed
+  submitted_by: meera.patel@company.com
+  created_at: '2026-03-16T10:00:00Z'
+  resolved_at: '2026-03-16T12:00:00Z'
+  affects_servers:
+  - prod-db-02
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Database deadlock on orders table
+  description: Frequent deadlocks detected on the orders table in prod-db-01. Two concurrent transactions are locking rows in opposite order. About 5% of checkout transactions are failing with deadlock
+    detected error.
+  category: Database
+  priority: high
+  status: closed
+  submitted_by: arjun.nair@company.com
+  created_at: '2026-03-18T09:00:00Z'
+  resolved_at: '2026-03-18T12:00:00Z'
+  affects_servers:
+  - prod-db-01
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: VPN connection dropping intermittently
+  description: Remote employees reporting VPN disconnections every 15-20 minutes. VPN gateway vpn-gw-01 logs show IKE rekey failures. About 50 remote workers affected. Workaround is to reconnect manually.
+  category: Network
+  priority: high
+  status: closed
+  submitted_by: deepak.verma@company.com
+  created_at: '2026-03-01T11:00:00Z'
+  resolved_at: '2026-03-01T14:00:00Z'
+  affects_servers: []
+  affects_services: []
+  error_codes:
+  - ERR-VPN-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: DNS resolution failing for internal services
+  description: Internal DNS resolution is failing intermittently. Services cannot resolve hostnames like prod-db-01.internal. Affects service-to-service communication. External DNS working fine.
+  category: Network
+  priority: critical
+  status: closed
+  submitted_by: deepak.verma@company.com
+  created_at: '2026-03-03T08:00:00Z'
+  resolved_at: '2026-03-03T10:00:00Z'
+  affects_servers:
+  - prod-ldap-01
+  affects_services:
+  - active-directory
+  error_codes:
+  - ERR-DNS-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Firewall blocking traffic to prod-db-01
+  description: Application servers cannot connect to prod-db-01 on port 5432. Firewall fw-prod-01 is dropping packets. This started after yesterday's firewall rule change. All database-dependent services
+    are down.
+  category: Network
+  priority: high
+  status: closed
+  submitted_by: deepak.verma@company.com
+  created_at: '2026-03-05T07:00:00Z'
+  resolved_at: '2026-03-05T08:30:00Z'
+  affects_servers:
+  - prod-db-01
+  affects_services:
+  - postgresql
+  error_codes:
+  - ERR-FW-001
+  quality_score: HIGH
+  secondary_category: Database
+  classifier_votes: null
+- title: Load balancer health check failing for prod-web-02
+  description: F5 load balancer lb-web-01 has marked prod-web-02 as down. Health check on port 443 is failing. All traffic routed to prod-web-01 only. Single point of failure for web tier.
+  category: Network
+  priority: high
+  status: closed
+  submitted_by: farhana.begum@company.com
+  created_at: '2026-03-07T12:00:00Z'
+  resolved_at: '2026-03-07T13:30:00Z'
+  affects_servers:
+  - prod-web-02
+  affects_services:
+  - nginx
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: High latency between ap-south-1 and ap-south-2
+  description: Network latency between Mumbai (ap-south-1) and Hyderabad (ap-south-2) datacenters has increased from 15ms to 200ms. Cross-DC database replication and service communication severely impacted.
+  category: Network
+  priority: medium
+  status: closed
+  submitted_by: deepak.verma@company.com
+  created_at: '2026-03-09T14:00:00Z'
+  resolved_at: '2026-03-09T18:00:00Z'
+  affects_servers: []
+  affects_services: []
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: SSL certificate expired on api-gateway
+  description: SSL certificate on the API Gateway has expired. All HTTPS requests are failing with certificate has expired error. Mobile app and web frontend cannot communicate with backend.
+  category: Network
+  priority: critical
+  status: closed
+  submitted_by: imran.sheikh@company.com
+  created_at: '2026-03-11T06:00:00Z'
+  resolved_at: '2026-03-11T07:30:00Z'
+  affects_servers: []
+  affects_services:
+  - api-gateway
+  error_codes:
+  - ERR-SSL-001
+  quality_score: HIGH
+  secondary_category: Security
+  classifier_votes: null
+- title: Packet loss on core switch sw-core-01
+  description: Core switch sw-core-01 showing 3% packet loss on uplink interfaces. Affecting all servers in ap-south-1 datacenter. Network monitoring shows intermittent drops during peak hours.
+  category: Network
+  priority: high
+  status: closed
+  submitted_by: farhana.begum@company.com
+  created_at: '2026-03-13T10:00:00Z'
+  resolved_at: '2026-03-13T14:00:00Z'
+  affects_servers: []
+  affects_services: []
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: DHCP lease exhaustion in ap-south-1
+  description: DHCP pool in ap-south-1 datacenter is running out of available leases. New servers and containers cannot obtain IP addresses. Current utilization at 95% of the /22 subnet.
+  category: Network
+  priority: medium
+  status: closed
+  submitted_by: deepak.verma@company.com
+  created_at: '2026-03-15T11:00:00Z'
+  resolved_at: '2026-03-15T15:00:00Z'
+  affects_servers: []
+  affects_services: []
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: BGP peering down with ISP
+  description: BGP peering session with primary ISP is down on vpn-gw-01. All external traffic is routing through backup ISP with higher latency. Customer-facing services experiencing 100ms additional latency.
+  category: Network
+  priority: critical
+  status: closed
+  submitted_by: deepak.verma@company.com
+  created_at: '2026-03-17T04:00:00Z'
+  resolved_at: '2026-03-17T06:00:00Z'
+  affects_servers: []
+  affects_services: []
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Multiple failed login attempts on admin account
+  description: Active Directory shows 47 failed login attempts on the domain admin account in the last hour from IP 10.0.2.15. Account is now locked out. Possible brute force attack or compromised credentials.
+  category: Security
+  priority: critical
+  status: closed
+  submitted_by: ayesha.khan@company.com
+  created_at: '2026-03-01T03:00:00Z'
+  resolved_at: '2026-03-01T05:00:00Z'
+  affects_servers:
+  - prod-ldap-01
+  affects_services:
+  - active-directory
+  error_codes:
+  - ERR-AUTH-001
+  quality_score: HIGH
+  secondary_category: Network
+  classifier_votes: null
+- title: LDAP user locked out after password change
+  description: User meera.patel@company.com is locked out of all systems after changing their password. LDAP showing invalid credentials error. Password change may not have replicated to all domain controllers.
+  category: Security
+  priority: medium
+  status: closed
+  submitted_by: meera.patel@company.com
+  created_at: '2026-03-03T09:00:00Z'
+  resolved_at: '2026-03-03T09:30:00Z'
+  affects_servers:
+  - prod-ldap-01
+  affects_services:
+  - active-directory
+  error_codes:
+  - ERR-LDAP-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Vulnerability scan found critical CVE on prod-web-01
+  description: Weekly vulnerability scan identified CVE-2024-1234 (CVSS 9.8) on NGINX 1.24 on prod-web-01. Remote code execution vulnerability. Public exploit available. Patch required within 24 hours per
+    security policy.
+  category: Security
+  priority: high
+  status: closed
+  submitted_by: ayesha.khan@company.com
+  created_at: '2026-03-05T16:00:00Z'
+  resolved_at: '2026-03-06T10:00:00Z'
+  affects_servers:
+  - prod-web-01
+  affects_services:
+  - nginx
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Unauthorized SSH access attempt on prod-db-01
+  description: Security monitoring detected SSH brute force attempts on prod-db-01 from external IP 203.0.113.42. 1200 failed attempts in 30 minutes. Root login is disabled but the attack is generating
+    noise in logs.
+  category: Security
+  priority: critical
+  status: closed
+  submitted_by: imran.sheikh@company.com
+  created_at: '2026-03-07T22:00:00Z'
+  resolved_at: '2026-03-08T00:30:00Z'
+  affects_servers:
+  - prod-db-01
+  affects_services: []
+  error_codes:
+  - ERR-SEC-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: API Gateway token expired for service account
+  description: Service account svc-orderservice has an expired JWT token on the API Gateway. All service-to-service calls from OrderService are being rejected with 401 Unauthorized.
+  category: Security
+  priority: high
+  status: closed
+  submitted_by: imran.sheikh@company.com
+  created_at: '2026-03-09T08:00:00Z'
+  resolved_at: '2026-03-09T09:00:00Z'
+  affects_servers: []
+  affects_services:
+  - api-gateway
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: TLS certificate mismatch on Exchange
+  description: Exchange Server on prod-mail-01 is showing certificate mismatch warning. The CN on the certificate is mail.oldcompany.com but should be mail.company.com. Outlook clients showing security
+    warnings.
+  category: Security
+  priority: medium
+  status: closed
+  submitted_by: imran.sheikh@company.com
+  created_at: '2026-03-11T10:00:00Z'
+  resolved_at: '2026-03-11T14:00:00Z'
+  affects_servers:
+  - prod-mail-01
+  affects_services:
+  - exchange
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Audit log shows privilege escalation attempt
+  description: Kubernetes audit logs on prod-k8s-master show a pod attempting to mount the host filesystem and access /etc/shadow. The pod belongs to a test deployment in the staging namespace.
+  category: Security
+  priority: critical
+  status: closed
+  submitted_by: ayesha.khan@company.com
+  created_at: '2026-03-13T15:00:00Z'
+  resolved_at: '2026-03-13T17:00:00Z'
+  affects_servers:
+  - prod-k8s-master
+  affects_services:
+  - kubernetes
+  error_codes:
+  - ERR-SEC-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Expired service account credentials blocking CI/CD
+  description: CI/CD pipeline cannot deploy to Kubernetes because the service account token for the deploy-bot has expired. All deployments are stuck in pending state. 3 releases waiting.
+  category: Security
+  priority: high
+  status: closed
+  submitted_by: vikram.singh@company.com
+  created_at: '2026-03-15T08:00:00Z'
+  resolved_at: '2026-03-15T09:30:00Z'
+  affects_servers:
+  - prod-k8s-master
+  affects_services:
+  - kubernetes
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: Application
+  classifier_votes: null
+- title: Phishing email reported by multiple employees
+  description: 12 employees reported receiving a phishing email impersonating IT support asking to reset their password via a suspicious link. Email originated from an external domain. Exchange spam filter
+    did not catch it.
+  category: Security
+  priority: medium
+  status: closed
+  submitted_by: ayesha.khan@company.com
+  created_at: '2026-03-17T11:00:00Z'
+  resolved_at: '2026-03-17T14:00:00Z'
+  affects_servers:
+  - prod-mail-01
+  affects_services:
+  - exchange
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: NFS mount failing on prod-app-01
+  description: 'NFS mount point /mnt/shared on prod-app-01 is not accessible. mount command returns ''NFS: stale file handle''. Application cannot write uploaded files. Affects file upload feature.'
+  category: Storage
+  priority: high
+  status: closed
+  submitted_by: amit.joshi@company.com
+  created_at: '2026-03-02T08:00:00Z'
+  resolved_at: '2026-03-02T09:30:00Z'
+  affects_servers:
+  - prod-nfs-01
+  - prod-app-01
+  affects_services:
+  - nfs
+  error_codes:
+  - ERR-NFS-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Stale NFS file handle on shared storage
+  description: Multiple application servers reporting stale NFS file handles when accessing /mnt/shared. The NFS server prod-nfs-01 was restarted yesterday for maintenance but clients were not remounted.
+  category: Storage
+  priority: high
+  status: closed
+  submitted_by: zainab.siddiqui@company.com
+  created_at: '2026-03-04T10:00:00Z'
+  resolved_at: '2026-03-04T11:30:00Z'
+  affects_servers:
+  - prod-nfs-01
+  affects_services:
+  - nfs
+  error_codes:
+  - ERR-NFS-001
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Backup storage quota exceeded
+  description: Backup storage on prod-nfs-01 has exceeded the 2TB quota. New backup jobs are failing with 'Disk quota exceeded'. Last 3 nightly backups did not complete. Data retention policy needs review.
+  category: Storage
+  priority: medium
+  status: closed
+  submitted_by: amit.joshi@company.com
+  created_at: '2026-03-06T07:00:00Z'
+  resolved_at: '2026-03-06T10:00:00Z'
+  affects_servers:
+  - prod-nfs-01
+  affects_services:
+  - nfs
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: NFS server prod-nfs-01 not responding
+  description: NFS server prod-nfs-01 is completely unresponsive. All NFS clients are hung waiting for I/O. This is affecting all application servers that depend on shared storage. File uploads, logs, and
+    shared configs are inaccessible.
+  category: Storage
+  priority: critical
+  status: closed
+  submitted_by: zainab.siddiqui@company.com
+  created_at: '2026-03-08T06:00:00Z'
+  resolved_at: '2026-03-08T08:00:00Z'
+  affects_servers:
+  - prod-nfs-01
+  affects_services:
+  - nfs
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: SAN LUN mapping incorrect after firmware update
+  description: After SAN firmware update on prod-nfs-01, LUN mappings changed. The /data partition is now mounted from the wrong LUN. Data integrity check needed before any writes are allowed.
+  category: Storage
+  priority: high
+  status: closed
+  submitted_by: amit.joshi@company.com
+  created_at: '2026-03-10T14:00:00Z'
+  resolved_at: '2026-03-10T18:00:00Z'
+  affects_servers:
+  - prod-nfs-01
+  affects_services: []
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: File system corruption detected on /data partition
+  description: fsck on prod-db-01 detected file system corruption on the /data partition where PostgreSQL data directory resides. Read-only mode engaged. Database is serving stale reads only.
+  category: Storage
+  priority: critical
+  status: closed
+  submitted_by: zainab.siddiqui@company.com
+  created_at: '2026-03-12T03:00:00Z'
+  resolved_at: '2026-03-12T08:00:00Z'
+  affects_servers:
+  - prod-db-01
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: Database
+  classifier_votes: null
+- title: RAID array degraded on prod-nfs-01
+  description: RAID-5 array on prod-nfs-01 is in degraded state. One disk has failed (slot 3). Array is still operational but with no redundancy. Another disk failure will cause data loss.
+  category: Storage
+  priority: critical
+  status: closed
+  submitted_by: amit.joshi@company.com
+  created_at: '2026-03-14T09:00:00Z'
+  resolved_at: '2026-03-14T14:00:00Z'
+  affects_servers:
+  - prod-nfs-01
+  affects_services: []
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
+- title: Disk I/O latency spike on prod-db-02
+  description: Disk I/O latency on prod-db-02 has spiked from 2ms to 45ms. PostgreSQL replica is falling behind due to slow WAL replay. iostat shows 100% disk utilization on /dev/sda.
+  category: Storage
+  priority: high
+  status: closed
+  submitted_by: zainab.siddiqui@company.com
+  created_at: '2026-03-16T12:00:00Z'
+  resolved_at: '2026-03-16T15:00:00Z'
+  affects_servers:
+  - prod-db-02
+  affects_services:
+  - postgresql
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: Database
+  classifier_votes: null
+- title: Snapshot cleanup needed — 500GB reclaimable
+  description: Old VM snapshots on prod-nfs-01 are consuming 500GB of storage. These are from 3 months ago when we did the server migration. They can be safely deleted to reclaim space.
+  category: Storage
+  priority: low
+  status: closed
+  submitted_by: amit.joshi@company.com
+  created_at: '2026-03-18T10:00:00Z'
+  resolved_at: '2026-03-19T10:00:00Z'
+  affects_servers:
+  - prod-nfs-01
+  affects_services: []
+  error_codes: []
+  quality_score: HIGH
+  secondary_category: null
+  classifier_votes: null
 resolutions:
-  - ticket_title: "Server prod-app-01 CPU at 100%"
-    steps:
-      - "Identified runaway Java process using top and jstack"
-      - "Found infinite loop in OrderService batch processor"
-      - "Killed the process: kill -9 <pid>"
-      - "Restarted OrderService with fixed config"
-      - "Verified CPU returned to normal levels"
-    effectiveness: 0.85
-    references_runbook: null
-
-  - ticket_title: "Kernel panic on prod-k8s-node-02"
-    steps:
-      - "Analyzed kernel dump from /var/crash"
-      - "Identified faulty DIMM module in slot 3"
-      - "Replaced DIMM with spare from inventory"
-      - "Rebooted server and verified memtest passes"
-      - "Uncordoned node in Kubernetes cluster"
-    effectiveness: 0.95
-    references_runbook: null
-
-  - ticket_title: "Kubernetes pod OOMKilled repeatedly"
-    steps:
-      - "Checked pod memory limits: kubectl describe pod order-service-xyz"
-      - "Found memory limit was 512Mi, Java heap was 480Mi leaving no room for off-heap"
-      - "Increased memory limit to 1Gi in deployment.yaml"
-      - "Set JVM flags: -XX:MaxRAMPercentage=75.0"
-      - "Applied changes: kubectl apply -f deployment.yaml"
-    effectiveness: 0.90
-    references_runbook: "KB-0004"
-
-  - ticket_title: "Disk space critical on prod-mon-01"
-    steps:
-      - "Checked disk usage: df -h showed 95% on /var"
-      - "Found Prometheus TSDB consuming 180GB"
-      - "Reduced retention from 30d to 15d in prometheus.yml"
-      - "Deleted old WAL segments: promtool tsdb clean /var/prometheus/data"
-      - "Disk usage dropped to 52%"
-    effectiveness: 0.80
-    references_runbook: "KB-0008"
-
-  - ticket_title: "Docker daemon not responding on prod-app-02"
-    steps:
-      - "Verified Docker daemon status: systemctl status docker"
-      - "Found daemon stuck in a deadlock state"
-      - "Restarted Docker: sudo systemctl restart docker"
-      - "Cleaned up dangling images: docker system prune -f"
-      - "Verified all containers restarted successfully"
-    effectiveness: 0.85
-    references_runbook: null
-
-  - ticket_title: "NGINX returning 502 after deployment"
-    steps:
-      - "Checked OrderService was crashing on startup: journalctl -u order-service"
-      - "Found missing environment variable DATABASE_URL in new deployment config"
-      - "Added DATABASE_URL to the deployment env section"
-      - "Redeployed OrderService v2.3.1"
-      - "Verified NGINX returning 200 on /api/orders"
-    effectiveness: 0.90
-    references_runbook: "KB-0002"
-
-  - ticket_title: "OrderService timeout on checkout API"
-    steps:
-      - "Identified slow database query: SELECT * FROM orders WHERE user_id = ? (no index)"
-      - "Created index: CREATE INDEX idx_orders_user_id ON orders(user_id)"
-      - "Query time dropped from 15s to 50ms"
-      - "Restarted OrderService to clear connection pool"
-      - "Verified checkout API response time under 500ms"
-    effectiveness: 0.95
-    references_runbook: null
-
-  - ticket_title: "API Gateway returning 504 for /api/users"
-    steps:
-      - "Checked AuthService status: systemctl status auth-service — inactive"
-      - "Found AuthService crashed due to memory exhaustion"
-      - "Restarted AuthService: systemctl start auth-service"
-      - "Increased JVM heap from 256m to 512m"
-      - "Verified /api/users responding with 200"
-    effectiveness: 0.85
-    references_runbook: null
-
-  - ticket_title: "AuthService JWT token validation failing"
-    steps:
-      - "Found JWT signing key was rotated but old key wasn't preserved"
-      - "Added old key to the key rotation chain for backward compatibility"
-      - "Redeployed AuthService with both old and new keys"
-      - "Verified tokens signed with both keys are accepted"
-    effectiveness: 0.90
-    references_runbook: null
-
-  - ticket_title: "PostgreSQL not accepting connections on prod-db-01"
-    steps:
-      - "Checked max_connections was set to 100"
-      - "Found 45 idle connections from stale app instances"
-      - "Killed idle connections: SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'idle'"
-      - "Increased max_connections to 200 in postgresql.conf"
-      - "Restarted PostgreSQL: sudo systemctl restart postgresql"
-    effectiveness: 0.95
-    references_runbook: "KB-0001"
-
-  - ticket_title: "Database replication lag exceeding 30 seconds"
-    steps:
-      - "Checked replication status: SELECT * FROM pg_stat_replication"
-      - "Found WAL sender process stuck due to network issue"
-      - "Restarted pg_basebackup on replica"
-      - "Rebuilt replica from primary snapshot"
-      - "Verified replication lag under 1 second"
-    effectiveness: 0.90
-    references_runbook: null
-
-  - ticket_title: "Slow queries blocking production traffic"
-    steps:
-      - "Identified slow query with pg_stat_statements"
-      - "Found missing index on orders(created_at, status)"
-      - "Created index: CREATE INDEX idx_orders_created_status ON orders(created_at, status)"
-      - "Ran ANALYZE on orders table"
-      - "Query time dropped from 15s to 80ms"
-    effectiveness: 0.95
-    references_runbook: null
-
-  - ticket_title: "Redis OOM on prod-app-01"
-    steps:
-      - "Checked memory: redis-cli INFO memory showed 4.2GB used"
-      - "Identified large session keys consuming 1.5GB"
-      - "Set maxmemory-policy to allkeys-lru"
-      - "Reduced session TTL from 24h to 4h"
-      - "Memory usage dropped to 2.1GB"
-    effectiveness: 0.85
-    references_runbook: "KB-0007"
-
-  - ticket_title: "PostgreSQL backup job failed overnight"
-    steps:
-      - "Found backup process was killed by OOM killer"
-      - "Increased backup server memory allocation"
-      - "Set pg_dump to use --jobs=2 for parallel backup"
-      - "Ran manual backup: pg_dump -Fd -j2 -f /backup/20260310"
-      - "Verified backup integrity with pg_restore --list"
-    effectiveness: 0.90
-    references_runbook: null
-
-  - ticket_title: "Database deadlock on orders table"
-    steps:
-      - "Identified deadlock pattern: two transactions updating related rows in different order"
-      - "Added advisory locks to enforce consistent ordering"
-      - "Added retry logic in application code for deadlock errors"
-      - "Deployed fix to prod-app-01 and prod-app-02"
-      - "Monitored for 24h — zero deadlocks"
-    effectiveness: 0.80
-    references_runbook: null
-
-  - ticket_title: "VPN connection dropping intermittently"
-    steps:
-      - "Checked VPN gateway logs: found IKE rekey failures"
-      - "Discovered IKE certificates were about to expire"
-      - "Renewed IKE Phase 1 certificates"
-      - "Restarted VPN tunnel: ipsec restart"
-      - "Verified stable connection for 4 hours"
-    effectiveness: 0.90
-    references_runbook: "KB-0003"
-
-  - ticket_title: "DNS resolution failing for internal services"
-    steps:
-      - "Checked DNS service on prod-ldap-01"
-      - "Found DNS service crashed due to corrupt zone file"
-      - "Restored zone file from backup"
-      - "Restarted DNS service"
-      - "Flushed DNS cache on all servers: systemd-resolve --flush-caches"
-    effectiveness: 0.95
-    references_runbook: null
-
-  - ticket_title: "Firewall blocking traffic to prod-db-01"
-    steps:
-      - "Identified missing allow rule for port 5432 from app subnet"
-      - "Yesterday's change removed the rule accidentally"
-      - "Re-added rule: allow tcp/5432 from 10.0.2.0/24 to 10.0.1.10"
-      - "Tested connectivity: telnet 10.0.1.10 5432"
-      - "Documented in change log"
-    effectiveness: 0.95
-    references_runbook: "KB-0010"
-
-  - ticket_title: "Load balancer health check failing for prod-web-02"
-    steps:
-      - "Checked NGINX health endpoint on prod-web-02: curl -I https://prod-web-02/health"
-      - "Found /health returning 404 — missing location block"
-      - "Added health check location to nginx.conf"
-      - "Reloaded NGINX: sudo nginx -s reload"
-      - "Updated LB health check URL to match new endpoint"
-    effectiveness: 0.85
-    references_runbook: null
-
-  - title: "SSL certificate expired on api-gateway"
-    steps:
-      - "Verified certificate expiry: openssl x509 -in cert.pem -noout -dates"
-      - "Generated new CSR with correct SAN entries"
-      - "Obtained new certificate from internal CA"
-      - "Installed certificate and reloaded API Gateway"
-      - "Verified HTTPS working on all endpoints"
-    effectiveness: 0.95
-    references_runbook: "KB-0005"
-
-  - ticket_title: "Multiple failed login attempts on admin account"
-    steps:
-      - "Blocked source IP 10.0.2.15 in firewall"
-      - "Traced IP to a compromised test VM"
-      - "Isolated the VM from network"
-      - "Reset domain admin password"
-      - "Enabled MFA on all admin accounts"
-    effectiveness: 0.90
-    references_runbook: null
-
-  - ticket_title: "LDAP user locked out after password change"
-    steps:
-      - "Verified user account in AD: Get-ADUser meera.patel -Properties LockedOut"
-      - "Account was locked due to cached credentials on workstation"
-      - "Unlocked account: Unlock-ADAccount meera.patel"
-      - "Cleared credential cache on workstation"
-    effectiveness: 0.95
-    references_runbook: "KB-0009"
-
-  - ticket_title: "Vulnerability scan found critical CVE on prod-web-01"
-    steps:
-      - "Confirmed CVE-2024-1234 affects NGINX 1.24"
-      - "Downloaded patch from NGINX repository"
-      - "Applied security patch: apt-get install nginx=1.24.1"
-      - "Restarted NGINX: sudo systemctl restart nginx"
-      - "Re-ran vulnerability scan — CVE no longer detected"
-    effectiveness: 0.90
-    references_runbook: null
-
-  - ticket_title: "Unauthorized SSH access attempt on prod-db-01"
-    steps:
-      - "Blocked attacking IP in firewall: deny 203.0.113.42"
-      - "Verified root login was already disabled in sshd_config"
-      - "Added fail2ban with 3-attempt threshold"
-      - "Rotated SSH host keys as precaution"
-      - "Verified no unauthorized access occurred"
-    effectiveness: 0.95
-    references_runbook: null
-
-  - ticket_title: "NFS mount failing on prod-app-01"
-    steps:
-      - "Checked NFS server status: systemctl status nfs-server — running"
-      - "Verified exports: showmount -e prod-nfs-01"
-      - "Unmounted stale mount: umount -f /mnt/shared"
-      - "Remounted: mount -t nfs prod-nfs-01:/export/shared /mnt/shared"
-      - "Verified file access working"
-    effectiveness: 0.85
-    references_runbook: "KB-0006"
-
-  - ticket_title: "Stale NFS file handle on shared storage"
-    steps:
-      - "Identified all clients with stale handles"
-      - "Unmounted NFS on all affected clients"
-      - "Cleared NFS client cache: echo 3 > /proc/sys/vm/drop_caches"
-      - "Remounted NFS shares on all clients"
-    effectiveness: 0.80
-    references_runbook: "KB-0006"
-
-  - ticket_title: "NFS server prod-nfs-01 not responding"
-    steps:
-      - "SSH'd into prod-nfs-01 — server responsive but NFS daemon hung"
-      - "Identified hung NFS threads: ps aux | grep nfsd"
-      - "Killed hung processes: killall -9 nfsd"
-      - "Restarted NFS daemon: systemctl restart nfs-server"
-      - "Verified all client mounts recovered"
-    effectiveness: 0.90
-    references_runbook: "KB-0006"
-
-  - ticket_title: "File system corruption detected on /data partition"
-    steps:
-      - "Stopped PostgreSQL to prevent further writes"
-      - "Ran fsck: fsck -y /dev/sda2"
-      - "Repaired 3 corrupt inodes"
-      - "Restored 2 missing files from last night's backup"
-      - "Restarted PostgreSQL and verified data integrity"
-    effectiveness: 0.75
-    references_runbook: null
-
-  - ticket_title: "RAID array degraded on prod-nfs-01"
-    steps:
-      - "Identified failed disk in slot 3: mdadm --detail /dev/md0"
-      - "Hot-swapped failed disk with new drive"
-      - "Started RAID rebuild: mdadm --manage /dev/md0 --add /dev/sdd"
-      - "Monitored rebuild progress: cat /proc/mdstat"
-      - "Rebuild completed in 4 hours, array healthy"
-    effectiveness: 0.95
-    references_runbook: null
-
-  - ticket_title: "BGP peering down with ISP"
-    steps:
-      - "Contacted ISP NOC — they confirmed maintenance on their router"
-      - "Verified backup ISP routing was active"
-      - "ISP completed maintenance and restored BGP session"
-      - "Verified BGP peering re-established: show ip bgp summary"
-      - "Confirmed traffic routing through primary ISP"
-    effectiveness: 0.85
-    references_runbook: null
-
-# ── Edges ──
+- ticket_title: Server prod-app-01 CPU at 100%
+  steps:
+  - Identified runaway Java process using top and jstack
+  - Found infinite loop in OrderService batch processor
+  - 'Killed the process: kill -9 <pid>'
+  - Restarted OrderService with fixed config
+  - Verified CPU returned to normal levels
+  effectiveness: 0.85
+  references_runbook: null
+- ticket_title: Kernel panic on prod-k8s-node-02
+  steps:
+  - Analyzed kernel dump from /var/crash
+  - Identified faulty DIMM module in slot 3
+  - Replaced DIMM with spare from inventory
+  - Rebooted server and verified memtest passes
+  - Uncordoned node in Kubernetes cluster
+  effectiveness: 0.95
+  references_runbook: null
+- ticket_title: Kubernetes pod OOMKilled repeatedly
+  steps:
+  - 'Checked pod memory limits: kubectl describe pod order-service-xyz'
+  - Found memory limit was 512Mi, Java heap was 480Mi leaving no room for off-heap
+  - Increased memory limit to 1Gi in deployment.yaml
+  - 'Set JVM flags: -XX:MaxRAMPercentage=75.0'
+  - 'Applied changes: kubectl apply -f deployment.yaml'
+  effectiveness: 0.9
+  references_runbook: KB-0004
+- ticket_title: Disk space critical on prod-mon-01
+  steps:
+  - 'Checked disk usage: df -h showed 95% on /var'
+  - Found Prometheus TSDB consuming 180GB
+  - Reduced retention from 30d to 15d in prometheus.yml
+  - 'Deleted old WAL segments: promtool tsdb clean /var/prometheus/data'
+  - Disk usage dropped to 52%
+  effectiveness: 0.8
+  references_runbook: KB-0008
+- ticket_title: Docker daemon not responding on prod-app-02
+  steps:
+  - 'Verified Docker daemon status: systemctl status docker'
+  - Found daemon stuck in a deadlock state
+  - 'Restarted Docker: sudo systemctl restart docker'
+  - 'Cleaned up dangling images: docker system prune -f'
+  - Verified all containers restarted successfully
+  effectiveness: 0.85
+  references_runbook: null
+- ticket_title: NGINX returning 502 after deployment
+  steps:
+  - 'Checked OrderService was crashing on startup: journalctl -u order-service'
+  - Found missing environment variable DATABASE_URL in new deployment config
+  - Added DATABASE_URL to the deployment env section
+  - Redeployed OrderService v2.3.1
+  - Verified NGINX returning 200 on /api/orders
+  effectiveness: 0.9
+  references_runbook: KB-0002
+- ticket_title: OrderService timeout on checkout API
+  steps:
+  - 'Identified slow database query: SELECT * FROM orders WHERE user_id = ? (no index)'
+  - 'Created index: CREATE INDEX idx_orders_user_id ON orders(user_id)'
+  - Query time dropped from 15s to 50ms
+  - Restarted OrderService to clear connection pool
+  - Verified checkout API response time under 500ms
+  effectiveness: 0.95
+  references_runbook: null
+- ticket_title: API Gateway returning 504 for /api/users
+  steps:
+  - 'Checked AuthService status: systemctl status auth-service — inactive'
+  - Found AuthService crashed due to memory exhaustion
+  - 'Restarted AuthService: systemctl start auth-service'
+  - Increased JVM heap from 256m to 512m
+  - Verified /api/users responding with 200
+  effectiveness: 0.85
+  references_runbook: null
+- ticket_title: AuthService JWT token validation failing
+  steps:
+  - Found JWT signing key was rotated but old key wasn't preserved
+  - Added old key to the key rotation chain for backward compatibility
+  - Redeployed AuthService with both old and new keys
+  - Verified tokens signed with both keys are accepted
+  effectiveness: 0.9
+  references_runbook: null
+- ticket_title: PostgreSQL not accepting connections on prod-db-01
+  steps:
+  - Checked max_connections was set to 100
+  - Found 45 idle connections from stale app instances
+  - 'Killed idle connections: SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = ''idle'''
+  - Increased max_connections to 200 in postgresql.conf
+  - 'Restarted PostgreSQL: sudo systemctl restart postgresql'
+  effectiveness: 0.95
+  references_runbook: KB-0001
+- ticket_title: Database replication lag exceeding 30 seconds
+  steps:
+  - 'Checked replication status: SELECT * FROM pg_stat_replication'
+  - Found WAL sender process stuck due to network issue
+  - Restarted pg_basebackup on replica
+  - Rebuilt replica from primary snapshot
+  - Verified replication lag under 1 second
+  effectiveness: 0.9
+  references_runbook: null
+- ticket_title: Slow queries blocking production traffic
+  steps:
+  - Identified slow query with pg_stat_statements
+  - Found missing index on orders(created_at, status)
+  - 'Created index: CREATE INDEX idx_orders_created_status ON orders(created_at, status)'
+  - Ran ANALYZE on orders table
+  - Query time dropped from 15s to 80ms
+  effectiveness: 0.95
+  references_runbook: null
+- ticket_title: Redis OOM on prod-app-01
+  steps:
+  - 'Checked memory: redis-cli INFO memory showed 4.2GB used'
+  - Identified large session keys consuming 1.5GB
+  - Set maxmemory-policy to allkeys-lru
+  - Reduced session TTL from 24h to 4h
+  - Memory usage dropped to 2.1GB
+  effectiveness: 0.85
+  references_runbook: KB-0007
+- ticket_title: PostgreSQL backup job failed overnight
+  steps:
+  - Found backup process was killed by OOM killer
+  - Increased backup server memory allocation
+  - Set pg_dump to use --jobs=2 for parallel backup
+  - 'Ran manual backup: pg_dump -Fd -j2 -f /backup/20260310'
+  - Verified backup integrity with pg_restore --list
+  effectiveness: 0.9
+  references_runbook: null
+- ticket_title: Database deadlock on orders table
+  steps:
+  - 'Identified deadlock pattern: two transactions updating related rows in different order'
+  - Added advisory locks to enforce consistent ordering
+  - Added retry logic in application code for deadlock errors
+  - Deployed fix to prod-app-01 and prod-app-02
+  - Monitored for 24h — zero deadlocks
+  effectiveness: 0.8
+  references_runbook: null
+- ticket_title: VPN connection dropping intermittently
+  steps:
+  - 'Checked VPN gateway logs: found IKE rekey failures'
+  - Discovered IKE certificates were about to expire
+  - Renewed IKE Phase 1 certificates
+  - 'Restarted VPN tunnel: ipsec restart'
+  - Verified stable connection for 4 hours
+  effectiveness: 0.9
+  references_runbook: KB-0003
+- ticket_title: DNS resolution failing for internal services
+  steps:
+  - Checked DNS service on prod-ldap-01
+  - Found DNS service crashed due to corrupt zone file
+  - Restored zone file from backup
+  - Restarted DNS service
+  - 'Flushed DNS cache on all servers: systemd-resolve --flush-caches'
+  effectiveness: 0.95
+  references_runbook: null
+- ticket_title: Firewall blocking traffic to prod-db-01
+  steps:
+  - Identified missing allow rule for port 5432 from app subnet
+  - Yesterday's change removed the rule accidentally
+  - 'Re-added rule: allow tcp/5432 from 10.0.2.0/24 to 10.0.1.10'
+  - 'Tested connectivity: telnet 10.0.1.10 5432'
+  - Documented in change log
+  effectiveness: 0.95
+  references_runbook: KB-0010
+- ticket_title: Load balancer health check failing for prod-web-02
+  steps:
+  - 'Checked NGINX health endpoint on prod-web-02: curl -I https://prod-web-02/health'
+  - Found /health returning 404 — missing location block
+  - Added health check location to nginx.conf
+  - 'Reloaded NGINX: sudo nginx -s reload'
+  - Updated LB health check URL to match new endpoint
+  effectiveness: 0.85
+  references_runbook: null
+- title: SSL certificate expired on api-gateway
+  steps:
+  - 'Verified certificate expiry: openssl x509 -in cert.pem -noout -dates'
+  - Generated new CSR with correct SAN entries
+  - Obtained new certificate from internal CA
+  - Installed certificate and reloaded API Gateway
+  - Verified HTTPS working on all endpoints
+  effectiveness: 0.95
+  references_runbook: KB-0005
+- ticket_title: Multiple failed login attempts on admin account
+  steps:
+  - Blocked source IP 10.0.2.15 in firewall
+  - Traced IP to a compromised test VM
+  - Isolated the VM from network
+  - Reset domain admin password
+  - Enabled MFA on all admin accounts
+  effectiveness: 0.9
+  references_runbook: null
+- ticket_title: LDAP user locked out after password change
+  steps:
+  - 'Verified user account in AD: Get-ADUser meera.patel -Properties LockedOut'
+  - Account was locked due to cached credentials on workstation
+  - 'Unlocked account: Unlock-ADAccount meera.patel'
+  - Cleared credential cache on workstation
+  effectiveness: 0.95
+  references_runbook: KB-0009
+- ticket_title: Vulnerability scan found critical CVE on prod-web-01
+  steps:
+  - Confirmed CVE-2024-1234 affects NGINX 1.24
+  - Downloaded patch from NGINX repository
+  - 'Applied security patch: apt-get install nginx=1.24.1'
+  - 'Restarted NGINX: sudo systemctl restart nginx'
+  - Re-ran vulnerability scan — CVE no longer detected
+  effectiveness: 0.9
+  references_runbook: null
+- ticket_title: Unauthorized SSH access attempt on prod-db-01
+  steps:
+  - 'Blocked attacking IP in firewall: deny 203.0.113.42'
+  - Verified root login was already disabled in sshd_config
+  - Added fail2ban with 3-attempt threshold
+  - Rotated SSH host keys as precaution
+  - Verified no unauthorized access occurred
+  effectiveness: 0.95
+  references_runbook: null
+- ticket_title: NFS mount failing on prod-app-01
+  steps:
+  - 'Checked NFS server status: systemctl status nfs-server — running'
+  - 'Verified exports: showmount -e prod-nfs-01'
+  - 'Unmounted stale mount: umount -f /mnt/shared'
+  - 'Remounted: mount -t nfs prod-nfs-01:/export/shared /mnt/shared'
+  - Verified file access working
+  effectiveness: 0.85
+  references_runbook: KB-0006
+- ticket_title: Stale NFS file handle on shared storage
+  steps:
+  - Identified all clients with stale handles
+  - Unmounted NFS on all affected clients
+  - 'Cleared NFS client cache: echo 3 > /proc/sys/vm/drop_caches'
+  - Remounted NFS shares on all clients
+  effectiveness: 0.8
+  references_runbook: KB-0006
+- ticket_title: NFS server prod-nfs-01 not responding
+  steps:
+  - SSH'd into prod-nfs-01 — server responsive but NFS daemon hung
+  - 'Identified hung NFS threads: ps aux | grep nfsd'
+  - 'Killed hung processes: killall -9 nfsd'
+  - 'Restarted NFS daemon: systemctl restart nfs-server'
+  - Verified all client mounts recovered
+  effectiveness: 0.9
+  references_runbook: KB-0006
+- ticket_title: File system corruption detected on /data partition
+  steps:
+  - Stopped PostgreSQL to prevent further writes
+  - 'Ran fsck: fsck -y /dev/sda2'
+  - Repaired 3 corrupt inodes
+  - Restored 2 missing files from last night's backup
+  - Restarted PostgreSQL and verified data integrity
+  effectiveness: 0.75
+  references_runbook: null
+- ticket_title: RAID array degraded on prod-nfs-01
+  steps:
+  - 'Identified failed disk in slot 3: mdadm --detail /dev/md0'
+  - Hot-swapped failed disk with new drive
+  - 'Started RAID rebuild: mdadm --manage /dev/md0 --add /dev/sdd'
+  - 'Monitored rebuild progress: cat /proc/mdstat'
+  - Rebuild completed in 4 hours, array healthy
+  effectiveness: 0.95
+  references_runbook: null
+- ticket_title: BGP peering down with ISP
+  steps:
+  - Contacted ISP NOC — they confirmed maintenance on their router
+  - Verified backup ISP routing was active
+  - ISP completed maintenance and restored BGP session
+  - 'Verified BGP peering re-established: show ip bgp summary'
+  - Confirmed traffic routing through primary ISP
+  effectiveness: 0.85
+  references_runbook: null
 edges:
-  # hosts: which server runs which service
   hosts:
-    - { _from: "servers/prod-db-01", _to: "services/postgresql" }
-    - { _from: "servers/prod-db-01", _to: "services/redis" }
-    - { _from: "servers/prod-db-02", _to: "services/postgresql" }
-    - { _from: "servers/prod-app-01", _to: "services/order-service" }
-    - { _from: "servers/prod-app-01", _to: "services/redis" }
-    - { _from: "servers/prod-app-02", _to: "services/order-service" }
-    - { _from: "servers/prod-app-03", _to: "services/auth-service" }
-    - { _from: "servers/prod-web-01", _to: "services/nginx" }
-    - { _from: "servers/prod-web-02", _to: "services/nginx" }
-    - { _from: "servers/prod-ldap-01", _to: "services/active-directory" }
-    - { _from: "servers/prod-mail-01", _to: "services/exchange" }
-    - { _from: "servers/prod-mon-01", _to: "services/prometheus" }
-    - { _from: "servers/prod-mon-01", _to: "services/grafana" }
-    - { _from: "servers/prod-k8s-master", _to: "services/kubernetes" }
-    - { _from: "servers/prod-k8s-node-01", _to: "services/kubernetes" }
-    - { _from: "servers/prod-k8s-node-01", _to: "services/order-service" }
-    - { _from: "servers/prod-k8s-node-02", _to: "services/kubernetes" }
-    - { _from: "servers/prod-k8s-node-02", _to: "services/auth-service" }
-    - { _from: "servers/prod-nfs-01", _to: "services/nfs" }
-    - { _from: "servers/staging-db-01", _to: "services/postgresql" }
-
-  # managed_by: who manages which server
+  - _from: servers/prod-db-01
+    _to: services/postgresql
+  - _from: servers/prod-db-01
+    _to: services/redis
+  - _from: servers/prod-db-02
+    _to: services/postgresql
+  - _from: servers/prod-app-01
+    _to: services/order-service
+  - _from: servers/prod-app-01
+    _to: services/redis
+  - _from: servers/prod-app-02
+    _to: services/order-service
+  - _from: servers/prod-app-03
+    _to: services/auth-service
+  - _from: servers/prod-web-01
+    _to: services/nginx
+  - _from: servers/prod-web-02
+    _to: services/nginx
+  - _from: servers/prod-ldap-01
+    _to: services/active-directory
+  - _from: servers/prod-mail-01
+    _to: services/exchange
+  - _from: servers/prod-mon-01
+    _to: services/prometheus
+  - _from: servers/prod-mon-01
+    _to: services/grafana
+  - _from: servers/prod-k8s-master
+    _to: services/kubernetes
+  - _from: servers/prod-k8s-node-01
+    _to: services/kubernetes
+  - _from: servers/prod-k8s-node-01
+    _to: services/order-service
+  - _from: servers/prod-k8s-node-02
+    _to: services/kubernetes
+  - _from: servers/prod-k8s-node-02
+    _to: services/auth-service
+  - _from: servers/prod-nfs-01
+    _to: services/nfs
+  - _from: servers/staging-db-01
+    _to: services/postgresql
   managed_by:
-    - { _from: "servers/prod-db-01", _to: "teams/db-admin" }
-    - { _from: "servers/prod-db-02", _to: "teams/db-admin" }
-    - { _from: "servers/staging-db-01", _to: "teams/db-admin" }
-    - { _from: "servers/prod-app-01", _to: "teams/app-support" }
-    - { _from: "servers/prod-app-02", _to: "teams/app-support" }
-    - { _from: "servers/prod-app-03", _to: "teams/app-support" }
-    - { _from: "servers/prod-mail-01", _to: "teams/app-support" }
-    - { _from: "servers/prod-web-01", _to: "teams/infra-ops" }
-    - { _from: "servers/prod-web-02", _to: "teams/infra-ops" }
-    - { _from: "servers/prod-mon-01", _to: "teams/infra-ops" }
-    - { _from: "servers/prod-k8s-master", _to: "teams/infra-ops" }
-    - { _from: "servers/prod-k8s-node-01", _to: "teams/infra-ops" }
-    - { _from: "servers/prod-k8s-node-02", _to: "teams/infra-ops" }
-    - { _from: "servers/prod-nfs-01", _to: "teams/storage-ops" }
-    - { _from: "servers/prod-ldap-01", _to: "teams/security-ops" }
-
-  # depends_on: service dependency chain
+  - _from: servers/prod-db-01
+    _to: teams/db-admin
+  - _from: servers/prod-db-02
+    _to: teams/db-admin
+  - _from: servers/staging-db-01
+    _to: teams/db-admin
+  - _from: servers/prod-app-01
+    _to: teams/app-support
+  - _from: servers/prod-app-02
+    _to: teams/app-support
+  - _from: servers/prod-app-03
+    _to: teams/app-support
+  - _from: servers/prod-mail-01
+    _to: teams/app-support
+  - _from: servers/prod-web-01
+    _to: teams/infra-ops
+  - _from: servers/prod-web-02
+    _to: teams/infra-ops
+  - _from: servers/prod-mon-01
+    _to: teams/infra-ops
+  - _from: servers/prod-k8s-master
+    _to: teams/infra-ops
+  - _from: servers/prod-k8s-node-01
+    _to: teams/infra-ops
+  - _from: servers/prod-k8s-node-02
+    _to: teams/infra-ops
+  - _from: servers/prod-nfs-01
+    _to: teams/storage-ops
+  - _from: servers/prod-ldap-01
+    _to: teams/security-ops
   depends_on:
-    - { _from: "services/order-service", _to: "services/postgresql" }
-    - { _from: "services/order-service", _to: "services/redis" }
-    - { _from: "services/auth-service", _to: "services/active-directory" }
-    - { _from: "services/auth-service", _to: "services/postgresql" }
-    - { _from: "services/api-gateway", _to: "services/order-service" }
-    - { _from: "services/api-gateway", _to: "services/auth-service" }
-    - { _from: "services/nginx", _to: "services/api-gateway" }
-    - { _from: "services/grafana", _to: "services/prometheus" }
-
-  # member_of: engineer belongs to team
+  - _from: services/order-service
+    _to: services/postgresql
+  - _from: services/order-service
+    _to: services/redis
+  - _from: services/auth-service
+    _to: services/active-directory
+  - _from: services/auth-service
+    _to: services/postgresql
+  - _from: services/api-gateway
+    _to: services/order-service
+  - _from: services/api-gateway
+    _to: services/auth-service
+  - _from: services/nginx
+    _to: services/api-gateway
+  - _from: services/grafana
+    _to: services/prometheus
   member_of:
-    - { _from: "engineers/eng-001", _to: "teams/db-admin" }
-    - { _from: "engineers/eng-002", _to: "teams/db-admin" }
-    - { _from: "engineers/eng-003", _to: "teams/infra-ops" }
-    - { _from: "engineers/eng-004", _to: "teams/infra-ops" }
-    - { _from: "engineers/eng-005", _to: "teams/app-support" }
-    - { _from: "engineers/eng-006", _to: "teams/app-support" }
-    - { _from: "engineers/eng-007", _to: "teams/security-ops" }
-    - { _from: "engineers/eng-008", _to: "teams/security-ops" }
-    - { _from: "engineers/eng-009", _to: "teams/network-eng" }
-    - { _from: "engineers/eng-010", _to: "teams/network-eng" }
-    - { _from: "engineers/eng-011", _to: "teams/storage-ops" }
-    - { _from: "engineers/eng-012", _to: "teams/storage-ops" }
+  - _from: engineers/eng-001
+    _to: teams/db-admin
+  - _from: engineers/eng-002
+    _to: teams/db-admin
+  - _from: engineers/eng-003
+    _to: teams/infra-ops
+  - _from: engineers/eng-004
+    _to: teams/infra-ops
+  - _from: engineers/eng-005
+    _to: teams/app-support
+  - _from: engineers/eng-006
+    _to: teams/app-support
+  - _from: engineers/eng-007
+    _to: teams/security-ops
+  - _from: engineers/eng-008
+    _to: teams/security-ops
+  - _from: engineers/eng-009
+    _to: teams/network-eng
+  - _from: engineers/eng-010
+    _to: teams/network-eng
+  - _from: engineers/eng-011
+    _to: teams/storage-ops
+  - _from: engineers/eng-012
+    _to: teams/storage-ops
+category_centroids:
+- _key: infrastructure
+  category: Infrastructure
+  embedding: null
+  ticket_count: 0
+  last_updated: null
+- _key: application
+  category: Application
+  embedding: null
+  ticket_count: 0
+  last_updated: null
+- _key: security
+  category: Security
+  embedding: null
+  ticket_count: 0
+  last_updated: null
+- _key: database
+  category: Database
+  embedding: null
+  ticket_count: 0
+  last_updated: null
+- _key: storage
+  category: Storage
+  embedding: null
+  ticket_count: 0
+  last_updated: null
+- _key: network
+  category: Network
+  embedding: null
+  ticket_count: 0
+  last_updated: null

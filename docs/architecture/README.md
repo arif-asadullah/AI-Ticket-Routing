@@ -81,7 +81,7 @@ DeskMind reads an IT support ticket, **understands what the problem is**, finds 
 | [vector-search.md](vector-search.md) | How the AI finds similar tickets by meaning, not keywords. What embeddings are, how cosine similarity works. | You want to understand "how does the AI know two tickets are about the same problem?" |
 | [graph-traversal.md](graph-traversal.md) | How the knowledge graph connects servers, services, teams, and tickets. How the AI follows edges to find context. | You want to understand "how does the AI know which server runs which service and who manages it?" |
 | [error-matching.md](error-matching.md) | How known error patterns (like "FATAL: too many connections") are matched instantly without AI. | You want to understand "how does the system recognize error codes?" |
-| [classification-pipeline.md](classification-pipeline.md) | How all 3 methods combine into one pipeline. The LLM prompt, confidence scoring, routing decision. | You want to understand "how does everything work together end-to-end?" |
+| [classification-pipeline.md](classification-pipeline.md) | 4-classifier ensemble: LLM + KNN + Centroid + Keywords. Weighted voting, confidence calibration, graceful degradation. | You want to understand "how does everything work together end-to-end?" |
 
 ## Technologies Used
 
@@ -114,4 +114,4 @@ If you're completely new, read in this order:
 2. **vector-search.md** — understand the AI's core search mechanism
 3. **error-matching.md** — understand the fast shortcut
 4. **graph-traversal.md** — understand how infrastructure context helps
-5. **classification-pipeline.md** — see how it all comes together
+5. **classification-pipeline.md** — the 4-classifier ensemble pipeline (the full picture)

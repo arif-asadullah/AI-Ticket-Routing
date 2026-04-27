@@ -15,10 +15,13 @@ class TicketResponse(BaseModel):
     title: str
     description: str
     category: str | None = None
+    secondary_category: str | None = None
     priority: str
     status: str
     confidence_score: float | None = None
     ai_reasoning: str | None = None
+    quality_score: str | None = None  # HIGH, MEDIUM, LOW
+    classifier_votes: dict | None = None
     submitted_by: str | None = None
     routed_to: str | None = None
     created_at: str | None = None
