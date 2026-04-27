@@ -151,6 +151,7 @@ This finds the 5 tickets most similar in meaning to the query embedding. The vec
 | 9 | routing_rules | Persistent | `category`, `priority` | Fast rule lookup |
 | 10 | audit_log | Persistent | `ticket_id` | Find all actions for a ticket |
 | 11 | audit_log | Persistent | `created_at` | Time-ordered audit trail |
+| 12 | category_centroids | Vector (384) | `embedding` | Compare new ticket to category averages (centroid classifier) |
 
 ## When are indexes created?
 

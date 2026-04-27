@@ -40,7 +40,7 @@ Think of it as a help desk inbox. Each ticket is like an email from someone repo
 | `secondary_category` | string/null | `"Database"` or `null` | For ambiguous tickets that touch 2 domains. E.g., "Firewall blocking database port" → primary: Network, secondary: Database. Secondary team gets notified. Null if clearly one category. |
 | `classifier_votes` | object/null | `{"llm": {"category": "Database", "confidence": 0.94}, "knn": {...}, "centroid": {...}, "keyword": {...}}` | What each of the 4 independent classifiers decided. Used for debugging misclassifications, tracking which classifier is wrong most often, and explaining decisions to users. Null for historical/seed tickets. |
 
-### Example document
+### Example document — AI-classified ticket (all fields populated)
 
 ```json
 {
@@ -48,13 +48,75 @@ Think of it as a help desk inbox. Each ticket is like an email from someone repo
   "title": "PostgreSQL not accepting connections",
   "description": "prod-db-01 refusing connections since 10am. max_connections reached at 100. App team reporting 502 errors on the checkout page.",
   "category": "Database",
+  "secondary_category": null,
   "priority": "high",
   "status": "routed",
-  "confidence_score": 0.92,
-  "ai_reasoning": "PostgreSQL connection issue on production database server. Mentions max_connections limit and prod-db-01.",
+  "confidence_score": 0.94,
+  "ai_reasoning": "PostgreSQL connection limit is a database configuration issue. The 502 errors are a downstream symptom, not the root cause.",
+  "quality_score": "HIGH",
+  "classifier_votes": {
+    "llm": { "category": "Database", "confidence": 0.94 },
+    "knn": { "category": "Database", "confidence": 0.80, "neighbors": ["TKT-042", "TKT-078"] },
+    "centroid": { "category": "Database", "confidence": 0.84 },
+    "keyword": { "category": "Database", "confidence": 0.75 }
+  },
   "submitted_by": "john.doe@company.com",
   "embedding": [0.012, -0.034, 0.089, "... 381 more numbers ..."],
   "created_at": "2026-04-20T10:00:00Z",
+  "resolved_at": null
+}
+```
+
+### Example document — ambiguous ticket (secondary category set)
+
+```json
+{
+  "_key": "12346",
+  "title": "Firewall blocking database port 5432 on prod-db-01",
+  "description": "Application servers cannot connect to prod-db-01 on port 5432. Firewall fw-prod-01 is dropping packets. This started after yesterday's firewall rule change.",
+  "category": "Network",
+  "secondary_category": "Database",
+  "priority": "high",
+  "status": "routed",
+  "confidence_score": 0.72,
+  "ai_reasoning": "Root cause is a firewall rule change (Network). Impact is on database connectivity (Database). Routing to Network as primary, notifying Database Admin as secondary.",
+  "quality_score": "HIGH",
+  "classifier_votes": {
+    "llm": { "category": "Network", "confidence": 0.78 },
+    "knn": { "category": "Network", "confidence": 0.60 },
+    "centroid": { "category": "Network", "confidence": 0.62 },
+    "keyword": { "category": "Database", "confidence": 0.50 }
+  },
+  "submitted_by": "deepak.verma@company.com",
+  "embedding": [0.05, 0.55, 0.18, "... 381 more numbers ..."],
+  "created_at": "2026-04-21T07:00:00Z",
+  "resolved_at": null
+}
+```
+
+### Example document — low quality ticket (confidence capped)
+
+```json
+{
+  "_key": "12347",
+  "title": "server down",
+  "description": "server is not working please help",
+  "category": "Infrastructure",
+  "secondary_category": null,
+  "priority": "medium",
+  "status": "escalated",
+  "confidence_score": 0.35,
+  "ai_reasoning": "Very little information. 'Server' suggests Infrastructure but cannot determine root cause without more details.",
+  "quality_score": "LOW",
+  "classifier_votes": {
+    "llm": { "category": "Infrastructure", "confidence": 0.60 },
+    "knn": { "category": "Infrastructure", "confidence": 0.30 },
+    "centroid": { "category": "Infrastructure", "confidence": 0.40 },
+    "keyword": { "category": "Infrastructure", "confidence": 0.50 }
+  },
+  "submitted_by": "unknown@company.com",
+  "embedding": [0.15, 0.42, -0.33, "... 381 more numbers ..."],
+  "created_at": "2026-04-22T10:00:00Z",
   "resolved_at": null
 }
 ```

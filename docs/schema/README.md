@@ -97,6 +97,7 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 | Persistent | routing_rules | category, priority | Fast rule lookup |
 | Persistent | audit_log | ticket_id | Find all actions for a ticket |
 | Persistent | audit_log | created_at | Time-ordered audit trail |
+| Vector (384-dim) | category_centroids | embedding | Compare new ticket to category averages |
 
 ### 6 Ticket Categories
 
