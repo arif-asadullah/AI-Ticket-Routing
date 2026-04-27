@@ -1,0 +1,4945 @@
+[
+  {
+    "title": "CANT LOGIN TO ANYTHING",
+    "description": "help!! nothing is working since this morning. tried logging into CRM, tried email, tried VPN - everything says invalid credentials. i didnt change my password!! my laptop is fine for internet tho. meeting in 20 mins and i cant access my files pls someone help ASAP",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "Verified user account in Active Directory",
+      "Found account locked due to cached credentials on VPN client",
+      "Unlocked account and cleared credential cache",
+      "User confirmed login working"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "website super slow for customers",
+    "description": "our customers are complaining the website is taking forever to load. some pages not loading at all. checkout page just spins. this has been going on for like 2 hours. tried on different browsers same thing. our sales numbers are tanking pls fix this is costing us money!!!",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx",
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-NGINX-002"
+    ],
+    "resolution_steps": [
+      "Identified NGINX upstream timeout to OrderService",
+      "Found OrderService garbage collection pauses causing 504s",
+      "Increased JVM heap from 512m to 1g",
+      "Restarted OrderService, response times normalized"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "server keep crashing every few hours",
+    "description": "the app server keeps dying. it comes back up then dies again in like 2-3 hours. people are losing their work. IT already restarted it 3 times today but it keeps happening. i think its that new update they did yesterday? someone plz look at this its driving everyone crazy",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-SYS-003"
+    ],
+    "resolution_steps": [
+      "Checked system logs, found OOM killer terminating processes",
+      "Identified memory leak in OrderService v2.4.0 deployed yesterday",
+      "Rolled back to v2.3.2",
+      "Server stable for 24 hours post-rollback"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Application",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "cant save files to shared drive!!",
+    "description": "the shared drive is not working AGAIN. when i try to save anything it says permission denied or stale file handle. my whole team is stuck we cant do any work. this is the 3rd time this month!!! someone needs to fix this properly not just a bandaid fix",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Found NFS daemon hung on prod-nfs-01",
+      "Killed stale nfsd processes",
+      "Restarted NFS server",
+      "Remounted on all client servers",
+      "Added NFS health check to monitoring"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "email not sending attachments",
+    "description": "i cant send emails with attachments. small ones work but anything over like 5mb just fails. no error message it just sits in outbox. this has been happening since last week. i need to send contracts to clients TODAY. tried outlook and webmail same problem",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked Exchange message size limits",
+      "Found transport rule blocking attachments >5MB added by security team",
+      "Increased limit to 25MB per company policy",
+      "Verified attachments sending successfully"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Security",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "monitoring dashboard blank",
+    "description": "grafana is showing nothing. all the dashboards are just blank white screens. no graphs no numbers nothing. we had an alert earlier that we couldnt check because of this. how are we supposed to monitor anything if the monitoring is broken lol. fix pls",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "grafana",
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked Grafana logs, found connection timeout to Prometheus",
+      "Prometheus was OOM due to high cardinality metrics",
+      "Reduced scrape targets and increased memory limit",
+      "Restarted Prometheus, dashboards loading"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "VPN keeps disconnecting",
+    "description": "my vpn drops every 15-20 minutes then i have to reconnect. super annoying when im in a meeting or working on something. its been like this for 3 days now. other people on my team same issue. using the standard company vpn client on windows",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Checked VPN gateway logs, found IKE rekey failures",
+      "IKE Phase 1 lifetime mismatch between client and server",
+      "Updated VPN gateway IKE lifetime to match client",
+      "VPN connections stable for 48 hours"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0003",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "database super slow today",
+    "description": "everything that touches the database is slow as molasses today. reports taking 10 minutes instead of 30 seconds. even simple lookups are slow. did someone do something to the database?? we cant work like this customers are waiting",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked pg_stat_activity, found long-running autovacuum",
+      "Autovacuum was processing bloated orders table (12GB)",
+      "Killed autovacuum, ran targeted VACUUM on orders table",
+      "Query performance restored, scheduled overnight vacuum"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "getting security warning on website",
+    "description": "when i go to our internal portal i get a big red warning saying the connection is not secure. tried ignoring it but some pages wont load at all. started this morning. is our site hacked?? should i be worried??? other people seeing same thing",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Checked SSL certificate on API Gateway",
+      "Certificate expired overnight (auto-renewal failed)",
+      "Generated new CSR and obtained new cert from internal CA",
+      "Installed and reloaded, security warnings gone"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0005",
+    "quality_score": "HIGH",
+    "secondary_category": "Security",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "backup failed again",
+    "description": "got an email saying backup failed AGAIN. this is like the 4th time this week. i dont know what it means but my manager told me to report it. something about disk space? last time they said they fixed it but clearly they didnt",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked backup storage quota on prod-nfs-01",
+      "Found old snapshots consuming 500GB",
+      "Cleaned up snapshots older than 90 days",
+      "Verified backup job runs successfully"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-db-01 connection pool exhausted at 2026-04-27T08:15:32Z",
+    "description": "prod-db-01 PostgreSQL connection pool reached max capacity (100/100) at 08:15 UTC. Application logs showing 'FATAL: too many connections' across all three app servers. pg_stat_activity shows 47 idle connections from stale OrderService instances after yesterday's rolling deploy (CHG-9921). Connection timeout set to 30s but idle connections not being reclaimed. Pool config: max_connections=100, idle_timeout=300s. Immediate action: need to kill idle connections and increase pool or fix connection leak.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql",
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Killed 47 idle connections: SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state='idle' AND query_start < now()-interval '30 min'",
+      "Identified connection leak in OrderService connection pool config",
+      "Set idle_timeout from 300s to 60s in HikariCP config",
+      "Increased max_connections from 100 to 200",
+      "Restarted PostgreSQL and verified pool utilization at 35%"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "K8s node prod-k8s-node-01 memory pressure \u2014 pods evicting",
+    "description": "Kubernetes node prod-k8s-node-01 hitting memory pressure threshold. kubelet reporting MemoryPressure=True since 07:45 UTC. Three OrderService pods evicted in last hour. Node memory: 58GB/64GB used. Largest consumer: order-service-7d4b8f (requests: 1Gi, limits: 2Gi, actual: 1.8Gi per pod, 6 replicas = 10.8Gi). JVM -XX:MaxRAMPercentage=75.0 but off-heap growing unbounded. kubectl top nodes shows 91% memory utilization. Need to either increase node memory or reduce pod count.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes",
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Cordoned node to prevent new pod scheduling",
+      "Identified off-heap memory leak in JVM native memory tracker",
+      "Added -XX:NativeMemoryTracking=summary -XX:MaxMetaspaceSize=256m",
+      "Reduced pod replicas from 6 to 4 on this node",
+      "Uncordoned node, memory stable at 72%"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0004",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "NGINX 502 on prod-web-01 after config reload \u2014 upstream auth-service unreachable",
+    "description": "prod-web-01 NGINX returning 502 Bad Gateway for /api/auth/* endpoints after config reload at 09:30 UTC. Error log: 'connect() failed (111: Connection refused) while connecting to upstream auth-service:8081'. Auth-service on prod-app-03 is running (systemctl shows active) but not accepting connections on 8081. netstat -tlnp shows auth-service listening on 8082 instead \u2014 port changed in last deploy CHG-9945 but NGINX upstream.conf not updated. All user logins and JWT validation broken.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "nginx",
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Verified auth-service running on port 8082 instead of 8081",
+      "Updated NGINX upstream.conf: server prod-app-03:8082",
+      "Tested config: nginx -t (OK)",
+      "Reloaded NGINX: systemctl reload nginx",
+      "Verified /api/auth/* returning 200"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "fw-prod-01 dropping packets to prod-db-01:5432 after rule update",
+    "description": "Firewall fw-prod-01 blocking TCP traffic from 10.0.2.0/24 (app subnet) to prod-db-01:5432 (PostgreSQL). Started at 06:00 UTC after automated rule deployment. Palo Alto session log shows 'action=deny rule=cleanup-rule'. The allow rule for DB traffic was accidentally removed in change CHG-9950 (security team rule cleanup). All application servers getting connection timeouts to PostgreSQL. Workaround: applications failing over to prod-db-02 via read replica but writes are failing.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-FW-001"
+    ],
+    "resolution_steps": [
+      "Confirmed missing allow rule in Palo Alto config",
+      "Re-added rule: allow tcp/5432 from 10.0.2.0/24 to 10.0.1.10",
+      "Committed firewall config",
+      "Tested connectivity: telnet prod-db-01 5432 (success)",
+      "Documented in CHG-9951, added pre-change validation"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": "Database",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis maxmemory exceeded on prod-app-01 \u2014 OOM rejecting commands",
+    "description": "Redis on prod-app-01 hit maxmemory limit (4GB). redis-cli INFO memory: used_memory_human=4.12G, maxmemory_human=4.00G. All SET/LPUSH commands returning OOM error. Session cache and rate limiter both affected. redis-cli --bigkeys shows session:user:* keys consuming 2.8GB (TTL=86400s). Rate limit keys: 800MB. Eviction policy: noeviction (should be allkeys-lru). Need to fix eviction policy and reduce session TTL.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Set eviction policy: redis-cli CONFIG SET maxmemory-policy allkeys-lru",
+      "Reduced session TTL from 86400s to 14400s (24h to 4h)",
+      "Expired stale sessions: redis-cli SCAN + DEL for keys older than 4h",
+      "Memory dropped to 1.9GB",
+      "Persisted config: redis-cli CONFIG REWRITE"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "RAID-5 degraded on prod-nfs-01 \u2014 disk slot 2 failed",
+    "description": "mdadm monitoring alert: /dev/md0 RAID-5 array degraded. mdadm --detail /dev/md0 shows /dev/sdc (slot 2) marked as removed/faulty at 03:22 UTC. SMART data: sdc Reallocated_Sector_Ct=847 (threshold=140), Current_Pending_Sector=12. Array still operational on 3/4 disks but zero redundancy. Another failure = data loss. iostat shows remaining disks at 85% utilization due to reconstruction reads. All NFS clients experiencing 2x latency.",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Verified spare disk available in inventory (same model WD Red 4TB)",
+      "Hot-swapped failed disk in slot 2",
+      "Started rebuild: mdadm --manage /dev/md0 --add /dev/sdd",
+      "Monitored rebuild: cat /proc/mdstat (ETA: 6 hours)",
+      "Rebuild completed, array healthy 4/4 disks"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "SSH brute force attack on prod-db-01 from 203.0.113.42",
+    "description": "Fail2ban alert: 1,847 failed SSH attempts on prod-db-01 from 203.0.113.42 in last 30 minutes. auth.log confirms repeated 'Failed password for root from 203.0.113.42'. IP geolocates to unknown VPS provider. Root login is disabled in sshd_config (PermitRootLogin no) so no actual breach, but attack is saturating auth logs and causing sshd slowness for legitimate users. Need to block IP and review SSH hardening.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Blocked IP immediately: iptables -A INPUT -s 203.0.113.42 -j DROP",
+      "Added IP to Palo Alto blocklist on fw-prod-01",
+      "Configured fail2ban: bantime=86400, maxretry=3",
+      "Rotated SSH host keys as precaution",
+      "Verified no unauthorized access via last and wtmp logs"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Quarterly revenue reports not generating \u2014 CRM system down",
+    "description": "The sales team cannot generate quarterly revenue reports from the CRM system. This has been down since 8 AM and our quarterly close deadline is Friday. 23 sales representatives are unable to access pipeline data. Finance team also blocked as they need these numbers for the board presentation next week. Please escalate to senior management if this cannot be resolved within 2 hours.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Identified CRM database connection pool exhausted",
+      "Found report generation queries locking tables for extended periods",
+      "Added query timeout and connection pool tuning",
+      "CRM restored, sales team confirmed access"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Database",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Remote workforce unable to connect \u2014 VPN outage affecting 200+ employees",
+    "description": "Our entire remote workforce is unable to connect to company resources via VPN. Approximately 200 employees across 3 time zones are affected. This is impacting customer support operations, development teams, and management. We have SLA commitments to clients that require 24/7 support coverage. Please provide an ETA for resolution and set up a bridge call with the network team.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "VPN gateway vpn-gw-01 certificate had expired",
+      "Renewed VPN gateway certificates",
+      "Restarted IPSec service",
+      "Verified 50+ users reconnected within 15 minutes"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0003",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Customer data backup compliance issue",
+    "description": "Our compliance team has flagged that customer data backups have not been completing successfully for the past week. This is a regulatory requirement and we have an audit in 3 weeks. If we cannot demonstrate proper backup procedures, we risk a compliance violation. Please investigate and provide a remediation plan by end of day.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01",
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "nfs",
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated backup job failures on prod-nfs-01",
+      "Found backup storage quota exceeded (2TB)",
+      "Cleaned old snapshots, freed 600GB",
+      "Ran manual backup successfully",
+      "Set up automated quota alerts at 80%"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Production system performance degradation impacting customer experience",
+    "description": "Multiple customers have reported slow page loads and timeouts on our platform. Our customer success team has received 15 complaints in the last hour. This is affecting our NPS score and we have a major client demo scheduled for tomorrow. Engineering team needs to prioritize this. What is the root cause and when can we expect resolution?",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01",
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx",
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Identified prod-app-01 CPU at 95% from runaway batch job",
+      "Killed batch process and rescheduled to off-peak hours",
+      "Added CPU alerts at 80% threshold",
+      "Performance normalized within 10 minutes"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Application",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Security incident \u2014 suspicious login activity on admin accounts",
+    "description": "Our security monitoring has detected unusual login patterns on several administrator accounts. This was flagged during our morning review. Given the sensitivity of admin access and recent industry breaches, I'm requesting an immediate investigation. Please involve the CISO if needed and provide a preliminary assessment within the hour.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Investigated login patterns in AD audit logs",
+      "Found automated script from dev team testing new SSO integration",
+      "Script was using service accounts without proper approval",
+      "Disabled unauthorized scripts, reset affected credentials",
+      "Added monitoring alert for bulk auth attempts"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Database maintenance window impact on business operations",
+    "description": "The planned database maintenance last night appears to have caused ongoing performance issues. Our finance team reports that month-end reconciliation processes are running 5x slower than normal. The operations dashboard shows increased error rates. Can the DBA team investigate whether the maintenance introduced a regression? This is blocking our month-end close process.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked PostgreSQL after maintenance window",
+      "Found statistics were reset during maintenance, causing poor query plans",
+      "Ran ANALYZE on all tables to rebuild statistics",
+      "Query performance restored to normal within 30 minutes"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "New office unable to access internal systems",
+    "description": "Our new Hyderabad office (ap-south-2) team of 25 engineers cannot access any internal systems. They've been onboarded but nothing is connecting. This is delaying the project timeline and we have client deliverables due next week. IT was supposed to set this up last week. Please coordinate with the networking team to resolve by end of day.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked firewall rules for ap-south-2 subnet",
+      "Found VPN tunnel between ap-south-1 and ap-south-2 was not configured",
+      "Set up site-to-site VPN on vpn-gw-01",
+      "Configured routing and firewall rules for new subnet",
+      "All 25 engineers confirmed access working"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "CI/CD pipeline blocked for 2 days \u2014 all releases frozen",
+    "description": "The engineering team has not been able to deploy any code for 2 days. The CI/CD pipeline fails at the deployment step with authentication errors. We have 3 critical bug fixes and 1 feature release waiting. Product team is asking for an ETA. This is impacting our sprint velocity and customer commitments.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked Kubernetes service account for deploy-bot",
+      "Found service account token expired (90-day rotation not automated)",
+      "Generated new token and updated CI/CD pipeline secrets",
+      "Verified deployment pipeline runs successfully",
+      "Set up token rotation automation"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Application",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "computer is SO SLOW today",
+    "description": "my workstation is barely functioning. everything takes forever to open. even just clicking on a folder takes 10 seconds. tried restarting twice already. other people on my floor having same issue. is there something wrong with the server??",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "cant print anything!!!",
+    "description": "the printer wont work and i need to print documents for a client meeting in 1 hour!!! tried every printer on this floor. IT helpdesk says restart computer but that didnt help. PLEASE someone fix this its urgent",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "ALL SCREENS WENT BLACK",
+    "description": "everyone on 3rd floor just lost their screens at the same time. about 30 people affected. we can hear the computers running but no display. tried unplugging and replugging monitors. happened right after some kind of update notification",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SYS-001"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "server room alarm going off",
+    "description": "theres an alarm beeping in the server room. nobody knows what it means. the air conditioning seems louder than usual too. should someone check on this?? its been going for like 30 mins",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Teams calls keep freezing",
+    "description": "every video call i join freezes after 5 minutes. audio works but video is frozen. tried on browser and app same thing. my internet at home is fine for everything else. started happening yesterday",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "lost all my desktop files",
+    "description": "turned on my computer this morning and all files on my desktop are GONE. years of work!!! someone please tell me this can be recovered. i think there was an update overnight. other people in accounting also missing files",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "wifi keeps dropping in office",
+    "description": "wifi disconnects every few minutes in the ap-south-1 building. have to keep reconnecting. cant do any work like this. been happening for 3 days now. using my phone hotspot to send this ticket lol",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "app crashes when i click reports",
+    "description": "every time i try to generate a report in the CRM it just crashes. gives some error about memory or something i didnt read it fast enough. need these reports for end of month!!! worked fine last week",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-SYS-003"
+    ],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": "KB-0004",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "password expired but cant change it",
+    "description": "my password expired and when i try to change it says doesnt meet requirements. tried like 20 different passwords nothing works. locked out of EVERYTHING now. been 2 hours please help",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-LDAP-001"
+    ],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "upload button not working on website",
+    "description": "customers are calling saying they cant upload documents on our portal. the button just does nothing when you click it. this is affecting new customer onboarding. been like this since this morning",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx",
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "reports are showing wrong numbers",
+    "description": "the daily sales report is showing completely wrong numbers. yesterdays revenue shows as zero but we had sales. finance team is panicking. please check the database something is definitely broken",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "search is broken on the website",
+    "description": "when customers search for products nothing comes up. or it shows completely random results. our support team is getting flooded with calls. pretty sure something happened to the database overnight",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql",
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "order history not loading",
+    "description": "customers cant see their past orders. page just spins forever. our support team cant look up orders either. something about the database being slow? idk but we need this fixed NOW",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "checkout keeps timing out",
+    "description": "customers getting timeout errors at checkout. we're losing sales every minute this is down!!! the error page says something about a gateway timeout. please drop everything and fix this",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service",
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-NGINX-002"
+    ],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "data sync between offices not working",
+    "description": "our ap-south-2 office cant see any updates from ap-south-1. they say their data is 2 days old. customers getting different answers depending on which office they call. super embarrassing",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "internet is down for whole office",
+    "description": "nobody can access anything. no email no internet no internal apps nothing. about 100 people sitting idle. been 45 mins already. when is this getting fixed??",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "external website not loading for customers",
+    "description": "our customers are telling us our website is down. shows 'connection timed out'. i checked on my phone too and same. social media is blowing up. this is a disaster",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "zoom works but nothing else",
+    "description": "weird one - zoom calls work fine but i cant access any company apps or websites. email doesnt work either. my colleague next to me is fine tho. been like this since morning",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "cant access internal wiki",
+    "description": "the company wiki is unreachable. getting some DNS error thing. tried from multiple computers same issue. need to look up a procedure for a customer case thats waiting",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-DNS-001"
+    ],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "file transfer stuck at 0%",
+    "description": "trying to send a 50mb file to a client but it wont upload. just stays at 0%. smaller files work. this has been an issue for a week now. using wetransfer as workaround but thats not ideal",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "got a weird email from IT asking for password",
+    "description": "i got an email saying i need to reset my password by clicking a link. it looks legit but the URL seems weird. my colleague got the same one. is this real or a scam? didnt click anything yet",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "my account got hacked i think",
+    "description": "someone sent emails from my account to all my contacts!!! i didnt do it!!! the emails have weird links in them. please lock my account immediately and fix this. so embarrassing",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-mail-01",
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "exchange",
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "popup saying virus detected",
+    "description": "keep getting popup windows saying virus detected on my computer. antivirus seems to be scanning constantly. computer is really slow because of it. should i be worried? what do i do??",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "someone else logged into my account",
+    "description": "just got a notification that my account was accessed from a location i dont recognize. im scared someone has my password. please change it and tell me if any data was compromised",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "shared drive full AGAIN",
+    "description": "the shared drive is showing disk full error. cant save anything. this happens every few weeks. can someone please just give us more space or clean up old stuff?? blocking my whole teams work",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "files corrupted on network drive",
+    "description": "opened my spreadsheet from the network drive and its all garbled. same with my colleagues files. looks like everything saved in the last 2 days is corrupt. please tell me there are backups!!",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "backup notification keeps popping up",
+    "description": "getting constant popups about backup failed. every 30 minutes. cant focus on work. tried clicking retry but it fails again. someone please either fix the backup or stop the notifications",
+    "category": "Storage",
+    "priority": "low",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-app-03 high CPU \u2014 Java thread deadlock suspected",
+    "description": "prod-app-03 CPU sustained at 98% since 06:42 UTC. top shows PID 4521 (java) consuming 380% CPU across 4 cores. Thread dump via jstack shows 3 threads in BLOCKED state on OrderProcessor.processPayment() mutex. GC overhead 45% with full GC every 90s. AuthService on this node also affected \u2014 response times 12x normal. Need to restart JVM and investigate deadlock root cause.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "auth-service",
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-SYS-003"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Kubernetes etcd cluster degraded \u2014 leader election unstable",
+    "description": "etcd on prod-k8s-master showing leader election churn. kubectl get cs reports etcd as Unhealthy. etcd logs: 'elected leader changed from 1 to 3' every 45s. Network latency between master and nodes increased to 50ms (normal: 2ms). kubectl commands taking 30s+ to respond. Pod scheduling suspended.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Prometheus TSDB compaction failing \u2014 disk I/O 100%",
+    "description": "Prometheus on prod-mon-01 TSDB compaction stuck. iostat shows /dev/sda at 100% utilization, await 450ms. Prometheus error log: 'compact blocks: write: no space left on device'. TSDB size: 195GB on 200GB volume. Need to clean old data and expand volume.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Docker overlay2 storage driver corruption on prod-app-01",
+    "description": "Docker on prod-app-01 failing to start containers. Error: 'driver overlay2 failed: layer not known'. docker system df shows 45GB used. Suspect overlay2 metadata corruption after unclean shutdown yesterday (CHG-9960 power event). Need to clear overlay2 state and rebuild containers.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Ubuntu kernel update caused network driver regression",
+    "description": "After kernel update to 5.15.0-97 on prod-web-02, intermittent network drops every 3-5 minutes. dmesg shows: 'e1000e: NIC Link is Down' followed by 'NIC Link is Up' 10s later. Only this server affected \u2014 running identical kernel on prod-web-01 without issue. Suspect NIC firmware incompatibility with new kernel.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-k8s-node-02 NotReady \u2014 kubelet certificate expired",
+    "description": "kubectl get nodes shows prod-k8s-node-02 as NotReady for 45 minutes. kubelet journal: 'certificate has expired or is not yet valid'. Certificate was auto-rotated but kubelet didn't pick up the new cert. 12 pods evicted to prod-k8s-node-01 causing resource pressure. Need manual cert rotation.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0005",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Grafana alerting delay \u2014 notification channel backlog",
+    "description": "Grafana alerts delayed by 15-20 minutes. Alertmanager queue shows 847 pending notifications. Root cause: Slack webhook rate limited after spike of 200+ alerts during overnight network event. Critical alerts being delayed alongside non-critical ones. Need to prioritize critical alert channel.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "staging-db-01 out of inodes despite free disk space",
+    "description": "staging-db-01 showing 'No space left on device' but df shows 40% free. df -i confirms 100% inode usage. find / -xdev -printf '%h\\n' | sort | uniq -c shows /tmp has 2.4M files from orphaned session temp files. Development team's test scripts not cleaning up. Need to clear /tmp and fix test cleanup.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL WAL archival failing \u2014 pg_wal directory at 85%",
+    "description": "pg_wal on prod-db-01 growing rapidly. archive_command returning exit code 1. archive_status shows 342 .ready files. WAL archival to NFS backup target failing with 'mount.nfs: Stale file handle'. If pg_wal fills to 100%, PostgreSQL will shut down. Immediate risk of production outage.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql",
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis cluster split-brain after network partition",
+    "description": "Redis Sentinel detected split-brain at 04:15 UTC during network maintenance window. Both prod-app-01 and prod-app-02 Redis instances promoted to master. Writes accepted on both \u2014 data divergence for ~12 minutes before Sentinel resolved. Need to identify and reconcile conflicting writes.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01",
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "pg_stat_statements showing new slow query pattern",
+    "description": "pg_stat_statements on prod-db-01 showing new query taking avg 8.2s (max 45s): SELECT * FROM orders WHERE created_at BETWEEN ? AND ? AND status IN (?,?,?) ORDER BY updated_at DESC. Missing composite index on (created_at, status, updated_at). Query appeared after OrderService v2.5.0 deploy (CHG-9972). Causing lock contention on orders table.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL logical replication slot growing unbounded",
+    "description": "Logical replication slot 'reporting_sub' on prod-db-01 retained WAL at 48GB and growing. Subscriber (reporting DB) has been down for maintenance since yesterday. pg_replication_slots shows restart_lsn hasn't advanced in 18 hours. Risk: disk full. Need to either restore subscriber or drop slot.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis SLOWLOG showing KEYS command in production",
+    "description": "redis-cli SLOWLOG GET 10 on prod-app-01 showing KEYS * command taking 2.3s. Tracing to rate-limiter library v3.2.0 bug \u2014 uses KEYS instead of SCAN for cleanup. Blocking all other Redis operations during scan of 2.8M keys. Need hotfix or library downgrade.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Database connection leak from health check endpoint",
+    "description": "prod-db-01 connections growing by ~10/hour. pg_stat_activity shows connections from prod-app-01:random_port with query 'SELECT 1' in idle state. Traced to Kubernetes liveness probe hitting /health which opens DB connection but doesn't close it. 340 leaked connections currently. Connection pool config: max=200, leak detection disabled.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "postgresql",
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "BGP route flapping causing intermittent packet loss",
+    "description": "Core router vpn-gw-01 BGP session flapping with upstream ISP. show ip bgp summary: state alternating between Established and Idle every 2-3 minutes. During flaps, 15-30s of packet loss affecting all external traffic. ISP NOC confirms they see the flaps from their side. MTU mismatch suspected after recent ISP circuit upgrade.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "F5 load balancer SSL offloading degraded \u2014 cipher negotiation slow",
+    "description": "lb-web-01 SSL handshake time increased from 5ms to 800ms. F5 tmsh show sys performance ssl shows SSL TPS dropped from 5000 to 200. Suspect crypto accelerator card failure. HTTP health checks passing but HTTPS performance severely degraded. All web traffic affected.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DNS TTL misconfiguration causing stale records",
+    "description": "Internal DNS returning stale A records for prod-app-03 (old IP 10.0.2.12 instead of new 10.0.2.15 after migration). TTL set to 86400 (24h) instead of 300 (5m). Some clients hitting old IP, getting connection refused. Need to flush DNS cache on all servers and reduce TTL.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-DNS-001"
+    ],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Palo Alto GlobalProtect VPN split-tunnel not working for ap-south-2 users",
+    "description": "ap-south-2 office VPN users reporting all traffic routing through VPN instead of split-tunnel. Bandwidth saturating VPN concentrator. Traced to GlobalProtect config push (CHG-9980) that overwrote split-tunnel routes. 25 engineers affected with 5x slower internet.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0003",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "VLAN 100 broadcast storm detected on sw-core-01",
+    "description": "sw-core-01 CPU at 95% due to broadcast storm on VLAN 100 (server subnet). show mac address-table count shows 18,000 entries (normal: 200). Spanning tree loop suspected \u2014 redundant cable accidentally connected between rack 3 and rack 5 during cabling work. Need to identify and remove loop.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CVE-2026-3891 \u2014 critical RCE in OpenSSL affecting prod-web-01/02",
+    "description": "NVD published CVE-2026-3891 (CVSS 9.8) affecting OpenSSL 3.0.x before 3.0.15. Both prod-web-01 and prod-web-02 running OpenSSL 3.0.12 (confirmed via openssl version). Remote code execution via crafted TLS handshake. Public exploit available on GitHub. Per security policy: patch within 24h for CVSS >= 9.0.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0005",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Kubernetes RBAC misconfiguration \u2014 default service account has cluster-admin",
+    "description": "Security audit found default service account in 'production' namespace bound to cluster-admin ClusterRole. Every pod in production namespace has full cluster access. kubectl auth can-i --as=system:serviceaccount:production:default '*' '*' returns 'yes'. Immediate risk: any compromised pod has full cluster control.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "TLS 1.0/1.1 still enabled on Exchange \u2014 compliance violation",
+    "description": "Qualys SSL scan of prod-mail-01:443 shows TLS 1.0 and 1.1 enabled. PCI DSS 4.0 requires TLS 1.2 minimum. Audit finding: HIGH. Exchange Server 2019 supports TLS 1.3 but not configured. Need to disable legacy protocols and test client compatibility before enforcing.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "AWS access keys found in GitHub public repo",
+    "description": "GitHub secret scanning alert: AWS access key AKIA*** found in public repo 'arif-asadullah/test-scripts' committed 3 hours ago. Key belongs to IAM user 'deploy-prod'. Need immediate key rotation, access audit (CloudTrail), and git history cleanup.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "ZFS pool degraded on prod-nfs-01 \u2014 resilvering at 12%",
+    "description": "zpool status shows raidz2 pool 'datapool' in DEGRADED state. /dev/sde removed from pool with 847 checksum errors. Resilvering in progress: 12% complete, ETA 14 hours. Pool still functional but single-disk fault tolerance only. Second failure = data loss. I/O performance reduced 40% during resilver.",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "iSCSI multipath failover not working on prod-db-01",
+    "description": "prod-db-01 iSCSI multipath showing single active path (should be 2). multipathd show paths: path sda active, path sdb failed. iscsiadm -m session shows only 1 session. Storage controller firmware update (CHG-9985) may have disrupted second path. PostgreSQL I/O latency doubled.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "NFS export permission denied after security hardening",
+    "description": "After security hardening on prod-nfs-01 (CHG-9988), exportfs -v shows exports restricted to specific IPs. Three new app servers (deployed last week) not in the allow list. mount.nfs returning 'access denied by server' on prod-app-03 and two k8s nodes. Need to update /etc/exports.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01",
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-002"
+    ],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "LVM thin pool at 95% \u2014 auto-extend failed",
+    "description": "LVM thin pool 'data-pool' on prod-db-02 at 95.2% usage. Auto-extend threshold was 80% but extend failed: 'Insufficient free space on volume group'. VG has only 2GB free, thin pool needs 50GB minimum extension. PostgreSQL data directory on this thin volume. Risk: pool reaches 100% = read-only.",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "IT infrastructure not ready for new hire batch \u2014 20 employees starting Monday",
+    "description": "We have 20 new hires joining on Monday and their workstations, accounts, and access are not set up yet. HR sent the onboarding list 2 weeks ago. This reflects poorly on our IT readiness and employee experience. Please confirm all accounts and machines will be provisioned by Friday EOD.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Disaster recovery test failed \u2014 board asking for remediation plan",
+    "description": "Our quarterly DR test failed last week. Recovery time was 8 hours instead of the committed 4-hour RTO. The board is asking for a remediation plan before the next audit. What went wrong and what's the timeline to fix?",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "postgresql",
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Server refresh overdue \u2014 hardware out of warranty since January",
+    "description": "Per our IT asset report, 5 production servers have been out of warranty since January. This was flagged in last year's budget review. Any hardware failure has no vendor support. Need a timeline for refresh or extended warranty purchase.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-db-02",
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Monitoring blind spot \u2014 outage detected by customers before IT",
+    "description": "Last Tuesday's 2-hour outage was reported by customers on Twitter before our monitoring team noticed. This is unacceptable. Why didn't our monitoring tools catch it? Need a gap analysis and improved alerting by next sprint.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus",
+      "grafana"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Cloud migration assessment needed for board presentation",
+    "description": "The CTO wants an assessment of migrating our on-premise infrastructure to AWS by Q3. Need a cost comparison, risk analysis, and migration timeline. This will be presented at the next board meeting on May 15th.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Customer data report for GDPR audit \u2014 need extraction from database",
+    "description": "Our compliance team needs a full export of customer data processed in Q1 for the upcoming GDPR audit. The auditors arrive May 5th and this data needs to be ready by April 30th. Please coordinate with the DBA team to extract and prepare the report.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Database performance impacting SLA \u2014 3 client complaints this week",
+    "description": "Three enterprise clients have escalated performance complaints this week. Their queries are taking 10x longer than contractual SLA. Account management is requesting a root cause analysis and remediation timeline. This could affect renewal discussions worth $2M ARR.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Data warehouse refresh delayed \u2014 finance team blocked on Q1 close",
+    "description": "The nightly data warehouse ETL job hasn't run successfully for 3 days. Finance cannot generate Q1 reports needed for the earnings call. CFO has requested this be treated as P1. What is blocking the ETL and when can we expect data freshness?",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Database licensing audit response needed by May 10",
+    "description": "Oracle sent a licensing audit notice. Our DBA team needs to verify all database instances and their edition levels. Legal needs our response by May 10. Please start the inventory immediately.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01",
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "New office in Hyderabad needs network connectivity by May 1",
+    "description": "The Hyderabad office expansion is on schedule for May 1 occupancy. We need site-to-site VPN, Wi-Fi infrastructure, and access to all internal systems. 50 engineers will be working from this site. Network team please confirm readiness.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Internet bandwidth upgrade \u2014 current capacity insufficient for video calls",
+    "description": "Since moving to hybrid work, our internet bandwidth at the Mumbai office is consistently saturated during business hours. Video call quality is suffering. We need an upgrade from 500Mbps to 1Gbps. What's the lead time and cost?",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Client-facing API latency exceeding SLA \u2014 partnership at risk",
+    "description": "Our API partner integration with MegaCorp is showing p99 latency of 2.5 seconds, exceeding our 1-second SLA. They've issued a formal warning and may switch to a competitor. Network and application teams need to jointly investigate.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "api-gateway",
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "CEO unable to access systems during international travel",
+    "description": "The CEO is traveling to Singapore next week and historically has issues accessing our systems due to geo-blocking. Please ensure VPN and all critical systems are accessible from Singapore. This needs to be tested before departure on Thursday.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Triaged ticket and assessed severity",
+      "Engaged appropriate team",
+      "Implemented resolution",
+      "Monitored for recurrence"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": "KB-0003",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "SOC2 audit finding \u2014 MFA not enforced on all admin accounts",
+    "description": "Our SOC2 auditor flagged that MFA is not enforced on 12 administrator accounts. This is a high-severity finding that could affect our certification. Compliance team needs confirmation that MFA is enforced on all admin accounts by next Friday.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Vendor security questionnaire due Friday \u2014 need IT input",
+    "description": "Our largest client sent a 200-question security questionnaire for annual review. Legal and compliance teams have filled their sections. IT security team needs to complete the technical sections (encryption, access controls, incident response) by Friday.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Employee offboarding not disabling accounts timely \u2014 HR escalation",
+    "description": "HR flagged that 5 employees who left in March still have active system access. Our offboarding SLA is 24 hours. This is a security risk and compliance issue. Need an immediate audit of all terminated employee accounts and process fix.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated the reported issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution with user"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Penetration test scheduled for next week \u2014 coordination needed",
+    "description": "Our annual penetration test is scheduled for May 5-9. The security firm will be testing external and internal attack surfaces. All teams need to be on standby for rapid remediation. Please confirm readiness and emergency contacts.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Storage capacity forecast \u2014 running out in 60 days",
+    "description": "Our storage utilization report shows we'll hit 95% capacity within 60 days at current growth rate. Procurement needs 6-8 weeks lead time for new storage arrays. Please submit the purchase request this week with specifications and cost estimate.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Data retention policy implementation overdue \u2014 legal requirement",
+    "description": "Legal team mandated data retention policy implementation by April 30. Customer data older than 7 years must be archived and financial records retained for 10 years. DBA and storage teams need to coordinate automated archival.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "postgresql",
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Backup SLA breach \u2014 RPO exceeded for 3 consecutive days",
+    "description": "Our backup monitoring shows RPO of 72 hours instead of committed 24 hours for the last 3 days. Multiple backup jobs failing silently. This violates our business continuity commitments. Need root cause and immediate remediation.",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Reviewed system logs and metrics",
+      "Found configuration issue",
+      "Updated configuration",
+      "Tested and confirmed fix"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "computer wont turn on",
+    "description": "my desktop wont power on at all. tried different power outlets same thing. other computers on my desk are fine. need to work on quarterly presentation thats due tomorrow",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "updates taking FOREVER",
+    "description": "windows update has been running for 3 hours now. stuck at 78%. cant use my computer at all. was in the middle of important work when it started. didnt even ask to update!!!",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "fan noise super loud on server rack",
+    "description": "walked past the server room and one of the servers sounds like a jet engine. fan is crazy loud. not sure which one. should someone check before it breaks?",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "citrix session keeps disconnecting",
+    "description": "every time i open citrix it connects for like 5 minutes then drops. have to login again and again. happening from home and office. been 4 days now nobody has fixed it",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "server migration broke everything",
+    "description": "after that server migration over the weekend nothing works right. apps are slow, files are missing, printer doesnt work. did anyone test this before going live??",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "out of office not working",
+    "description": "set my out of office reply but people keep saying they didnt get it. checked settings multiple times its definitely on. tried removing and re-adding. nothing works",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "app freezes when i click save",
+    "description": "the inventory app freezes completely when i try to save changes. have to force close and start over. losing all my work every time. happened 6 times today already",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "login page shows blank white screen",
+    "description": "the company portal login page is just blank. no fields no buttons nothing. cleared cache cookies everything still blank. tried chrome firefox edge all same",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx",
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "mobile app crashing on android",
+    "description": "our company mobile app crashes immediately when i open it. worked fine yesterday. tried uninstalling and reinstalling. other people in my team also crashing. iphone users seem fine tho",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "report downloads as blank pdf",
+    "description": "trying to download the monthly sales report but the PDF is completely blank. tried different report dates same thing. the preview on screen looks fine but download is blank",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "SPELL CHECK NOT WORKING in email",
+    "description": "spellcheck in outlook stopped working. sending emails with typos to clients which is embarrassing. tried enabling it in settings but the option is greyed out",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "notification spam from system",
+    "description": "getting like 50 notification emails per hour from the ticketing system. tried unsubscribing but they keep coming. my inbox is completely unusable. MAKE IT STOP",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "customer lookup returns wrong person",
+    "description": "when i search for a customer by phone number it shows a completely different person's info. this is a MAJOR problem \u2014 we could expose private data. happened 3 times today",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "inventory count showing negative numbers",
+    "description": "the inventory system shows -47 units for product SKU-8842. how can we have negative inventory?? the warehouse says they have 200 units. system is wrong",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "old deleted records coming back",
+    "description": "records i deleted last week are reappearing in the system. deleted customer complaints showing up again in the queue. feels like the database is haunted or something",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "export to excel broken",
+    "description": "trying to export our customer list to excel and it either times out or gives an error. list has about 50,000 records. used to work fine last month. need this for marketing campaign",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "duplicate entries everywhere",
+    "description": "the system is creating duplicate records for everything. same customer appears 3 times. same order shows up twice. data cleanup is going to be a nightmare. what happened??",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "skype calls have terrible echo",
+    "description": "every skype call i make has a terrible echo. people can hear themselves talking back. tried different headset same issue. only happens on company network not on mobile data",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "certain websites blocked that shouldnt be",
+    "description": "our content management tool website is being blocked by the firewall. it says 'access denied by corporate policy'. this is a legitimate work tool we use every day. who blocked it??",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-FW-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "remote desktop super laggy",
+    "description": "remote desktop to my office computer is unusably slow. like 5 second delay on every click. was fine last week. internet speed test shows 100mbps so its not my connection",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "printers not found on new wifi",
+    "description": "after the wifi upgrade last weekend none of the printers show up anymore. cant print from any computer on the floor. IT said new wifi was 'better' but now nothing works",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "video conferencing keeps buffering",
+    "description": "teams/zoom calls buffer every 30 seconds. freezes then catches up. everyone in the Mumbai office has the same problem. started after the network maintenance on saturday",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "locked out of EVERYTHING after vacation",
+    "description": "came back from 2 weeks vacation and now i cant login to anything. password expired? account deactivated?? i wasnt told about any changes. stuck sitting at my desk doing nothing",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-AUTH-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "random 2FA codes on my phone",
+    "description": "keep getting 2FA authentication codes on my phone that i didnt request. like 5 in the last hour. is someone trying to hack my account??? very concerned",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "browser keeps warning about unsafe site",
+    "description": "chrome shows 'your connection to this site is not private' for our internal HR portal. wont let me access payroll info. tried other browsers same warning",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": "KB-0005",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "someone changed my email signature",
+    "description": "my email signature was changed to something weird. i didnt do it. worried someone has access to my outlook. please investigate and change my password",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "USB drive not working \u2014 security blocked?",
+    "description": "plugged in my USB drive to copy files for a presentation and nothing happens. tried 3 different USB ports. colleague says USB was disabled for security. how am i supposed to present to client tomorrow??",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "cant attach files to email \u2014 too large",
+    "description": "trying to email a 30mb presentation to a client but it keeps bouncing back saying too large. this is a normal business file why is there such a small limit?? tried compressing it still too big",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "mapped network drive disappeared",
+    "description": "my Z: drive that maps to the shared department folder just disappeared from my computer. tried mapping it again but 'network path not found'. all my project files are there!!!",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "recycle bin empty but disk still full",
+    "description": "my computer says disk full but i emptied the recycle bin and deleted everything i could. still says 2% free. where is all the space going?? cant even save documents",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "photos from company event gone",
+    "description": "the marketing team photos from last weeks company event that were on the shared drive are all gone. someone deleted them or the folder was moved. we need these for the newsletter going out friday",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "containerd runtime socket error on prod-k8s-node-01",
+    "description": "kubelet on prod-k8s-node-01 reporting: 'failed to create containerd task: OCI runtime create failed: runc did not terminate successfully: context deadline exceeded'. Happening for all new pod schedulings since 14:30 UTC. Existing pods running fine. containerd service logs show socket timeout on /run/containerd/containerd.sock. Suspect containerd process hung.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Restarted containerd: systemctl restart containerd",
+      "Verified kubelet reconnected to containerd socket",
+      "New pods scheduling successfully",
+      "Added containerd health check to monitoring"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "systemd-resolved consuming 4GB RAM on prod-web-01",
+    "description": "ps_mem.py shows systemd-resolved at 4.1GB RSS on prod-web-01. Normal is ~50MB. DNS resolution working but extremely slow (2-3s per query). NGINX health checks timing out due to slow DNS. journalctl -u systemd-resolved shows millions of NXDOMAIN responses cached \u2014 suspect DNS amplification from misconfigured app.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-DNS-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "cgroup memory limit causing OOM on prod-app-02 containers",
+    "description": "Docker containers on prod-app-02 hitting cgroup memory limits. docker stats shows order-service at 1.97GB/2GB limit. Host has 16GB free but container cgroup prevents usage. dmesg: 'memory cgroup out of memory: Killed process 8847 (java)'. Need to increase container memory limit or optimize JVM.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": "KB-0004",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "NTP drift detected \u2014 prod-db-01 clock skew 4.7 seconds",
+    "description": "ntpstat on prod-db-01 shows unsynchronised, time offset 4700ms. PostgreSQL replication complaining about timestamp inconsistencies. chronyd service failed after recent kernel update. TLS certificate validation also failing due to clock skew. Need to resync NTP immediately.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Ansible playbook timeout deploying to prod-k8s-node-02",
+    "description": "ansible-playbook site.yml failing on prod-k8s-node-02 with: 'Timeout waiting for privilege escalation prompt'. SSH works manually. Suspect PAM module delay \u2014 pam_systemd taking 90s+ to create session. /var/log/auth.log shows: 'pam_systemd: Failed to create session: Connection timed out'.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "journald consuming 8GB disk on prod-mon-01",
+    "description": "journalctl --disk-usage shows 8.2GB on prod-mon-01. SystemMaxUse not set (default unlimited). Prometheus exporter logging at DEBUG level since CHG-9995 \u2014 generating 500MB/day of journal entries. /var at 92%.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "OrderService gRPC deadline exceeded on internal service calls",
+    "description": "OrderService on prod-app-01 gRPC calls to InventoryService failing with DEADLINE_EXCEEDED. Default deadline 5s, actual p99 latency 12s. InventoryService logs show slow PostgreSQL queries (no index on product_id+warehouse_id). 30% of checkout requests failing.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service",
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Database",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "React frontend build failing \u2014 node_modules corruption",
+    "description": "CI/CD pipeline failing on frontend build: 'Module not found: react-dom'. npm ci succeeds but node_modules/.cache corrupted. Suspect Docker layer caching serving stale node_modules. Only affects builds from prod-k8s-node-01 runner.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "AuthService rate limiter blocking legitimate traffic",
+    "description": "AuthService rate limiter on prod-app-03 blocking login attempts at 10 req/s per IP. Corporate NAT means all 500 office users share one IP. During morning login spike (08:30-09:00), 40% of employees getting 429 Too Many Requests.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "WebSocket connections dropping after 60 seconds",
+    "description": "Real-time notification WebSocket connections on prod-web-01 dropping exactly at 60s. NGINX proxy_read_timeout default is 60s. Notifications stop working until page refresh. Affects 2,000 active users.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Spring Boot actuator endpoints exposed to public internet",
+    "description": "Discovered /actuator/env and /actuator/heapdump accessible without auth on prod-app-01:8080. Contains database credentials and JVM heap data. Security scanner flagged as critical. Need to restrict actuator to management port or add auth.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Security",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "API response payload size exceeding 10MB causing OOM in mobile app",
+    "description": "OrderService /api/orders endpoint returning 12MB JSON payload for customers with >1000 orders. Mobile app OOM on parsing. API has no pagination \u2014 returns all orders in single response. Need server-side pagination with limit/offset.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service",
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL streaming replication WAL sender disconnecting",
+    "description": "pg_stat_replication on prod-db-01 shows replica prod-db-02 state='streaming' then suddenly disconnects every 15 minutes. Replica falls behind, catches up, disconnects again. wal_sender_timeout=60s, wal_keep_size=1GB. Network between servers stable. Suspect wal_sender process killed by OOM.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL bloat \u2014 orders table 40GB actual data in 120GB table",
+    "description": "pgstattuple('orders') on prod-db-01: table_len=120GB, tuple_len=40GB, dead_tuple_len=75GB. Bloat ratio: 63%. autovacuum_vacuum_scale_factor=0.2 but table too large for default settings. Queries scanning dead tuples causing 3x slowdown.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Set autovacuum_vacuum_scale_factor=0.01 for orders table",
+      "Ran manual VACUUM FULL orders (required maintenance window)",
+      "Table reduced from 120GB to 42GB",
+      "Query performance improved 3x"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis Sentinel failover loop \u2014 master flapping",
+    "description": "Redis Sentinel on prod-app-01 triggering failover every 5 minutes. Sentinel log: '+sdown master mymaster 10.0.2.10 6379' then '-sdown master mymaster' 30s later. Root cause: network microbursts causing 2-3s connectivity drops. down-after-milliseconds=1000 too aggressive.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL pg_hba.conf rejecting connections from new subnet",
+    "description": "After network restructuring, prod-app-03 (new IP 10.0.2.15) cannot connect to prod-db-01 PostgreSQL. pg_hba.conf only allows 10.0.2.0/28 (old range). New subnet is 10.0.2.0/24. Need to update pg_hba.conf and reload.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-002"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Connection leak detected \u2014 idle connections growing linearly",
+    "description": "prod-db-01 idle connections: 87 at 08:00, 145 at 12:00, 203 at 16:00. Growing ~30/hour. pg_stat_activity shows connections from prod-app-01 with query='SET application_name' in idle state for hours. HikariCP leak detection disabled. Will hit max_connections=300 by midnight.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01",
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "pg_dump backup taking 6 hours instead of usual 45 minutes",
+    "description": "Nightly pg_dump on prod-db-01 started at 02:00, still running at 08:00. Normal duration: 45 min. du -sh shows dump file at 38GB (expected 45GB). iostat shows competing I/O from autovacuum running on large tables. Need to schedule backup window without autovacuum.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "MTU mismatch causing packet fragmentation between DCs",
+    "description": "tcpdump on sw-core-01 showing IP fragmentation for packets >1400 bytes between ap-south-1 and ap-south-2. VPN tunnel MTU=1500 but underlying link MTU=1422 after ISP change. PMTUD being blocked by intermediate firewall. Causing TCP performance degradation for large transfers.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "ARP storm on VLAN 200 \u2014 switch CPU 99%",
+    "description": "sw-core-01 show processes cpu shows 99%. show mac address-table shows 45,000 entries on VLAN 200. ARP inspection log: 2000 ARP packets/sec from MAC 00:1A:2B:3C:4D:5E. Traced to misconfigured Docker bridge on prod-k8s-node-01 broadcasting ARP for non-existent IPs.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "ACL blocking ICMP \u2014 monitoring false positives",
+    "description": "Prometheus blackbox exporter showing prod-app-02 as down. ping fails but ssh works. New ACL applied to fw-prod-01 (CHG-9999) blocks ICMP. All ICMP-based monitoring broken. Need to allow ICMP type 8 (echo request) in ACL.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [
+      "ERR-FW-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DNS round-robin not distributing evenly",
+    "description": "dig prod-web.internal shows both prod-web-01 and prod-web-02 IPs but 90% of connections hitting prod-web-01. DNS TTL=300s and clients caching first response. Need to switch from DNS round-robin to load balancer health-checked distribution.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-01",
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Log4Shell scan results \u2014 3 vulnerable services identified",
+    "description": "Dependency scan found log4j-core 2.14.0 in OrderService, AuthService, and ReportService. CVE-2021-44228 (CVSS 10.0). All three services deployed on production. WAF rule in place as temporary mitigation but need library upgrade to 2.17.1.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01",
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "order-service",
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "JWT secret key shared across all environments",
+    "description": "Code review found JWT_SECRET env var identical in dev, staging, and production. Any dev environment JWT is valid in production. Tokens signed in dev can access production APIs. Need unique secrets per environment and token invalidation.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [
+      "auth-service",
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Unencrypted PII in application debug logs",
+    "description": "Production debug logs on prod-app-01 contain unencrypted customer email addresses and phone numbers. Log rotation keeps 30 days. GDPR violation risk. Debug logging was enabled for troubleshooting 2 weeks ago and never turned off. LOG_LEVEL still set to DEBUG.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "SSH host key changed warning on prod-db-02",
+    "description": "All SSH connections to prod-db-02 showing 'WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED'. Automation scripts failing with StrictHostKeyChecking=yes. No authorized maintenance or rebuild occurred. Could indicate MITM or unauthorized server rebuild. Need investigation.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Thin-provisioned LUN overcommitted \u2014 150% allocation",
+    "description": "SAN management showing thin LUN allocated to prod-db-01 at 150% overcommitment. Physical storage pool at 88%. If multiple LUNs grow simultaneously, pool exhaustion will cause I/O errors across all LUNs. Need to add physical capacity or reduce allocation.",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "NFS write performance degraded 10x after kernel update",
+    "description": "NFS write throughput on prod-nfs-01 dropped from 500MB/s to 50MB/s after kernel update to 5.15.0-97. nfsstat shows high retransmissions. Suspect NFS delegation issues with new kernel. Read performance unaffected.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Backup deduplication ratio dropped from 5:1 to 1.2:1",
+    "description": "Backup storage consumption spiked 4x this week. Deduplication engine showing 1.2:1 ratio instead of normal 5:1. Traced to new encrypted backup feature \u2014 encrypted data doesn't deduplicate. 2TB additional storage consumed in 5 days.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "LVM snapshot consuming more space than original volume",
+    "description": "LVM snapshot of data volume on prod-db-02 at 95% full. Original volume has high write rate during business hours causing snapshot COW overhead. If snapshot fills to 100%, it becomes invalid and is auto-removed. Need to either merge or remove snapshot.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "End-of-life Windows Server 2012 \u2014 compliance risk",
+    "description": "Security audit flagged that prod-ldap-01 is running Windows Server 2022 but two other systems still on Server 2012 R2 (end of extended support). No security patches available. Compliance team requiring migration plan within 30 days.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Capacity planning request for Q3 product launch",
+    "description": "Product team is planning a major feature launch in Q3 expected to double our user base. Current infrastructure handles 10,000 concurrent users. Need capacity assessment and scaling plan for 20,000 concurrent users. Budget approval needed by May 30.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01",
+      "prod-web-01",
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "order-service",
+      "nginx",
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "SLA report showing 99.2% uptime \u2014 below 99.9% target",
+    "description": "Monthly SLA report shows 99.2% uptime instead of our committed 99.9%. Three incidents contributed to 6.3 hours downtime. Client account managers requesting root cause for each incident. Need post-incident review completed by Friday.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Green IT initiative \u2014 reduce datacenter power consumption 20%",
+    "description": "Board approved green IT initiative to reduce datacenter power consumption by 20% by year end. Need assessment of current power usage, rightsizing opportunities, and migration candidates for cloud. Initial proposal due in 2 weeks.",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "IT budget variance \u2014 infrastructure costs 30% over plan",
+    "description": "Finance flagged Q1 infrastructure costs 30% over budget. Main drivers: unplanned storage expansion and cloud egress charges. Need cost optimization recommendations and revised Q2-Q4 forecast.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Customer portal redesign launch delayed \u2014 critical bugs found in UAT",
+    "description": "The customer portal redesign launch scheduled for May 1 has critical bugs found in UAT. Payment processing and order history features failing. Business stakeholders need an updated timeline. Marketing has already announced the launch date.",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01",
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "order-service",
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Third-party API provider deprecating v1 \u2014 migration deadline June 30",
+    "description": "Our payment provider notified that API v1 (which we currently use) will be deprecated June 30. Migration to v3 requires significant code changes. Engineering team needs to prioritize this. Impact: all payment processing will break if not migrated.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Mobile app store rating dropped to 3.2 \u2014 stability issues",
+    "description": "Our mobile app rating on Google Play dropped from 4.5 to 3.2 in the last 2 weeks. Reviews mention frequent crashes and slow loading. This is affecting new user acquisition. Product and engineering need to prioritize stability fixes.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [
+      "api-gateway",
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Accessibility audit failed \u2014 WCAG 2.1 compliance required by law",
+    "description": "External accessibility audit found 47 WCAG 2.1 violations on our customer portal. Legal team says we must comply within 90 days to avoid potential lawsuits. Need engineering team assessment of effort required.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "API documentation out of date \u2014 partner integration failing",
+    "description": "Two integration partners reported issues this week because our API documentation doesn't match actual behavior. Version mismatch between docs and production. Developer relations team requesting documentation update as priority.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [
+      "api-gateway",
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Database cost optimization \u2014 Oracle to PostgreSQL migration assessment",
+    "description": "License renewal for Oracle database is $450K/year. CTO wants assessment of migrating to PostgreSQL to reduce costs. Need feasibility study covering: data migration, application compatibility, performance comparison, and timeline.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "GDPR data deletion request backlog \u2014 200 pending requests",
+    "description": "Privacy team reports 200 pending data deletion requests from customers, oldest is 45 days. GDPR requires completion within 30 days. Current manual process takes 2 hours per request. Need automated solution urgently.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Read replica performance inconsistent \u2014 analytics team complaining",
+    "description": "Analytics team reports that their queries on the read replica take anywhere from 2 seconds to 5 minutes for the same report. Inconsistent performance making it impossible to deliver timely insights. Suspect replication lag or shared resource contention.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Database audit trail missing for regulatory requirement",
+    "description": "Compliance team discovered that our database doesn't have a complete audit trail of data modifications. Regulators require full audit history for financial transactions. Need to implement database-level audit logging.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Reporting database refresh taking too long \u2014 blocking morning standup",
+    "description": "The overnight reporting database refresh is supposed to complete by 6 AM but regularly finishes at 9:30 AM. The operations team can't run their morning reports for the standup meeting. Need optimization or architecture change.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "WiFi coverage gaps in new building wing \u2014 40 employees affected",
+    "description": "The new east wing (floors 3-5) has poor WiFi coverage. Signal drops and slow speeds reported by 40 employees. Site survey was done 6 months ago but furniture layout changed. Need updated survey and additional access points.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "DDoS protection needed \u2014 competitor experienced attack last week",
+    "description": "A competitor in our space experienced a major DDoS attack last week that took them offline for 12 hours. Our current setup has no DDoS mitigation. CISO requesting evaluation of DDoS protection solutions with recommendation by next week.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [
+      "nginx",
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Cross-region latency affecting collaboration between offices",
+    "description": "Mumbai and Hyderabad teams report significant lag when collaborating on shared documents and video calls. Network team says 120ms latency is normal for cross-region. Business impact: teams avoiding real-time collaboration. Need evaluation of optimization options.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Vendor VPN tunnel for partner integration \u2014 setup needed by May 15",
+    "description": "Business development signed a new partnership requiring dedicated VPN tunnel to partner's network. Technical requirements received today. Integration go-live date is May 15. Network team please assess and plan.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0003",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Network segmentation audit for PCI compliance",
+    "description": "PCI auditor requires evidence of network segmentation between cardholder data environment and general corporate network. Current flat network doesn't meet requirements. Need segmentation plan and implementation timeline.",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Cyber insurance renewal \u2014 need updated security posture assessment",
+    "description": "Cyber insurance renewal is due June 1. Insurer requires updated security assessment including: patching cadence, MFA coverage, backup testing results, incident response plan. CISO needs all teams to provide their sections by May 15.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Third-party vendor access not revoked after contract ended",
+    "description": "Procurement flagged that 3 vendor accounts still have VPN and system access despite contracts ending in Q4 2025. This is a security and compliance violation. Need immediate access revocation and process fix.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "active-directory"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Shadow IT discovery \u2014 15 unauthorized SaaS tools in use",
+    "description": "IT governance review found 15 unauthorized SaaS tools being used across departments, with company data in tools that haven't been security reviewed. Examples: unauthorized file sharing, project management, and communication tools. Need policy enforcement and approved alternatives.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Incident response plan needs updating \u2014 last review 2 years ago",
+    "description": "Our incident response plan was last updated in 2024. It doesn't cover current infrastructure, team structure has changed, and contact information is outdated. Regulators may ask for current plan during next audit.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Customer reporting data breach via support channel",
+    "description": "A customer contacted support claiming they can see another customer's account details when logged in. Support team verified the issue \u2014 appears to be a session handling bug. This is a potential data breach requiring notification under GDPR. Legal and security teams need to be engaged immediately.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "auth-service",
+      "order-service"
+    ],
+    "error_codes": [
+      "ERR-SEC-001"
+    ],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Application",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Annual security awareness training overdue \u2014 compliance deadline passed",
+    "description": "HR reports that 40% of employees have not completed their mandatory annual security awareness training. Compliance deadline was March 31. Need to push remaining employees to complete training within 2 weeks.",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Cloud storage migration ROI analysis requested",
+    "description": "CFO wants ROI analysis for migrating on-premise NFS storage to AWS S3/EFS. Current on-prem storage: 50TB, growing 500GB/month. Need cost comparison, performance implications, and migration approach.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Data classification project needed for storage tiering",
+    "description": "Storage costs are growing 15% quarterly. CTO wants hot/warm/cold data classification to move infrequently accessed data to cheaper storage. Need assessment of data access patterns and tiering strategy.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01",
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "nfs",
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Ransomware protection for backup infrastructure",
+    "description": "After seeing recent ransomware attacks in the industry, the CISO wants immutable backups implemented. Current backups on prod-nfs-01 can be modified or deleted. Need air-gapped or immutable backup solution.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": "Security",
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "Storage performance metrics needed for SLA reporting",
+    "description": "Operations team needs monthly storage performance metrics (IOPS, latency, throughput) for client SLA reporting. Currently collected manually. Need automated reporting solution integrated with Grafana dashboards.",
+    "category": "Storage",
+    "priority": "low",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs",
+      "grafana"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  },
+  {
+    "title": "End-of-life NAS appliance replacement needed",
+    "description": "The NAS appliance supporting prod-nfs-01 reaches end-of-life in August. Vendor will stop providing firmware updates. Need replacement evaluation: buy new appliance vs migrate to software-defined storage vs cloud.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated issue",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "claude",
+    "persona": "manager"
+  }
+]

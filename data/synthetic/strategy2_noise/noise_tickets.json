@@ -1,0 +1,4978 @@
+[
+  {
+    "title": "Replication lag",
+    "description": "Slow queries on staging-db-01 blocking production. Query time 30000ms. Users reporting issues \u2014 this is urgent because my manager asked",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on staging-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "DNS failing [sent from iPhone]",
+    "description": "DNS resolution failing for internal services. Affecting production",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-mail-01",
+      "Restarted api-gateway",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.7,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Disk I/O slow prod-k8s-node-02",
+    "description": "SAN LUN mapping incorrect on prod-k8s-node-02 after firmware update. Needs immediate attention",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "CVE found on prod-mon-01",
+    "description": "Vulnerability scan found critical CVE on prod-mon-01. Blocking deployment",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mon-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "prod-db-01 not responding",
+    "description": "Kernel panic on prod-db-01. Server rebooted unexpectedly. Customer checkout broken \u2014 using Chrome on Mac",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": "KB-0004",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "User locked out",
+    "description": "User locked out after password change. ERR-NFS-001. Team unable to work",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-app-03",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Deploy failed redis",
+    "description": "redis throwing NullPointerException in AuthHandler. 93% of requests failing.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.72,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "User locked out",
+    "description": "48 failed login attempts on admin account from 192.168.1.100. CUSTOMERS COMPLAINING (MY LAPTOP IS DELL BTW)",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-master",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "Replication lag 200s between prod-db-02 and prod-nfs-01. Critical for business",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "Replication lag 5000s between prod-app-03 and prod-k8s-node-01. Affecting prod",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-03",
+      "Restarted grafana",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Storage full",
+    "description": "SAN LUN mapping incorrect on prod-app-01 after firmware update. Affecting producton",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Disk I/O slow prod-app-01",
+    "description": "Backup storage quota exceeded on prod-app-01. Last 38 backups failed.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "exchange 502 errors",
+    "description": "exchange returning ERR-VPN-001 errs on prod-k8s-master. Users reporting issues",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-master",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Disk I/O slow prod-mon-01",
+    "description": "Backup storage quota exceeded on prod-mon-01. LAST 38 BACKUPS FAILED.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-mon-01",
+      "Restarted nfs",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "User locked out",
+    "description": "Unauthorized SSH access attempt on prod-k8s-node-01 from 203.0.113.42. MULTIPLE TEAMS AFFECTED",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "api-gateway crashing",
+    "description": "API-GATEWAY THROWING NULLPOINTEREXCEPTION IN AUTHHANDLER. 85% of requests failing. (my laptop is Dell btw)",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "nginx 502 errors",
+    "description": "nginx throwing NullPointerException in OrderProcessor!!!!!!!!! 94% of requests failing!!!!!!!!!",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-03 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CPU high on prod-app-02",
+    "description": "Ubuntu security patch failed on prod-app-02. apt-get stuck. Blocking deployment",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-02",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Failed login attempts",
+    "description": "UNAUTHORIZED SSH ACCESS ATTEMPT ON PROD-APP-01 FROM 10.0.5.22. Multiple teams affected (my laptop is Dell btw)",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Failed login attempts",
+    "description": "Service account token expired on redis. All API calls rejected.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-nfs-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Failed login attempts",
+    "description": "17 failed login attempts on admin account from 172.16.0.50. Blocking deployment\n\nAlso, unrelated but can someone reset my password?",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "CVE found on staging-db-01",
+    "description": "14 failed login attempts on admin account from 172.16.0.50. Blocking deployment",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked staging-db-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "User locked out",
+    "description": "Service account token expired on prometheus. All API calls rejected.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-01",
+      "Restarted prometheus",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0005",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-app-03 not responding",
+    "description": "Disk space 98% on prod-app-03. order-service logs filling up. Blocking deployment",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-03",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Storage full",
+    "description": "NFS server prod-db-01 not responding. All clients hung. On-call team notified \u2014 using Chrome on Mac",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "SSL certificate expired on redis. ERR-K8S-001. Please fix ASAP [sent from iPhone]",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "SSHed into staging-db-01",
+      "Restarted redis",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Firewall blocking prod-db-02",
+    "description": "SSL certificate expired on nfs. ERR-K8S-001. Needs immediate attention",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-db-02",
+      "Restarted nfs",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-app-01 down",
+    "description": "prod-app-01 unreachable via SSH and ping. Team unable to work",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "DEPLOY FAILED PROMETHEUS",
+    "description": "Config syntax error in prometheus after update. Multiple teams affected",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-01",
+      "Restarted prometheus",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Deploy failed nfs",
+    "description": "nfs throwing NullPointerException in OrderProcessor. 98% of requests failing.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "User locked out",
+    "description": "30 failed login attempts on admin account from 172.16.0.50. Affecting production",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-01",
+      "Restarted api-gateway",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prometheus crashing",
+    "description": "JWT token validation failing on prometheus. All auth calls rejected.",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-01",
+      "Restarted prometheus",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "kubernetes timeout",
+    "description": "Deployment v2.4.0 failed on prod-k8s-node-02. Rollback needed. SLA at risk",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "User locked out",
+    "description": "Vulnerability scan found critical CVE on prod-db-01. Critical for business \u2014 this is urgent because my manager asked",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-01",
+      "Restarted redis",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Firewall blocking prod-k8s-master",
+    "description": "SSL certificate expired on postgresql. ERR-SSL-001. Critical for business",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-k8s-master",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-app-03 not responding",
+    "description": "Docker daemon not responding on prod-app-03. ALL CONTAINERS INACCESSIBLE.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-03",
+      "Restarted auth-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0005",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "grafana 502 errors",
+    "description": "Health check endpoint returning 500 on prod-ldap-01. Load balancer marking it down.",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted grafana",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Deploy failed exchange",
+    "description": "exchange returning ERR-REDIS-001 erors on prod-web-02. On-call team notified",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "redis",
+      "exchange"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Disk full prod-db-02",
+    "description": "Docker daemon not responding on prod-db-02. All containers inaccessible.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-02",
+      "Restarted prometheus",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": "KB-0004",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Failed login attempts",
+    "description": "Privilege escalation attempt detected on prod-web-01. Needs immediate attention",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis OOM prod-app-01",
+    "description": "Backup job failed on prod-app-01!!!!!!!!! INCOMPLETE BACKUP FILE!!!!!!!!! Multiple teams affected",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DNS failing",
+    "description": "SSL certificate expired on redis. ERR-PG-001. Customers complaining",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-01",
+      "Restarted redis",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.71,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "exchange timeout",
+    "description": "JWT token validation failing on exchange. All auth calls rejected. [sent from iPhone]",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-master",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Firewall blocking prod-app-02",
+    "description": "Packet loss 93% on fw-prod-02. CUSTOMER CHECKOUT BROKEN",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Disk full prod-k8s-node-01",
+    "description": "Kernel panic on prod-k8s-node-01. Server rebooted unexpectedly. On-call team notified",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "User locked out",
+    "description": "TLS certificate mismatch on kubernetes. Monitoring alerts firing \u2014 using Chrome on Mac",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-k8s-node-01 down",
+    "description": "prod-k8s-node-01 unreachable via SSH and ping. Revenue impact estimated",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Deploy failed exchange",
+    "description": "JWT token validation failing on exchange. All auth calls rejected.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-03",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis OOM prod-app-01",
+    "description": "Redis OOM on prod-app-01. Used memory 92% of maxmemory. Critical for business",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "PROD-WEB-01 DOWN",
+    "description": "Ubuntu security patch failed on prod-web-01!!!!!!!!! apt-get stuck!!!!!!!!! Customers complaining",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-nfs-01 not responding",
+    "description": "prod-nfs-01 CPU usage at 100% for 10 minutes. EXCHANGE RESPONSE TIMES DEGRADED.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "exchange",
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-nfs-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "File system corruption on prod-k8s-node-01. Read-only mode. Multiple teams affected",
+    "category": "Storage",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CPU high on prod-web-02",
+    "description": "Ubuntu security patch failed on prod-web-02. apt-get stuck. Customers complaining \u2014 this is urgent because my manager asked",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "Packet loss 86% on fw-prod-01. MULTIPLE TEAMS AFFECTED",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Disk full prod-ldap-01",
+    "description": "Docker daemon not responding on prod-ldap-01. All containers inaccessible.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "prod-db-02 down",
+    "description": "PROD-DB-02 CPU USAGE AT 99% FOR 30 MINUTES. prometheus response times degraded.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "prometheus"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.72,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Redis OOM prod-ldap-01",
+    "description": "Slow queries on prod-ldap-01 blocking producton. Query time 200ms. Multiple teams affected\nNote: I'm working from home today",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "User locked out",
+    "description": "42 failed login attempts on admin account from 203.0.113.42. Critical for business",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Replication lag 1000s between prod-db-01 and prod-db-02!!!!!!!!! Affecting production",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-01",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": "KB-0004",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "FAILED LOGIN ATTEMPTS",
+    "description": "Phishing email reported by 7 employees. ON-CALL TEAM NOTIFIED",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-web-02",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "Firewall lb-web-01 blocking traffic to prod-k8s-node-01 on port 5432. Multiple teams affected",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Firewall blocking prod-mon-01",
+    "description": "Packet loss 96% on vpn-gw-01. On-call team notified",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mon-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "CPU high on prod-k8s-node-02",
+    "description": "Memory usage at 93% on prod-k8s-node-02. OOM killer activated. On-call team notified",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-02",
+      "Restarted prometheus",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "POSTGRESQL CONNECTION ISSUE",
+    "description": "Replication lag 5000s between prod-k8s-node-01 and prod-ldap-01. Blocking deployment [sent from iPhone]",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-01",
+      "Restarted nfs",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "Load balancer health check failing for prod-k8s-node-02. Traffic on single server.",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-02",
+      "Restarted order-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Firewall blocking prod-k8s-node-01",
+    "description": "SSL certificate expired on api-gateway. ERR-SSL-001. Customers complaining (my laptop is Dell btw)",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CPU high on prod-app-02",
+    "description": "prod-app-02 CPU usage at 89% for 30 minutes. order-service response times degraded.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL connection issue",
+    "description": "Redis OOM on prod-k8s-node-02. Used memory 90% of maxmemory. Customers complaining",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "grafana crashing",
+    "description": "Deployment v2.4.0 failed on staging-db-01. Rollback needed. Customer checkout broken",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on staging-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Deploy failed nfs",
+    "description": "nfs timeout on /api/checkout. Response time 15000ms. Critical for business",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CPU high on prod-db-01",
+    "description": "Memory usage at 96% on prod-db-01. OOM killer activated. Management escalation imminent",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "SSL expired",
+    "description": "Firewall fw-prod-02 blocking traffic to prod-db-02 on port 389. SLA at risk",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "prod-db-01 not responding",
+    "description": "Kernel panic on prod-db-01. Server rebooted unexpectedly. Monitoring alerts firing",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "User locked out",
+    "description": "40 failed login attempts on admin account from 192.168.1.100. Affecting producton",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-nfs-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Firewall blocking prod-db-01",
+    "description": "Packet loss 88% on vpn-gw-01. Management escalation imminent",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-01",
+      "Restarted nfs",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL connection issue (my laptop is Dell btw)",
+    "description": "Slow queries on prod-web-01 blocking producton. Query time 5000ms. On-call team notified \u2014 using Chrome on Mac",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "api-gateway 502 errors",
+    "description": "API-GATEWAY RETURNING ERR-K8S-001 ERRORS ON PROD-APP-01. On-call team notified",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-app-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "PostgreSQL connection issue",
+    "description": "Database migration script failed on prod-ldap-01. Schema inconsistent.",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-ldap-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Disk full prod-mon-01",
+    "description": "Memory usage at 99% on prod-mon-01. OOM killer activated. On-call team notified",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mon-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "SSL expired",
+    "description": "DNS resolution failing for internal services. Affecting production",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-nfs-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "nginx crashing",
+    "description": "nginx timeout on /health. Response time 1000ms. CUSTOMERS COMPLAINING [SENT FROM IPHONE]",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked staging-db-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "Disk I/O latency 1000ms on prod-db-02. exchange affected.",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CVE found on prod-app-01",
+    "description": "User locked out after password change. ERR-VPN-001. Monitoring alerts firing",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-app-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "DNS failing",
+    "description": "DNS resolution failing for internal services. Please fix ASAP",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-ldap-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-web-02 not responding",
+    "description": "Docker daemon not responding on prod-web-02. All containers inaccessible.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-web-02",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "RAID degraded prod-k8s-node-01",
+    "description": "RAID array degraded on prod-k8s-node-01. One disk failed. Please fix ASAP",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "auth-service timeout",
+    "description": "auth-service memory leak \u2014 heap growing 97MB per hour. CRITICAL FOR BUSINESS",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted auth-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL connection issue \u2014 using Chrome on Mac",
+    "description": "Replication lag 1000s between prod-app-03 and prod-ldap-01. Blocking deployment",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-03",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Unauthorized access",
+    "description": "Phishing email reported by 18 employees. Customer checkout broken",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-web-01",
+      "Restarted order-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis OOM prod-k8s-master",
+    "description": "Connection pool exhausted on prod-k8s-master. ERR-NGINX-001. Please fix ASAP\nNote: I'm working from home today",
+    "category": "Database",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-k8s-master",
+      "Restarted api-gateway",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.75,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DB SLOW QUERIES",
+    "description": "Database migration script failed on prod-web-02!!!!!!!!! Schema inconsistent!!!!!!!!!",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "order-service timeout",
+    "description": "order-service memory leak \u2014 heap growing 177MB per hour!!!!!!!!! BLOCKING DEPLOYMENT",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-nfs-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": "KB-0008",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Firewall blocking prod-app-02",
+    "description": "Firewall vpn-gw-01 blocking traffic to prod-app-02 on port 443. Team unable to work",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "VPN connection dropping every 2 hours. ERR-NFS-001. Users reporting issues",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-master",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "Disk I/O latency 30000ms on prod-app-02. NGINX AFFECTED.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "SSL expired",
+    "description": "Load balancer health check failing for prod-k8s-master. Traffic on single server.",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-master",
+      "Restarted nfs",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "prod-k8s-master not responding",
+    "description": "Disk space 95% on prod-k8s-master. redis logs filling up. Needs immediate attention",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-master",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "CVE found on prod-ldap-01",
+    "description": "SERVICE ACCOUNT TOKEN EXPIRED ON EXCHANGE. All API calls rejected.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-ldap-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "grafana timeout",
+    "description": "Config syntax error in grafana after update. Multiple teams affected\n\nAlso, unrelated but can someone reset my password?",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis OOM prod-app-03",
+    "description": "Replication lag 1000s between prod-app-03 and prod-db-02. Affecting producton",
+    "category": "Database",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-03",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Slow queries on prod-ldap-01 blocking prodction. Query time 1000ms. Team unable to work",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-ldap-01 down",
+    "description": "prod-ldap-01 CPU usage at 87% for since morning. exchange response times degraded.",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-ldap-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Deploy failed kubernetes",
+    "description": "kubernetes memory leak \u2014 heap growing 126MB per hour. Critical for business",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-02",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Replication lag \u2014 using Chrome on Mac",
+    "description": "Replication lag 500s between prod-mon-01 and prod-k8s-node-02. Critical for business",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mon-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.72,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "RAID array degraded on prod-app-02. One disk failed. Blocking deployment",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Backup job failed on prod-db-01. Incomplete backup file. SLA at risk",
+    "category": "Database",
+    "priority": "low",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-01",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Slow queries on prod-k8s-master blocking production. Query time 5000ms. ON-CALL TEAM NOTIFIED",
+    "category": "Database",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-master",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Disk I/O slow prod-ldap-01",
+    "description": "Backup storage quota exceeded on prod-ldap-01. Last 33 backups failed.\nNote: I'm working from home today",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-ldap-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Database migration script failed on staging-db-01. Schema inconsistent.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on staging-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Deploy failed prometheus",
+    "description": "prometheus returning ERR-NGINX-001 errors on prod-ldap-01. SLA at risk",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "nginx",
+      "prometheus"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Checked prod-ldap-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Disk full prod-db-02",
+    "description": "Kernel panic on prod-db-02!!!!!!!!! Server rebooted unexpectedly!!!!!!!!! Management escalation imminent",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-02",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.72,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "redis crashing",
+    "description": "REDIS RETURNING ERR-VPN-001 ERRORS ON PROD-MON-01. On-call team notified",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-mon-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Replication lag 500s between prod-k8s-master and prod-k8s-node-01. Blocking deployment",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-master",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "auth-service timeout (my laptop is Dell btw)",
+    "description": "auth-service returning ERR-PG-001 errors on prod-web-01!!!!!!!!! MULTIPLE TEAMS AFFECTED",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-web-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0004",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CVE found on prod-db-02",
+    "description": "49 failed login attempts on admin account from 192.168.1.100. Please fix ASAP",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.72,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "PostgreSQL connexion issue",
+    "description": "Replication lag 1000s between prod-k8s-node-02 and prod-mon-01. Blocking deployment",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.72,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Redis OOM prod-app-02",
+    "description": "Connection pool exhausted on prod-app-02!!!!!!!!! ERR-PG-001!!!!!!!!! Please fix ASAP",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-app-02",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "Redis OOM on prod-web-02. Used memory 90% of maxmemory. Please fix ASAP",
+    "category": "Database",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-web-02",
+      "Restarted redis",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Deploy failed grafana",
+    "description": "grafana returning ERR-SSL-001 errors on prod-k8s-master. Management escalation imminent",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-k8s-master",
+      "Restarted grafana",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.89,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "SSL expired",
+    "description": "Firewall sw-core-01 blocking traffic to prod-app-01 on port 8080. Multiple teams affected (my laptop is Dell btw)",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-01",
+      "Restarted exchange",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.71,
+    "references_runbook": "KB-0003",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "exchange crashing",
+    "description": "exchange throwing NullPointerException in ReportGenerator. 99% of requests failing.\n\nAlso, unrelated but can someone reset my password?",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-master",
+      "Restarted exchange",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "Connection pool exhausted on prod-k8s-node-02. ERR-VPN-001. Critical for business",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-VPN-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-02",
+      "Restarted api-gateway",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Disk I/O slow prod-db-01",
+    "description": "Stale NFS file handle on prod-db-01!!!!!!!!! Multiple servers affected!!!!!!!!! Critical for business \u2014 using Chrome on Mac",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "redis 502 errors",
+    "description": "redis returning ERR-SYS-002 errors on prod-db-01!!!!!!!!! Management escalation imminent",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.72,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "postgresql timeout",
+    "description": "Config syntax error in postgresql after update!!!!!!!!! SLA at risk",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "RAID degraded prod-mon-01",
+    "description": "NFS servr prod-mon-01 not responding. All clients hung. SLA at risk",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mon-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-k8s-node-01 down",
+    "description": "DOCKER DAEMON NOT RESPONDING ON PROD-K8S-NODE-01. All containers inaccessible.",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "Deadlock detected on prod-nfs-01. 96% of transactions failing.",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-nfs-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-mon-01 down",
+    "description": "Memory usage at 88% on prod-mon-01. OOM killer activated. Revenue impact estimated",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-mon-01",
+      "Restarted order-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "Backup storage quota exceeded on prod-app-01. LAST 3 BACKUPS FAILED.",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Firewall blocking prod-k8s-node-02",
+    "description": "SSL certificate expired on prometheus. ERR-REDIS-001. AFFECTING PRODUCTION",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "redis",
+      "prometheus"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Checked prod-k8s-node-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "PROD-K8S-NODE-01 DOWN [SENT FROM IPHONE]",
+    "description": "Disk space 92% on prod-k8s-node-01. EXCHANGE LOGS FILLING UP. Please fix ASAP",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "exchange"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Disk I/O slow prod-web-02",
+    "description": "RAID array degraded on prod-web-02. One disk failed. BLOCKING DEPLOYMENT",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CPU high on prod-web-02",
+    "description": "Disk space 96% on prod-web-02. order-service logs filling up. Customers complaining",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "order-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "SSL certificate expired on nginx. ERR-PG-001. Critical for business",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "PostgreSQL connection issue \u2014 using Chrome on Mac",
+    "description": "Connection pool exhausted on prod-web-02. ERR-SYS-002. Please fix ASAP",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [
+      "ERR-SYS-002"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-web-02",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "FAILED LOGIN ATTEMPTS\nNOTE: I'M WORKING FROM HOME TODAY",
+    "description": "Service account token expired on kubernetes. All API calls rejected.",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-03 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.7,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-k8s-master not responding",
+    "description": "Kubernetes pod CrashLoopBackOff on prod-k8s-master. REDIS AFFECTED.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "redis",
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-master",
+      "Restarted redis",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.8,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Deploy failed postgresql",
+    "description": "POSTGRESQL THROWING NULLPOINTEREXCEPTION IN CACHEMANAGER. 95% of requests failing. (my laptop is Dell btw)",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "prometheus 502 errors",
+    "description": "Health check endpoint returning 500 on prod-mail-01. Load balancer marking it down. \u2014 using Chrome on Mac",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-mail-01",
+      "Restarted prometheus",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "auth-service 502 errors",
+    "description": "AUTH-SERVICE MEMORY LEAK \u2014 HEAP GROWING 132MB PER HOUR. Customers complaining",
+    "category": "Application",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "NFS MOUNT FAILING",
+    "description": "Stale NFS file handle on prod-ldap-01. Multiple servers affected. Affecting producton",
+    "category": "Storage",
+    "priority": "low",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted exchange",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.71,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Unauthorized access",
+    "description": "45 failed login attempts on admin account from 203!!!!!!!!!0!!!!!!!!!113!!!!!!!!!42!!!!!!!!! Blocking deployment",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Failed login attempts",
+    "description": "UNAUTHORIZED SSH ACCESS ATTEMPT ON PROD-LDAP-01 FROM 172.16.0.50. Multiple teams affected",
+    "category": "Security",
+    "priority": "low",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.85,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "DNS failing",
+    "description": "Packet loss 97% on sw-core-01. SLA at risk",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "Connection pool exhausted on prod-db-01. ERR-REDIS-001. Needs immediate attention",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Checked prod-db-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "SSL expired",
+    "description": "VPN CONNECTION DROPPING EVERY 1 HOUR. ERR-NGINX-001. SLA at risk",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-nfs-01",
+      "Restarted grafana",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": "KB-0006",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "NFS mount failing on prod-mail-01. ERR-SSL-001. Monitoring alerts firing",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-SSL-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-mail-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Disk I/O slow staging-db-01 \u2014 this is urgent because my manager asked",
+    "description": "SAN LUN mapping incorrect on staging-db-01 after firmware update. Needs immediate attention\nNote: I'm working from home today",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked staging-db-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "SSL certificate expired on nginx. ERR-PG-001. Needs immediate attention",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "Checked prod-k8s-node-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.86,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DNS failing",
+    "description": "SSL certificate expired on kubernetes. ERR-NGINX-001. Needs immediate attention",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "nginx",
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-NGINX-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.71,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "prod-app-02 down",
+    "description": "prod-app-02 unreachable via SSH and ping!!!!!!!!! TEAM UNABLE TO WORK",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "RAID DEGRADED PROD-WEB-01",
+    "description": "NFS servr prod-web-01 not responding. All clients hung. SLA at risk",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CVE found on prod-mail-01",
+    "description": "User locked out after password change. ERR-NFS-001. Revenue impact estimated",
+    "category": "Security",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [
+      "ERR-NFS-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-mail-01",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Deploy failed nfs",
+    "description": "nfs timeout on /api/orders. Response time 1000ms. Needs immediate attention",
+    "category": "Application",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-master status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Disk full prod-mail-01",
+    "description": "Memory usage at 93% on prod-mail-01. OOM killer activated. Multiple teams affected",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-mail-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "nfs 502 errors",
+    "description": "JWT token validation failing on nfs. All auth calls rejected.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-02"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CPU high on prod-ldap-01",
+    "description": "prod-ldap-01 CPU usage at 95% for 10 minutes. api-gateway response times degraded.",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "api-gateway"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-ldap-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "High latency 5000ms between datacenters. Monitoring alerts firing",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-03",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "Slow queries on prod-web-02 blocking production. Query time 5000ms. Multiple teams affected",
+    "category": "Database",
+    "priority": "low",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Firewall blocking prod-mail-01",
+    "description": "SSL certificate expired on exchange. ERR-REDIS-001. Customers complaining",
+    "category": "Network",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [
+      "redis",
+      "exchange"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Checked prod-mail-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Deploy failed kubernetes",
+    "description": "kubernetes returning ERR-K8S-001 errors on prod-k8s-node-01. Monitoring alerts firing \u2014 using Chrome on Mac",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "kubernetes"
+    ],
+    "error_codes": [
+      "ERR-K8S-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "redis crashing",
+    "description": "Deployment v1.8.2 failed on staging-db-01. Rollback needed. Customer checkout broken",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked staging-db-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.88,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Deploy failed nginx [sent from iPhone]",
+    "description": "Deployment v2.3.5 failed on prod-app-02. Rollback needed. Team unable to work",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-02",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "grafana timeout",
+    "description": "grafana throwing NullPointerException in ReportGenerator. 90% of requests failing.",
+    "category": "Application",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "grafana"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Deadlock detected on staging-db-01. 97% of transactions failing.",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked staging-db-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "exchange timeout",
+    "description": "Deployment v3.0.0-rc1 failed on prod-nfs-01. Rollback needed. Multiple teams affected",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-nfs-01"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-nfs-01",
+      "Restarted exchange",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "User locked out",
+    "description": "Service account token expired on nfs. All API calls rejected.",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [
+      "nfs"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-db-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Unauthorized access",
+    "description": "Vulnerability scan found critical CVE on prod-web-01. Please fix ASAP",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": "KB-0010",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "User locked out",
+    "description": "Privilege escalation attempt detected on prod-k8s-master. Critical for business",
+    "category": "Security",
+    "priority": "low",
+    "affects_servers": [
+      "prod-k8s-master"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-master status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CPU high on prod-app-01",
+    "description": "Docker daemon not responding on prod-app-01. All containers inaccessible. [sent from iPhone]",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-01",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "RAID array degraded on prod-mail-01. One disk failed. Needs immediate attention",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mail-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "CVE found on staging-db-01",
+    "description": "Phishing email reported by 8 employees. Team unable to work",
+    "category": "Security",
+    "priority": "high",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into staging-db-01",
+      "Restarted prometheus",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "SAN LUN mapping incorrect on prod-web-02 after firmware update. Affecting production",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-web-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0009",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CPU high on prod-ldap-01",
+    "description": "Kubernetes pod CrashLoopBackOff on prod-ldap-01. NGINX AFFECTED. \u2014 using Chrome on Mac",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [
+      "nginx",
+      "kubernetes"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-ldap-01",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.77,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "NFS mount failing",
+    "description": "File system corruption on prod-app-01. Read-only mode. On-call team notified",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.9,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "SSL expired",
+    "description": "Load balancer health check failing for prod-db-02!!!!!!!!! Traffic on single server!!!!!!!!!",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-02",
+      "Restarted postgresql",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.84,
+    "references_runbook": "KB-0002",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Redis OOM prod-mail-01",
+    "description": "Backup job failed on prod-mail-01. INCOMPLETE BACKUP FILE. Customer checkout broken",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-mail-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mail-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.91,
+    "references_runbook": "KB-0001",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-k8s-node-01 not responding",
+    "description": "Ubuntu security patch failed on prod-k8s-node-01. apt-get stuck. Customers complaining \u2014 this is urgent because my manager asked",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-01",
+      "Restarted auth-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Unauthorized access",
+    "description": "Phishing email reported by 5 employees. Users reporting issues",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.78,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Storage full",
+    "description": "File system corruption on staging-db-01. Read-only mode. Team unable to work",
+    "category": "Storage",
+    "priority": "critical",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked staging-db-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Disk full staging-db-01",
+    "description": "Kernel panic on staging-db-01. SERVER REBOOTED UNEXPECTEDLY. Revenue impact estimated",
+    "category": "Infrastructure",
+    "priority": "critical",
+    "affects_servers": [
+      "staging-db-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on staging-db-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.93,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Disk I/O slow prod-ldap-01",
+    "description": "File system corruption on prod-ldap-01. Read-only mode. Multiple teams affected",
+    "category": "Storage",
+    "priority": "high",
+    "affects_servers": [
+      "prod-ldap-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-ldap-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CPU high on prod-db-02",
+    "description": "Kernel panic on prod-db-02!!!!!!!!! Server rebooted unexpectedly!!!!!!!!! Users reporting issues",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [
+      "prod-db-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-db-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "prod-app-02 down",
+    "description": "Kernel panic on prod-app-02. Server rebooted unexpectedly. Users reporting issues",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Firewall blocking prod-app-01",
+    "description": "HIGH LATENCY 1000MS BETWEEN DATACENTERS. Revenue impact estimated",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-app-01",
+      "Restarted kubernetes",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.82,
+    "references_runbook": "KB-0003",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Storage full",
+    "description": "File system corruption on prod-web-01. Read-only mode. Users reporting issues\n\nAlso, unrelated but can someone reset my password?",
+    "category": "Storage",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.83,
+    "references_runbook": "KB-0005",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "PostgreSQL not accepting conections on prod-app-03. ERR-REDIS-001. Multiple teams affected",
+    "category": "Database",
+    "priority": "high",
+    "affects_servers": [
+      "prod-app-03"
+    ],
+    "affects_services": [
+      "postgresql",
+      "redis"
+    ],
+    "error_codes": [
+      "ERR-REDIS-001"
+    ],
+    "resolution_steps": [
+      "Investigated logs on prod-app-03",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.7,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "Firewall blocking prod-app-02 (my laptop is Dell btw)",
+    "description": "Load balancer health check failing for prod-app-02. Traffic on single server. [sent from iPhone]",
+    "category": "Network",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-app-02 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.79,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Disk full prod-db-01",
+    "description": "Disk space 87% on prod-db-01. auth-service logs filling up. Blocking deployment",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-db-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-db-01",
+      "Restarted auth-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.81,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "RAID degraded prod-mon-01",
+    "description": "Disk I/O latency 30000ms on prod-mon-01!!!!!!!!! nginx affected!!!!!!!!!",
+    "category": "Storage",
+    "priority": "low",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [
+      "nginx"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-mon-01",
+      "Restarted nginx",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": "KB-0007",
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "AUTH-SERVICE TIMEOUT",
+    "description": "Config syntax error in auth-service after update. Management escalation imminent",
+    "category": "Application",
+    "priority": "low",
+    "affects_servers": [
+      "prod-app-01"
+    ],
+    "affects_services": [
+      "auth-service"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-app-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.73,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "prod-k8s-node-01 not responding",
+    "description": "prod-k8s-node-01 unreachable via SSH and ping. Team unable to work",
+    "category": "Infrastructure",
+    "priority": "high",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-k8s-node-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "Unauthorized access",
+    "description": "Phishing email reported by 27 employees. On-call team notified \u2014 this is urgent because my manager asked",
+    "category": "Security",
+    "priority": "critical",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.95,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "VPN dropping",
+    "description": "BGP peering down with ISP on sw-core-01. Backup routing active.",
+    "category": "Network",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-web-02"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-web-02",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.94,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CPU high on prod-k8s-node-01",
+    "description": "Kernel panic on prod-k8s-node-01. Server rebooted unexpectedly. Management escalation imminent (my laptop is Dell btw)",
+    "category": "Infrastructure",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Checked prod-k8s-node-01 status",
+      "Identified root cause",
+      "Applied fix",
+      "Verified resolution"
+    ],
+    "resolution_effectiveness": 0.92,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "CPU high on prod-mon-01",
+    "description": "prod-mon-01 unreachable via SSH and ping. Users reporting issues",
+    "category": "Infrastructure",
+    "priority": "low",
+    "affects_servers": [
+      "prod-mon-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "Investigated logs on prod-mon-01",
+      "Found configuration issue",
+      "Updated config",
+      "Restarted service"
+    ],
+    "resolution_effectiveness": 0.71,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "frustrated_user"
+  },
+  {
+    "title": "Replication lag",
+    "description": "Redis OOM on prod-k8s-node-01. Used memory 98% of maxmemory. Critical for business",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-k8s-node-01"
+    ],
+    "affects_services": [
+      "redis"
+    ],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-k8s-node-01",
+      "Restarted order-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.74,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  },
+  {
+    "title": "DB slow queries",
+    "description": "PostgreSQL not accepting connections on prod-app-02. ERR-PG-001. Users reporting issues",
+    "category": "Database",
+    "priority": "medium",
+    "affects_servers": [
+      "prod-app-02"
+    ],
+    "affects_services": [
+      "postgresql"
+    ],
+    "error_codes": [
+      "ERR-PG-001"
+    ],
+    "resolution_steps": [
+      "SSHed into prod-app-02",
+      "Restarted auth-service",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.76,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "manager"
+  },
+  {
+    "title": "SSL expired",
+    "description": "High latency 200ms between datacenters. USERS REPORTING ISSUES",
+    "category": "Network",
+    "priority": "high",
+    "affects_servers": [
+      "prod-web-01"
+    ],
+    "affects_services": [],
+    "error_codes": [],
+    "resolution_steps": [
+      "SSHed into prod-web-01",
+      "Restarted nfs",
+      "Monitored for 30 minutes"
+    ],
+    "resolution_effectiveness": 0.87,
+    "references_runbook": null,
+    "quality_score": "HIGH",
+    "secondary_category": null,
+    "classifier_votes": null,
+    "source_model": "template_noise",
+    "persona": "l2_engineer"
+  }
+]
