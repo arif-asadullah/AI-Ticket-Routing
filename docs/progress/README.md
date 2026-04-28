@@ -19,6 +19,7 @@ This folder documents everything we've built, step by step, so any developer can
 | [Phase 3: Seed Data](phase3-seed-data.md) | 855 tickets loaded, 800 synthetic generated, 1795 nodes, 3831 edges | Done |
 | [Phase 4: Classification](phase4-classification.md) | 4-classifier ensemble pipeline: LLM + KNN + Centroid + Keywords | Done |
 | [Phase 5: Frontend](phase5-frontend.md) | Neural Dark theme, landing page, ticket form, chat AI | Done |
+| [Phase 6: Ticket Lifecycle](phase6-ticket-lifecycle.md) | Full lifecycle: status updates, resolve, resolution suggestions, Jira cleanup | Done |
 
 ## Tech Stack
 
@@ -72,6 +73,7 @@ If you're new to the project, read in this order:
 4. Phase 3 — understand the data
 5. Phase 4 — understand the AI pipeline (most important)
 6. Phase 5 — understand the UI
+7. Phase 6 — understand the ticket lifecycle (status, resolve, feedback loop)
 
 For architecture details, see `docs/architecture/`.
 For database schema details, see `docs/schema/`.
