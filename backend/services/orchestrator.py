@@ -50,6 +50,7 @@ class ClassificationResult(TypedDict):
     degradation_level: int
     embedding: list[float] | None
     suggested_resolution: list[str] | None
+    resolution_effectiveness: float | None
     suggested_runbook: str | None
     recommended_team: str | None
     recommended_expert: str | None
@@ -141,6 +142,41 @@ def get_embedding_model() -> SentenceTransformer:
 
 
 # ── Routing Lookup ──
+
+def find_runbook(db, category: str, resolution_steps: list[str] | None) -> str | None:
+    """Find the most relevant runbook for this category."""
+    try:
+        # First: try to find runbook matching category
+        query = """
+        FOR rb IN runbooks
+            FILTER rb.category == @category
+            RETURN { key: rb._key, title: rb.title }
+        """
+        cursor = db.aql.execute(query, bind_vars={"category": category})
+        runbooks = list(cursor)
+
+        if not runbooks:
+            return None
+
+        # If only one, return it
+        if len(runbooks) == 1:
+            return f"{runbooks[0]['key']}: {runbooks[0]['title']}"
+
+        # If multiple, try to match by resolution text
+        if resolution_steps:
+            res_text = " ".join(resolution_steps).lower()
+            for rb in runbooks:
+                # Check if runbook title keywords appear in resolution
+                title_words = rb["title"].lower().split()
+                matches = sum(1 for w in title_words if w in res_text)
+                if matches >= 2:
+                    return f"{rb['key']}: {rb['title']}"
+
+        # Default to first matching runbook
+        return f"{runbooks[0]['key']}: {runbooks[0]['title']}"
+    except Exception:
+        return None
+
 
 def lookup_team(db, category: str, priority: str) -> str | None:
     """Look up team from routing_rules."""
@@ -244,6 +280,7 @@ async def classify(
 
     # ── Stage 5: Decide + enrich ──
     suggested_resolution = None
+    resolution_effectiveness = None
     suggested_runbook = None
     recommended_team = None
     recommended_expert = None
@@ -252,12 +289,41 @@ async def classify(
         # Look up team
         recommended_team = lookup_team(db, result["category"], result["priority"])
 
-        # Best resolution from similar tickets
+        # Best resolution — check multiple sources, pick highest effectiveness
+        best_effectiveness = 0
+
+        # Source 1: Resolutions from similar tickets (same category)
         if context["similar_tickets"]:
             for t in context["similar_tickets"]:
                 if t.get("resolution_steps") and t["category"] == result["category"]:
-                    suggested_resolution = t["resolution_steps"]
-                    break
+                    eff = t.get("effectiveness") or 0.8
+                    if eff > best_effectiveness:
+                        suggested_resolution = t["resolution_steps"]
+                        resolution_effectiveness = eff
+                        best_effectiveness = eff
+
+        # Source 2: Resolutions from error-matched tickets
+        if context["error_matched_tickets"]:
+            for t in context["error_matched_tickets"]:
+                if t.get("resolution_steps") and t["category"] == result["category"]:
+                    eff = t.get("effectiveness") or 0.8
+                    if eff > best_effectiveness:
+                        suggested_resolution = t["resolution_steps"]
+                        resolution_effectiveness = eff
+                        best_effectiveness = eff
+
+        # Source 3: Resolutions from graph context (past tickets on same server)
+        if graph_ctx and graph_ctx.get("past_tickets_on_server"):
+            for t in graph_ctx["past_tickets_on_server"]:
+                if t.get("resolution_steps") and t.get("category") == result["category"]:
+                    eff = t.get("effectiveness") or 0.8
+                    if eff > best_effectiveness:
+                        suggested_resolution = t["resolution_steps"]
+                        resolution_effectiveness = eff
+                        best_effectiveness = eff
+
+        # Find matching runbook
+        suggested_runbook = find_runbook(db, result["category"], suggested_resolution)
 
         # Best expert from graph
         if graph_ctx and graph_ctx.get("experts"):
@@ -282,6 +348,7 @@ async def classify(
         degradation_level=level,
         embedding=embedding,
         suggested_resolution=suggested_resolution,
+        resolution_effectiveness=resolution_effectiveness,
         suggested_runbook=suggested_runbook,
         recommended_team=recommended_team,
         recommended_expert=recommended_expert,
