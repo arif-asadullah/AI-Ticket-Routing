@@ -10,6 +10,19 @@ class TicketCreate(BaseModel):
     submitted_by: str | None = None
 
 
+class TicketStatusUpdate(BaseModel):
+    status: str  # in_progress, escalated, routed
+    assigned_to: str | None = None  # team name (for manual reassignment)
+    updated_by: str | None = None  # engineer email
+
+
+class TicketResolve(BaseModel):
+    resolution_steps: list[str]  # what was done to fix it
+    used_ai_suggestion: str = "no"  # "yes", "partially", "no"
+    used_runbook: str | None = None  # "KB-0001" or null
+    resolved_by: str | None = None  # engineer email
+
+
 class TicketResponse(BaseModel):
     id: str
     title: str
