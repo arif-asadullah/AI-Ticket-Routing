@@ -138,6 +138,10 @@ async def create_ticket(ticket: TicketCreate, request: Request):
         classifier_votes=result["classifier_votes"],
         submitted_by=ticket.submitted_by,
         routed_to=result["recommended_team"],
+        suggested_resolution=result["suggested_resolution"],
+        resolution_effectiveness=result["resolution_effectiveness"],
+        suggested_runbook=result["suggested_runbook"],
+        recommended_expert=result["recommended_expert"],
         created_at=now,
         resolved_at=None,
     )
@@ -187,6 +191,10 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         classifier_votes=doc.get("classifier_votes"),
         submitted_by=doc.get("submitted_by"),
         routed_to=doc.get("routed_to"),
+        suggested_resolution=doc.get("suggested_resolution"),
+        resolution_effectiveness=doc.get("resolution_effectiveness"),
+        suggested_runbook=doc.get("suggested_runbook"),
+        recommended_expert=doc.get("recommended_expert"),
         created_at=doc.get("created_at"),
         resolved_at=doc.get("resolved_at"),
     )

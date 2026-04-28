@@ -359,58 +359,162 @@ export default function App() {
 
             {/* ── Result Card ── */}
             {lastResult && !isClassifying && (
-              <div style={{
-                padding: 24,
-                background: "rgba(34,197,94,0.05)",
-                borderRadius: 16,
-                border: "1px solid rgba(34,197,94,0.15)",
-                marginBottom: 32,
-                animation: "fadeIn 0.3s ease-out",
-              }}>
+              <div style={{ marginBottom: 32, animation: "fadeIn 0.3s ease-out" }}>
                 <style>{`@keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }`}</style>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 10,
-                    background: "rgba(34,197,94,0.1)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                      <path d="M3.75 9.75L7.5 13.5L14.25 4.5" stroke={T.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                {/* ── Classification Result ── */}
+                <div style={{
+                  padding: 24,
+                  background: "rgba(34,197,94,0.05)",
+                  borderRadius: 16,
+                  border: "1px solid rgba(34,197,94,0.15)",
+                  marginBottom: 12,
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 10,
+                      background: "rgba(34,197,94,0.1)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M3.75 9.75L7.5 13.5L14.25 4.5" stroke={T.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.text }}>
+                        Ticket #{lastResult.id} — {lastResult.status === "routed" ? "Routed" : "Escalated"}
+                      </h3>
+                      <p style={{ margin: 0, fontSize: 12, color: T.textMuted }}>
+                        {lastResult.title}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.text }}>
-                      Ticket #{lastResult.id} routed
-                    </h3>
-                    <p style={{ margin: 0, fontSize: 12, color: T.textMuted }}>
-                      {lastResult.title}
-                    </p>
+
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+                    <span style={{
+                      padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
+                      background: "rgba(249,115,22,0.12)", color: T.accent,
+                    }}>
+                      {lastResult.category}
+                    </span>
+                    <span style={{
+                      padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
+                      background: "rgba(34,197,94,0.12)", color: T.success,
+                    }}>
+                      {Math.round((lastResult.confidence_score || 0) * 100)}% confidence
+                    </span>
+                    <span style={{
+                      padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
+                      textTransform: "capitalize",
+                      background: lastResult.priority === "high" || lastResult.priority === "critical" ? "rgba(239,68,68,0.12)" : lastResult.priority === "medium" ? "rgba(245,158,11,0.12)" : "rgba(34,197,94,0.12)",
+                      color: lastResult.priority === "high" || lastResult.priority === "critical" ? T.danger : lastResult.priority === "medium" ? T.warning : T.success,
+                    }}>
+                      {lastResult.priority}
+                    </span>
                   </div>
+
+                  {/* Team + Expert */}
+                  <div style={{ display: "flex", gap: 24, fontSize: 13, color: T.textMuted }}>
+                    {lastResult.routed_to && (
+                      <div>
+                        <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Team</span>
+                        <div style={{ color: T.accent, fontWeight: 600, marginTop: 2 }}>{lastResult.routed_to}</div>
+                      </div>
+                    )}
+                    {lastResult.recommended_expert && (
+                      <div>
+                        <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Expert</span>
+                        <div style={{ color: T.text, fontWeight: 500, marginTop: 2 }}>{lastResult.recommended_expert}</div>
+                      </div>
+                    )}
+                    {lastResult.quality_score && (
+                      <div>
+                        <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Input Quality</span>
+                        <div style={{ color: lastResult.quality_score === "HIGH" ? T.success : lastResult.quality_score === "LOW" ? T.danger : T.warning, fontWeight: 500, marginTop: 2 }}>{lastResult.quality_score}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* AI Reasoning */}
+                  {lastResult.ai_reasoning && (
+                    <div style={{
+                      marginTop: 16, padding: 12, borderRadius: 10,
+                      background: "rgba(255,255,255,0.03)", border: `1px solid ${T.border}`,
+                      fontSize: 12, color: T.textMuted, lineHeight: 1.5,
+                    }}>
+                      <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>AI Reasoning</span>
+                      <div style={{ marginTop: 4, color: T.text }}>{lastResult.ai_reasoning}</div>
+                    </div>
+                  )}
                 </div>
 
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{
-                    padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
-                    background: "rgba(249,115,22,0.12)", color: T.accent,
+                {/* ── Suggested Resolution ── */}
+                {lastResult.suggested_resolution && lastResult.suggested_resolution.length > 0 && (
+                  <div style={{
+                    padding: 24,
+                    background: T.card,
+                    borderRadius: 16,
+                    border: `1px solid ${T.border}`,
+                    marginBottom: 12,
                   }}>
-                    {lastResult.routed_to}
-                  </span>
-                  <span style={{
-                    padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
-                    background: "rgba(34,197,94,0.12)", color: T.success,
-                  }}>
-                    {lastResult.status}
-                  </span>
-                  <span style={{
-                    padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
-                    textTransform: "capitalize",
-                    background: lastResult.priority === "high" ? "rgba(239,68,68,0.12)" : lastResult.priority === "medium" ? "rgba(245,158,11,0.12)" : "rgba(34,197,94,0.12)",
-                    color: lastResult.priority === "high" ? T.danger : lastResult.priority === "medium" ? T.warning : T.success,
-                  }}>
-                    {lastResult.priority}
-                  </span>
-                </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" stroke={T.accent} strokeWidth="1.5" fill="none"/>
+                        <path d="M10 5v5.5M10 13.5v.5" stroke={T.accent} strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                      <div>
+                        <h4 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.text }}>Suggested Resolution</h4>
+                        <p style={{ margin: 0, fontSize: 11, color: T.textMuted }}>
+                          Based on similar past tickets
+                          {lastResult.resolution_effectiveness && (
+                            <span style={{ color: T.success }}> — {Math.round(lastResult.resolution_effectiveness * 100)}% effective</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {lastResult.suggested_resolution.map((step, i) => (
+                        <div key={i} style={{
+                          display: "flex", gap: 12, alignItems: "flex-start",
+                          padding: "10px 14px", borderRadius: 10,
+                          background: "rgba(255,255,255,0.02)",
+                          border: `1px solid ${T.border}`,
+                        }}>
+                          <span style={{
+                            minWidth: 22, height: 22, borderRadius: "50%",
+                            background: "rgba(249,115,22,0.15)", color: T.accent,
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                          }}>
+                            {i + 1}
+                          </span>
+                          <span style={{ fontSize: 13, color: T.text, lineHeight: 1.5 }}>{step}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Runbook */}
+                    {lastResult.suggested_runbook && (
+                      <div style={{
+                        marginTop: 16, padding: "10px 14px", borderRadius: 10,
+                        background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)",
+                        display: "flex", alignItems: "center", gap: 10,
+                      }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <rect x="2" y="1" width="12" height="14" rx="2" stroke={T.accent} strokeWidth="1.2" fill="none"/>
+                          <line x1="5" y1="5" x2="11" y2="5" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
+                          <line x1="5" y1="8" x2="11" y2="8" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
+                          <line x1="5" y1="11" x2="9" y2="11" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
+                        </svg>
+                        <div>
+                          <span style={{ fontSize: 10, color: T.textDim, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Runbook</span>
+                          <div style={{ fontSize: 12, color: T.accent, fontWeight: 500, marginTop: 1 }}>{lastResult.suggested_runbook}</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
