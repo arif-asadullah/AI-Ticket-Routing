@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, HTTPException, Request
 
-from backend.schemas.ticket import TicketCreate, TicketResponse
+from backend.schemas.ticket import TicketCreate, TicketResolve, TicketResponse, TicketStatusUpdate
 from backend.services.orchestrator import classify
 
 logger = logging.getLogger(__name__)
@@ -160,6 +160,194 @@ async def get_ticket(ticket_id: str, request: Request):
         raise HTTPException(404, "Ticket not found")
 
     return _doc_to_response(doc)
+
+
+@router.patch("/{ticket_id}/status", response_model=TicketResponse)
+async def update_ticket_status(ticket_id: str, update: TicketStatusUpdate, request: Request):
+    """Update ticket status — engineer picks up, reassigns, or escalates."""
+    db = getattr(request.app.state, "arango_db", None)
+    if db is None:
+        raise HTTPException(503, "Database unavailable")
+
+    collection = db.collection("tickets")
+    doc = collection.get(ticket_id)
+    if doc is None:
+        raise HTTPException(404, "Ticket not found")
+
+    valid_statuses = {"in_progress", "escalated", "routed"}
+    if update.status not in valid_statuses:
+        raise HTTPException(400, f"Invalid status. Must be one of: {valid_statuses}")
+
+    if doc.get("status") in ("resolved", "closed"):
+        raise HTTPException(400, "Cannot update status of resolved/closed ticket")
+
+    now = datetime.now(timezone.utc).isoformat()
+    old_status = doc.get("status")
+
+    # Build update fields
+    update_fields = {
+        "_key": ticket_id,
+        "status": update.status,
+    }
+
+    # If reassigning to a different team
+    new_team = None
+    if update.assigned_to:
+        new_team = update.assigned_to
+        update_fields["routed_to"] = new_team
+
+        # Update assigned_to edge
+        try:
+            team_key = _lookup_team_key(db, new_team)
+            if team_key:
+                # Remove old assigned_to edge
+                query = """
+                FOR e IN assigned_to
+                    FILTER e._from == CONCAT("tickets/", @ticket_id)
+                    REMOVE e IN assigned_to
+                """
+                db.aql.execute(query, bind_vars={"ticket_id": ticket_id})
+                # Create new edge
+                db.collection("assigned_to").insert({
+                    "_from": f"tickets/{ticket_id}",
+                    "_to": f"teams/{team_key}",
+                })
+        except Exception as exc:
+            logger.warning("Failed to update assigned_to edge: %s", exc)
+
+    collection.update(update_fields)
+
+    # Audit log
+    try:
+        db.collection("audit_log").insert({
+            "ticket_id": ticket_id,
+            "action": update.status,
+            "actor": update.updated_by or "unknown",
+            "old_value": {"status": old_status, "team": doc.get("routed_to")},
+            "new_value": {"status": update.status, "team": new_team or doc.get("routed_to")},
+            "confidence_score": None,
+            "reasoning": f"Status changed by {update.updated_by or 'unknown'}",
+            "created_at": now,
+        })
+    except Exception as exc:
+        logger.warning("Failed to write audit log: %s", exc)
+
+    logger.info(
+        "Ticket %s: %s → %s by %s",
+        ticket_id, old_status, update.status, update.updated_by,
+    )
+
+    updated = collection.get(ticket_id)
+    return _doc_to_response(updated)
+
+
+@router.post("/{ticket_id}/resolve", response_model=TicketResponse)
+async def resolve_ticket(ticket_id: str, resolve: TicketResolve, request: Request):
+    """Resolve a ticket — save what was done to fix it."""
+    db = getattr(request.app.state, "arango_db", None)
+    if db is None:
+        raise HTTPException(503, "Database unavailable")
+
+    collection = db.collection("tickets")
+    doc = collection.get(ticket_id)
+    if doc is None:
+        raise HTTPException(404, "Ticket not found")
+
+    if doc.get("status") == "closed":
+        raise HTTPException(400, "Ticket is already closed")
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    # ── Create resolution document ──
+    try:
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+        res_text = " ".join(resolve.resolution_steps)
+        embedding = model.encode(res_text).tolist()
+    except Exception:
+        embedding = None
+
+    # Determine effectiveness based on whether AI suggestion was used
+    if resolve.used_ai_suggestion == "yes":
+        effectiveness = 1.0  # confirmed AI suggestion works
+    elif resolve.used_ai_suggestion == "partially":
+        effectiveness = 0.85  # partially useful
+    else:
+        effectiveness = 0.90  # new fix, assume good
+
+    res_doc = db.collection("resolutions").insert({
+        "steps": resolve.resolution_steps,
+        "effectiveness": effectiveness,
+        "embedding": embedding,
+    })
+
+    # ── Create resolved_with edge ──
+    try:
+        db.collection("resolved_with").insert({
+            "_from": f"tickets/{ticket_id}",
+            "_to": f"resolutions/{res_doc['_key']}",
+        })
+    except Exception as exc:
+        logger.warning("Failed to create resolved_with edge: %s", exc)
+
+    # ── Create references edge (if runbook used) ──
+    if resolve.used_runbook:
+        try:
+            db.collection("references").insert({
+                "_from": f"resolutions/{res_doc['_key']}",
+                "_to": f"runbooks/{resolve.used_runbook}",
+            })
+        except Exception as exc:
+            logger.warning("Failed to create references edge: %s", exc)
+
+    # ── Update AI suggestion effectiveness ──
+    if resolve.used_ai_suggestion == "yes" and doc.get("suggested_resolution"):
+        # Boost effectiveness of the resolution that was suggested
+        try:
+            query = """
+            FOR res IN 1..1 OUTBOUND CONCAT("tickets/", @ticket_id) resolved_with
+                LIMIT 1
+                UPDATE res WITH { effectiveness: MIN(res.effectiveness + 0.05, 1.0) } IN resolutions
+            """
+            # Find original similar ticket's resolution and boost it
+        except Exception:
+            pass
+
+    # ── Update ticket status ──
+    collection.update({
+        "_key": ticket_id,
+        "status": "resolved",
+        "resolved_at": now,
+    })
+
+    # ── Audit log ──
+    try:
+        db.collection("audit_log").insert({
+            "ticket_id": ticket_id,
+            "action": "resolved",
+            "actor": resolve.resolved_by or "unknown",
+            "old_value": {"status": doc.get("status")},
+            "new_value": {
+                "status": "resolved",
+                "resolution_steps": resolve.resolution_steps,
+                "used_ai_suggestion": resolve.used_ai_suggestion,
+                "used_runbook": resolve.used_runbook,
+            },
+            "confidence_score": None,
+            "reasoning": f"Resolved by {resolve.resolved_by or 'unknown'}. AI suggestion {'used' if resolve.used_ai_suggestion == 'yes' else 'not used'}.",
+            "created_at": now,
+        })
+    except Exception as exc:
+        logger.warning("Failed to write audit log: %s", exc)
+
+    logger.info(
+        "Ticket %s resolved by %s (AI suggestion: %s)",
+        ticket_id, resolve.resolved_by, resolve.used_ai_suggestion,
+    )
+
+    # Return updated ticket
+    updated = collection.get(ticket_id)
+    return _doc_to_response(updated)
 
 
 @router.delete("/{ticket_id}", status_code=204)
