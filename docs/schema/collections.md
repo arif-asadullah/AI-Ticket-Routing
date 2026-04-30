@@ -1,6 +1,6 @@
 # Document Collections
 
-This file explains every document collection in DeskMind's ArangoDB database. Each section covers:
+This file explains all 13 document collections in DeskMind's ArangoDB database. Each section covers:
 - **What it is** — simple explanation
 - **Why it exists** — what problem it solves
 - **Real-world analogy** — so you can relate to it
@@ -624,3 +624,80 @@ Distance to each centroid:
 
 Centroid classifier says: Database
 ```
+
+---
+
+## 13. `users`
+
+### What it is
+Authentication accounts for DeskMind. Each user has an email, hashed password, role, and optional link to an engineer in the knowledge graph.
+
+### Why it exists
+RBAC (Role-Based Access Control) — controls who can access what. Engineers only see tickets routed to their team. Admins see everything. Viewers can submit tickets but can't resolve them.
+
+### Real-world analogy
+The employee badge system. Your badge determines which doors you can open and which floors you can access.
+
+### Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_key` | string (auto) | Unique document key |
+| `email` | string (unique) | Login email — indexed with unique constraint |
+| `password_hash` | string | Bcrypt-hashed password — plaintext is never stored |
+| `role` | string | `"admin"`, `"engineer"`, or `"viewer"` |
+| `first_name` | string | User's first name |
+| `last_name` | string | User's last name |
+| `engineer_key` | string \| null | Links to `engineers._key` (e.g., `"eng-001"`). Null for admin/viewer. |
+| `team_key` | string \| null | Links to `teams._key` (e.g., `"db-admin"`). Auto-resolved from `member_of` edge at registration. Null for admin/viewer. |
+| `is_active` | boolean | `true` = can log in, `false` = deactivated by admin |
+
+### Roles explained
+
+| Role | See tickets | Create tickets | Update status | Resolve | Delete | Manage users |
+|------|------------|----------------|--------------|---------|--------|-------------|
+| **admin** | All teams | Yes | Yes (any) | Yes (any) | Yes | Yes |
+| **engineer** | Own team only | Yes | Yes (own team) | Yes (own team) | No | No |
+| **viewer** | All teams | Yes | No | No | No | No |
+
+### Example document — admin
+
+```json
+{
+  "_key": "94728",
+  "email": "arif.asadullah@schwettmann.in",
+  "password_hash": "$2b$12$xK9zR7...",
+  "role": "admin",
+  "first_name": "Arif",
+  "last_name": "Asadullah",
+  "engineer_key": null,
+  "team_key": null,
+  "is_active": true
+}
+```
+
+### Example document — engineer (team-scoped)
+
+```json
+{
+  "_key": "94729",
+  "email": "arjun.nair@company.com",
+  "password_hash": "$2b$12$hT4mQ8...",
+  "role": "engineer",
+  "first_name": "Arjun",
+  "last_name": "Nair",
+  "engineer_key": "eng-001",
+  "team_key": "db-admin",
+  "is_active": true
+}
+```
+
+### How it connects to the knowledge graph
+
+```
+users (auth) ──engineer_key──→ engineers (knowledge graph) ──member_of──→ teams
+     │                                                                       │
+     └── team_key (denormalized for fast auth checks) ───────────────────────┘
+```
+
+The `engineer_key` links the auth account to the knowledge graph engineer entity. The `team_key` is denormalized (copied from the `member_of` edge) so auth checks don't need a graph traversal on every API call.

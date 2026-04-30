@@ -54,7 +54,7 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 
 ## Quick Reference
 
-### Document Collections (12 total)
+### Document Collections (13 total)
 
 | Collection | What it stores | Example |
 |-----------|---------------|---------|
@@ -70,6 +70,7 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 | `routing_rules` | Category-to-team mapping | "Database + high → db-admin" |
 | `audit_log` | Action history for every ticket | "AI classified → routed → human overrode → resolved" |
 | `category_centroids` | Average embedding per category | Used by centroid classifier to find closest category |
+| `users` | Authentication accounts (RBAC) | "arif@company.com, admin, active" |
 
 ### Edge Collections (9 total)
 
@@ -97,7 +98,7 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 | Persistent | routing_rules | category, priority | Fast rule lookup |
 | Persistent | audit_log | ticket_id | Find all actions for a ticket |
 | Persistent | audit_log | created_at | Time-ordered audit trail |
-| Vector (384-dim) | category_centroids | embedding | Compare new ticket to category averages |
+| Persistent (unique) | users | email | Fast login lookup, prevent duplicates |
 
 ### 6 Ticket Categories
 
@@ -241,7 +242,7 @@ This is why we need all 10 collections, 9 edges, and 3 types of indexes working 
 
 ## Detailed Documentation
 
-- [collections.md](collections.md) — All 12 document collections explained field-by-field
+- [collections.md](collections.md) — All 13 document collections explained field-by-field
 - [edges.md](edges.md) — All 9 edge collections with examples
 - [indexes.md](indexes.md) — Index types and why each is needed
 - [graph.md](graph.md) — Graph definition + real query examples
