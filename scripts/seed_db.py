@@ -52,7 +52,7 @@ except ImportError:
 DOCUMENT_COLLECTIONS = [
     "tickets", "teams", "engineers", "servers", "services",
     "network_devices", "error_codes", "runbooks", "resolutions",
-    "routing_rules", "audit_log", "category_centroids",
+    "routing_rules", "audit_log", "category_centroids", "users",
 ]
 EDGE_COLLECTIONS = [
     "hosts", "managed_by", "depends_on", "member_of",
@@ -397,6 +397,30 @@ def compute_centroids(db, all_ticket_docs):
 
 # ── Compute runbook embeddings ──
 
+def load_users(db, users_data):
+    """Load user accounts with hashed passwords."""
+    if not users_data:
+        return
+    from passlib.context import CryptContext
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+    docs = []
+    for u in users_data:
+        docs.append({
+            "email": u["email"],
+            "password_hash": pwd_context.hash(u["password"]),
+            "role": u["role"],
+            "first_name": u.get("first_name", ""),
+            "last_name": u.get("last_name", ""),
+            "engineer_key": u.get("engineer_key"),
+            "team_key": u.get("team_key"),
+            "is_active": True,
+        })
+    col = db.collection("users")
+    col.import_bulk(docs, on_duplicate="replace")
+    print(f"  users: {len(docs)} accounts (passwords hashed)")
+
+
 def load_runbooks_with_embeddings(db, model, runbooks):
     """Load runbooks with embeddings."""
     if not runbooks:
@@ -442,6 +466,7 @@ def main():
     load_simple_collection(db, "error_codes", seed_data.get("error_codes", []))
     load_runbooks_with_embeddings(db, model, seed_data.get("runbooks", []))
     load_simple_collection(db, "routing_rules", seed_data.get("routing_rules", []))
+    load_users(db, seed_data.get("users", []))
 
     # Load manual edges
     print("\n  Loading manual edges...")

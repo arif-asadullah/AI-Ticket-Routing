@@ -20,6 +20,7 @@ DOCUMENT_COLLECTIONS = [
     "routing_rules",
     "audit_log",
     "category_centroids",
+    "users",
 ]
 
 # ── Edge collections ──
@@ -109,6 +110,11 @@ def _create_indexes(db: StandardDatabase) -> None:
     audit_log.add_persistent_index(fields=["ticket_id"], name="idx_audit_ticket_id")
     audit_log.add_persistent_index(fields=["created_at"], name="idx_audit_created_at")
     logger.info("Created persistent indexes on audit_log")
+
+    # ── Unique index on users.email ──
+    users = db.collection("users")
+    users.add_persistent_index(fields=["email"], name="idx_users_email", unique=True)
+    logger.info("Created unique index on users.email")
 
     # ── Vector indexes (384-dim, cosine similarity) ──
     # Vector subsystem may take time to initialize after ArangoDB starts.

@@ -1,13 +1,146 @@
 const API_BASE = "/api";
 
+// ── Token Management ──
+
+function getAccessToken() {
+  return localStorage.getItem("access_token");
+}
+
+function getRefreshToken() {
+  return localStorage.getItem("refresh_token");
+}
+
+function setTokens(access, refresh) {
+  localStorage.setItem("access_token", access);
+  localStorage.setItem("refresh_token", refresh);
+}
+
+function clearTokens() {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+}
+
+export function isLoggedIn() {
+  return !!getAccessToken();
+}
+
+// ── Authenticated Fetch Wrapper ──
+
+async function authFetch(url, options = {}) {
+  const headers = {
+    ...options.headers,
+    Authorization: `Bearer ${getAccessToken()}`,
+  };
+  let res = await fetch(url, { ...options, headers });
+
+  // If 401, try refreshing the token and retry once
+  if (res.status === 401) {
+    const refreshed = await refreshTokens();
+    if (refreshed) {
+      headers.Authorization = `Bearer ${getAccessToken()}`;
+      res = await fetch(url, { ...options, headers });
+    }
+  }
+  return res;
+}
+
+// ── Auth Endpoints ──
+
+export async function login(email, password) {
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Invalid credentials");
+  }
+  const data = await res.json();
+  setTokens(data.access_token, data.refresh_token);
+  return data;
+}
+
+export async function refreshTokens() {
+  const rt = getRefreshToken();
+  if (!rt) return false;
+  try {
+    const res = await fetch(`${API_BASE}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: rt }),
+    });
+    if (!res.ok) {
+      clearTokens();
+      return false;
+    }
+    const data = await res.json();
+    setTokens(data.access_token, data.refresh_token);
+    return true;
+  } catch {
+    clearTokens();
+    return false;
+  }
+}
+
+export function logout() {
+  clearTokens();
+}
+
+export async function fetchMe() {
+  const res = await authFetch(`${API_BASE}/auth/me`);
+  if (!res.ok) throw new Error("Not authenticated");
+  return res.json();
+}
+
+// ── User Management (Admin) ──
+
+export async function fetchUsers() {
+  const res = await authFetch(`${API_BASE}/auth/users`);
+  if (!res.ok) throw new Error("Failed to fetch users");
+  return res.json();
+}
+
+export async function registerUser(userData) {
+  const res = await authFetch(`${API_BASE}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userData),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to register user");
+  }
+  return res.json();
+}
+
+export async function toggleUserActive(email) {
+  const res = await authFetch(`${API_BASE}/auth/users/${encodeURIComponent(email)}/toggle-active`, {
+    method: "PATCH",
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to toggle user status");
+  }
+  return res.json();
+}
+
+export async function fetchEngineers() {
+  const res = await authFetch(`${API_BASE}/auth/engineers`);
+  if (!res.ok) throw new Error("Failed to fetch engineers");
+  return res.json();
+}
+
+// ── Ticket Endpoints (now authenticated) ──
+
 export async function fetchTickets() {
-  const res = await fetch(`${API_BASE}/tickets`);
+  const res = await authFetch(`${API_BASE}/tickets`);
   if (!res.ok) throw new Error("Failed to fetch tickets");
   return res.json();
 }
 
 export async function createTicket(ticket) {
-  const res = await fetch(`${API_BASE}/tickets`, {
+  const res = await authFetch(`${API_BASE}/tickets`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(ticket),
@@ -17,12 +150,14 @@ export async function createTicket(ticket) {
 }
 
 export async function deleteTicket(id) {
-  const res = await fetch(`${API_BASE}/tickets/${id}`, { method: "DELETE" });
+  const res = await authFetch(`${API_BASE}/tickets/${id}`, { method: "DELETE" });
   if (!res.ok) throw new Error("Failed to delete ticket");
 }
 
+// ── Chat (authenticated) ──
+
 export async function sendChat(message, history = []) {
-  const res = await fetch(`${API_BASE}/chat`, {
+  const res = await authFetch(`${API_BASE}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, history }),
@@ -30,6 +165,8 @@ export async function sendChat(message, history = []) {
   if (!res.ok) throw new Error("Failed to send chat");
   return res.json();
 }
+
+// ── Health (public, no auth needed) ──
 
 export async function fetchHealth() {
   const res = await fetch("/health");

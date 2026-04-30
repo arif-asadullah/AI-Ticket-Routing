@@ -44,6 +44,12 @@ class Settings(BaseSettings):
     # -- Routing --
     CONFIDENCE_THRESHOLD: float = Field(default=0.70, ge=0.0, le=1.0)
 
+    # -- Auth / JWT --
+    JWT_SECRET_KEY: str = "CHANGE-ME-IN-PRODUCTION"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
     # -- Logging --
     LOG_LEVEL: str = "INFO"
 
