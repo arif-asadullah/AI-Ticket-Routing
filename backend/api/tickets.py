@@ -3,8 +3,15 @@
 import logging
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
+from backend.core.auth import (
+    get_current_user,
+    require_admin,
+    require_any_authenticated,
+    require_engineer_or_admin,
+    require_team_access,
+)
 from backend.schemas.ticket import TicketCreate, TicketResolve, TicketResponse, TicketStatusUpdate
 from backend.services.orchestrator import classify
 
@@ -14,11 +21,16 @@ router = APIRouter(prefix="/api/tickets", tags=["tickets"])
 
 
 @router.get("", response_model=list[TicketResponse])
-async def list_tickets(request: Request):
-    """List all user-submitted tickets (excludes seed/synthetic data)."""
+async def list_tickets(request: Request, user: dict = Depends(get_current_user)):
+    """List user-submitted tickets. Engineers see only their team's tickets."""
     db = getattr(request.app.state, "arango_db", None)
     if db is None:
         raise HTTPException(503, "Database unavailable")
+
+    # Resolve engineer's team name for filtering
+    user_team_name = None
+    if user["role"] == "engineer" and user.get("team_key"):
+        user_team_name = _team_key_to_name(db, user["team_key"])
 
     collection = db.collection("tickets")
     tickets = []
@@ -26,12 +38,19 @@ async def list_tickets(request: Request):
         # Only show user-submitted tickets, not seed/synthetic
         if doc.get("_source") in ("seed", "synthetic"):
             continue
+        # Team scoping: engineers only see tickets routed to their team
+        if user["role"] == "engineer" and doc.get("routed_to") != user_team_name:
+            continue
         tickets.append(_doc_to_response(doc))
     return tickets
 
 
 @router.post("", response_model=TicketResponse, status_code=201)
-async def create_ticket(ticket: TicketCreate, request: Request):
+async def create_ticket(
+    ticket: TicketCreate,
+    request: Request,
+    user: dict = Depends(require_any_authenticated),
+):
     """Create a new ticket and classify + route it using the 4-classifier ensemble."""
     db = getattr(request.app.state, "arango_db", None)
     if db is None:
@@ -68,7 +87,7 @@ async def create_ticket(ticket: TicketCreate, request: Request):
         "ai_reasoning": result["reasoning"],
         "quality_score": result["quality_score"],
         "classifier_votes": result["classifier_votes"],
-        "submitted_by": ticket.submitted_by,
+        "submitted_by": user["email"],
         "routed_to": result["recommended_team"],
         "embedding": result["embedding"],
         "created_at": now,
@@ -136,7 +155,7 @@ async def create_ticket(ticket: TicketCreate, request: Request):
         ai_reasoning=result["reasoning"],
         quality_score=result["quality_score"],
         classifier_votes=result["classifier_votes"],
-        submitted_by=ticket.submitted_by,
+        submitted_by=user["email"],
         routed_to=result["recommended_team"],
         suggested_resolution=result["suggested_resolution"],
         resolution_effectiveness=result["resolution_effectiveness"],
@@ -148,8 +167,8 @@ async def create_ticket(ticket: TicketCreate, request: Request):
 
 
 @router.get("/{ticket_id}", response_model=TicketResponse)
-async def get_ticket(ticket_id: str, request: Request):
-    """Get a single ticket by ID."""
+async def get_ticket(ticket_id: str, request: Request, user: dict = Depends(get_current_user)):
+    """Get a single ticket by ID. Engineers can only view their team's tickets."""
     db = getattr(request.app.state, "arango_db", None)
     if db is None:
         raise HTTPException(503, "Database unavailable")
@@ -159,11 +178,22 @@ async def get_ticket(ticket_id: str, request: Request):
     if doc is None:
         raise HTTPException(404, "Ticket not found")
 
+    # Team access check for engineers
+    if user["role"] == "engineer":
+        user_team_name = _team_key_to_name(db, user.get("team_key"))
+        if doc.get("routed_to") != user_team_name:
+            raise HTTPException(403, "This ticket is not assigned to your team")
+
     return _doc_to_response(doc)
 
 
 @router.patch("/{ticket_id}/status", response_model=TicketResponse)
-async def update_ticket_status(ticket_id: str, update: TicketStatusUpdate, request: Request):
+async def update_ticket_status(
+    ticket_id: str,
+    update: TicketStatusUpdate,
+    request: Request,
+    user: dict = Depends(require_engineer_or_admin),
+):
     """Update ticket status — engineer picks up, reassigns, or escalates."""
     db = getattr(request.app.state, "arango_db", None)
     if db is None:
@@ -173,6 +203,9 @@ async def update_ticket_status(ticket_id: str, update: TicketStatusUpdate, reque
     doc = collection.get(ticket_id)
     if doc is None:
         raise HTTPException(404, "Ticket not found")
+
+    # Team access check
+    await require_team_access(doc.get("routed_to"), user, db)
 
     valid_statuses = {"in_progress", "escalated", "routed"}
     if update.status not in valid_statuses:
@@ -222,11 +255,11 @@ async def update_ticket_status(ticket_id: str, update: TicketStatusUpdate, reque
         db.collection("audit_log").insert({
             "ticket_id": ticket_id,
             "action": update.status,
-            "actor": update.updated_by or "unknown",
+            "actor": user["email"],
             "old_value": {"status": old_status, "team": doc.get("routed_to")},
             "new_value": {"status": update.status, "team": new_team or doc.get("routed_to")},
             "confidence_score": None,
-            "reasoning": f"Status changed by {update.updated_by or 'unknown'}",
+            "reasoning": f"Status changed by {user['email']}",
             "created_at": now,
         })
     except Exception as exc:
@@ -234,7 +267,7 @@ async def update_ticket_status(ticket_id: str, update: TicketStatusUpdate, reque
 
     logger.info(
         "Ticket %s: %s → %s by %s",
-        ticket_id, old_status, update.status, update.updated_by,
+        ticket_id, old_status, update.status, user["email"],
     )
 
     updated = collection.get(ticket_id)
@@ -242,7 +275,12 @@ async def update_ticket_status(ticket_id: str, update: TicketStatusUpdate, reque
 
 
 @router.post("/{ticket_id}/resolve", response_model=TicketResponse)
-async def resolve_ticket(ticket_id: str, resolve: TicketResolve, request: Request):
+async def resolve_ticket(
+    ticket_id: str,
+    resolve: TicketResolve,
+    request: Request,
+    user: dict = Depends(require_engineer_or_admin),
+):
     """Resolve a ticket — save what was done to fix it."""
     db = getattr(request.app.state, "arango_db", None)
     if db is None:
@@ -252,6 +290,9 @@ async def resolve_ticket(ticket_id: str, resolve: TicketResolve, request: Reques
     doc = collection.get(ticket_id)
     if doc is None:
         raise HTTPException(404, "Ticket not found")
+
+    # Team access check
+    await require_team_access(doc.get("routed_to"), user, db)
 
     if doc.get("status") == "closed":
         raise HTTPException(400, "Ticket is already closed")
@@ -325,7 +366,7 @@ async def resolve_ticket(ticket_id: str, resolve: TicketResolve, request: Reques
         db.collection("audit_log").insert({
             "ticket_id": ticket_id,
             "action": "resolved",
-            "actor": resolve.resolved_by or "unknown",
+            "actor": user["email"],
             "old_value": {"status": doc.get("status")},
             "new_value": {
                 "status": "resolved",
@@ -334,7 +375,7 @@ async def resolve_ticket(ticket_id: str, resolve: TicketResolve, request: Reques
                 "used_runbook": resolve.used_runbook,
             },
             "confidence_score": None,
-            "reasoning": f"Resolved by {resolve.resolved_by or 'unknown'}. AI suggestion {'used' if resolve.used_ai_suggestion == 'yes' else 'not used'}.",
+            "reasoning": f"Resolved by {user['email']}. AI suggestion {'used' if resolve.used_ai_suggestion == 'yes' else 'not used'}.",
             "created_at": now,
         })
     except Exception as exc:
@@ -342,7 +383,7 @@ async def resolve_ticket(ticket_id: str, resolve: TicketResolve, request: Reques
 
     logger.info(
         "Ticket %s resolved by %s (AI suggestion: %s)",
-        ticket_id, resolve.resolved_by, resolve.used_ai_suggestion,
+        ticket_id, user["email"], resolve.used_ai_suggestion,
     )
 
     # Return updated ticket
@@ -351,8 +392,8 @@ async def resolve_ticket(ticket_id: str, resolve: TicketResolve, request: Reques
 
 
 @router.delete("/{ticket_id}", status_code=204)
-async def delete_ticket(ticket_id: str, request: Request):
-    """Delete a ticket."""
+async def delete_ticket(ticket_id: str, request: Request, admin: dict = Depends(require_admin)):
+    """Delete a ticket. Admin only."""
     db = getattr(request.app.state, "arango_db", None)
     if db is None:
         raise HTTPException(503, "Database unavailable")
@@ -386,6 +427,17 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         created_at=doc.get("created_at"),
         resolved_at=doc.get("resolved_at"),
     )
+
+
+def _team_key_to_name(db, team_key: str | None) -> str | None:
+    """Resolve a team _key to its display name."""
+    if not team_key:
+        return None
+    try:
+        team = db.collection("teams").get(team_key)
+        return team.get("name") if team else None
+    except Exception:
+        return None
 
 
 def _lookup_team_key(db, team_name: str) -> str | None:

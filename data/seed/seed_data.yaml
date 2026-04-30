@@ -1941,3 +1941,13 @@ category_centroids:
   embedding: null
   ticket_count: 0
   last_updated: null
+
+# ── Users (auth accounts) ──
+users:
+- email: arif.asadullah@schwettmann.in
+  password: DeskMind@2026
+  role: admin
+  first_name: Arif
+  last_name: Asadullah
+  engineer_key: null
+  team_key: null

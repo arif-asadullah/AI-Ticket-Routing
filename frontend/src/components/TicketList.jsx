@@ -4,7 +4,7 @@ const priorityStyles = {
   low: { bg: "rgba(34,197,94,0.12)", color: "#22c55e", dot: "#22c55e" },
 };
 
-function TicketList({ tickets, onDelete }) {
+function TicketList({ tickets, onDelete, user }) {
   if (tickets.length === 0) {
     return (
       <div style={{
@@ -172,6 +172,7 @@ function TicketList({ tickets, onDelete }) {
               {t.status}
             </span>
 
+            {user?.role === "admin" && (
             <button
               onClick={() => onDelete(t.id)}
               style={{
@@ -195,6 +196,7 @@ function TicketList({ tickets, onDelete }) {
                   stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
+            )}
           </div>
         );
       })}

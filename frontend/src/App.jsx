@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import DeskMindSplash from "./components/DeskMindSplash";
 import DeskMindSpinner from "./components/DeskMindSpinner";
-import LandingPage from "./components/LandingPage";
+import LoginPage from "./components/LoginPage";
 import StatusBar from "./components/StatusBar";
 import TicketList from "./components/TicketList";
 import ChatPanel from "./components/ChatPanel";
-import { fetchTickets, createTicket, deleteTicket, fetchHealth } from "./services/api";
+import UserManagement from "./components/UserManagement";
+import { fetchTickets, createTicket, deleteTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
 import icon from "./assets/logo/deskmind-icon.svg";
@@ -59,8 +60,9 @@ function FocusInput({ as: Tag = "input", style, ...props }) {
 }
 
 export default function App() {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
   const [activeTab, setActiveTab] = useState("tickets");
   const [isClassifying, setIsClassifying] = useState(false);
   const [tickets, setTickets] = useState([]);
@@ -71,12 +73,36 @@ export default function App() {
   const [priority, setPriority] = useState("medium");
   const [lastResult, setLastResult] = useState(null);
 
+  // Check if already logged in on mount
   useEffect(() => {
-    if (splashDone) {
+    if (isLoggedIn()) {
+      fetchMe()
+        .then((u) => { setUser(u); setIsAuthenticated(true); })
+        .catch(() => { logout(); setIsAuthenticated(false); });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (splashDone && isAuthenticated) {
       loadTickets();
       loadHealth();
     }
-  }, [splashDone]);
+  }, [splashDone, isAuthenticated]);
+
+  async function handleLogin(email, password) {
+    await login(email, password);
+    const u = await fetchMe();
+    setUser(u);
+    setIsAuthenticated(true);
+  }
+
+  function handleLogout() {
+    logout();
+    setUser(null);
+    setIsAuthenticated(false);
+    setTickets([]);
+    setLastResult(null);
+  }
 
   async function loadTickets() {
     try {
@@ -148,17 +174,13 @@ export default function App() {
       {/* ── Splash ── */}
       {!splashDone && <DeskMindSplash onFinished={() => setSplashDone(true)} />}
 
-      {/* ── Landing Page ── */}
-      {splashDone && !showDashboard && (
-        <LandingPage
-          onEnter={() => setShowDashboard(true)}
-          health={health}
-          ticketCount={tickets.length}
-        />
+      {/* ── Login Gate ── */}
+      {splashDone && !isAuthenticated && (
+        <LoginPage onLogin={handleLogin} />
       )}
 
       {/* ── Dashboard ── */}
-      {splashDone && showDashboard && (
+      {splashDone && isAuthenticated && (
         <div style={{ minHeight: "100vh" }}>
 
           {/* Header */}
@@ -179,16 +201,49 @@ export default function App() {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <StatusBar health={health} />
-              <nav style={{ display: "flex", gap: 20, fontSize: 13, fontWeight: 500 }}>
+              <nav style={{ display: "flex", gap: 20, fontSize: 13, fontWeight: 500, alignItems: "center" }}>
                 <a href="#tickets" onClick={(e) => { e.preventDefault(); setActiveTab("tickets"); }} style={{ color: activeTab === "tickets" ? T.accent : T.textMuted, cursor: "pointer" }}>Tickets</a>
                 <a href="#chat" onClick={(e) => { e.preventDefault(); setActiveTab("chat"); }} style={{ color: activeTab === "chat" ? T.accent : T.textMuted, cursor: "pointer" }}>Chat AI</a>
-                <a href="#dashboard" style={{ color: T.textMuted }}>Dashboard</a>
+                {user?.role === "admin" && (
+                  <a href="#users" onClick={(e) => { e.preventDefault(); setActiveTab("users"); }} style={{ color: activeTab === "users" ? T.accent : T.textMuted, cursor: "pointer" }}>Users</a>
+                )}
+                <div style={{ width: 1, height: 20, background: T.border, margin: "0 4px" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{user?.email}</div>
+                    <div style={{ fontSize: 10, color: T.accent, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>
+                      {user?.role}{user?.team_name ? ` \u2022 ${user.team_name}` : ""}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      padding: "6px 12px",
+                      background: "rgba(239,68,68,0.1)",
+                      border: "1px solid rgba(239,68,68,0.2)",
+                      borderRadius: 6,
+                      color: T.danger,
+                      fontSize: 11,
+                      fontWeight: 500,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
               </nav>
             </div>
           </header>
 
           {/* ── Chat Tab ── */}
           {activeTab === "chat" && <ChatPanel />}
+
+          {/* ── Users Tab (admin only) ── */}
+          {activeTab === "users" && user?.role === "admin" && (
+            <main style={{ maxWidth: 960, margin: "0 auto", padding: "40px 24px 80px" }}>
+              <UserManagement />
+            </main>
+          )}
 
           {/* ── Tickets Tab ── */}
           {activeTab === "tickets" && (
@@ -526,7 +581,7 @@ export default function App() {
               overflow: "hidden",
               backdropFilter: "blur(8px)",
             }}>
-              <TicketList tickets={tickets} onDelete={handleDelete} />
+              <TicketList tickets={tickets} onDelete={handleDelete} user={user} />
             </div>
           </main>
           )}
