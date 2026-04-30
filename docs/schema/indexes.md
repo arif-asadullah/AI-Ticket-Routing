@@ -47,6 +47,14 @@ A database index works the same way. It creates a shortcut so the database can f
 |--------|-----|---------------|
 | `category` + `priority` | Fast rule lookup | `FOR r IN routing_rules FILTER r.category == "Database" AND r.priority == "high" RETURN r` |
 
+**On `users` collection:**
+
+| Fields | Why | Example query |
+|--------|-----|---------------|
+| `email` (unique) | Fast login lookup + prevent duplicate accounts | `FOR u IN users FILTER u.email == "arif@company.com" RETURN u` |
+
+This is a **unique** persistent index — ArangoDB rejects any insert that would create a duplicate email.
+
 **Without these indexes**: Every query scans the entire collection. With 50 tickets it's fine. With 10,000 tickets it becomes slow. Indexes keep it fast regardless of collection size.
 
 ---
@@ -144,14 +152,15 @@ This finds the 5 tickets most similar in meaning to the query embedding. The vec
 | 2 | tickets | Persistent | `priority` | Filter by urgency |
 | 3 | tickets | Persistent | `status` | Filter by lifecycle |
 | 4 | tickets | Persistent | `created_at` | Sort by date |
-| 5 | tickets | Full-text | `title`, `description` | Keyword search |
-| 6 | tickets | Vector (384) | `embedding` | Find similar tickets |
-| 7 | runbooks | Vector (384) | `embedding` | Find relevant runbooks |
-| 8 | resolutions | Vector (384) | `embedding` | Find similar fixes |
-| 9 | routing_rules | Persistent | `category`, `priority` | Fast rule lookup |
-| 10 | audit_log | Persistent | `ticket_id` | Find all actions for a ticket |
-| 11 | audit_log | Persistent | `created_at` | Time-ordered audit trail |
-| 12 | category_centroids | Vector (384) | `embedding` | Compare new ticket to category averages (centroid classifier) |
+| 5 | tickets | Full-text | `title` | Keyword search on titles |
+| 6 | tickets | Full-text | `description` | Keyword search on descriptions |
+| 7 | tickets | Vector (384) | `embedding` | Find similar tickets |
+| 8 | runbooks | Vector (384) | `embedding` | Find relevant runbooks |
+| 9 | resolutions | Vector (384) | `embedding` | Find similar fixes |
+| 10 | routing_rules | Persistent | `category`, `priority` | Fast rule lookup |
+| 11 | audit_log | Persistent | `ticket_id` | Find all actions for a ticket |
+| 12 | audit_log | Persistent | `created_at` | Time-ordered audit trail |
+| 13 | users | Persistent (unique) | `email` | Fast login lookup, prevent duplicates |
 
 ## When are indexes created?
 
