@@ -10,7 +10,7 @@
 
 | Technology | Version | License | Role in DeskMind |
 |-----------|---------|---------|-----------------|
-| **ArangoDB** | 3.12 Community | Apache 2.0 | Multi-model database — graph engine + document store + vector search in one. Stores the entire knowledge graph (1,795 documents, 3,831 edges). Provides native vector similarity search for semantic ticket matching. |
+| **ArangoDB** | 3.12 Community | Apache 2.0 | Multi-model database — graph engine + document store + vector search in one. Stores the entire knowledge graph (1,796 documents, 3,831 edges). Provides native vector similarity search for semantic ticket matching. |
 | **Redis** | 7.x | BSD 3-Clause | In-memory cache for health check results (5s TTL), entity lists (5min TTL), and performance optimization. |
 | **Ollama** | Latest | MIT | Local LLM runtime. Hosts Qwen 2.5:3B model with OpenAI-compatible API. Enables fully local inference with no cloud dependency. |
 | **Docker** | Latest | Apache 2.0 | Container runtime for all services. Ensures consistent environments across Mac and Windows development machines. |
@@ -38,7 +38,9 @@
 | **Pydantic** | v2 | MIT | Data validation and serialization. Defines request/response schemas (TicketCreate, TicketResponse, etc.) with automatic type checking. |
 | **pydantic-settings** | Latest | MIT | Configuration management. Loads settings from `.env` file with type validation and defaults. |
 | **spaCy** | Latest | MIT | NLP library for text processing. Used in entity extraction and text normalization pipeline. |
-| **python-jose** | Latest | MIT | JWT token handling. Prepared for authentication/authorization (RBAC ready). |
+| **python-jose** | Latest | MIT | JWT token creation, signing, and validation. Creates access tokens (30 min) and refresh tokens (7 days) for authentication. Uses HS256 algorithm. |
+| **passlib** | Latest | BSD 3-Clause | Password hashing framework. Uses bcrypt scheme to hash user passwords before storing in ArangoDB. Verifies passwords during login. |
+| **bcrypt** | 4.1.3 | Apache 2.0 | Backend for passlib's bcrypt hashing. Pinned to 4.1.3 for compatibility with passlib on Python 3.12+. |
 | **python-dotenv** | Latest | BSD 3-Clause | Loads environment variables from `.env` file at application startup. |
 | **PyYAML** | Latest | MIT | Parses seed data YAML files during database ingestion. |
 
@@ -104,7 +106,7 @@ Traditional GraphRAG requires 3 separate databases: Neo4j (graph), Pinecone (vec
 | License | Libraries | Commercial Use |
 |---------|-----------|---------------|
 | MIT | FastAPI, React, Vite, Pydantic, python-arango, redis, python-jose, spaCy | Allowed |
-| Apache 2.0 | ArangoDB, Docker, sentence-transformers, Qwen 2.5, MiniLM, Ollama | Allowed |
-| BSD 3-Clause | Uvicorn, httpx, python-dotenv, Redis | Allowed |
+| Apache 2.0 | ArangoDB, Docker, sentence-transformers, Qwen 2.5, MiniLM, Ollama, bcrypt | Allowed |
+| BSD 3-Clause | Uvicorn, httpx, python-dotenv, Redis, passlib | Allowed |
 
 All libraries used are **permissively licensed** and allow commercial use, modification, and distribution.

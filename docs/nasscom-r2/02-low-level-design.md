@@ -24,18 +24,27 @@
                           │            │             │
                           └────────────┼─────────────┘
                                        │
-                              ┌────────▼───────────────┐
-                              │    api/router.py        │
-                              │  ┌──────┬───────┐       │
-                              │  │tickets│health│chat│  │
-                              │  └──┬───┘└──────┘──┘   │
-                              └─────┼──────────────────┘
-                                    │
-                                    ▼
-                  ┌─────────────────────────────────────────────┐
-                  │          orchestrator.py                      │
-                  │  classify() — Master pipeline controller      │
-                  └──────┬────────┬──────────┬─────────┬────────┘
+                              ┌────────▼───────────────────────┐
+                              │        api/router.py              │
+                              │  ┌──────┬──────┬──────┬──────┐   │
+                              │  │ auth │tickets│health│ chat │   │
+                              │  └──┬───┘──┬───┘└─────┘└─────┘   │
+                              └─────┼──────┼──────────────────────┘
+                                    │      │
+                          ┌─────────┘      └──────────┐
+                          ▼                           ▼
+               ┌─────────────────────┐   ┌─────────────────────────────────────┐
+               │   core/auth.py      │   │       orchestrator.py                │
+               │                     │   │  classify() — Pipeline controller    │
+               │ - hash_password()   │   └──────┬────────┬──────────┬─────┬────┘
+               │ - verify_password() │          │        │          │     │
+               │ - create_*_token()  │ ┌────────┘   ┌────┘     ┌───┘  ┌──┘
+               │ - decode_token()    │ ▼            ▼          ▼      ▼
+               │ - get_current_user()│ ┌──────────┐ ┌────────┐ ┌──────┐ ┌────────┐
+               │ - require_role()    │ │ Stage 1: │ │Stage 2:│ │Stg 3:│ │Stage 4:│
+               │ - require_team_    │ │ PREPARE  │ │RETRIEVE│ │CLASS.│ │AGGREG. │
+               │   access()         │ └──────────┘ └────────┘ └──────┘ └────────┘
+               └─────────────────────┘
                          │        │          │         │
               ┌──────────┘   ┌────┘     ┌────┘    ┌────┘
               ▼              ▼          ▼         ▼
@@ -90,6 +99,31 @@ Call graph (function-level):
       ├── db.collection("tickets").insert(...)
       ├── db.collection("assigned_to").insert(...)
       └── db.collection("audit_log").insert(...)
+
+  api.auth.login()
+      │
+      ├── db.aql.execute("FOR u IN users FILTER u.email == @email ...")
+      ├── auth.verify_password(plain, user.password_hash)   → bool
+      ├── auth.create_access_token({sub, role, team_key})   → JWT (30 min)
+      └── auth.create_refresh_token({sub, role, team_key})  → JWT (7 days)
+
+  api.auth.register()  [requires: Depends(require_admin)]
+      │
+      ├── db.collection("engineers").get(engineer_key)      → validate engineer exists
+      ├── db.aql.execute("... member_of ...")               → resolve team_key from graph
+      ├── auth.hash_password(plain)                         → bcrypt hash
+      └── db.collection("users").insert({email, hash, role, team_key, ...})
+
+  [Every protected endpoint]
+      │
+      ├── auth.get_current_user(request, credentials)
+      │       ├── auth.decode_token(bearer_token)           → {sub, role, team_key, type}
+      │       └── db.aql.execute("FOR u IN users ...")      → validate user active
+      │
+      └── auth.require_team_access(ticket.routed_to, user, db)  [inline, for ticket mutations]
+              ├── admin → bypass
+              ├── viewer → 403
+              └── engineer → db.collection("teams").get(team_key) → compare name
 ```
 
 ---
@@ -273,8 +307,8 @@ class Settings(BaseSettings):
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `init_schema` | `(db: StandardDatabase) -> None` | Idempotent: creates 12 doc collections, 9 edge collections, 1 named graph, all indexes |
-| `_create_indexes` | `(db: StandardDatabase) -> None` | Creates persistent, fulltext, and vector indexes with retry logic |
+| `init_schema` | `(db: StandardDatabase) -> None` | Idempotent: creates 13 doc collections, 9 edge collections, 1 named graph, all indexes |
+| `_create_indexes` | `(db: StandardDatabase) -> None` | Creates persistent, fulltext, vector, and unique indexes with retry logic |
 
 ### 3.5 `services/orchestrator.py` — Classification Pipeline Controller
 
@@ -354,16 +388,52 @@ class Settings(BaseSettings):
 | `aggregate` | `(votes, quality_score, error_codes, graph_confirms_category) -> dict` | `dict` | 7-step weighted voting with bonuses, calibration, and quality cap |
 | `_get_weights` | `(active_votes) -> dict` | `dict` | Returns appropriate weight set based on which classifiers are active |
 
-### 3.15 `api/tickets.py` — Ticket API Endpoints
+### 3.15 `api/tickets.py` — Ticket API Endpoints (all protected)
 
-| Endpoint | Function | Description |
-|----------|----------|-------------|
-| `GET /api/tickets` | `list_tickets` | List user-submitted tickets (filters out `_source: seed/synthetic`) |
-| `POST /api/tickets` | `create_ticket` | Create + classify + route + audit log |
-| `GET /api/tickets/{id}` | `get_ticket` | Get single ticket |
-| `PATCH /api/tickets/{id}/status` | `update_ticket_status` | Engineer picks up, reassigns, or escalates; updates `assigned_to` edge |
-| `POST /api/tickets/{id}/resolve` | `resolve_ticket` | Save resolution, create `resolved_with` edge, compute effectiveness |
-| `DELETE /api/tickets/{id}` | `delete_ticket` | Delete ticket document |
+| Endpoint | Function | Auth Guard | Description |
+|----------|----------|-----------|-------------|
+| `GET /api/tickets` | `list_tickets` | `get_current_user` | List tickets — engineers see own team only |
+| `POST /api/tickets` | `create_ticket` | `require_any_authenticated` | Create + classify + route (submitted_by = user email) |
+| `GET /api/tickets/{id}` | `get_ticket` | `get_current_user` | Get ticket — engineers only if routed to their team |
+| `PATCH /api/tickets/{id}/status` | `update_ticket_status` | `require_engineer_or_admin` + `require_team_access` | Engineer picks up / reassigns / escalates |
+| `POST /api/tickets/{id}/resolve` | `resolve_ticket` | `require_engineer_or_admin` + `require_team_access` | Resolve ticket (team-scoped) |
+| `DELETE /api/tickets/{id}` | `delete_ticket` | `require_admin` | Admin only |
+
+### 3.16 `core/auth.py` — Authentication & Authorization
+
+| Function | Signature | Returns | Description |
+|----------|-----------|---------|-------------|
+| `hash_password` | `(plain: str) -> str` | `str` | Bcrypt hash using passlib |
+| `verify_password` | `(plain: str, hashed: str) -> bool` | `bool` | Verify plaintext against bcrypt hash |
+| `create_access_token` | `(data: dict) -> str` | `str` | JWT with 30-min expiry, type="access" |
+| `create_refresh_token` | `(data: dict) -> str` | `str` | JWT with 7-day expiry, type="refresh" |
+| `decode_token` | `(token: str) -> dict` | `dict` | Decode + validate JWT signature and expiry |
+| `get_current_user` | `async (request, credentials) -> dict` | `dict` | FastAPI dependency — extract user from Bearer token, verify in DB |
+| `require_role` | `(*allowed_roles) -> Depends` | `dict` | Factory — returns dependency checking user role |
+| `require_team_access` | `async (ticket_routed_to, user, db) -> bool` | `bool` | Inline check — engineer must belong to ticket's team |
+
+### 3.17 `api/auth.py` — Auth API Endpoints
+
+| Endpoint | Function | Auth | Description |
+|----------|----------|------|-------------|
+| `POST /api/auth/bootstrap` | `bootstrap` | Public (only when 0 users) | Create first admin account |
+| `POST /api/auth/login` | `login` | Public | Email + password → access + refresh JWT tokens |
+| `POST /api/auth/register` | `register` | Admin only | Create new user linked to engineer/team |
+| `POST /api/auth/refresh` | `refresh` | Public (needs refresh token) | Exchange refresh token for new tokens |
+| `GET /api/auth/me` | `me` | Any authenticated | Current user info with team name |
+| `GET /api/auth/users` | `list_users` | Admin only | List all user accounts |
+| `PATCH /api/auth/users/{email}/toggle-active` | `toggle_user_active` | Admin only | Activate/deactivate user |
+| `GET /api/auth/engineers` | `list_engineers` | Admin only | List engineers with team info (for user creation form) |
+
+### 3.18 `schemas/auth.py` — Auth Pydantic Models
+
+| Model | Fields | Description |
+|-------|--------|-------------|
+| `UserRegister` | email, password, role, engineer_key | Admin creates a new user |
+| `UserLogin` | email, password | Login request |
+| `TokenResponse` | access_token, refresh_token, token_type | Login/refresh response |
+| `TokenRefreshRequest` | refresh_token | Refresh request |
+| `UserResponse` | email, role, team_key, team_name, engineer_key, is_active | User info response |
 
 ---
 
@@ -1208,7 +1278,7 @@ Request arrives
 
 ## 10. Schema & Index Design
 
-### 10.1 Document Collections (12)
+### 10.1 Document Collections (13)
 
 | Collection | Key Fields | Purpose |
 |-----------|------------|---------|
@@ -1224,6 +1294,7 @@ Request arrives
 | `routing_rules` | `_key`, category, priority, target_team, is_active | Category+priority → team mapping (24) |
 | `audit_log` | `_key`, ticket_id, action, actor, old_value, new_value, confidence_score, confidence_signals, reasoning, created_at | Full audit trail |
 | `category_centroids` | `_key`, category, embedding(384), ticket_count | Pre-computed average embedding per category (6) |
+| `users` | `_key`, email (unique), password_hash, role, first_name, last_name, engineer_key, team_key, is_active | Authentication accounts (RBAC) |
 
 ### 10.2 Edge Collections (9)
 
@@ -1291,6 +1362,7 @@ GRAPH_EDGE_DEFINITIONS = [
 | `idx_rules_category_priority` | routing_rules | persistent | `[category, priority]` | | Composite lookup for routing |
 | `idx_audit_ticket_id` | audit_log | persistent | `[ticket_id]` | | Filter audit entries by ticket |
 | `idx_audit_created_at` | audit_log | persistent | `[created_at]` | | Sort audit entries by date |
+| `idx_users_email` | users | persistent (unique) | `[email]` | unique=true | Fast login lookup, prevent duplicate accounts |
 
 ### 10.5 Vector Index Configuration
 
@@ -1347,6 +1419,11 @@ col.add_index({
   │error_codes │
   │  (20 docs) │
   └────────────┘
+
+  ┌────────────┐  engineer_key  ┌──────────────┐  team_key   ┌──────────────┐
+  │   users    │───────────────▶│  engineers   │────────────▶│    teams     │
+  │  (auth)    │                │ (knowledge)  │  member_of  │   (6 docs)   │
+  └────────────┘                └──────────────┘             └──────────────┘
 ```
 
 ---

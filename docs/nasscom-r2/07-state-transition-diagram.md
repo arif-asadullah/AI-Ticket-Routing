@@ -30,7 +30,9 @@ stateDiagram-v2
     Closed --> [*]
 
     note right of Submitted
-        Actor: User (frontend form)
+        Actor: Any authenticated user
+        Auth: require_any_authenticated
+        submitted_by = user.email (from JWT)
         Creates ticket document,
         triggers 5-stage pipeline
     end note
@@ -50,14 +52,17 @@ stateDiagram-v2
     end note
 
     note right of InProgress
-        Actor: Engineer
+        Actor: Engineer or Admin
+        Auth: require_engineer_or_admin
+        Guard: require_team_access
+        (engineer must belong to ticket team)
         PATCH /api/tickets/{id}/status
-        Old assigned_to edge removed,
-        new edge created if reassigned
     end note
 
     note right of Resolved
-        Actor: Engineer
+        Actor: Engineer or Admin
+        Auth: require_engineer_or_admin
+        Guard: require_team_access
         Creates resolution document,
         resolved_with edge,
         optional references edge
@@ -84,14 +89,14 @@ stateDiagram-v2
 
 | # | From | To | Trigger | Guard / Condition | Actor | Side Effects |
 |---|------|----|---------|-------------------|-------|-------------|
-| 1 | `[*]` | Submitted | `POST /api/tickets` | Valid title + description | User | Ticket document created with `_source: "user"`, embedding computed |
+| 1 | `[*]` | Submitted | `POST /api/tickets` | `require_any_authenticated` — any logged-in user | User (any role) | Ticket document created with `_source: "user"`, `submitted_by` = user.email from JWT, embedding computed |
 | 2 | Submitted | Routed | Pipeline returns | `confidence >= 0.70` | AI Orchestrator | `assigned_to` edge created, `audit_log` entry with action `classified` |
 | 3 | Submitted | Escalated | Pipeline returns | `confidence < 0.70` | AI Orchestrator | `audit_log` entry with action `escalated`, no `assigned_to` edge |
-| 4 | Routed | In Progress | `PATCH .../status` | `status` not in `{resolved, closed}` | Engineer | `audit_log` records status change and actor |
-| 5 | Escalated | In Progress | `PATCH .../status` | L1 support assigns to engineer | L1 Support | `assigned_to` edge created or updated, `audit_log` records triage decision |
-| 6 | Escalated | Routed | `PATCH .../status` | L1 support routes manually | L1 Support | `assigned_to` edge created, status changes to `routed` |
-| 7 | In Progress | Resolved | `POST .../resolve` | Resolution steps provided | Engineer | `resolutions` doc created, `resolved_with` edge, optional `references` edge, `resolved_at` timestamp set |
-| 8 | In Progress | Escalated | `PATCH .../status` | Engineer cannot resolve, needs different team | Engineer | Old `assigned_to` edge may be removed, `audit_log` records re-escalation |
+| 4 | Routed | In Progress | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` (engineer must be on ticket's team) | Engineer or Admin | `audit_log` records status change with actor = user.email from JWT |
+| 5 | Escalated | In Progress | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` | L1 Support (admin) | `assigned_to` edge created or updated, `audit_log` records triage decision |
+| 6 | Escalated | Routed | `PATCH .../status` | `require_engineer_or_admin` — admin can route to any team | Admin | `assigned_to` edge created, status changes to `routed` |
+| 7 | In Progress | Resolved | `POST .../resolve` | `require_engineer_or_admin` + `require_team_access` | Engineer or Admin | `resolutions` doc created, `resolved_with` edge, optional `references` edge, `resolved_at` timestamp set |
+| 8 | In Progress | Escalated | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` | Engineer or Admin | Old `assigned_to` edge may be removed, `audit_log` records re-escalation |
 | 9 | Resolved | Closed | Confirmation | Requester verifies the fix works | Requester | Terminal state reached |
 | 10 | Resolved | In Progress | Reopen | Fix did not work, issue recurs | Requester | `resolved_at` cleared, resolution effectiveness reduced |
 

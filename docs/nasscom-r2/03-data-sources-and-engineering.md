@@ -41,6 +41,7 @@ Hand-crafted YAML containing the **core infrastructure topology** that forms the
 | Tickets | 55 | Representative tickets across all 6 categories |
 | Resolutions | 30 | Documented fixes linked to tickets |
 | Edges | 55 | Manual relationships (hosts, managed_by, affects, depends_on, etc.) |
+| Users | 1 | Admin account (additional users created via UI at runtime) |
 
 **Why hand-crafted**: The infrastructure topology must be internally consistent — servers must host the right services, teams must manage the right servers, error codes must reference real services. AI-generated data tends to have cross-reference inconsistencies.
 
@@ -155,7 +156,7 @@ Tickets submitted through the DeskMind frontend at runtime. Tagged with `_source
                     ┌────────▼─────────┐
                     │  ArangoDB Insert │
                     │                  │
-                    │  1,795 documents │
+                    │  1,796 documents │
                     │  3,831 edges     │
                     └────────┬─────────┘
                              │
@@ -168,11 +169,20 @@ Tickets submitted through the DeskMind frontend at runtime. Tagged with `_source
                     └────────┬─────────┘
                              │
                     ┌────────▼─────────┐
+                    │  Load Users      │
+                    │                  │
+                    │ Hash passwords   │
+                    │ (bcrypt)         │
+                    │ → admin account  │
+                    └────────┬─────────┘
+                             │
+                    ┌────────▼─────────┐
                     │  Create Indexes  │
                     │                  │
                     │ - Vector index   │
                     │ - Fulltext index │
                     │ - Persistent idx │
+                    │ - Unique (email) │
                     └──────────────────┘
 ```
 
@@ -215,6 +225,7 @@ for category in ["Infrastructure", "Application", "Database", "Network", "Securi
 | Persistent | tickets | category, status, _source | Filter queries |
 | Persistent | audit_log | ticket_id | Audit trail lookup |
 | Persistent | routing_rules | category, priority, is_active | Team routing lookup |
+| Persistent (unique) | users | email | Fast login lookup, prevent duplicates |
 
 **Vector index note**: ArangoDB 3.12 requires `--vector-index true` flag at startup. The vector subsystem takes ~10 seconds to initialize, so `schema.py` uses a retry loop (5 attempts, 5s delay) when creating vector indexes.
 
