@@ -35,8 +35,11 @@ sequenceDiagram
     participant Agg as Aggregator<br/>aggregator.py
 
     User ->> React: Submit ticket form<br/>(title, description, priority)
-    React ->> API: POST /api/tickets<br/>TicketCreate {title, description, priority, submitted_by}
-    API ->> API: Validate request via Pydantic<br/>TicketCreate model
+    React ->> API: POST /api/tickets<br/>Authorization: Bearer {token}<br/>TicketCreate {title, description, priority}
+
+    Note over API: Auth: require_any_authenticated
+    API ->> API: get_current_user() → user {email, role, team_key}
+    API ->> API: Validate request via Pydantic<br/>submitted_by = user.email (from token)
 
     Note over API, Orch: Stage 0 -- Invoke Classification Pipeline
     API ->> Orch: classify(title, description, db, redis_client)
@@ -191,15 +194,23 @@ sequenceDiagram
     participant ArangoDB as ArangoDB 3.12
 
     Eng ->> React: Click "Pick Up" / "Reassign" / "Escalate"
-    React ->> API: PATCH /api/tickets/T-856/status<br/>TicketStatusUpdate {<br/>  status: "in_progress",<br/>  assigned_to: null,<br/>  updated_by: "priya@company.com"<br/>}
+    React ->> API: PATCH /api/tickets/T-856/status<br/>Authorization: Bearer {token}<br/>TicketStatusUpdate {<br/>  status: "in_progress",<br/>  assigned_to: null<br/>}
+
+    Note over API: Auth: require_engineer_or_admin
+    API ->> API: get_current_user() → user {email, role, team_key}
 
     Note over API: Validation Phase
     API ->> ArangoDB: db.collection("tickets").get("T-856")
     ArangoDB -->> API: doc {status: "routed", routed_to: "Database Admin", ...}
 
+    API ->> API: require_team_access(doc.routed_to, user, db)<br/>Engineer must belong to ticket's team
+
     alt Ticket not found
         API -->> React: 404 "Ticket not found"
         React -->> Eng: Error: Ticket not found
+    else Wrong team (engineer)
+        API -->> React: 403 "You can only access tickets assigned to your team"
+        React -->> Eng: Error: Not your team's ticket
     else Status not in {in_progress, escalated, routed}
         API -->> React: 400 "Invalid status. Must be one of: {in_progress, escalated, routed}"
         React -->> Eng: Error: Invalid status
@@ -263,7 +274,11 @@ sequenceDiagram
     participant ArangoDB as ArangoDB 3.12
 
     Eng ->> React: Fill resolution form<br/>(steps, AI suggestion feedback, runbook)
-    React ->> API: POST /api/tickets/T-856/resolve<br/>TicketResolve {<br/>  resolution_steps: [<br/>    "Increased max_connections from 100 to 200",<br/>    "Restarted PostgreSQL service",<br/>    "Verified order-service reconnected"<br/>  ],<br/>  used_ai_suggestion: "yes",<br/>  used_runbook: "KB-0003",<br/>  resolved_by: "priya@company.com"<br/>}
+    React ->> API: POST /api/tickets/T-856/resolve<br/>Authorization: Bearer {token}<br/>TicketResolve {<br/>  resolution_steps: [<br/>    "Increased max_connections from 100 to 200",<br/>    "Restarted PostgreSQL service",<br/>    "Verified order-service reconnected"<br/>  ],<br/>  used_ai_suggestion: "yes",<br/>  used_runbook: "KB-0003"<br/>}
+
+    Note over API: Auth: require_engineer_or_admin
+    API ->> API: get_current_user() → user {email: "priya@company.com", role: "engineer"}
+    API ->> API: require_team_access(doc.routed_to, user, db)
 
     Note over API: Validation Phase
     API ->> ArangoDB: collection("tickets").get("T-856")
@@ -516,6 +531,108 @@ sequenceDiagram
 | Expert recommendation | Yes (from graph) | No (no graph data) | Yes (from graph) | No (no graph data) |
 | Auto-route likely? | Yes (high confidence) | Yes (LLM is strong) | Yes (if data-backed) | No (escalates to human) |
 | Priority source | LLM inference | LLM inference | Default "medium" | Default "medium" |
+
+---
+
+## 5. Authentication Flow (Login, Register, Token Refresh)
+
+This diagram covers the JWT authentication flow — login, admin registration, and automatic token refresh.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as User / Admin
+    participant React as React Frontend
+    participant API as FastAPI<br/>auth.py
+    participant Auth as core/auth.py
+    participant ArangoDB as ArangoDB 3.12
+
+    Note over User, ArangoDB: Login Flow
+    User ->> React: Enter email + password
+    React ->> API: POST /api/auth/login<br/>UserLogin {email, password}
+    API ->> ArangoDB: AQL: FOR u IN users<br/>FILTER u.email == @email LIMIT 1
+    ArangoDB -->> API: user doc {email, password_hash, role, team_key, is_active}
+
+    alt User not found OR password wrong
+        API ->> Auth: verify_password(plain, hash)
+        Auth -->> API: false
+        API -->> React: 401 "Invalid email or password"
+        React -->> User: Error: Invalid credentials
+    else User deactivated
+        API -->> React: 403 "Account is deactivated"
+    else Valid credentials
+        API ->> Auth: verify_password(plain, hash)
+        Auth -->> API: true
+        API ->> Auth: create_access_token({sub: email, role, team_key})
+        Auth -->> API: JWT access token (30 min expiry)
+        API ->> Auth: create_refresh_token({sub: email, role, team_key})
+        Auth -->> API: JWT refresh token (7 day expiry)
+        API -->> React: TokenResponse {access_token, refresh_token, token_type: "bearer"}
+        React ->> React: localStorage.setItem("access_token", token)<br/>localStorage.setItem("refresh_token", token)
+        React ->> API: GET /api/auth/me<br/>Authorization: Bearer {access_token}
+        API ->> Auth: get_current_user(credentials)
+        Auth ->> Auth: decode_token(token) → {sub, role, team_key}
+        Auth ->> ArangoDB: Verify user active in DB
+        ArangoDB -->> Auth: user doc
+        Auth -->> API: user dict
+        API -->> React: UserResponse {email, role, team_key, team_name}
+        React -->> User: Redirect to Dashboard
+    end
+
+    Note over User, ArangoDB: Admin Registers New User
+    User ->> React: Fill create user form<br/>(email, password, role, engineer_key)
+    React ->> API: POST /api/auth/register<br/>Authorization: Bearer {admin_token}<br/>UserRegister {email, password, role: "engineer", engineer_key: "eng-001"}
+
+    API ->> Auth: get_current_user() → admin user
+    API ->> Auth: require_admin() → verify role == "admin"
+
+    API ->> ArangoDB: collection("engineers").get("eng-001")
+    ArangoDB -->> API: engineer doc {name: "Arjun Nair", ...}
+    API ->> ArangoDB: AQL: member_of traversal → resolve team
+    ArangoDB -->> API: team {_key: "db-admin", name: "Database Admin"}
+    API ->> Auth: hash_password("changeme")
+    Auth -->> API: "$2b$12$..."
+    API ->> ArangoDB: collection("users").insert({<br/>email, password_hash, role: "engineer",<br/>engineer_key: "eng-001", team_key: "db-admin"})
+    ArangoDB -->> API: created
+    API -->> React: UserResponse {email, role: "engineer",<br/>team_key: "db-admin", team_name: "Database Admin"}
+    React -->> User: User created successfully
+
+    Note over React, Auth: Automatic Token Refresh (transparent to user)
+    React ->> API: GET /api/tickets<br/>Authorization: Bearer {expired_token}
+    API -->> React: 401 Unauthorized
+    React ->> API: POST /api/auth/refresh<br/>{refresh_token: "eyJhb..."}
+    API ->> Auth: decode_token(refresh_token)
+    Auth -->> API: {sub, role, team_key, type: "refresh"}
+    API ->> ArangoDB: Verify user still active
+    ArangoDB -->> API: user doc (is_active: true)
+    API ->> Auth: create_access_token({sub, role, team_key})
+    Auth -->> API: new JWT access token
+    API -->> React: TokenResponse {new access_token, new refresh_token}
+    React ->> React: Update localStorage tokens
+    React ->> API: GET /api/tickets (retry)<br/>Authorization: Bearer {new_token}
+    API -->> React: 200 OK — tickets list
+```
+
+### Authentication Guard on Every Protected Endpoint
+
+Every ticket/chat endpoint goes through this auth check before executing:
+
+```
+Request with Bearer token
+    │
+    ├── get_current_user()
+    │       ├── decode_token() → extract {sub, role, team_key}
+    │       ├── Query users collection → verify user exists + is_active
+    │       └── Return user dict OR raise 401
+    │
+    ├── require_role() [if endpoint needs specific role]
+    │       └── Check user.role in allowed_roles OR raise 403
+    │
+    └── require_team_access() [inline, for ticket mutations]
+            ├── Admin → bypass
+            ├── Viewer → 403 "cannot modify"
+            └── Engineer → resolve team_key → compare with ticket.routed_to OR raise 403
+```
 
 ---
 

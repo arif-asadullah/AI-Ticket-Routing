@@ -69,7 +69,7 @@ flowchart TB
     OLLAMA(["Ollama LLM"])
 
     %% Data stores
-    D1[("D1: ArangoDB\n12 doc collections\n9 edge collections\n1 named graph")]
+    D1[("D1: ArangoDB\n13 doc collections\n9 edge collections\n1 named graph")]
     D2[("D2: Redis\nHealth cache (5s TTL)\nEntity cache (5m TTL)")]
     D3[("D3: MiniLM Model\nall-MiniLM-L6-v2\n384-dim embeddings")]
 
@@ -289,7 +289,7 @@ flowchart TB
 
 ## 5. Data Store Schema Summary
 
-### Document Collections (12)
+### Document Collections (13)
 
 | Collection | Key Fields | Records | Purpose |
 |------------|-----------|---------|---------|
@@ -305,6 +305,7 @@ flowchart TB
 | `routing_rules` | _key, category, priority, target_team, is_active | 24 | Category+priority to team mapping |
 | `audit_log` | _key, ticket_id, action, actor, old_value, new_value, confidence_score, confidence_signals, reasoning, created_at | growing | Full audit trail |
 | `category_centroids` | _key, category, embedding[384], ticket_count | 6 | Average embedding per category |
+| `users` | _key, email (unique), password_hash, role, first_name, last_name, engineer_key, team_key, is_active | growing | Authentication accounts (RBAC) |
 
 ### Edge Collections (9)
 
@@ -329,6 +330,7 @@ flowchart TB
 | Persistent | `tickets.status` | Fast filter on closed/open/routed |
 | Persistent | `routing_rules.category` | Fast routing rule lookup |
 | Persistent | `routing_rules.priority` | Fast routing rule lookup |
+| Persistent (unique) | `users.email` | Fast login lookup, prevent duplicates |
 
 ---
 
@@ -580,7 +582,7 @@ ClassificationResult(
 
 | Metric | Value |
 |--------|-------|
-| Total documents in ArangoDB | 1,795 |
+| Total documents in ArangoDB | 1,796 |
 | Total edges in ArangoDB | 3,831 |
 | Embedding dimensions | 384 (MiniLM all-MiniLM-L6-v2) |
 | Embedding size per ticket | ~1.5 KB (384 x 4 bytes) |

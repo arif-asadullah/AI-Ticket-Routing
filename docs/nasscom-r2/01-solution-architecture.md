@@ -67,7 +67,7 @@
                    │  - Graph Engine     │    │    Cache     │    │  - Local inference │
                    │  - Vector Index     │    │  - Entity    │    │  - OpenAI-compat   │
                    │                     │    │    Cache     │    │    API             │
-                   │  12 Doc Collections │    │              │    │                    │
+                   │  13 Doc Collections │    │              │    │                    │
                    │  9 Edge Collections │    │              │    │  Port 11434        │
                    │  1 Named Graph      │    │  Port 6379   │    │  (host machine)    │
                    │                     │    │              │    │                    │
@@ -96,16 +96,24 @@
 
 #### API Layer
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/tickets` | POST | Create + classify + route ticket |
-| `/api/tickets` | GET | List user-submitted tickets |
-| `/api/tickets/{id}` | GET | Get single ticket with full details |
-| `/api/tickets/{id}/status` | PATCH | Engineer picks up / reassigns / escalates |
-| `/api/tickets/{id}/resolve` | POST | Close ticket with resolution steps |
-| `/api/tickets/{id}` | DELETE | Delete a ticket |
-| `/api/chat` | POST | Direct LLM chat |
-| `/health` | GET | System health check |
+| Endpoint | Method | Auth | Purpose |
+|----------|--------|------|---------|
+| `/api/auth/login` | POST | Public | Email + password → JWT access + refresh tokens |
+| `/api/auth/register` | POST | Admin only | Create new user account linked to engineer/team |
+| `/api/auth/refresh` | POST | Public (needs refresh token) | Exchange refresh token for new access token |
+| `/api/auth/me` | GET | Any authenticated | Get current user info (role, team, email) |
+| `/api/auth/users` | GET | Admin only | List all user accounts |
+| `/api/auth/users/{email}/toggle-active` | PATCH | Admin only | Activate/deactivate a user |
+| `/api/auth/bootstrap` | POST | Public (only when 0 users) | Create first admin account |
+| `/api/auth/engineers` | GET | Admin only | List engineers with team info (for user creation form) |
+| `/api/tickets` | POST | Any authenticated | Create + classify + route ticket |
+| `/api/tickets` | GET | Any authenticated | List tickets (engineers: own team only) |
+| `/api/tickets/{id}` | GET | Any authenticated | Get single ticket (engineers: own team only) |
+| `/api/tickets/{id}/status` | PATCH | Engineer or Admin | Engineer picks up / reassigns / escalates (team-scoped) |
+| `/api/tickets/{id}/resolve` | POST | Engineer or Admin | Close ticket with resolution steps (team-scoped) |
+| `/api/tickets/{id}` | DELETE | Admin only | Delete a ticket |
+| `/api/chat` | POST | Any authenticated | Direct LLM chat |
+| `/health` | GET | Public | System health check |
 
 #### Classification Pipeline (5 Stages)
 
@@ -166,7 +174,7 @@ ArangoDB serves as a **triple-purpose database**:
 2. **Graph Engine** — infrastructure relationships via 9 edge collections
 3. **Vector Database** — 384-dim embeddings with APPROX_NEAR_COSINE similarity search
 
-**12 Document Collections**: tickets, teams, engineers, servers, services, network_devices, error_codes, runbooks, resolutions, routing_rules, audit_log, category_centroids
+**13 Document Collections**: tickets, teams, engineers, servers, services, network_devices, error_codes, runbooks, resolutions, routing_rules, audit_log, category_centroids, users
 
 **9 Edge Collections**: hosts, managed_by, depends_on, member_of, affects, assigned_to, resolved_with, references, triggered_by
 
@@ -219,7 +227,8 @@ ArangoDB serves as a **triple-purpose database**:
 | `pydantic` + `pydantic-settings` | Request/response validation, environment config |
 | `redis` | Redis async client |
 | `spacy` | NLP text processing |
-| `python-jose` | JWT token handling (prepared for auth) |
+| `python-jose` | JWT token creation, signing, and validation for authentication |
+| `passlib` | Bcrypt password hashing for secure credential storage |
 | `python-dotenv` | Environment variable loading |
 
 ### Frontend Libraries
@@ -300,7 +309,7 @@ Seed YAML + Synthetic JSON
          │
          ├── Parse YAML/JSON
          ├── Compute 384-dim embeddings (MiniLM)
-         ├── Insert documents (12 collections)
+         ├── Insert documents (13 collections)
          ├── Create edges (9 edge collections)
          ├── Build vector indexes
          ├── Compute category centroids (avg embedding per category)
@@ -332,16 +341,62 @@ Seed YAML + Synthetic JSON
 
 ---
 
-## 7. Security & Privacy
+## 7. Authentication & RBAC
+
+DeskMind implements **JWT-based authentication** with **role-based access control (RBAC)** and **team-scoped data access**.
+
+### Authentication Flow
+
+```
+User → Login (email + password) → Backend verifies bcrypt hash
+    → Returns JWT access token (30 min) + refresh token (7 days)
+    → Every API call includes: Authorization: Bearer <token>
+    → Token expired? Frontend auto-refreshes silently
+```
+
+### 3 Roles
+
+| Role | See Tickets | Create | Update Status | Resolve | Delete | Manage Users |
+|------|------------|--------|--------------|---------|--------|-------------|
+| **Admin** | All 6 domains | Yes | Yes (any team) | Yes (any team) | Yes | Yes |
+| **Engineer** | Own team only | Yes | Yes (own team) | Yes (own team) | No | No |
+| **Viewer** | All domains | Yes | No | No | No | No |
+
+### Team-Scoped Access (the key feature)
+
+Engineers are linked to teams via the knowledge graph:
+
+```
+users.team_key → teams._key → team domain
+```
+
+When an engineer calls `GET /api/tickets`, the backend filters to only return tickets where `routed_to` matches their team name. A Database Admin engineer sees only Database tickets. An Infrastructure engineer sees only Infrastructure tickets. Admins bypass this filter.
+
+### Users Collection
+
+A separate `users` collection stores authentication data (email, bcrypt password hash, role, team_key, is_active). This is deliberately separate from the `engineers` collection in the knowledge graph — auth accounts and domain knowledge entities have different lifecycles.
+
+### User Management
+
+Admins manage users through a dedicated UI page:
+- Create new users (linked to engineers via `engineer_key`)
+- Activate/deactivate accounts
+- All user actions logged in audit trail
+
+---
+
+## 8. Security & Privacy
 
 - **Local LLM**: All AI inference runs locally via Ollama. No ticket data leaves the network.
 - **No cloud APIs**: After initial setup, the system operates fully offline.
-- **Audit trail**: Every classification decision is logged with full reasoning and confidence signals.
+- **JWT Authentication**: Stateless tokens with bcrypt password hashing. No plaintext passwords stored.
+- **Team-scoped RBAC**: Engineers can only access their own team's tickets.
+- **Audit trail**: Every classification decision and status change is logged with actor identity, confidence signals, and reasoning.
 - **Data isolation**: User-submitted tickets are tagged `_source: "user"` and separated from training data.
 
 ---
 
-## 8. Key Differentiators
+## 9. Key Differentiators
 
 | Feature | DeskMind | Typical AI Classifier |
 |---------|----------|----------------------|
@@ -356,7 +411,7 @@ Seed YAML + Synthetic JSON
 
 ---
 
-## 9. Categories & Routing
+## 10. Categories & Routing
 
 DeskMind classifies tickets into **6 IT domains**:
 

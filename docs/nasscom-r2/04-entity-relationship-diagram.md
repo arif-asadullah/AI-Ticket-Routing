@@ -8,7 +8,7 @@
 
 ## 1. Entity-Relationship Diagram
 
-The following Mermaid diagram models all **12 document collections** as entities and all **9 edge collections** as relationships within DeskMind's ArangoDB knowledge graph.
+The following Mermaid diagram models all **13 document collections** as entities and all **9 edge collections** as relationships within DeskMind's ArangoDB knowledge graph.
 
 ```mermaid
 erDiagram
@@ -122,6 +122,18 @@ erDiagram
         datetime last_updated
     }
 
+    users {
+        string _key PK
+        string email UK
+        string password_hash
+        string role
+        string first_name
+        string last_name
+        string engineer_key FK
+        string team_key FK
+        boolean is_active
+    }
+
     servers ||--|{ services : "hosts"
     servers }|--|| teams : "managed_by"
     services }|--|| teams : "managed_by"
@@ -133,6 +145,8 @@ erDiagram
     tickets ||--o| resolutions : "resolved_with"
     resolutions }|--o| runbooks : "references"
     error_codes ||--|{ tickets : "triggered_by"
+    users }|--o| engineers : "linked_to (engineer_key)"
+    users }|--o| teams : "belongs_to (team_key)"
 ```
 
 ---
@@ -155,8 +169,9 @@ Every document collection in the `deskmind_graph`, its purpose, key fields, and 
 | 10 | `routing_rules` | A configurable lookup table mapping `{category, priority}` pairs to target teams. 4 rules per category (one per priority level). Updateable without code changes. | `category`, `priority`, `target_team`, `is_active` | **24** |
 | 11 | `audit_log` | Immutable log of every action taken on every ticket -- classification, routing, escalation, human overrides, resolution. Provides full decision traceability for compliance and debugging. | `ticket_id`, `action`, `actor`, `old_value`, `new_value`, `confidence_score`, `confidence_signals`, `reasoning`, `created_at` | **Growing** (1 per classification + 1 per status change) |
 | 12 | `category_centroids` | The average embedding (centroid) for each of the 6 ticket categories. Used by the centroid classifier to determine which category center a new ticket is closest to. Recomputed periodically. | `category`, `embedding` (384-dim), `ticket_count`, `last_updated` | **6** |
+| 13 | `users` | Authentication accounts for RBAC. Each user has an email, bcrypt-hashed password, role (admin/engineer/viewer), and optional links to an engineer and team. Engineers are team-scoped — they can only see tickets routed to their team. | `email` (unique), `password_hash`, `role`, `first_name`, `last_name`, `engineer_key`, `team_key`, `is_active` | **Growing** (1 admin seeded, rest created via UI) |
 
-**Totals**: 1,795 documents across 12 collections; 3,831 edges across 9 edge collections.
+**Totals**: 1,796 documents across 13 collections; 3,831 edges across 9 edge collections.
 
 ---
 
@@ -193,6 +208,7 @@ All indexes defined in `backend/services/schema.py` for query optimization.
 | `routing_rules` | `idx_rules_category_priority` | `category`, `priority` | Compound lookup: given a category+priority pair, find the target team |
 | `audit_log` | `idx_audit_ticket_id` | `ticket_id` | Fast retrieval of all audit entries for a specific ticket |
 | `audit_log` | `idx_audit_created_at` | `created_at` | Time-ordered audit trail queries |
+| `users` | `idx_users_email` | `email` (unique) | Fast login lookup, prevent duplicate accounts |
 
 ### 4.2 Full-Text Indexes
 
@@ -217,13 +233,15 @@ All indexes defined in `backend/services/schema.py` for query optimization.
 
 DeskMind's knowledge graph is not a flat database of isolated records. It is a living network where **every entity is connected to related entities through typed, directional edges**. This structure is what makes GraphRAG possible -- the AI does not just look at one ticket in isolation; it traverses the graph to build context that a standalone LLM cannot access.
 
-The graph has three conceptual layers:
+The graph has four conceptual layers:
 
 **Infrastructure Layer** -- Servers host services, and services depend on other services. This models the physical and logical topology of the IT environment. When a ticket mentions a server name, the system can immediately discover which services run on it, which other services depend on those services, and who manages all of them.
 
 **Organizational Layer** -- Teams manage servers and services. Engineers are members of teams. Routing rules map categories and priorities to teams. This layer bridges the gap between "what is broken" (infrastructure) and "who can fix it" (people).
 
 **Incident Layer** -- Tickets affect servers and services. Tickets are assigned to teams. Tickets are resolved with specific resolution steps. Resolutions reference runbooks. Error codes trigger tickets. This layer captures the history of incidents and their fixes, enabling the system to learn from past experience.
+
+**Authentication Layer** -- Users are authentication accounts linked to engineers via `engineer_key` and to teams via `team_key`. This layer controls access: admins see all tickets, engineers only see their team's tickets, viewers have read-only access. The `users` collection is deliberately separate from `engineers` — auth accounts and knowledge graph entities have different lifecycles.
 
 The magic happens when the AI traverses **across** these layers in a single query. A new ticket mentioning "prod-db-01" does not just find the server -- it follows edges to discover the services, the team, the experts, past incidents, their resolutions, and the matching runbooks. All of this context is injected into the classification pipeline.
 
