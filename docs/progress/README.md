@@ -21,6 +21,7 @@ This folder documents everything we've built, step by step, so any developer can
 | [Phase 5: Frontend](phase5-frontend.md) | Neural Dark theme, landing page, ticket form, chat AI | Done |
 | [Phase 6: Ticket Lifecycle](phase6-ticket-lifecycle.md) | Full lifecycle: status updates, resolve, resolution suggestions, Jira cleanup | Done |
 | [Phase 7: Auth & RBAC](phase7-rbac-auth.md) | JWT auth, 3 roles (admin/engineer/viewer), team-scoped access, user management UI | Done |
+| [Phase 8: Domain Dashboard](phase8-domain-dashboard.md) | Domain dashboard, ticket detail, resolve form, feedback, Storage→Access Management rename | Done |
 
 ## Tech Stack
 
@@ -76,6 +77,7 @@ If you're new to the project, read in this order:
 6. Phase 5 — understand the UI
 7. Phase 6 — understand the ticket lifecycle (status, resolve, feedback loop)
 8. Phase 7 — understand authentication and RBAC (roles, team-scoping, JWT)
+9. Phase 8 — understand the domain dashboard (ticket lifecycle UI, resolve, feedback)
 
 For architecture details, see `docs/architecture/`.
 For database schema details, see `docs/schema/`.
