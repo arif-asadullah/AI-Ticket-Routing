@@ -6,6 +6,7 @@ import StatusBar from "./components/StatusBar";
 import TicketList from "./components/TicketList";
 import ChatPanel from "./components/ChatPanel";
 import UserManagement from "./components/UserManagement";
+import DomainDashboard from "./components/DomainDashboard";
 import { fetchTickets, createTicket, deleteTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
@@ -63,7 +64,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
-  const [activeTab, setActiveTab] = useState("tickets");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [isClassifying, setIsClassifying] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [health, setHealth] = useState(null);
@@ -202,7 +203,8 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <StatusBar health={health} />
               <nav style={{ display: "flex", gap: 20, fontSize: 13, fontWeight: 500, alignItems: "center" }}>
-                <a href="#tickets" onClick={(e) => { e.preventDefault(); setActiveTab("tickets"); }} style={{ color: activeTab === "tickets" ? T.accent : T.textMuted, cursor: "pointer" }}>Tickets</a>
+                <a href="#dashboard" onClick={(e) => { e.preventDefault(); setActiveTab("dashboard"); }} style={{ color: activeTab === "dashboard" ? T.accent : T.textMuted, cursor: "pointer" }}>Dashboard</a>
+                <a href="#tickets" onClick={(e) => { e.preventDefault(); setActiveTab("tickets"); }} style={{ color: activeTab === "tickets" ? T.accent : T.textMuted, cursor: "pointer" }}>New Ticket</a>
                 <a href="#chat" onClick={(e) => { e.preventDefault(); setActiveTab("chat"); }} style={{ color: activeTab === "chat" ? T.accent : T.textMuted, cursor: "pointer" }}>Chat AI</a>
                 {user?.role === "admin" && (
                   <a href="#users" onClick={(e) => { e.preventDefault(); setActiveTab("users"); }} style={{ color: activeTab === "users" ? T.accent : T.textMuted, cursor: "pointer" }}>Users</a>
@@ -234,6 +236,11 @@ export default function App() {
               </nav>
             </div>
           </header>
+
+          {/* ── Domain Dashboard Tab ── */}
+          {activeTab === "dashboard" && user && (
+            <DomainDashboard user={user} onBack={() => setActiveTab("tickets")} />
+          )}
 
           {/* ── Chat Tab ── */}
           {activeTab === "chat" && <ChatPanel />}

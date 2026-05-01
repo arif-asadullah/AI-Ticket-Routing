@@ -23,6 +23,11 @@ class TicketResolve(BaseModel):
     resolved_by: str | None = None  # engineer email
 
 
+class TicketFeedback(BaseModel):
+    rating: str  # "helpful", "not_helpful"
+    comment: str | None = None
+
+
 class TicketResponse(BaseModel):
     id: str
     title: str
