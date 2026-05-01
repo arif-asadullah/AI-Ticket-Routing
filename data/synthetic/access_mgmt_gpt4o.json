@@ -1,0 +1,519 @@
+[
+  {
+    "title": "Can't Login to My Account AGAIN!!!",
+    "description": "For the third time this week, I can't log in. It says wrong password, but I KNOW it's right!!! I reset it last month and I've been using the same one!!! This is completely stopping my work. Pls fix ASAP!!!",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "New Hire Can't Access ANYTHING",
+    "description": "Our new team member started today and can't access anything. NO emails, NO files, NOTHING. Her onboarding was yesterday. We need her set up and working IMMEDIATELY!!! This is critical for our project deadlines!!!",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Locked Out AGAIN!!!",
+    "description": "I'm locked out again and can't access my work emails or files. It happens every few weeks and now AGAIN when I need to send important stuff. Pls unlock my account. This is getting really frustrating and urgent!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "SSO Keeps Logging Me Out",
+    "description": "Every time I try to use our main app, the SSO system logs me out after a few minutes. I can't do my work like this!!! It doesnt save my place, and I lose all progress. Please fix this, it's driving me insane!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Lost MFA Device, Can't Authenticate",
+    "description": "I lost my phone where my MFA was set up. Now I can't log in to anything that requires it. This is URGENT because I'm completely shut out of my work resources. PLEASE help reset the MFA to my new device ASAP!!!",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Password Reset NOT WORKING!!!",
+    "description": "I tried to reset my password and the email link doesn't work. It says expired even though I clicked it right away!!! I need to access my account immediately. This has stopped me from doing ANY work!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Permissions Changed Without Notice",
+    "description": "My access permissions have changed suddenly and I can't view files I was looking at yesterday!!! What's going on??? This is disrupting my reports and I need it fixed IMMEDIATELY. Can't complete my tasks!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Shared Account Not Working!",
+    "description": "The shared account we use for booking doesn't let us login. Says wrong password, but we haven't changed it!!! This is how we schedule everything, so please fix it quickly!!! Everyone is waiting!",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Random Account Lockouts",
+    "description": "My account keeps getting locked randomly! I have to keep asking for unlocks and it's making it impossible to get my work done. Please find out why this is happening and FIX IT. This is URGENT!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Directory Access Gone",
+    "description": "I can't access the directory I need for my project. Was working fine yesterday. I need the files from there for today!!! Not sure why this is happening. Need HELP and ACCESS NOW!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Group Membership Changed",
+    "description": "Suddenly I'm not in the group I need to access shared drives. I haven't changed anything!!! It was working fine last week. Need to be added back ASAP else I can't do my job!!!",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Access Review Denied",
+    "description": "I keep getting denied on the access review. My job requires these permissions!!! This is a mistake and it's really messing up my workflow. Need this fixed soon!!!",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Certificate-Based Login Fails",
+    "description": "Every time I try to login with the certificate, it fails. Says invalid even though I used it last week without issues!!! Can't access my projects and it's causing delays!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Federation Login Issue",
+    "description": "I can't login through our federation system. Says something about no user found??? I need access to my files and meetings immediately!!! It's urgent, I can't afford delays!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "AD Replication Issue: USN Mismatch Detected",
+    "description": "We've identified a USN mismatch in Active Directory replication between the servers prod-ad-01 and prod-ad-02. Users in the affected sites are experiencing delayed updates to their account permissions. The event logs on prod-ad-01 (Event ID: 2104) indicate lingering objects. Immediate action is required to resolve the replication conflict to restore synchronization.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "Event ID 2104",
+      "USN Rollback"
+    ],
+    "server_names": [
+      "prod-ad-01",
+      "prod-ad-02"
+    ],
+    "service_names": [
+      "Active Directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "LDAP Bind Failure: Service Account Locked",
+    "description": "The service account svc-ldap-bind is unable to authenticate with the LDAP server prod-ldap-01. The account shows as locked in the active directory with multiple Event IDs 4740. Verification through LDAP logs reveals LDAP error 49. The lockout was caused by incorrect credentials being used by an automated process.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "LDAP error 49",
+      "Event ID 4740"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "LDAP"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Kerberos Ticket Renewal Failure",
+    "description": "A significant number of users report difficulty accessing SSO services due to Kerberos ticket renewal failures. Analysis of the logs on the KDC server prod-kdc-01 shows multiple Event IDs 4771 with error code 0x18. This suggests a possible mismatch between the client and server time settings.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Event ID 4771",
+      "Kerberos error 0x18"
+    ],
+    "server_names": [
+      "prod-kdc-01"
+    ],
+    "service_names": [
+      "Kerberos",
+      "SSO"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "SAML Assertion Signature Mismatch in IDP",
+    "description": "Users attempting to authenticate via SAML with our IDP service are experiencing failures. SAML trace logs show 'Signature verification failed' errors. This issue seems isolated to the web-saml-idp-02 server. Prompt investigation is necessary to ensure the assertion signature is correctly configured and signed.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [
+      "web-saml-idp-02"
+    ],
+    "service_names": [
+      "SAML"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Azure AD Connect Sync Errors Detected",
+    "description": "Azure AD Connect on az-ad-sync-01 is reporting synchronization errors. The application logs reveal a large number of Event ID 6941. Users are experiencing sporadic directory sync issues with Azure AD, leading to login failures for cloud applications. Investigate the health of the directory sync configuration.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "Event ID 6941"
+    ],
+    "server_names": [
+      "az-ad-sync-01"
+    ],
+    "service_names": [
+      "Azure AD Connect"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Group Policy Not Applying to User Groups",
+    "description": "Multiple user reports indicate that group policies (GPO) are not applying as expected within the domain controlled by prod-gpo-01. Event Viewer on affected client machines logs Event ID 1085. Initial checks suggest potential issues with policy inheritance. Further investigation is necessary to pinpoint the cause.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "Event ID 1085"
+    ],
+    "server_names": [
+      "prod-gpo-01"
+    ],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "SID History Migration Errors During AD Trust",
+    "description": "During SID history migration across domains, several users are unable to access resources. Logs on prod-sid-01 show migration errors with code 'LDAP error 701'. There seems to be an issue with the AD trust relationship, possibly due to naming conflicts or schema mismatches.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "LDAP error 701"
+    ],
+    "server_names": [
+      "prod-sid-01"
+    ],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Certificate-Based Authentication Failure in VPN",
+    "description": "Users attempting to connect to the corporate VPN are experiencing authentication failures with certificate-based login. Initial diagnosis points to expired certificates on vpn-auth-01. Logs reveal instances of 'SSL Error 61', indicating untrusted certificate chains. Urgent renewal is required.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "SSL Error 61"
+    ],
+    "server_names": [
+      "vpn-auth-01"
+    ],
+    "service_names": [
+      "VPN"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Account Lockout Due to Excessive Failed Login Attempts",
+    "description": "There is a spike in account lockouts across the domain. Analysis of the security logs on prod-lockout-01 shows frequent Event ID 4740. This may be linked to a brute force attack or automated scripts using the wrong credentials. Immediate investigation and mitigation are required.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Event ID 4740"
+    ],
+    "server_names": [
+      "prod-lockout-01"
+    ],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Federation Trust Error with External Partner",
+    "description": "Users are unable to access federated services with our external partner. The federation server prod-federation-01 logs multiple Event IDs 364, typically indicating a token issuance error. This may be due to certificate mismatches or configuration updates required on the partner side.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "Event ID 364"
+    ],
+    "server_names": [
+      "prod-federation-01"
+    ],
+    "service_names": [
+      "Federation Services"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "OAuth 2.0 Authentication Failing for Mobile Users",
+    "description": "Mobile users report authentication failures when accessing applications via OAuth 2.0. Logs from the auth server mobile-auth-01 indicate 'invalid_grant' errors, suggesting issues in token issuance or client configuration. A review of the OAuth client settings and logs is needed.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "invalid_grant"
+    ],
+    "server_names": [
+      "mobile-auth-01"
+    ],
+    "service_names": [
+      "OAuth 2.0"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Directory Replication Lag Detected in Secondary Site",
+    "description": "Significant replication delay is observed in the secondary site on server prod-dir-02. The Directory Services log shows Event ID 1084, indicating a replication backlog. This lag is affecting user authentication and policy updates in the site. Immediate attention to replication health is necessary.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Event ID 1084"
+    ],
+    "server_names": [
+      "prod-dir-02"
+    ],
+    "service_names": [
+      "Directory Services"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Multi-Factor Authentication Not Triggering for Admins",
+    "description": "Admin accounts set up with MFA are not receiving prompts for second-factor authentication on system admin-console-01. The MFA logs contain no specific errors, but there's a lack of expected authentication flow entries. A review of the MFA policies and logs is required to diagnose this issue.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [
+      "admin-console-01"
+    ],
+    "service_names": [
+      "MFA"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Identity Governance Access Review Alerts",
+    "description": "Access reviews scheduled on the identity governance portal id-gov-01 are not generating alerts as intended. Logs indicate potential notification failures due to SMTP communication issues. Ensuring the configured email service is operational and properly integrated is essential.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [
+      "id-gov-01"
+    ],
+    "service_names": [
+      "Identity Governance"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Team Locked Out Before Important Board Meeting",
+    "description": "My team is unable to access critical reports due to a sudden lockout issue. We have an urgent board meeting scheduled, and this access problem is severely impacting our ability to prepare the required materials. This is a major concern and needs immediate resolution to avoid any disruptions during the meeting.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "New Department Lacks Access to Essential Tools",
+    "description": "The recently established marketing department is unable to use necessary tools and software applications. This access issue is hindering their launch strategies and impacting project timelines. It is crucial that access is granted promptly to ensure no further delays in departmental initiatives.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Access Reviews Incomplete Before Compliance Audit Deadline",
+    "description": "The system is showing incomplete access reviews, causing us to potentially fail an upcoming compliance audit. This situation has serious implications for our regulatory standing. It is imperative that all reviews are finalized to meet the audit deadline and maintain compliance.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Contractor Access Not Revoked Post-Project Completion",
+    "description": "Access for several contractors has not been revoked despite project completion several weeks ago. This oversight could lead to security concerns and unauthorized access to sensitive information. It is vital to address this immediately to safeguard our data integrity.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "VIP Executive's Account Locked Out Unexpectedly",
+    "description": "One of our VIP executives is locked out of their account, causing a major disruption in their workflow. This needs to be resolved urgently as it affects high-level business activities and decision-making processes. Quick action is required to restore access and avoid further impact.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Company-Wide SSO Failure Causing Login Issues",
+    "description": "The SSO system seems to have stopped working, preventing company-wide logins and causing a halt in daily operations. This is a critical issue affecting productivity across all departments and needs an immediate resolution to resume normal business functions.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Delayed User Provisioning Impacting New Hires",
+    "description": "There are delays in provisioning new hires with the necessary access to systems and tools. This is affecting our onboarding process and new employees' ability to start their roles efficiently. Immediate action is needed to streamline the provisioning process and support our growing team.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Multi-Factor Authentication Malfunction Affects Security",
+    "description": "The multi-factor authentication process is malfunctioning, compromising the security protocols of our systems. This presents a potential risk of unauthorized access. It is urgent to rectify this issue to reinforce our security measures and protect sensitive data.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Role-Based Access Control Not Reflecting Recent Changes",
+    "description": "Our role-based access control system is not updating with recent organizational changes, leading to incorrect access permissions. This misalignment could impact operational efficiency and requires prompt attention to align access levels with current roles and responsibilities.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Critical Service Accounts Access Needs Review",
+    "description": "There is an urgent need to review access permissions for critical service accounts. This is necessary to ensure compliance and security, as any oversight could expose us to potential vulnerabilities. Timely completion of this review is imperative.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Certificate-Based Authentication Fails, Causing Delays",
+    "description": "The failure in the certificate-based authentication process is causing significant delays in system access for certain users. This issue needs immediate attention as it is impacting project timelines and overall productivity. Quick resolution is essential to minimize any further delays.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Identity Governance Platform Unresponsive",
+    "description": "The identity governance platform has become unresponsive, impairing our ability to manage user identities effectively. This is crucial for maintaining operational security and needs urgent resolution to restore its functionality and ensure compliance with governance policies.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  }
+]

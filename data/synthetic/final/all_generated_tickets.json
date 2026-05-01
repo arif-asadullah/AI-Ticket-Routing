@@ -108,33 +108,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Can't access files",
-    "description": "NEED FILES! nfs not working, can't access shared folders. PLZZZ HELP!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Check NFS server status",
-      "Verify NFS export permissions",
-      "Restart NFS services"
-    ],
-    "resolution_effectiveness": 0.75,
-    "references_runbook": "KB-0005",
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "Database connection lost",
     "description": "error! Can't connect to database!! app not saving data!!!",
     "category": "Database",
@@ -343,33 +316,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Backup failure alert",
-    "description": "backup didn't complete! SO WORRIED! need this fixed!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Check backup logs",
-      "Verify storage availability",
-      "Retry backup process"
-    ],
-    "resolution_effectiveness": 0.83,
-    "references_runbook": "KB-0009",
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "High CPU usage",
     "description": "servers are burning! CPU maxed out! can't run apps!",
     "category": "Infrastructure",
@@ -441,31 +387,6 @@
       "Enhance security measures"
     ],
     "resolution_effectiveness": 0.92,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "Disk space almost full",
-    "description": "running out of disk space fast! NEED MORE ROOM NOW!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-db-02"
-    ],
-    "affects_services": [],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Clear temporary files",
-      "Archive old data",
-      "Expand storage capacity"
-    ],
-    "resolution_effectiveness": 0.8,
     "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "frustrated_user",
@@ -672,33 +593,6 @@
     ],
     "resolution_effectiveness": 0.85,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "Can't sync files",
-    "description": "Files not syncing... I've tried everything!!! Nothing is workingggg!!!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Check NFS server status",
-      "Restart NFS service",
-      "Ensure network connectivity"
-    ],
-    "resolution_effectiveness": 0.75,
-    "references_runbook": "KB-0007",
     "source_model": "gpt-4o",
     "persona": "frustrated_user",
     "quality_score": "HIGH",
@@ -914,33 +808,6 @@
     ],
     "resolution_effectiveness": 0.86,
     "references_runbook": "KB-0009",
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "File recovery failure",
-    "description": "Tried to recover some files but it fails every time!!! HELP!!!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Check backup system",
-      "Restore files from backup",
-      "Verify file integrity"
-    ],
-    "resolution_effectiveness": 0.79,
-    "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "frustrated_user",
     "quality_score": "HIGH",
@@ -1229,29 +1096,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Backup storage full",
-    "description": "Can't back up anything, storage is FULL, what do we do??",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Free up storage space",
-      "Increase storage capacity",
-      "Optimize backup schedule"
-    ],
-    "resolution_effectiveness": 0.73,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "High database latency",
     "description": "Database responses are seriously delayed, clients are FREAKING OUT!!!",
     "category": "Database",
@@ -1406,33 +1250,6 @@
     ],
     "resolution_effectiveness": 0.95,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "Storage not mounting",
-    "description": "Can't ACCESS important files! Folder not showing up like it should!!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Restart NFS service",
-      "Check NFS server logs",
-      "Remount NFS share"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": "KB-0008",
     "source_model": "gpt-4o",
     "persona": "frustrated_user",
     "quality_score": "HIGH",
@@ -1625,33 +1442,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Disk quota reached",
-    "description": "Storage FULL! Can't save anything! Need more space URGENTLY!!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Delete unnecessary files",
-      "Increase disk quota",
-      "Notify users about cleanup"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": "KB-0009",
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "Internal server error",
     "description": "Just got 500 error! Everything STOPPED working! What\u2019s going on?",
     "category": "Application",
@@ -1724,33 +1514,6 @@
     ],
     "resolution_effectiveness": 0.85,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "NFS service unavailable",
-    "description": "prod-nfs-01 shows NFS mount failures since 2026-04-13T11:05Z. Error code: ERR-NFS-001. Recent OS patch CHG-8892 might be responsible. Mount point /mnt/shared not reachable.",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Check NFS server logs",
-      "Verify network configuration",
-      "Revert recent patch"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": "KB-0007",
     "source_model": "gpt-4o",
     "persona": "l2_engineer",
     "quality_score": "HIGH",
@@ -2172,33 +1935,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Redis data eviction observed",
-    "description": "prod-app-02 experiencing data eviction in Redis cache as of 2026-04-12T18:00Z. ERR-REDIS-001 indicates memory pressure.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-app-02"
-    ],
-    "affects_services": [
-      "redis"
-    ],
-    "error_codes": [
-      "ERR-REDIS-001"
-    ],
-    "resolution_steps": [
-      "Increase Redis memory allocation",
-      "Optimize cache size",
-      "Monitor eviction policy"
-    ],
-    "resolution_effectiveness": 0.78,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "Unauthorized SSH login attempt",
     "description": "Multiple unauthorized SSH login attempts on prod-ldap-01 detected at 2026-04-13T22:10Z. Security logs flagged as ERR-SEC-001.",
     "category": "Security",
@@ -2604,31 +2340,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Exchange Server Disk Space Low",
-    "description": "prod-mail-01 Exchange server reports disk space usage above 90% threshold at 2026-04-14T02:23Z. Recent mail archive exceeded estimates. Evaluate retention policies and clean up redundant data.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-mail-01"
-    ],
-    "affects_services": [
-      "exchange"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Review mail retention policies",
-      "Delete old mail archives",
-      "Increase disk allocation if required"
-    ],
-    "resolution_effectiveness": 0.91,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "Security Alert: Brute Force on SSH",
     "description": "prod-web-01 logs indicate multiple failed SSH login attempts from IP 192.168.1.100 at 2026-04-14T04:45Z. Detected as potential brute force attack. Implement IP blacklist and notify security team.",
     "category": "Security",
@@ -2701,33 +2412,6 @@
     ],
     "resolution_effectiveness": 0.89,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "NFS Permission Denied Error",
-    "description": "prod-nfs-01 log entries indicate 'Permission Denied' errors for file operations at 2026-04-14T05:30Z. Suspect recent ACL changes applied without full validation. Urgent permission review required.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Review NFS ACL settings",
-      "Reapply correct permissions",
-      "Validate with test file operations"
-    ],
-    "resolution_effectiveness": 0.93,
-    "references_runbook": "KB-0008",
     "source_model": "gpt-4o",
     "persona": "l2_engineer",
     "quality_score": "HIGH",
@@ -2954,31 +2638,6 @@
     ],
     "resolution_effectiveness": 0.82,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "Kubernetes Node Disk Pressure",
-    "description": "prod-k8s-node-01 reports 'DiskPressure' at 2026-04-14T10:30Z. Usage reached 95% capacity. Recent pod deployments may have exceeded disk limits. Review and clean up disk space.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-k8s-node-01"
-    ],
-    "affects_services": [
-      "kubernetes"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Identify large file directories",
-      "Delete unnecessary logs",
-      "Increase node disk capacity"
-    ],
-    "resolution_effectiveness": 0.85,
-    "references_runbook": "KB-0007",
     "source_model": "gpt-4o",
     "persona": "l2_engineer",
     "quality_score": "HIGH",
@@ -3221,33 +2880,6 @@
     "classifier_votes": null
   },
   {
-    "title": "NFS Share Latency Increase",
-    "description": "Latency spikes on prod-nfs-01 reported since 2023-10-06T14:10Z. Current read/write latency exceeding threshold by 40%. Recent storage firmware update CHG-7777 suspected. Immediate performance tuning and rollback consideration recommended.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Analyze storage performance metrics",
-      "Consider firmware rollback",
-      "Optimize NFS configuration"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": "KB-0010",
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "API Gateway Request Throttling Misconfigured",
     "description": "prod-app-01 experiencing frequent 429 errors since 2023-10-06T10:15Z. API gateway logs indicate incorrect request throttling settings applied post CHG-2012. Throttle limits set below average traffic rates causing ERR-APP-001.",
     "category": "Application",
@@ -3473,33 +3105,6 @@
     "classifier_votes": null
   },
   {
-    "title": "NFS Service Unresponsive",
-    "description": "NFS service on prod-nfs-01 is unresponsive, affecting shared storage access for multiple departments. This delay can impact project timelines negatively. Immediate attention and resolution requested.",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Restart NFS service",
-      "Check network connectivity",
-      "Verify NFS configuration"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": "KB-0007",
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "DNS Resolution Failure",
     "description": "Intermittent DNS resolution failures are affecting internal communications, including email and CRM access. This disruption hampers both internal and client communications. Request fast-track resolution.",
     "category": "Network",
@@ -3673,33 +3278,6 @@
     ],
     "resolution_effectiveness": 0.75,
     "references_runbook": "KB-0006",
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "NFS Quota Limit Reached",
-    "description": "Development team reports that NFS storage quota has been reached, halting ongoing projects. This threatens delivery timelines and client commitments. Immediate quota increase required.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Review current quotas",
-      "Adjust quota limits",
-      "Notify affected teams"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "manager",
     "quality_score": "HIGH",
@@ -4134,33 +3712,6 @@
     "classifier_votes": null
   },
   {
-    "title": "NFS Service Performance Degradation",
-    "description": "The NFS service is experiencing performance degradation, impacting file access times for the development team. This could result in project delays. Please investigate and provide an ETA.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Check network latency",
-      "Optimize NFS configuration",
-      "Review system load"
-    ],
-    "resolution_effectiveness": 0.7,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "Unauthorized Database Access Attempt",
     "description": "An unauthorized access attempt was detected on prod-db-01. This poses a potential risk to sensitive data. Immediate investigation and lock-down are required.",
     "category": "Security",
@@ -4388,33 +3939,6 @@
     ],
     "resolution_effectiveness": 0.9,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "Storage Capacity Threshold Reached",
-    "description": "Storage capacity on NFS is at threshold, risking interruption of file-based services. Urgent expansion or cleanup is necessary to continue operations smoothly.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Expand storage capacity",
-      "Delete obsolete files",
-      "Implement data archiving"
-    ],
-    "resolution_effectiveness": 0.83,
-    "references_runbook": "KB-0008",
     "source_model": "gpt-4o",
     "persona": "manager",
     "quality_score": "HIGH",
@@ -4897,31 +4421,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Storage I/O Performance Degradation",
-    "description": "Our data analysis team is experiencing slow data retrieval times due to degraded I/O performance on storage servers. This delays critical insights for clients. Immediate resolution required.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Analyze I/O load",
-      "Identify bottlenecks",
-      "Optimize storage configuration"
-    ],
-    "resolution_effectiveness": 0.87,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "Kubernetes Pod Network Failure",
     "description": "Development reports that pod networking in Kubernetes is failing, affecting deployment pipeline. This could delay product rollouts. Confirm root cause and provide solution ETA.",
     "category": "Infrastructure",
@@ -4967,33 +4466,6 @@
       "Restart Grafana service"
     ],
     "resolution_effectiveness": 0.9,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "NFS Server Connection Timeout",
-    "description": "Engineering team reports timeouts when accessing files on NFS server, delaying development processes. Address promptly to maintain productivity.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Check network connectivity to NFS",
-      "Increase NFS server resources",
-      "Review NFS timeout settings"
-    ],
-    "resolution_effectiveness": 0.85,
     "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "manager",
@@ -5159,32 +4631,6 @@
     "classifier_votes": null
   },
   {
-    "title": "DATA GONE!!",
-    "description": "can't find my files in the system, they're just GONE! NEED HELP NOW!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Check NFS mount points",
-      "Verify file system integrity"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": "KB-0008",
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "NETWORK IS SLOWWWW",
     "description": "everything is lagging, can't get anything done! need it smooth ASAP!",
     "category": "Network",
@@ -5272,32 +4718,6 @@
     ],
     "resolution_effectiveness": 0.85,
     "references_runbook": "KB-0007",
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "CAN'T SAVE DOCUMENTS",
-    "description": "every time i hit save it just spins and nothing happens. NEED THESE DOCS SAVED!!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Investigate NFS write operations",
-      "Check file permissions"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "frustrated_user",
     "quality_score": "HIGH",
@@ -5600,30 +5020,6 @@
     "classifier_votes": null
   },
   {
-    "title": "FILE SERVER DOWN",
-    "description": "can't access any shared drives, files are gone! need to fix this now!!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Check NFS server status",
-      "Restart NFS service"
-    ],
-    "resolution_effectiveness": 0.85,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "SECURITY BREACH ALERT",
     "description": "got a security alert email, is my info safe?? NEED TO KNOW WHAT'S HAPPENING!",
     "category": "Security",
@@ -5791,33 +5187,6 @@
     "classifier_votes": null
   },
   {
-    "title": "FILES NOT SYNCING",
-    "description": "MY FILES WON'T SYNC, I'M LOSING IMPORTANT CHANGES! PLEASE FIX NOW!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Restart NFS service",
-      "Check server logs",
-      "Verify network connection"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "LOUD FAN NOISES",
     "description": "SERVER ROOM IS LOUD, FANS ARE GOING CRAZY, IS SOMETHING OVERHEATING?",
     "category": "Infrastructure",
@@ -5972,31 +5341,6 @@
     "classifier_votes": null
   },
   {
-    "title": "NO BACKUPS RUNNING",
-    "description": "BACKUPS NOT WORKING, WHAT IF WE LOSE EVERYTHING?!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Restart backup service",
-      "Verify backup logs",
-      "Configure cron jobs"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "KUBERNETES CLUSTER FAILING",
     "description": "KUBERNETES NODES ALL RED, WHAT'S WRONG?? NOTHING IS RUNNING!",
     "category": "Infrastructure",
@@ -6124,33 +5468,6 @@
     ],
     "resolution_effectiveness": 0.8,
     "references_runbook": "KB-0009",
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "CANNOT ACCESS FILES",
-    "description": "FILES NOT OPENING, I'M LOCKED OUT, CAN'T DO ANYTHING!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Restart NFS service",
-      "Verify file permissions",
-      "Check server logs"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "frustrated_user",
     "quality_score": "HIGH",
@@ -6420,33 +5737,6 @@
     "classifier_votes": null
   },
   {
-    "title": "LOST ALL DATA",
-    "description": "WHERE IS EVERYTHING?? Files gone, can't find anything I saved, HELP ME!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Check NFS server status",
-      "Verify data backups",
-      "Restore files from backup"
-    ],
-    "resolution_effectiveness": 0.7,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "INTERNET DEAD SLOW",
     "description": "Why is everything so slow?? Takes forever to load anything, I can't work like this!",
     "category": "Network",
@@ -6620,33 +5910,6 @@
     ],
     "resolution_effectiveness": 0.85,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "frustrated_user",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "PERMISSIONS DENIED",
-    "description": "Can't access files, keeps saying I don't have permission. This is urgent!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Check file permissions",
-      "Verify user access levels",
-      "Test file access"
-    ],
-    "resolution_effectiveness": 0.75,
-    "references_runbook": "KB-0009",
     "source_model": "gpt-4o",
     "persona": "frustrated_user",
     "quality_score": "HIGH",
@@ -6998,33 +6261,6 @@
     "classifier_votes": null
   },
   {
-    "title": "nfs stale file handle error",
-    "description": "Stale file handle errors encountered on prod-nfs-01 as of 2023-10-14T15:10Z. Errors suggest potential inode mismatch. Recent mount operations may not have completed successfully. Affects file access for dependent services.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "remount affected directories",
-      "clear inode cache",
-      "verify mount configurations"
-    ],
-    "resolution_effectiveness": 0.86,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "unexpected server reboot on prod-app-03",
     "description": "prod-app-03 underwent an unexpected reboot at 2023-10-14T07:30Z. Kernel logs indicate possible panic due to memory allocation failure. Memory diagnostics and hardware checks required to confirm root cause.",
     "category": "Infrastructure",
@@ -7223,33 +6459,6 @@
     ],
     "resolution_effectiveness": 0.8,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "storage pool depletion on prod-nfs-01",
-    "description": "prod-nfs-01 storage pool nearing capacity since 2023-10-14T09:00Z. Utilization at 92%, with growth rate exceeding 5% weekly. Immediate space reclamation required, including archival of unused files and cleanup of temp directories.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "archive unused files",
-      "clean up temp directories",
-      "expand storage capacity"
-    ],
-    "resolution_effectiveness": 0.85,
-    "references_runbook": "KB-0010",
     "source_model": "gpt-4o",
     "persona": "l2_engineer",
     "quality_score": "HIGH",
@@ -7512,33 +6721,6 @@
     "classifier_votes": null
   },
   {
-    "title": "NFS Mount Timeout on prod-nfs-01",
-    "description": "There are frequent NFS mount timeouts on prod-nfs-01 as of 2026-05-14T06:23Z. The issue arose after changes in network configuration (CHG-8929). Latency increased by 200% on NFS mounts. Network path needs investigation.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Check network routes",
-      "Verify NFS configuration",
-      "Optimize network path"
-    ],
-    "resolution_effectiveness": 0.78,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "Unauthorized LDAP Access Attempt Detected",
     "description": "A suspicious unauthorized access attempt to prod-ldap-01 was detected on 2026-05-12T04:50Z. Multiple failed login attempts noted from IP 203.0.113.5. Account lockout policy triggered, and IP blacklisted.",
     "category": "Security",
@@ -7611,31 +6793,6 @@
     ],
     "resolution_effectiveness": 0.9,
     "references_runbook": "KB-0006",
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "prod-nfs-01 Performance Degradation",
-    "description": "Performance degradation observed on prod-nfs-01 from 2026-05-14T08:42Z. I/O operations latency increased by 150%. A sharp rise in write operations post deployment CHG-8930 is the likely cause.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Analyze I/O patterns",
-      "Consider adding more disks",
-      "Balance load across NFS servers"
-    ],
-    "resolution_effectiveness": 0.87,
-    "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "l2_engineer",
     "quality_score": "HIGH",
@@ -8103,33 +7260,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Degraded NFS Performance on staging-db-01",
-    "description": "staging-db-01 experiencing degraded NFS performance with read latency exceeding 100ms since 2026-05-07T14:00Z. Possible network bottleneck detected. Normal latency is under 10ms.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "staging-db-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Monitor network traffic",
-      "Check NFS server health",
-      "Optimize NFS client settings"
-    ],
-    "resolution_effectiveness": 0.78,
-    "references_runbook": "KB-0004",
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "prod-mail-01 SMTP Authentication Failures",
     "description": "Multiple SMTP authentication failures reported on prod-mail-01 since 2026-04-30T08:00Z. Logs indicate incorrect credentials being used possibly due to outdated passwords post CHG-8845.",
     "category": "Security",
@@ -8176,31 +7306,6 @@
       "Adjust transaction isolation levels"
     ],
     "resolution_effectiveness": 0.92,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "Slow Disk I/O on prod-app-02",
-    "description": "prod-app-02 disk I/O has slowed significantly since 2026-05-04T09:00Z, with average wait times exceeding 150ms. This coincides with recent storage upgrade CHG-8835. Normal I/O wait is below 10ms.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-app-02"
-    ],
-    "affects_services": [
-      "order-service"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Check disk health",
-      "Verify storage configuration",
-      "Coordinate with storage team for analysis"
-    ],
-    "resolution_effectiveness": 0.88,
     "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "l2_engineer",
@@ -8338,33 +7443,6 @@
     "classifier_votes": null
   },
   {
-    "title": "prod-nfs-01 Overloaded I/O Operations",
-    "description": "prod-nfs-01 experiencing overloaded I/O operations exceeding 500 ops/s since 2026-05-06T14:00Z. Application changes post CHG-8853 suspected to increase load. Normal ops/s range is 100-200.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Monitor I/O operations",
-      "Review recent application changes",
-      "Optimize application to reduce load"
-    ],
-    "resolution_effectiveness": 0.89,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "l2_engineer",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "prod-web-02 Excessive Error Logs",
     "description": "prod-web-02 generating excessive error logs since 2026-05-05T11:00Z. Log analysis shows repeated 404 errors due to incorrect URL mappings post deploy CHG-8856.",
     "category": "Application",
@@ -8466,31 +7544,6 @@
     ],
     "resolution_effectiveness": 0.88,
     "references_runbook": "KB-0005",
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "prod-nfs-01 File System Corruption",
-    "description": "Engineering can't access essential files due to file system corruption on prod-nfs-01. This may halt development tasks and affect project timelines. Please diagnose immediately and report on the resolution progress.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Run fsck on affected volumes",
-      "Check RAID configuration",
-      "Restore from latest backup"
-    ],
-    "resolution_effectiveness": 0.75,
-    "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "manager",
     "quality_score": "HIGH",
@@ -8920,33 +7973,6 @@
     "classifier_votes": null
   },
   {
-    "title": "prod-nfs-01 Data Transfer Bottleneck",
-    "description": "Data transfer bottleneck on prod-nfs-01 is affecting file access speed for the R&D team. This may delay product development timelines. Require analysis and resolution of transfer issues.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Check network throughput",
-      "Optimize NFS configurations",
-      "Implement load balancing"
-    ],
-    "resolution_effectiveness": 0.79,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "prod-app-02 Authentication Service Downtime",
     "description": "Authentication service downtime on prod-app-02 is preventing users from accessing the platform. This could lead to a loss of active users. Urgent restoration is required.",
     "category": "Application",
@@ -9021,31 +8047,6 @@
     ],
     "resolution_effectiveness": 0.95,
     "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "prod-nfs-01 I/O Performance Lag",
-    "description": "Our teams are experiencing I/O performance lags on prod-nfs-01, which could slow down project delivery. Request a detailed performance analysis and resolution plan.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Evaluate disk throughput",
-      "Check file system integrity",
-      "Balance I/O load"
-    ],
-    "resolution_effectiveness": 0.81,
-    "references_runbook": "KB-0010",
     "source_model": "gpt-4o",
     "persona": "manager",
     "quality_score": "HIGH",
@@ -9231,33 +8232,6 @@
     ],
     "resolution_effectiveness": 0.95,
     "references_runbook": "KB-0003",
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "NFS Server Overutilization",
-    "description": "The engineering team is reporting slow file access due to overutilization of the NFS server. This is hindering development and testing activities. Please resolve this at the earliest.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Monitor NFS load",
-      "Optimize file access patterns",
-      "Add additional NFS nodes"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "manager",
     "quality_score": "HIGH",
@@ -9558,33 +8532,6 @@
     "classifier_votes": null
   },
   {
-    "title": "Staging Database Disk Space Alert",
-    "description": "Our QA team is unable to proceed with testing due to insufficient disk space on the staging database server. This delays release timelines. Please address and provide an ETA.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "staging-db-01"
-    ],
-    "affects_services": [
-      "postgresql"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Free up disk space",
-      "Archive old logs",
-      "Expand storage capacity"
-    ],
-    "resolution_effectiveness": 0.83,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
     "title": "LDAP Sync Failure Notice",
     "description": "There are synchronization failures with our LDAP server affecting user authentication and access control across departments. This needs immediate attention to prevent further disruptions.",
     "category": "Infrastructure",
@@ -9839,33 +8786,6 @@
       "Restart API server"
     ],
     "resolution_effectiveness": 0.9,
-    "references_runbook": null,
-    "source_model": "gpt-4o",
-    "persona": "manager",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null
-  },
-  {
-    "title": "prod-nfs-01 Mount Point Unavailable",
-    "description": "Our analytics team is unable to access shared data due to NFS mount point issues, impacting data processing for daily reports. We need a swift resolution to keep stakeholders informed.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Verify NFS server status",
-      "Check client mount configurations",
-      "Restart NFS service"
-    ],
-    "resolution_effectiveness": 0.8,
     "references_runbook": null,
     "source_model": "gpt-4o",
     "persona": "manager",
@@ -10274,35 +9194,6 @@
     "persona": "frustrated_user"
   },
   {
-    "title": "cant save files to shared drive!!",
-    "description": "the shared drive is not working AGAIN. when i try to save anything it says permission denied or stale file handle. my whole team is stuck we cant do any work. this is the 3rd time this month!!! someone needs to fix this properly not just a bandaid fix",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Found NFS daemon hung on prod-nfs-01",
-      "Killed stale nfsd processes",
-      "Restarted NFS server",
-      "Remounted on all client servers",
-      "Added NFS health check to monitoring"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": "KB-0006",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
     "title": "email not sending attachments",
     "description": "i cant send emails with attachments. small ones work but anything over like 5mb just fails. no error message it just sits in outbox. this has been happening since last week. i need to send contracts to clients TODAY. tried outlook and webmail same problem",
     "category": "Application",
@@ -10427,32 +9318,6 @@
     "references_runbook": "KB-0005",
     "quality_score": "HIGH",
     "secondary_category": "Security",
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "backup failed again",
-    "description": "got an email saying backup failed AGAIN. this is like the 4th time this week. i dont know what it means but my manager told me to report it. something about disk space? last time they said they fixed it but clearly they didnt",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked backup storage quota on prod-nfs-01",
-      "Found old snapshots consuming 500GB",
-      "Cleaned up snapshots older than 90 days",
-      "Verified backup job runs successfully"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
     "classifier_votes": null,
     "source_model": "claude",
     "persona": "frustrated_user"
@@ -10607,33 +9472,6 @@
     "persona": "l2_engineer"
   },
   {
-    "title": "RAID-5 degraded on prod-nfs-01 \u2014 disk slot 2 failed",
-    "description": "mdadm monitoring alert: /dev/md0 RAID-5 array degraded. mdadm --detail /dev/md0 shows /dev/sdc (slot 2) marked as removed/faulty at 03:22 UTC. SMART data: sdc Reallocated_Sector_Ct=847 (threshold=140), Current_Pending_Sector=12. Array still operational on 3/4 disks but zero redundancy. Another failure = data loss. iostat shows remaining disks at 85% utilization due to reconstruction reads. All NFS clients experiencing 2x latency.",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Verified spare disk available in inventory (same model WD Red 4TB)",
-      "Hot-swapped failed disk in slot 2",
-      "Started rebuild: mdadm --manage /dev/md0 --add /dev/sdd",
-      "Monitored rebuild: cat /proc/mdstat (ETA: 6 hours)",
-      "Rebuild completed, array healthy 4/4 disks"
-    ],
-    "resolution_effectiveness": 0.95,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
     "title": "SSH brute force attack on prod-db-01 from 203.0.113.42",
     "description": "Fail2ban alert: 1,847 failed SSH attempts on prod-db-01 from 203.0.113.42 in last 30 minutes. auth.log confirms repeated 'Failed password for root from 203.0.113.42'. IP geolocates to unknown VPS provider. Root login is disabled in sshd_config (PermitRootLogin no) so no actual breach, but attack is saturating auth logs and causing sshd slowness for legitimate users. Need to block IP and review SSH hardening.",
     "category": "Security",
@@ -10704,35 +9542,6 @@
     ],
     "resolution_effectiveness": 0.9,
     "references_runbook": "KB-0003",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "Customer data backup compliance issue",
-    "description": "Our compliance team has flagged that customer data backups have not been completing successfully for the past week. This is a regulatory requirement and we have an audit in 3 weeks. If we cannot demonstrate proper backup procedures, we risk a compliance violation. Please investigate and provide a remediation plan by end of day.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01",
-      "prod-db-01"
-    ],
-    "affects_services": [
-      "nfs",
-      "postgresql"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated backup job failures on prod-nfs-01",
-      "Found backup storage quota exceeded (2TB)",
-      "Cleaned old snapshots, freed 600GB",
-      "Ran manual backup successfully",
-      "Set up automated quota alerts at 80%"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": null,
     "quality_score": "HIGH",
     "secondary_category": null,
     "classifier_votes": null,
@@ -11496,84 +10305,6 @@
     "persona": "frustrated_user"
   },
   {
-    "title": "shared drive full AGAIN",
-    "description": "the shared drive is showing disk full error. cant save anything. this happens every few weeks. can someone please just give us more space or clean up old stuff?? blocking my whole teams work",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Reviewed system logs and metrics",
-      "Found configuration issue",
-      "Updated configuration",
-      "Tested and confirmed fix"
-    ],
-    "resolution_effectiveness": 0.87,
-    "references_runbook": "KB-0006",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "files corrupted on network drive",
-    "description": "opened my spreadsheet from the network drive and its all garbled. same with my colleagues files. looks like everything saved in the last 2 days is corrupt. please tell me there are backups!!",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated the reported issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution with user"
-    ],
-    "resolution_effectiveness": 0.94,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "backup notification keeps popping up",
-    "description": "getting constant popups about backup failed. every 30 minutes. cant focus on work. tried clicking retry but it fails again. someone please either fix the backup or stop the notifications",
-    "category": "Storage",
-    "priority": "low",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Triaged ticket and assessed severity",
-      "Engaged appropriate team",
-      "Implemented resolution",
-      "Monitored for recurrence"
-    ],
-    "resolution_effectiveness": 0.79,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
     "title": "prod-app-03 high CPU \u2014 Java thread deadlock suspected",
     "description": "prod-app-03 CPU sustained at 98% since 06:42 UTC. top shows PID 4521 (java) consuming 380% CPU across 4 cores. Thread dump via jstack shows 3 threads in BLOCKED state on OrderProcessor.processPayment() mutex. GC overhead 45% with full GC every 90s. AuthService on this node also affected \u2014 response times 12x normal. Need to restart JVM and investigate deadlock root cause.",
     "category": "Infrastructure",
@@ -12176,113 +10907,6 @@
     "persona": "l2_engineer"
   },
   {
-    "title": "ZFS pool degraded on prod-nfs-01 \u2014 resilvering at 12%",
-    "description": "zpool status shows raidz2 pool 'datapool' in DEGRADED state. /dev/sde removed from pool with 847 checksum errors. Resilvering in progress: 12% complete, ETA 14 hours. Pool still functional but single-disk fault tolerance only. Second failure = data loss. I/O performance reduced 40% during resilver.",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated the reported issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution with user"
-    ],
-    "resolution_effectiveness": 0.92,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "iSCSI multipath failover not working on prod-db-01",
-    "description": "prod-db-01 iSCSI multipath showing single active path (should be 2). multipathd show paths: path sda active, path sdb failed. iscsiadm -m session shows only 1 session. Storage controller firmware update (CHG-9985) may have disrupted second path. PostgreSQL I/O latency doubled.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-db-01"
-    ],
-    "affects_services": [
-      "postgresql"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Reviewed system logs and metrics",
-      "Found configuration issue",
-      "Updated configuration",
-      "Tested and confirmed fix"
-    ],
-    "resolution_effectiveness": 0.79,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "NFS export permission denied after security hardening",
-    "description": "After security hardening on prod-nfs-01 (CHG-9988), exportfs -v shows exports restricted to specific IPs. Three new app servers (deployed last week) not in the allow list. mount.nfs returning 'access denied by server' on prod-app-03 and two k8s nodes. Need to update /etc/exports.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01",
-      "prod-app-03"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-002"
-    ],
-    "resolution_steps": [
-      "Investigated the reported issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution with user"
-    ],
-    "resolution_effectiveness": 0.85,
-    "references_runbook": "KB-0006",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "LVM thin pool at 95% \u2014 auto-extend failed",
-    "description": "LVM thin pool 'data-pool' on prod-db-02 at 95.2% usage. Auto-extend threshold was 80% but extend failed: 'Insufficient free space on volume group'. VG has only 2GB free, thin pool needs 50GB minimum extension. PostgreSQL data directory on this thin volume. Risk: pool reaches 100% = read-only.",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-db-02"
-    ],
-    "affects_services": [
-      "postgresql"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated the reported issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution with user"
-    ],
-    "resolution_effectiveness": 0.87,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
     "title": "IT infrastructure not ready for new hire batch \u2014 20 employees starting Monday",
     "description": "We have 20 new hires joining on Monday and their workstations, accounts, and access are not set up yet. HR sent the onboarding list 2 weeks ago. This reflects poorly on our IT readiness and employee experience. Please confirm all accounts and machines will be provisioned by Friday EOD.",
     "category": "Infrastructure",
@@ -12697,86 +11321,6 @@
       "Tested and confirmed fix"
     ],
     "resolution_effectiveness": 0.94,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "Storage capacity forecast \u2014 running out in 60 days",
-    "description": "Our storage utilization report shows we'll hit 95% capacity within 60 days at current growth rate. Procurement needs 6-8 weeks lead time for new storage arrays. Please submit the purchase request this week with specifications and cost estimate.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Reviewed system logs and metrics",
-      "Found configuration issue",
-      "Updated configuration",
-      "Tested and confirmed fix"
-    ],
-    "resolution_effectiveness": 0.76,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "Data retention policy implementation overdue \u2014 legal requirement",
-    "description": "Legal team mandated data retention policy implementation by April 30. Customer data older than 7 years must be archived and financial records retained for 10 years. DBA and storage teams need to coordinate automated archival.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-db-01",
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "postgresql",
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Reviewed system logs and metrics",
-      "Found configuration issue",
-      "Updated configuration",
-      "Tested and confirmed fix"
-    ],
-    "resolution_effectiveness": 0.93,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "Backup SLA breach \u2014 RPO exceeded for 3 consecutive days",
-    "description": "Our backup monitoring shows RPO of 72 hours instead of committed 24 hours for the last 3 days. Multiple backup jobs failing silently. This violates our business continuity commitments. Need root cause and immediate remediation.",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Reviewed system logs and metrics",
-      "Found configuration issue",
-      "Updated configuration",
-      "Tested and confirmed fix"
-    ],
-    "resolution_effectiveness": 0.91,
     "references_runbook": null,
     "quality_score": "HIGH",
     "secondary_category": null,
@@ -13454,110 +11998,6 @@
       "Verified resolution"
     ],
     "resolution_effectiveness": 0.89,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "cant attach files to email \u2014 too large",
-    "description": "trying to email a 30mb presentation to a client but it keeps bouncing back saying too large. this is a normal business file why is there such a small limit?? tried compressing it still too big",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-mail-01"
-    ],
-    "affects_services": [
-      "exchange"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.88,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "mapped network drive disappeared",
-    "description": "my Z: drive that maps to the shared department folder just disappeared from my computer. tried mapping it again but 'network path not found'. all my project files are there!!!",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-NFS-001"
-    ],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.93,
-    "references_runbook": "KB-0006",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "recycle bin empty but disk still full",
-    "description": "my computer says disk full but i emptied the recycle bin and deleted everything i could. still says 2% free. where is all the space going?? cant even save documents",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [],
-    "affects_services": [],
-    "error_codes": [
-      "ERR-SYS-002"
-    ],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.83,
-    "references_runbook": "KB-0008",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "photos from company event gone",
-    "description": "the marketing team photos from last weeks company event that were on the shared drive are all gone. someone deleted them or the folder was moved. we need these for the newsletter going out friday",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.83,
     "references_runbook": null,
     "quality_score": "HIGH",
     "secondary_category": null,
@@ -14259,108 +12699,6 @@
     "persona": "l2_engineer"
   },
   {
-    "title": "Thin-provisioned LUN overcommitted \u2014 150% allocation",
-    "description": "SAN management showing thin LUN allocated to prod-db-01 at 150% overcommitment. Physical storage pool at 88%. If multiple LUNs grow simultaneously, pool exhaustion will cause I/O errors across all LUNs. Need to add physical capacity or reduce allocation.",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-db-01"
-    ],
-    "affects_services": [
-      "postgresql"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.89,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "NFS write performance degraded 10x after kernel update",
-    "description": "NFS write throughput on prod-nfs-01 dropped from 500MB/s to 50MB/s after kernel update to 5.15.0-97. nfsstat shows high retransmissions. Suspect NFS delegation issues with new kernel. Read performance unaffected.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.75,
-    "references_runbook": "KB-0006",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "Backup deduplication ratio dropped from 5:1 to 1.2:1",
-    "description": "Backup storage consumption spiked 4x this week. Deduplication engine showing 1.2:1 ratio instead of normal 5:1. Traced to new encrypted backup feature \u2014 encrypted data doesn't deduplicate. 2TB additional storage consumed in 5 days.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.77,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "LVM snapshot consuming more space than original volume",
-    "description": "LVM snapshot of data volume on prod-db-02 at 95% full. Original volume has high write rate during business hours causing snapshot COW overhead. If snapshot fills to 100%, it becomes invalid and is auto-removed. Need to either merge or remove snapshot.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-db-02"
-    ],
-    "affects_services": [
-      "postgresql"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.76,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "l2_engineer"
-  },
-  {
     "title": "End-of-life Windows Server 2012 \u2014 compliance risk",
     "description": "Security audit flagged that prod-ldap-01 is running Windows Server 2022 but two other systems still on Server 2012 R2 (end of extended support). No security patches available. Compliance team requiring migration plan within 30 days.",
     "category": "Infrastructure",
@@ -14999,139 +13337,6 @@
     "persona": "manager"
   },
   {
-    "title": "Cloud storage migration ROI analysis requested",
-    "description": "CFO wants ROI analysis for migrating on-premise NFS storage to AWS S3/EFS. Current on-prem storage: 50TB, growing 500GB/month. Need cost comparison, performance implications, and migration approach.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.91,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "Data classification project needed for storage tiering",
-    "description": "Storage costs are growing 15% quarterly. CTO wants hot/warm/cold data classification to move infrequently accessed data to cheaper storage. Need assessment of data access patterns and tiering strategy.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-nfs-01",
-      "prod-db-01"
-    ],
-    "affects_services": [
-      "nfs",
-      "postgresql"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.77,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "Ransomware protection for backup infrastructure",
-    "description": "After seeing recent ransomware attacks in the industry, the CISO wants immutable backups implemented. Current backups on prod-nfs-01 can be modified or deleted. Need air-gapped or immutable backup solution.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.94,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": "Security",
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "Storage performance metrics needed for SLA reporting",
-    "description": "Operations team needs monthly storage performance metrics (IOPS, latency, throughput) for client SLA reporting. Currently collected manually. Need automated reporting solution integrated with Grafana dashboards.",
-    "category": "Storage",
-    "priority": "low",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs",
-      "grafana"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.8,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
-    "title": "End-of-life NAS appliance replacement needed",
-    "description": "The NAS appliance supporting prod-nfs-01 reaches end-of-life in August. Vendor will stop providing firmware updates. Need replacement evaluation: buy new appliance vs migrate to software-defined storage vs cloud.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-nfs-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated issue",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.79,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "claude",
-    "persona": "manager"
-  },
-  {
     "title": "MY EMAIL IS GONE!!!",
     "description": "HELP!! I can't find my emails for work\u2026 tried every app but nothing shows up!!!!! NEED HELP ASAP!",
     "category": "Application",
@@ -15479,30 +13684,6 @@
     "persona": "l2_engineer"
   },
   {
-    "title": "Disk I/O slow prod-k8s-node-02",
-    "description": "SAN LUN mapping incorrect on prod-k8s-node-02 after firmware update. Needs immediate attention",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-k8s-node-02"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-k8s-node-02",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.78,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "frustrated_user"
-  },
-  {
     "title": "CVE found on prod-mon-01",
     "description": "Vulnerability scan found critical CVE on prod-mon-01. Blocking deployment",
     "category": "Security",
@@ -15676,54 +13857,6 @@
     "persona": "l2_engineer"
   },
   {
-    "title": "Storage full",
-    "description": "SAN LUN mapping incorrect on prod-app-01 after firmware update. Affecting producton",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-app-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked prod-app-01 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.76,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "Disk I/O slow prod-app-01",
-    "description": "Backup storage quota exceeded on prod-app-01. Last 38 backups failed.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-app-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked prod-app-01 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.87,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
-  },
-  {
     "title": "exchange 502 errors",
     "description": "exchange returning ERR-VPN-001 errs on prod-k8s-master. Users reporting issues",
     "category": "Application",
@@ -15744,29 +13877,6 @@
       "Restarted service"
     ],
     "resolution_effectiveness": 0.8,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
-    "title": "Disk I/O slow prod-mon-01",
-    "description": "Backup storage quota exceeded on prod-mon-01. LAST 38 BACKUPS FAILED.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-mon-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "SSHed into prod-mon-01",
-      "Restarted nfs",
-      "Monitored for 30 minutes"
-    ],
-    "resolution_effectiveness": 0.94,
     "references_runbook": null,
     "quality_score": "HIGH",
     "secondary_category": null,
@@ -16021,32 +14131,6 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "frustrated_user"
-  },
-  {
-    "title": "Storage full on prod-db-01 #2",
-    "description": "NFS server prod-db-01 not responding. All clients hung. On-call team notified \u2014 using Chrome on Mac",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-db-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-db-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.73,
-    "references_runbook": "KB-0008",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
   },
   {
     "title": "VPN dropping",
@@ -16698,30 +14782,6 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "l2_engineer"
-  },
-  {
-    "title": "NFS mount failing",
-    "description": "File system corruption on prod-k8s-node-01. Read-only mode. Multiple teams affected",
-    "category": "Storage",
-    "priority": "low",
-    "affects_servers": [
-      "prod-k8s-node-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked prod-k8s-node-01 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.75,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
   },
   {
     "title": "CPU high on prod-web-02",
@@ -17430,32 +15490,6 @@
     "persona": "frustrated_user"
   },
   {
-    "title": "NFS mount failing on prod-db-02 #2",
-    "description": "Disk I/O latency 1000ms on prod-db-02. exchange affected.",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-db-02"
-    ],
-    "affects_services": [
-      "exchange"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-db-02",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.87,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
     "title": "CVE found on prod-app-01",
     "description": "User locked out after password change. ERR-VPN-001. Monitoring alerts firing",
     "category": "Security",
@@ -17527,30 +15561,6 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "frustrated_user"
-  },
-  {
-    "title": "RAID degraded prod-k8s-node-01",
-    "description": "RAID array degraded on prod-k8s-node-01. One disk failed. Please fix ASAP",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-k8s-node-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-k8s-node-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.81,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
   },
   {
     "title": "auth-service timeout",
@@ -17752,32 +15762,6 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "frustrated_user"
-  },
-  {
-    "title": "NFS mount failing on prod-app-02 #3",
-    "description": "Disk I/O latency 30000ms on prod-app-02. NGINX AFFECTED.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-app-02"
-    ],
-    "affects_services": [
-      "nginx"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-app-02",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.76,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
   },
   {
     "title": "SSL expired on prod-k8s-master #3",
@@ -18003,30 +15987,6 @@
     "persona": "frustrated_user"
   },
   {
-    "title": "NFS mount failing on prod-app-02 #4",
-    "description": "RAID array degraded on prod-app-02. One disk failed. Blocking deployment",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-app-02"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-app-02",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.76,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
     "title": "Replication lag on prod-db-01 #4",
     "description": "Backup job failed on prod-db-01. Incomplete backup file. SLA at risk",
     "category": "Database",
@@ -18067,30 +16027,6 @@
     ],
     "resolution_effectiveness": 0.8,
     "references_runbook": "KB-0006",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
-    "title": "Disk I/O slow prod-ldap-01",
-    "description": "Backup storage quota exceeded on prod-ldap-01. Last 33 backups failed.\nNote: I'm working from home today",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-ldap-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked prod-ldap-01 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.84,
-    "references_runbook": null,
     "quality_score": "HIGH",
     "secondary_category": null,
     "classifier_votes": null,
@@ -18452,32 +16388,6 @@
     "persona": "frustrated_user"
   },
   {
-    "title": "Disk I/O slow prod-db-01",
-    "description": "Stale NFS file handle on prod-db-01!!!!!!!!! Multiple servers affected!!!!!!!!! Critical for business \u2014 using Chrome on Mac",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-db-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-db-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.86,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "frustrated_user"
-  },
-  {
     "title": "redis 502 errors",
     "description": "redis returning ERR-SYS-002 errors on prod-db-01!!!!!!!!! Management escalation imminent",
     "category": "Application",
@@ -18525,32 +16435,6 @@
     ],
     "resolution_effectiveness": 0.8,
     "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "RAID degraded prod-mon-01",
-    "description": "NFS servr prod-mon-01 not responding. All clients hung. SLA at risk",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-mon-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-mon-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.93,
-    "references_runbook": "KB-0001",
     "quality_score": "HIGH",
     "secondary_category": null,
     "classifier_votes": null,
@@ -18631,30 +16515,6 @@
     "persona": "manager"
   },
   {
-    "title": "NFS mount failing on prod-app-01 #5",
-    "description": "Backup storage quota exceeded on prod-app-01. LAST 3 BACKUPS FAILED.",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-app-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked prod-app-01 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.85,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
-  },
-  {
     "title": "Firewall blocking prod-k8s-node-02",
     "description": "SSL certificate expired on prometheus. ERR-REDIS-001. AFFECTING PRODUCTION",
     "category": "Network",
@@ -18702,30 +16562,6 @@
       "Verified resolution"
     ],
     "resolution_effectiveness": 0.81,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
-    "title": "Disk I/O slow prod-web-02",
-    "description": "RAID array degraded on prod-web-02. One disk failed. BLOCKING DEPLOYMENT",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-web-02"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked prod-web-02 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.93,
     "references_runbook": null,
     "quality_score": "HIGH",
     "secondary_category": null,
@@ -18940,31 +16776,6 @@
     "persona": "l2_engineer"
   },
   {
-    "title": "NFS MOUNT FAILING",
-    "description": "Stale NFS file handle on prod-ldap-01. Multiple servers affected. Affecting producton",
-    "category": "Storage",
-    "priority": "low",
-    "affects_servers": [
-      "prod-ldap-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "SSHed into prod-ldap-01",
-      "Restarted exchange",
-      "Monitored for 30 minutes"
-    ],
-    "resolution_effectiveness": 0.71,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
     "title": "Unauthorized access on prod-app-02 #2",
     "description": "45 failed login attempts on admin account from 203!!!!!!!!!0!!!!!!!!!113!!!!!!!!!42!!!!!!!!! Blocking deployment",
     "category": "Security",
@@ -19091,58 +16902,6 @@
     "persona": "frustrated_user"
   },
   {
-    "title": "NFS mount failing on prod-mail-01 #6",
-    "description": "NFS mount failing on prod-mail-01. ERR-SSL-001. Monitoring alerts firing",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "prod-mail-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [
-      "ERR-SSL-001"
-    ],
-    "resolution_steps": [
-      "Investigated logs on prod-mail-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.93,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "Disk I/O slow staging-db-01 \u2014 this is urgent because my manager asked",
-    "description": "SAN LUN mapping incorrect on staging-db-01 after firmware update. Needs immediate attention\nNote: I'm working from home today",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "staging-db-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked staging-db-01 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.76,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
     "title": "VPN dropping on prod-k8s-node-02 #7",
     "description": "SSL certificate expired on nginx. ERR-PG-001. Needs immediate attention",
     "category": "Network",
@@ -19222,32 +16981,6 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "frustrated_user"
-  },
-  {
-    "title": "RAID DEGRADED PROD-WEB-01",
-    "description": "NFS servr prod-web-01 not responding. All clients hung. SLA at risk",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-web-01"
-    ],
-    "affects_services": [
-      "nfs"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-web-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.83,
-    "references_runbook": "KB-0009",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
   },
   {
     "title": "CVE found on prod-mail-01",
@@ -19702,30 +17435,6 @@
     "persona": "manager"
   },
   {
-    "title": "NFS mount failing on prod-mail-01 #7",
-    "description": "RAID array degraded on prod-mail-01. One disk failed. Needs immediate attention",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-mail-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-mail-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.78,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "manager"
-  },
-  {
     "title": "CVE found on staging-db-01 on staging-db-01 #2",
     "description": "Phishing email reported by 8 employees. Team unable to work",
     "category": "Security",
@@ -19747,30 +17456,6 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "manager"
-  },
-  {
-    "title": "NFS mount failing on prod-web-02 #8",
-    "description": "SAN LUN mapping incorrect on prod-web-02 after firmware update. Affecting production",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-web-02"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked prod-web-02 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.92,
-    "references_runbook": "KB-0009",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
   },
   {
     "title": "CPU high on prod-ldap-01 on prod-ldap-01 #2",
@@ -19797,30 +17482,6 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "l2_engineer"
-  },
-  {
-    "title": "NFS mount failing on prod-app-01 #9",
-    "description": "File system corruption on prod-app-01. Read-only mode. On-call team notified",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-app-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-app-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.9,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "frustrated_user"
   },
   {
     "title": "SSL expired on prod-db-02 #6",
@@ -19917,30 +17578,6 @@
     "persona": "manager"
   },
   {
-    "title": "Storage full on staging-db-01 #3",
-    "description": "File system corruption on staging-db-01. Read-only mode. Team unable to work",
-    "category": "Storage",
-    "priority": "critical",
-    "affects_servers": [
-      "staging-db-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Checked staging-db-01 status",
-      "Identified root cause",
-      "Applied fix",
-      "Verified resolution"
-    ],
-    "resolution_effectiveness": 0.82,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
-  },
-  {
     "title": "Disk full staging-db-01",
     "description": "Kernel panic on staging-db-01. SERVER REBOOTED UNEXPECTEDLY. Revenue impact estimated",
     "category": "Infrastructure",
@@ -19957,30 +17594,6 @@
       "Restarted service"
     ],
     "resolution_effectiveness": 0.93,
-    "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
-  },
-  {
-    "title": "Disk I/O slow prod-ldap-01 on prod-ldap-01 #2",
-    "description": "File system corruption on prod-ldap-01. Read-only mode. Multiple teams affected",
-    "category": "Storage",
-    "priority": "high",
-    "affects_servers": [
-      "prod-ldap-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-ldap-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.73,
     "references_runbook": null,
     "quality_score": "HIGH",
     "secondary_category": null,
@@ -20060,30 +17673,6 @@
     "persona": "frustrated_user"
   },
   {
-    "title": "Storage full on prod-web-01 #4",
-    "description": "File system corruption on prod-web-01. Read-only mode. Users reporting issues\n\nAlso, unrelated but can someone reset my password?",
-    "category": "Storage",
-    "priority": "medium",
-    "affects_servers": [
-      "prod-web-01"
-    ],
-    "affects_services": [],
-    "error_codes": [],
-    "resolution_steps": [
-      "Investigated logs on prod-web-01",
-      "Found configuration issue",
-      "Updated config",
-      "Restarted service"
-    ],
-    "resolution_effectiveness": 0.83,
-    "references_runbook": "KB-0005",
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "l2_engineer"
-  },
-  {
     "title": "DB slow queries on prod-app-03 #8",
     "description": "PostgreSQL not accepting conections on prod-app-03. ERR-REDIS-001. Multiple teams affected",
     "category": "Database",
@@ -20155,31 +17744,6 @@
     ],
     "resolution_effectiveness": 0.81,
     "references_runbook": null,
-    "quality_score": "HIGH",
-    "secondary_category": null,
-    "classifier_votes": null,
-    "source_model": "template_noise",
-    "persona": "frustrated_user"
-  },
-  {
-    "title": "RAID degraded prod-mon-01 on prod-mon-01 #2",
-    "description": "Disk I/O latency 30000ms on prod-mon-01!!!!!!!!! nginx affected!!!!!!!!!",
-    "category": "Storage",
-    "priority": "low",
-    "affects_servers": [
-      "prod-mon-01"
-    ],
-    "affects_services": [
-      "nginx"
-    ],
-    "error_codes": [],
-    "resolution_steps": [
-      "SSHed into prod-mon-01",
-      "Restarted nginx",
-      "Monitored for 30 minutes"
-    ],
-    "resolution_effectiveness": 0.92,
-    "references_runbook": "KB-0007",
     "quality_score": "HIGH",
     "secondary_category": null,
     "classifier_votes": null,
@@ -20406,5 +17970,1313 @@
     "classifier_votes": null,
     "source_model": "template_noise",
     "persona": "l2_engineer"
+  },
+  {
+    "title": "Can't Login to My Account AGAIN!!!",
+    "description": "For the third time this week, I can't log in. It says wrong password, but I KNOW it's right!!! I reset it last month and I've been using the same one!!! This is completely stopping my work. Pls fix ASAP!!!",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "New Hire Can't Access ANYTHING",
+    "description": "Our new team member started today and can't access anything. NO emails, NO files, NOTHING. Her onboarding was yesterday. We need her set up and working IMMEDIATELY!!! This is critical for our project deadlines!!!",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Locked Out AGAIN!!!",
+    "description": "I'm locked out again and can't access my work emails or files. It happens every few weeks and now AGAIN when I need to send important stuff. Pls unlock my account. This is getting really frustrating and urgent!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "SSO Keeps Logging Me Out",
+    "description": "Every time I try to use our main app, the SSO system logs me out after a few minutes. I can't do my work like this!!! It doesnt save my place, and I lose all progress. Please fix this, it's driving me insane!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Lost MFA Device, Can't Authenticate",
+    "description": "I lost my phone where my MFA was set up. Now I can't log in to anything that requires it. This is URGENT because I'm completely shut out of my work resources. PLEASE help reset the MFA to my new device ASAP!!!",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Password Reset NOT WORKING!!!",
+    "description": "I tried to reset my password and the email link doesn't work. It says expired even though I clicked it right away!!! I need to access my account immediately. This has stopped me from doing ANY work!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Permissions Changed Without Notice",
+    "description": "My access permissions have changed suddenly and I can't view files I was looking at yesterday!!! What's going on??? This is disrupting my reports and I need it fixed IMMEDIATELY. Can't complete my tasks!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Shared Account Not Working!",
+    "description": "The shared account we use for booking doesn't let us login. Says wrong password, but we haven't changed it!!! This is how we schedule everything, so please fix it quickly!!! Everyone is waiting!",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Random Account Lockouts",
+    "description": "My account keeps getting locked randomly! I have to keep asking for unlocks and it's making it impossible to get my work done. Please find out why this is happening and FIX IT. This is URGENT!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Directory Access Gone",
+    "description": "I can't access the directory I need for my project. Was working fine yesterday. I need the files from there for today!!! Not sure why this is happening. Need HELP and ACCESS NOW!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Group Membership Changed",
+    "description": "Suddenly I'm not in the group I need to access shared drives. I haven't changed anything!!! It was working fine last week. Need to be added back ASAP else I can't do my job!!!",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Access Review Denied",
+    "description": "I keep getting denied on the access review. My job requires these permissions!!! This is a mistake and it's really messing up my workflow. Need this fixed soon!!!",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Certificate-Based Login Fails",
+    "description": "Every time I try to login with the certificate, it fails. Says invalid even though I used it last week without issues!!! Can't access my projects and it's causing delays!!!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "Federation Login Issue",
+    "description": "I can't login through our federation system. Says something about no user found??? I need access to my files and meetings immediately!!! It's urgent, I can't afford delays!",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-frustrated_user"
+  },
+  {
+    "title": "AD Replication Issue: USN Mismatch Detected",
+    "description": "We've identified a USN mismatch in Active Directory replication between the servers prod-ad-01 and prod-ad-02. Users in the affected sites are experiencing delayed updates to their account permissions. The event logs on prod-ad-01 (Event ID: 2104) indicate lingering objects. Immediate action is required to resolve the replication conflict to restore synchronization.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "Event ID 2104",
+      "USN Rollback"
+    ],
+    "server_names": [
+      "prod-ad-01",
+      "prod-ad-02"
+    ],
+    "service_names": [
+      "Active Directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "LDAP Bind Failure: Service Account Locked",
+    "description": "The service account svc-ldap-bind is unable to authenticate with the LDAP server prod-ldap-01. The account shows as locked in the active directory with multiple Event IDs 4740. Verification through LDAP logs reveals LDAP error 49. The lockout was caused by incorrect credentials being used by an automated process.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "LDAP error 49",
+      "Event ID 4740"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "LDAP"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Kerberos Ticket Renewal Failure",
+    "description": "A significant number of users report difficulty accessing SSO services due to Kerberos ticket renewal failures. Analysis of the logs on the KDC server prod-kdc-01 shows multiple Event IDs 4771 with error code 0x18. This suggests a possible mismatch between the client and server time settings.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Event ID 4771",
+      "Kerberos error 0x18"
+    ],
+    "server_names": [
+      "prod-kdc-01"
+    ],
+    "service_names": [
+      "Kerberos",
+      "SSO"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "SAML Assertion Signature Mismatch in IDP",
+    "description": "Users attempting to authenticate via SAML with our IDP service are experiencing failures. SAML trace logs show 'Signature verification failed' errors. This issue seems isolated to the web-saml-idp-02 server. Prompt investigation is necessary to ensure the assertion signature is correctly configured and signed.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [
+      "web-saml-idp-02"
+    ],
+    "service_names": [
+      "SAML"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Azure AD Connect Sync Errors Detected",
+    "description": "Azure AD Connect on az-ad-sync-01 is reporting synchronization errors. The application logs reveal a large number of Event ID 6941. Users are experiencing sporadic directory sync issues with Azure AD, leading to login failures for cloud applications. Investigate the health of the directory sync configuration.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "Event ID 6941"
+    ],
+    "server_names": [
+      "az-ad-sync-01"
+    ],
+    "service_names": [
+      "Azure AD Connect"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Group Policy Not Applying to User Groups",
+    "description": "Multiple user reports indicate that group policies (GPO) are not applying as expected within the domain controlled by prod-gpo-01. Event Viewer on affected client machines logs Event ID 1085. Initial checks suggest potential issues with policy inheritance. Further investigation is necessary to pinpoint the cause.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "Event ID 1085"
+    ],
+    "server_names": [
+      "prod-gpo-01"
+    ],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "SID History Migration Errors During AD Trust",
+    "description": "During SID history migration across domains, several users are unable to access resources. Logs on prod-sid-01 show migration errors with code 'LDAP error 701'. There seems to be an issue with the AD trust relationship, possibly due to naming conflicts or schema mismatches.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "LDAP error 701"
+    ],
+    "server_names": [
+      "prod-sid-01"
+    ],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Certificate-Based Authentication Failure in VPN",
+    "description": "Users attempting to connect to the corporate VPN are experiencing authentication failures with certificate-based login. Initial diagnosis points to expired certificates on vpn-auth-01. Logs reveal instances of 'SSL Error 61', indicating untrusted certificate chains. Urgent renewal is required.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "SSL Error 61"
+    ],
+    "server_names": [
+      "vpn-auth-01"
+    ],
+    "service_names": [
+      "VPN"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Account Lockout Due to Excessive Failed Login Attempts",
+    "description": "There is a spike in account lockouts across the domain. Analysis of the security logs on prod-lockout-01 shows frequent Event ID 4740. This may be linked to a brute force attack or automated scripts using the wrong credentials. Immediate investigation and mitigation are required.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Event ID 4740"
+    ],
+    "server_names": [
+      "prod-lockout-01"
+    ],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Federation Trust Error with External Partner",
+    "description": "Users are unable to access federated services with our external partner. The federation server prod-federation-01 logs multiple Event IDs 364, typically indicating a token issuance error. This may be due to certificate mismatches or configuration updates required on the partner side.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "Event ID 364"
+    ],
+    "server_names": [
+      "prod-federation-01"
+    ],
+    "service_names": [
+      "Federation Services"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "OAuth 2.0 Authentication Failing for Mobile Users",
+    "description": "Mobile users report authentication failures when accessing applications via OAuth 2.0. Logs from the auth server mobile-auth-01 indicate 'invalid_grant' errors, suggesting issues in token issuance or client configuration. A review of the OAuth client settings and logs is needed.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "invalid_grant"
+    ],
+    "server_names": [
+      "mobile-auth-01"
+    ],
+    "service_names": [
+      "OAuth 2.0"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Directory Replication Lag Detected in Secondary Site",
+    "description": "Significant replication delay is observed in the secondary site on server prod-dir-02. The Directory Services log shows Event ID 1084, indicating a replication backlog. This lag is affecting user authentication and policy updates in the site. Immediate attention to replication health is necessary.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Event ID 1084"
+    ],
+    "server_names": [
+      "prod-dir-02"
+    ],
+    "service_names": [
+      "Directory Services"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Multi-Factor Authentication Not Triggering for Admins",
+    "description": "Admin accounts set up with MFA are not receiving prompts for second-factor authentication on system admin-console-01. The MFA logs contain no specific errors, but there's a lack of expected authentication flow entries. A review of the MFA policies and logs is required to diagnose this issue.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [
+      "admin-console-01"
+    ],
+    "service_names": [
+      "MFA"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Identity Governance Access Review Alerts",
+    "description": "Access reviews scheduled on the identity governance portal id-gov-01 are not generating alerts as intended. Logs indicate potential notification failures due to SMTP communication issues. Ensuring the configured email service is operational and properly integrated is essential.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [
+      "id-gov-01"
+    ],
+    "service_names": [
+      "Identity Governance"
+    ],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-l2_engineer"
+  },
+  {
+    "title": "Team Locked Out Before Important Board Meeting",
+    "description": "My team is unable to access critical reports due to a sudden lockout issue. We have an urgent board meeting scheduled, and this access problem is severely impacting our ability to prepare the required materials. This is a major concern and needs immediate resolution to avoid any disruptions during the meeting.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "New Department Lacks Access to Essential Tools",
+    "description": "The recently established marketing department is unable to use necessary tools and software applications. This access issue is hindering their launch strategies and impacting project timelines. It is crucial that access is granted promptly to ensure no further delays in departmental initiatives.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Access Reviews Incomplete Before Compliance Audit Deadline",
+    "description": "The system is showing incomplete access reviews, causing us to potentially fail an upcoming compliance audit. This situation has serious implications for our regulatory standing. It is imperative that all reviews are finalized to meet the audit deadline and maintain compliance.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Contractor Access Not Revoked Post-Project Completion",
+    "description": "Access for several contractors has not been revoked despite project completion several weeks ago. This oversight could lead to security concerns and unauthorized access to sensitive information. It is vital to address this immediately to safeguard our data integrity.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "VIP Executive's Account Locked Out Unexpectedly",
+    "description": "One of our VIP executives is locked out of their account, causing a major disruption in their workflow. This needs to be resolved urgently as it affects high-level business activities and decision-making processes. Quick action is required to restore access and avoid further impact.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Company-Wide SSO Failure Causing Login Issues",
+    "description": "The SSO system seems to have stopped working, preventing company-wide logins and causing a halt in daily operations. This is a critical issue affecting productivity across all departments and needs an immediate resolution to resume normal business functions.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Delayed User Provisioning Impacting New Hires",
+    "description": "There are delays in provisioning new hires with the necessary access to systems and tools. This is affecting our onboarding process and new employees' ability to start their roles efficiently. Immediate action is needed to streamline the provisioning process and support our growing team.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Multi-Factor Authentication Malfunction Affects Security",
+    "description": "The multi-factor authentication process is malfunctioning, compromising the security protocols of our systems. This presents a potential risk of unauthorized access. It is urgent to rectify this issue to reinforce our security measures and protect sensitive data.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Role-Based Access Control Not Reflecting Recent Changes",
+    "description": "Our role-based access control system is not updating with recent organizational changes, leading to incorrect access permissions. This misalignment could impact operational efficiency and requires prompt attention to align access levels with current roles and responsibilities.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Critical Service Accounts Access Needs Review",
+    "description": "There is an urgent need to review access permissions for critical service accounts. This is necessary to ensure compliance and security, as any oversight could expose us to potential vulnerabilities. Timely completion of this review is imperative.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Certificate-Based Authentication Fails, Causing Delays",
+    "description": "The failure in the certificate-based authentication process is causing significant delays in system access for certain users. This issue needs immediate attention as it is impacting project timelines and overall productivity. Quick resolution is essential to minimize any further delays.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "Identity Governance Platform Unresponsive",
+    "description": "The identity governance platform has become unresponsive, impairing our ability to manage user identities effectively. This is crucial for maintaining operational security and needs urgent resolution to restore its functionality and ensure compliance with governance policies.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [],
+    "_source": "synthetic",
+    "_generator": "gpt-4o-vague_manager"
+  },
+  {
+    "title": "LDAP account locked after password rotation",
+    "description": "After our quarterly password rotation policy kicked in, approximately 40 users in the Finance department got locked out of their accounts. The lockout policy (3 failed attempts in 15 minutes) is triggering because their cached credentials on Windows workstations are trying the old password. Need to either unlock all accounts in bulk or extend the lockout threshold during rotation windows.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "LDAP Error 49 (Invalid Credentials)"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "SSO loop \u2014 redirects between IdP and SP infinitely",
+    "description": "Users trying to access the HR portal are stuck in an infinite redirect loop between our SAML IdP (Azure AD) and the service provider. Browser shows 'too many redirects' after about 10 cycles. Started after the SP updated their ACS URL yesterday. The SAML RelayState parameter seems to be getting dropped on the return trip.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "SAML StatusCode: Requester"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Service account svc-monitoring has excessive privileges",
+    "description": "Security audit flagged that svc-monitoring (used by Prometheus) has Domain Admin privileges in Active Directory. This account only needs read access to query LDAP for service discovery. Risk: if the monitoring server is compromised, attacker gets full domain admin access. Need to create a least-privilege service account and rotate credentials.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [
+      "prod-mon-01",
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory",
+      "prometheus"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "MFA bypass for VPN \u2014 users can authenticate without second factor",
+    "description": "Discovered that the Cisco AnyConnect VPN integration with our MFA provider has a configuration gap. Users connecting via the legacy VPN client (v4.9) are not being challenged for MFA \u2014 only the new client (v4.10+) enforces it. About 30% of our remote workforce is still on the old client. This is a compliance violation for SOC2.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Group nesting too deep \u2014 token bloat causing auth failures",
+    "description": "Users in the Engineering department are getting 'HTTP 400 Bad Request' when accessing internal web apps. Investigation shows their Kerberos tokens exceed the 12KB MaxTokenSize because they're members of 300+ nested AD groups. The group nesting goes 8 levels deep due to years of uncleaned group-of-groups structure.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Kerberos KRB_ERR_RESPONSE_TOO_BIG"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Azure AD Connect sync stuck in staging mode",
+    "description": "Azure AD Connect has been stuck in staging mode since the last server restart 3 days ago. On-prem AD changes (new users, group changes, password resets) are not syncing to Azure AD. Cloud-only apps using Azure AD for auth are showing stale user data. 15 new hires created this week cannot access any cloud resources.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "Azure AD Connect Error: stopped-server"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "OAuth refresh token lifetime too long \u2014 security risk",
+    "description": "Our OAuth2 configuration for the customer portal has refresh tokens set to never expire. A penetrated refresh token from a terminated employee was used to access customer data 6 months after their departure. Need to implement token lifetime policies: 24h for access tokens, 7 days for refresh tokens, and revoke all existing tokens for terminated users.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "LDAP query performance degraded \u2014 5 second response times",
+    "description": "LDAP queries from the application tier are taking 5+ seconds instead of the usual 50ms. The prod-ldap-01 server shows CPU at 95% due to unindexed LDAP searches. The auth-service is doing subtree searches with (memberOf=*) filter across the entire directory tree instead of using the Global Catalog on port 3268.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "LDAP timeout exceeded"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Conditional Access policy blocking legitimate users",
+    "description": "After deploying new Conditional Access policies in Azure AD, users connecting from the India office (ap-south-1 region) are being blocked with 'Your sign-in was blocked due to conditional access policies'. The named location for India office IP ranges was not updated after the ISP changed our public IP block last week.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "AADSTS53003: Access blocked by Conditional Access"
+    ],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "SCIM provisioning failing \u2014 users not created in SaaS apps",
+    "description": "SCIM provisioning from Azure AD to Slack, Jira, and Confluence has stopped working. New users added to the 'SaaS-Users' group in AD are not being provisioned in these applications. The SCIM bearer token expired and auto-renewal failed silently. 22 users provisioned in the last 2 weeks are missing from SaaS apps.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "SCIM Error: 401 Unauthorized"
+    ],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Password hash sync broken \u2014 cloud password reset not working",
+    "description": "Users who reset their password via the Azure AD self-service portal can log into cloud apps but cannot log into on-prem systems. Password hash sync from Azure AD back to on-prem AD is failing with 'password writeback error'. The Azure AD Connect service account password was changed without updating the connector configuration.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Azure AD Connect: PasswordResetFailed"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Cross-domain trust broken after DC promotion",
+    "description": "After promoting a new domain controller in the child domain (dev.company.local), the two-way trust with the parent domain (company.local) broke. Users in the dev domain can no longer access resources in the parent domain. Trust validation fails with 'The target account name is incorrect'. Likely a DNS or SPN issue.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "NETLOGON Error 1789"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Guest user access not expiring in SharePoint",
+    "description": "External guest users invited to SharePoint sites still have access months after their access should have expired. The guest access expiration policy (30 days) is configured in Azure AD but not being enforced. Access reviews show 150+ external guests with active access who should have been removed.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "JWT token validation failing after key rotation",
+    "description": "Internal microservices are rejecting JWTs issued by the auth-service after the signing key was rotated. The JWKS endpoint is serving the new key but services have cached the old public key. Services using jose library with 1-hour JWKS cache TTL are affected. Manual cache invalidation needed across 12 services.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "JWT signature verification failed"
+    ],
+    "server_names": [
+      "prod-app-01"
+    ],
+    "service_names": [
+      "auth-service",
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Orphaned SIDs in ACLs after domain migration",
+    "description": "After migrating users from the old domain to the new domain, file share ACLs still contain SIDs from the old domain that cannot be resolved. Users see 'Account Unknown (S-1-5-21-xxx)' entries in file permissions. About 200 shared folders are affected. Need SID history migration or ACL remediation.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "API gateway not forwarding user identity headers",
+    "description": "The API gateway (Kong) is stripping the X-Forwarded-User and X-User-Groups headers when proxying requests to backend services. Backend services receive anonymous requests and cannot enforce RBAC. Started after the gateway plugin update yesterday. Affects all authenticated API routes.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "403 Forbidden: Missing user identity"
+    ],
+    "server_names": [
+      "prod-app-01"
+    ],
+    "service_names": [
+      "api-gateway",
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "RADIUS authentication timeout for WiFi users",
+    "description": "Corporate WiFi users are getting disconnected every 2 hours when RADIUS re-authentication times out. The NPS (Network Policy Server) on prod-ldap-01 is taking too long to validate credentials against AD because the LDAP connection pool is exhausted. WiFi controller retries for 30 seconds then drops the session.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "RADIUS Error: Access-Reject"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Privileged access workstation (PAW) policy not enforcing",
+    "description": "The Group Policy restricting admin account usage to Privileged Access Workstations is not being applied. Domain admins can still log into regular workstations, which violates our tiered admin model. GPResult shows the policy is being filtered out by a conflicting WMI filter that was added during last month's cleanup.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "SAML NameID format mismatch causing duplicate accounts",
+    "description": "New SSO integration with the CRM vendor is creating duplicate user accounts. Our IdP sends NameID as email format (user@company.com) but the SP expects persistent format (opaque UUID). Each login creates a new account instead of matching the existing one. 50 duplicate accounts created in the last week.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "SAML: NameID format mismatch"
+    ],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Kerberos delegation misconfigured \u2014 double-hop failure",
+    "description": "The reporting application on prod-app-01 cannot query the database on prod-db-01 using Windows Integrated Auth. The first hop (user to app) works but the second hop (app to DB) fails with 'Login failed for user NT AUTHORITY\\ANONYMOUS LOGON'. Constrained delegation is configured but the SPN for the SQL service is missing.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [
+      "Kerberos KDC_ERR_BADOPTION"
+    ],
+    "server_names": [
+      "prod-app-01",
+      "prod-db-01"
+    ],
+    "service_names": [
+      "active-directory",
+      "postgresql"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Fine-grained password policy not applying to service accounts OU",
+    "description": "The fine-grained password policy (PSO) that enforces 24-character minimum for service accounts is not being applied. Service accounts in the 'OU=ServiceAccounts' are falling back to the default domain policy (8-char minimum). The PSO precedence value is set higher than another conflicting PSO. Audit finding \u2014 needs immediate fix.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Certificate-based auth failing after CA renewal",
+    "description": "Smart card authentication for the security operations team stopped working after the enterprise CA certificate was renewed. The new CA cert is not in the NTAuth store in Active Directory. Users with smart cards get 'The system could not log you on. Your credentials could not be verified.' Windows Event ID 4771 shows KDC_ERR_CLIENT_NOT_TRUSTED.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "Kerberos KDC_ERR_CLIENT_NOT_TRUSTED",
+      "Event ID 4771"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "AD account provisioning webhook failing silently",
+    "description": "The HR system (Workday) sends webhooks to our provisioning API when new employees are onboarded. The webhook endpoint on prod-app-01 is returning 200 OK but not actually creating the AD account. The issue is a null pointer in the UPN generation logic when the employee's last name contains an apostrophe (e.g., O'Brien). 3 new hires stuck without accounts.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [
+      "prod-app-01",
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Emergency break-glass account password unknown",
+    "description": "During a DR drill, we discovered that the emergency break-glass admin account (admin-breakglass@company.com) password stored in the vault has been rotated but the vault was not updated. We cannot access the account. This is the only account that bypasses Conditional Access and MFA. Need to reset via DSRM or similar recovery method.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "LDAPS certificate expired \u2014 secure LDAP connections failing",
+    "description": "The LDAPS (LDAP over SSL) certificate on prod-ldap-01 expired yesterday. All applications using LDAPS (port 636) for secure directory queries are failing. Applications using plain LDAP (port 389) still work but are sending credentials in cleartext. Need to renew the LDAPS cert and restart the AD DS service.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "LDAP Error: SSL handshake failed"
+    ],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Access review campaign stuck at 60% completion",
+    "description": "The quarterly access review campaign in Azure AD Identity Governance is stuck. 40% of reviewers have not completed their reviews and the deadline is tomorrow. The reminder emails stopped sending because the mail relay was throttling. Need to send manual reminders and consider extending the deadline by 48 hours.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "PIM role activation delays \u2014 30 minute wait for admin access",
+    "description": "Azure AD Privileged Identity Management (PIM) role activations are taking 30+ minutes instead of the expected 5 minutes. Engineers needing temporary admin access for production issues are blocked. The Azure AD backend appears to be experiencing latency. Workaround: using the break-glass account, which defeats the purpose of PIM.",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "RBAC role inheritance not working in Kubernetes namespaces",
+    "description": "ClusterRole bindings in Kubernetes are not properly inheriting to namespace-level roles. Users assigned the 'developer' ClusterRole can access resources in the 'default' namespace but get 403 in project-specific namespaces. The RoleBinding aggregation labels are missing from the namespace-scoped roles.",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [
+      "403 Forbidden: RBAC: access denied"
+    ],
+    "server_names": [
+      "prod-k8s-master"
+    ],
+    "service_names": [
+      "kubernetes",
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "Expired client certificate blocking API integrations",
+    "description": "Third-party API integrations using mutual TLS (mTLS) authentication stopped working. The client certificate issued to our integration service expired 2 days ago. Affects payment gateway, shipping provider, and inventory management APIs. Need to generate new CSR, get cert signed by partner CA, and update all 3 integration configs.",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [
+      "TLS Error: certificate has expired"
+    ],
+    "server_names": [
+      "prod-app-01"
+    ],
+    "service_names": [
+      "api-gateway"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "AD group cleanup needed \u2014 500+ empty groups",
+    "description": "Active Directory contains over 500 security groups with zero members. These were created for past projects and never cleaned up. They slow down group policy processing, clutter the directory, and make access reviews take 3x longer. Need to identify which are truly unused vs. referenced in ACLs, then archive or delete.",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [
+      "prod-ldap-01"
+    ],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "claude-handcrafted"
+  },
+  {
+    "title": "SSO keeps logging me out every 30 min",
+    "description": "every 30 minutes Confluence SSO logs me out and i hvae to login again. its driving me crazy, i lose all my unsaved work. this started since monday my wifi is fine tho",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "new hire Lisa Park cant access anything",
+    "description": "we have a new joiner Lisa Park who started 2 days ago and still doesnt have access to Slakc. they cant do any work. this is urgent pls",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "MFA not sending codes to new phone",
+    "description": "the MFA txt messages arent coming thru to my phone. i changed my phone after lunch and updated my number in the portal but its still sending to old number. HELP",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "new hire Ravi Kumar cant access anything",
+    "description": "we have a new joiner Ravi Kumar who started since monday and still doesnt have access to Confluence. they cant do any work. this is urgent pls",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "who approved access for Deepak Sharma??",
+    "description": "found that Deepak Sharma (contractor, left after lunch) still has admin access to SharePoint. who approved this?? they shouldve been deprovisioned when their contract ended. UGRENT security issue this never happened before the office move",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "Salesforce SSO not working",
+    "description": "SSO login to Salesforce just spins and spins, never loads. tried diff browser, same thign. other ppl on my team having same issue. been like this since this morning",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "cant access the finnace system from vpn",
+    "description": "when im on vpn i cant get to the finance system. it sasy access denied. but in office it works fine. other ppl on vpn can access it. started since monday",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "permissions wrong after move from Sales to Engineering",
+    "description": "i moved from Sales to Engineering since monday but i still have access to Sales stuff and cant see Engineering stuff. my manager already approved the transfer in the system",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "permissions wrong after dept change \u2014 Operations to Marketing",
+    "description": "i moved from Operations to Marketing since monday but i still have access to Operations stuff and cant see Marketing stuff. my manager already approved the transfer in the system",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "locked out AGAIN \u2014 5th time this week!!",
+    "description": "my account got locked out AGAIN. this is the 5th time this week. every time i have to call IT and wait 30 mins. cant u guys just turn off the lockout policy or something??",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "2FA app showing wrong code btw im using a Dell laptop",
+    "description": "my authenticator app shows a code but when i enter it it says invalid. i think the time on my phone is off or something? cant login to anything that needs MFA",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "who approved access for Ahmed Khan??",
+    "description": "found that Ahmed Khan (contractor, left after lunch) still has admin acecss to Salesforce. who approved this?? they shouldve been deprovisioned wehn their contract ended. URGENT security issue this never happened before the office move",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "MFA codes not arriving \u2014 changed phone yesterday",
+    "description": "the MFA txt messages arent coming thru to my phone. i changed my phone yesterday and updated my number in the portal but its still sending to old number. HELP btw im using a Dell laptop",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "still have old permissions after transfer to Sales",
+    "description": "i moved from Marketing to Sales last week but i still have access to Marketing stuff and cant see Sales stuff. my manager already approved the transfer in the system btw im using a Dell laptop",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "2FA app showing wrong code",
+    "description": "my authenticator app shows a code but when i enter it it says invalid. i think the time on my phone is off or smthng? cant logni to anything that needs MFA",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "new hire Sarah Chen cant access anything",
+    "description": "we have a new joiner Sarah Chen who started after lunch and still doesnt have access to the finance system. they cant do any work. this is urgent pls btw im using a Dell laptop",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "shared service acct svc-monitoring failing",
+    "description": "the shared service account svc-monitoring that we use for automated deployments is faliing with auth errors since yesterday. prob password expired. who can reset it? we dotn know who owns this acct",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "account locked out for the 3rd time",
+    "description": "my account got locked out AGAIN. this is the 3rd time this week. every time i have to call IT and wait 30 mins. cant u guys just turn off the lockout policy or something??",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "catn loign to ServiceNow",
+    "description": "tryed logging in to ServiceNow multiple times but keeps saying wrong passwrd. i KNOW my password is right!! pls help asap, i have a deadline tomorrow and cant do anything im on windows 11",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "cant login to Jira",
+    "description": "tryed logging in to Jira multiple times but keeps saying wrong passwrd. i KNOW my password is right!! pls help asap, i have a client demo today and cant do anything",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "who approved access for Lisa Park??",
+    "description": "found that Lisa Park (contractor, left since monday) still has admin access to Teams. who approved this?? they shouldve been deprovisioned when their contract ended. URGENT security issue",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "access not updated after moving to Operations dept",
+    "description": "i moved from Marketing to Operations since monday but i still have access to Marketing stuff and cant see Operations stuff. my manager already approved the transfer in the system im on windows 11",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "cnat access Confluence from vpn",
+    "description": "when im on vpn i cant get to Confluence. it sasy access denied. but in office it works fine. other ppl on vpn can access it",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "the finance system SSO not working",
+    "description": "SSO login to the finance system just spisn and spins, never loads. tried diff browser, same thing. other ppl on my team having same issue. been like this since this morning",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
   }
 ]

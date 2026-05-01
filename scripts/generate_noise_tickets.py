@@ -66,15 +66,15 @@ TEMPLATES = {
         "Privilege escalation attempt detected on {server}. {urgency}",
         "Phishing email reported by {count} employees. {impact}",
     ],
-    "Storage": [
-        "NFS mount failing on {server}. {error_code}. {impact}",
-        "Stale NFS file handle on {server}. Multiple servers affected. {urgency}",
-        "Backup storage quota exceeded on {server}. Last {count} backups failed.",
-        "NFS server {server} not responding. All clients hung. {impact}",
-        "SAN LUN mapping incorrect on {server} after firmware update. {urgency}",
-        "File system corruption on {server}. Read-only mode. {impact}",
-        "RAID array degraded on {server}. One disk failed. {urgency}",
-        "Disk I/O latency {latency}ms on {server}. {service} affected.",
+    "Access Management": [
+        "LDAP account locked for {count} users. {error_code}. {impact}",
+        "SSO login failing — redirect loop on {service}. {urgency}",
+        "Service account password expired on {server}. Batch jobs failing.",
+        "MFA codes not arriving for {count} users. {impact}",
+        "AD group membership not syncing after department transfer. {urgency}",
+        "SAML certificate expired — SSO broken for all apps. {impact}",
+        "RBAC permissions not propagating on {server}. {urgency}",
+        "OAuth token refresh failing on {service}. Users logged out every {latency} minutes.",
     ],
 }
 
@@ -190,7 +190,7 @@ def generate_ticket(category: str, ticket_num: int) -> dict:
         "Database": [f"PostgreSQL connection issue", f"Redis OOM {server}", f"DB slow queries", f"Replication lag"],
         "Network": [f"VPN dropping", f"Firewall blocking {server}", f"DNS failing", f"SSL expired"],
         "Security": [f"Failed login attempts", f"User locked out", f"CVE found on {server}", f"Unauthorized access"],
-        "Storage": [f"NFS mount failing", f"Disk I/O slow {server}", f"RAID degraded {server}", f"Storage full"],
+        "Access Management": [f"LDAP lockout", f"SSO login broken", f"MFA not working", f"Permissions wrong after transfer"],
     }
     title = random.choice(title_templates[category])
     if random.random() < 0.3:
@@ -245,7 +245,7 @@ def main():
 
     tickets = []
     # Distribution: 200 tickets across 6 categories
-    dist = {"Infrastructure": 40, "Application": 38, "Database": 34, "Network": 32, "Security": 30, "Storage": 26}
+    dist = {"Infrastructure": 40, "Application": 38, "Database": 34, "Network": 32, "Security": 30, "Access Management": 26}
 
     ticket_num = 0
     for category, count in dist.items():

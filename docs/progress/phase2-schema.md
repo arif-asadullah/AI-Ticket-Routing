@@ -82,7 +82,7 @@ Called from `backend/app/main.py` lifespan on every startup. Idempotent — safe
 | Database | SQL, connections, replication, backups | Database Admin |
 | Network | Firewalls, DNS, VPN, latency, certificates | Network Engineering |
 | Security | Auth, vulnerabilities, access control | Security Ops |
-| Storage | NFS, SAN, disk I/O, RAID, backups | Storage Ops |
+| Access Management | LDAP, Active Directory, SSO, SAML, OAuth, MFA, RBAC, permissions, account lockouts | Access Management |
 
 ## Documentation
 

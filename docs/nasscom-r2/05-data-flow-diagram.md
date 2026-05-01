@@ -272,7 +272,7 @@ flowchart TB
 {
   "category": "Database",
   "confidence": 0.84,
-  "distances": {"Database": 0.92, "Infrastructure": 0.65, "Application": 0.61, "Network": 0.55, "Security": 0.43, "Storage": 0.40}
+  "distances": {"Database": 0.92, "Infrastructure": 0.65, "Application": 0.61, "Network": 0.55, "Security": 0.43, "Access Management": 0.40}
 }
 ```
 
@@ -281,7 +281,7 @@ flowchart TB
 {
   "category": "Database",
   "confidence": 0.75,
-  "scores": {"Database": 3, "Application": 1, "Infrastructure": 0, "Network": 0, "Security": 0, "Storage": 0}
+  "scores": {"Database": 3, "Application": 1, "Infrastructure": 0, "Network": 0, "Security": 0, "Access Management": 0}
 }
 ```
 
@@ -449,14 +449,14 @@ fulltext_matches: [
 ```
 { category: "Database", confidence: 0.87,
   distances: { "Database": 0.92, "Application": 0.61, "Infrastructure": 0.58,
-               "Network": 0.45, "Security": 0.38, "Storage": 0.35 } }
+               "Network": 0.45, "Security": 0.38, "Access Management": 0.35 } }
 ```
 
 **classify_keyword(description):**
 ```
 { category: "Database", confidence: 0.60,
   scores: { "Database": 3, "Application": 2, "Infrastructure": 0,
-            "Network": 0, "Security": 0, "Storage": 0 } }
+            "Network": 0, "Security": 0, "Access Management": 0 } }
 ```
 
 ### Stage 4 -- Aggregation

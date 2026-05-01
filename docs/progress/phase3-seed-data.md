@@ -26,7 +26,7 @@ This is a hand-crafted YAML file containing a realistic fake IT infrastructure:
 
 | Section | Count | Example |
 |---------|-------|---------|
-| **Teams** | 6 | Infrastructure Ops, Database Admin, Storage Ops, etc. |
+| **Teams** | 6 | Infrastructure Ops, Database Admin, Access Management, etc. |
 | **Servers** | 15 | prod-db-01 (database, ap-south-1, 32GB RAM), prod-web-01, etc. |
 | **Services** | 12 | PostgreSQL 15.4 (port 5432), Redis 7.2, NGINX, Kubernetes, etc. |
 | **Engineers** | 12 | 2 per team — Indian names, 4 Muslim names (Arjun Nair, Ayesha Khan, etc.) |
@@ -40,7 +40,7 @@ This is a hand-crafted YAML file containing a realistic fake IT infrastructure:
 
 ### Key design decisions:
 - **Datacenters**: ap-south-1 (Mumbai, primary), ap-south-2 (Hyderabad, secondary) — AWS naming style
-- **Categories**: Infrastructure, Application, Database, Network, Security, **Storage** (replaced "Access Management" from original plan)
+- **Categories**: Infrastructure, Application, Database, Network, Security, **Access Management**
 - **New fields added for improved architecture**: `quality_score`, `secondary_category`, `classifier_votes` on all 55 tickets
 - **9 tickets have secondary_category** (ambiguous tickets like "Firewall blocking database port")
 

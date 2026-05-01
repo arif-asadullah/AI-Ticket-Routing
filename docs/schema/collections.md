@@ -27,7 +27,7 @@ Think of it as a help desk inbox. Each ticket is like an email from someone repo
 | `_key` | string (auto) | `"12345"` | Unique ID generated automatically by ArangoDB. Every ticket needs a unique identifier. |
 | `title` | string | `"PostgreSQL not accepting connections"` | Short one-line summary. This is what appears in the ticket list. Users scan titles to find their ticket. |
 | `description` | string | `"prod-db-01 refusing connections since 10am. max_connections reached at 100. App team reporting 502 errors on the checkout page."` | Detailed problem description. This is the main text the AI reads to classify the ticket. More detail = better classification. |
-| `category` | string | `"Database"` | One of 6 values: `Infrastructure`, `Application`, `Security`, `Database`, `Storage`, `Network`. This is the AI's classification — it determines which team gets the ticket. |
+| `category` | string | `"Database"` | One of 6 values: `Infrastructure`, `Application`, `Security`, `Database`, `Access Management`, `Network`. This is the AI's classification — it determines which team gets the ticket. |
 | `priority` | string | `"high"` | One of 4 values: `critical`, `high`, `medium`, `low`. Also assigned by AI. Determines how fast the team must respond (SLA). |
 | `status` | string | `"routed"` | Ticket lifecycle: `open` (just submitted) → `routed` (AI sent to team) or `escalated` (AI not confident, needs human) → `in_progress` (team working) → `resolved` (fixed) → `closed` (confirmed). |
 | `confidence_score` | float | `0.92` | How sure the AI is about its classification (0.0 to 1.0). If below 0.70 (configurable), the ticket is escalated to a human instead of auto-routed. |
@@ -169,7 +169,7 @@ Think of departments in a hospital. The ER handles emergencies, cardiology handl
 | `app-support` | Application Support | Application |
 | `security-ops` | Security Ops | Security |
 | `db-admin` | Database Admin | Database |
-| `storage-ops` | Storage Ops | Storage |
+| `access-mgmt` | Access Management | Access Management |
 | `network-eng` | Network Engineering | Network |
 
 ---
@@ -226,7 +226,7 @@ A building directory in a hospital. "Room 301" isn't just a room number — it's
 |-------|------|---------|---------------|
 | `_key` | string | `"prod-db-01"` | Server hostname. This is what users type in tickets, so using hostname as the key makes it easy to look up directly. |
 | `ip` | string | `"10.0.1.10"` | IP address. Sometimes tickets mention IPs instead of hostnames. The system can match either way. |
-| `type` | string | `"database"` | Server category: `database`, `application`, `web`, `monitoring`, `auth`, `storage`. Helps AI confirm its classification — if a ticket mentions a "database" type server, it's likely a Database category ticket. |
+| `type` | string | `"database"` | Server category: `database`, `application`, `web`, `monitoring`, `auth`, `identity`. Helps AI confirm its classification — if a ticket mentions a "database" type server, it's likely a Database category ticket. |
 | `datacenter` | string | `"dc-east-1"` | Physical location. If 3 tickets come from servers in the same datacenter within 10 minutes, it might be a datacenter-wide issue, not individual server problems. |
 | `os` | string | `"Ubuntu 22.04"` | Operating system. Relevant for OS-specific troubleshooting — a Linux fix won't work on Windows. |
 | `cpu` | number | `8` | Number of CPU cores. Context for performance issues — "CPU at 100%" on a 2-core server is different from an 8-core server. |
@@ -471,7 +471,7 @@ For each of the 6 categories, there are 4 rules (one per priority level). All cu
 | Application | app-support | app-support | app-support | app-support |
 | Security | security-ops | security-ops | security-ops | security-ops |
 | Database | db-admin | db-admin | db-admin | db-admin |
-| Storage | storage-ops | storage-ops | storage-ops | storage-ops |
+| Access Management | access-mgmt | access-mgmt | access-mgmt | access-mgmt |
 | Network | network-eng | network-eng | network-eng | network-eng |
 
 ---
@@ -617,7 +617,7 @@ New ticket embedding: [0.82, -0.15, 0.33, ...]
 Distance to each centroid:
   database:       0.12  ← CLOSEST
   infrastructure: 0.45
-  storage:        0.52
+  access-management: 0.52
   application:    0.61
   network:        0.68
   security:       0.74

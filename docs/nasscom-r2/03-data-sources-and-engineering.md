@@ -30,7 +30,7 @@ Hand-crafted YAML containing the **core infrastructure topology** that forms the
 
 | Entity | Count | Purpose |
 |--------|-------|---------|
-| Teams | 6 | One per IT domain (Infrastructure Ops, Application Support, Database Admin, Network Operations, Security Operations, Storage Engineering) |
+| Teams | 6 | One per IT domain (Infrastructure Ops, Application Support, Database Admin, Network Operations, Security Operations, Access Management) |
 | Engineers | 12 | 2 per team with expertise areas and skills |
 | Servers | 15 | Physical/virtual machines across ap-south-1 and ap-south-2 datacenters |
 | Services | 12 | Software (PostgreSQL, Redis, Nginx, Kubernetes, etc.) with versions and ports |
@@ -67,7 +67,7 @@ Hand-crafted YAML containing the **core infrastructure topology** that forms the
 | Database | 15% | ~59 |
 | Network | 12% | ~48 |
 | Security | 10% | ~40 |
-| Storage | 8% | ~32 |
+| Access Management | 8% | ~32 |
 
 **Why imbalanced**: Mirrors real-world IT ticket distribution where Infrastructure and Application tickets dominate.
 
@@ -210,7 +210,7 @@ The ingestion script performs these validation checks:
 
 **Centroid computation**:
 ```python
-for category in ["Infrastructure", "Application", "Database", "Network", "Security", "Storage"]:
+for category in ["Infrastructure", "Application", "Database", "Network", "Security", "Access Management"]:
     tickets_in_category = all tickets where category == category
     centroid = mean(all embeddings in tickets_in_category)
     save to category_centroids collection
@@ -237,7 +237,7 @@ for category in ["Infrastructure", "Application", "Database", "Network", "Securi
 |--------|-------|
 | Total unique tickets | 855 |
 | Category coverage | All 6 categories represented |
-| Min tickets per category | ~68 (Storage, 8%) |
+| Min tickets per category | ~68 (Access Management, 8%) |
 | Max tickets per category | ~257 (Infrastructure, 30%) |
 | Tickets with error codes | ~40% |
 | Tickets with server names | ~60% |
