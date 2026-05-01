@@ -422,6 +422,6 @@ DeskMind classifies tickets into **6 IT domains**:
 | **Database** | Connection refused, slow queries, replication lag, backup failure | Database Admin |
 | **Network** | VPN issues, DNS resolution failure, firewall blocking, SSL cert expired | Network Operations |
 | **Security** | Unauthorized access, brute force attack, certificate vulnerability | Security Operations |
-| **Storage** | NFS mount failure, storage quota exceeded, backup corruption | Storage Engineering |
+| **Access Management** | LDAP sync failure, SSO login broken, MFA enrollment issues | Access Management |
 
 Each category has **4 routing rules** (critical/high/medium/low priority), totaling 24 rules that map `{category, priority}` → team.

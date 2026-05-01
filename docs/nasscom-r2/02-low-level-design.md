@@ -541,7 +541,7 @@ if start != -1 and end != -1:
 5. **Validate** — Category must be one of 6 valid values; priority one of 4; confidence clamped to [0.0, 1.0]:
 
 ```python
-valid_cats = {"Infrastructure", "Application", "Database", "Network", "Security", "Storage"}
+valid_cats = {"Infrastructure", "Application", "Database", "Network", "Security", "Access Management"}
 valid_pris = {"critical", "high", "medium", "low"}
 category = result.get("category")
 if category not in valid_cats:
@@ -553,7 +553,7 @@ confidence = max(0.0, min(1.0, float(confidence)))
 ```
 - "502 errors because PostgreSQL is down" = Database (not Application)
 - "VPN drops after firewall rule change" = Network (not Security)
-- "NFS mount failing after SAN firmware update" = Storage (not Infrastructure)
+- "SSO login failing after Active Directory update" = Access Management (not Infrastructure)
 - "API slow because of missing database index" = Database (not Application)
 ```
 
@@ -700,8 +700,8 @@ KEYWORD_DICT = {
                        "breach", "vulnerability", "malware", "phishing", ...],
     "Application":    ["api", "http", "endpoint", "bug", "error", "exception", "timeout",
                        "response", "frontend", "backend", "deploy", ...],
-    "Storage":        ["nfs", "san", "nas", "lun", "iscsi", "ceph", "s3", "backup",
-                       "snapshot", "volume", "mount", "filesystem", ...],
+    "Access Management": ["ldap", "active directory", "sso", "saml", "oauth", "mfa",
+                       "rbac", "permissions", "kerberos", "identity", "provisioning", ...],
 }
 ```
 
@@ -1576,9 +1576,9 @@ service_to_category = {
     "firewall": "Network",
     "vpn": "Network",
     "dns": "Network",
-    "active-directory": "Security",
+    "active-directory": "Access Management",
     "api-gateway": "Security",
-    "nfs": "Storage",
+    "nfs": "Infrastructure",
 }
 ```
 

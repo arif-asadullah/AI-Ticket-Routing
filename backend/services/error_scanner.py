@@ -52,26 +52,27 @@ def errors_confirm_category(errors: list[ErrorMatch], category: str) -> bool:
 
     Maps error service to category:
       postgresql, redis → Database
-      nginx, order-service, auth-service → Application
+      nginx, order-service → Application
       kubernetes, linux → Infrastructure
       firewall, vpn, dns → Network
-      active-directory, api-gateway → Security
-      nfs → Storage
+      api-gateway → Security
+      active-directory, auth-service → Access Management
+      nfs → Infrastructure
     """
     service_to_category = {
         "postgresql": "Database",
         "redis": "Database",
         "nginx": "Application",
         "order-service": "Application",
-        "auth-service": "Application",
         "kubernetes": "Infrastructure",
         "linux": "Infrastructure",
         "firewall": "Network",
         "vpn": "Network",
         "dns": "Network",
-        "active-directory": "Security",
         "api-gateway": "Security",
-        "nfs": "Storage",
+        "active-directory": "Access Management",
+        "auth-service": "Access Management",
+        "nfs": "Infrastructure",
     }
 
     for err in errors:

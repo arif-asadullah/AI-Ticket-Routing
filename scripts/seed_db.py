@@ -343,11 +343,13 @@ def create_auto_edges(db, inserted_tickets, routing_rules):
                 "_to": f"teams/{team_key}",
             })
         # triggered_by edges (error_code -> ticket)
+        # Only create edges for error codes that exist in the collection (ERR-XX-XXX format)
         for err in original.get("error_codes") or []:
-            triggered_edges.append({
-                "_from": f"error_codes/{err}",
-                "_to": f"tickets/{ticket_key}",
-            })
+            if err and db.collection("error_codes").has(err):
+                triggered_edges.append({
+                    "_from": f"error_codes/{err}",
+                    "_to": f"tickets/{ticket_key}",
+                })
 
     if affects_edges:
         affects_col.import_bulk(affects_edges, on_duplicate="replace")
@@ -383,7 +385,7 @@ def compute_centroids(db, all_ticket_docs):
     for cat, embeddings in sorted(category_embeddings.items()):
         avg = np.mean(embeddings, axis=0).tolist()
         centroids.append({
-            "_key": cat.lower(),
+            "_key": cat.lower().replace(" ", "-"),
             "category": cat,
             "embedding": avg,
             "ticket_count": len(embeddings),

@@ -1,0 +1,314 @@
+[
+  {
+    "title": "SSO keeps logging me out every 30 min",
+    "description": "every 30 minutes Confluence SSO logs me out and i hvae to login again. its driving me crazy, i lose all my unsaved work. this started since monday my wifi is fine tho",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "new hire Lisa Park cant access anything",
+    "description": "we have a new joiner Lisa Park who started 2 days ago and still doesnt have access to Slakc. they cant do any work. this is urgent pls",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "MFA not sending codes",
+    "description": "the MFA txt messages arent coming thru to my phone. i changed my phone after lunch and updated my number in the portal but its still sending to old number. HELP",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "new hire Ravi Kumar cant access anything",
+    "description": "we have a new joiner Ravi Kumar who started since monday and still doesnt have access to Confluence. they cant do any work. this is urgent pls",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "who approved access for Deepak Sharma??",
+    "description": "found that Deepak Sharma (contractor, left after lunch) still has admin access to SharePoint. who approved this?? they shouldve been deprovisioned when their contract ended. UGRENT security issue this never happened before the office move",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "Salesforce SSO not working",
+    "description": "SSO login to Salesforce just spins and spins, never loads. tried diff browser, same thign. other ppl on my team having same issue. been like this since this morning",
+    "category": "Access Management",
+    "priority": "critical",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "cant access the finnace system from vpn",
+    "description": "when im on vpn i cant get to the finance system. it sasy access denied. but in office it works fine. other ppl on vpn can access it. started since monday",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "permissions wrong after dept change",
+    "description": "i moved from Sales to Engineering since monday but i still have access to Sales stuff and cant see Engineering stuff. my manager already approved the transfer in the system",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "permissions wrong after dept change",
+    "description": "i moved from Operations to Marketing since monday but i still have access to Operations stuff and cant see Marketing stuff. my manager already approved the transfer in the system",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "locked out AGAIN",
+    "description": "my account got locked out AGAIN. this is the 5th time this week. every time i have to call IT and wait 30 mins. cant u guys just turn off the lockout policy or something??",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "2FA app showing wrong code btw im using a Dell laptop",
+    "description": "my authenticator app shows a code but when i enter it it says invalid. i think the time on my phone is off or something? cant login to anything that needs MFA",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "who approved access for Ahmed Khan??",
+    "description": "found that Ahmed Khan (contractor, left after lunch) still has admin acecss to Salesforce. who approved this?? they shouldve been deprovisioned wehn their contract ended. URGENT security issue this never happened before the office move",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "MFA not sending codes",
+    "description": "the MFA txt messages arent coming thru to my phone. i changed my phone yesterday and updated my number in the portal but its still sending to old number. HELP btw im using a Dell laptop",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "permissions wrong after dept change",
+    "description": "i moved from Marketing to Sales last week but i still have access to Marketing stuff and cant see Sales stuff. my manager already approved the transfer in the system btw im using a Dell laptop",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "2FA app showing wrong code",
+    "description": "my authenticator app shows a code but when i enter it it says invalid. i think the time on my phone is off or smthng? cant logni to anything that needs MFA",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "new hire Sarah Chen cant access anything",
+    "description": "we have a new joiner Sarah Chen who started after lunch and still doesnt have access to the finance system. they cant do any work. this is urgent pls btw im using a Dell laptop",
+    "category": "Access Management",
+    "priority": "high",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "shared service acct svc-monitoring failing",
+    "description": "the shared service account svc-monitoring that we use for automated deployments is faliing with auth errors since yesterday. prob password expired. who can reset it? we dotn know who owns this acct",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "locked out AGAIN",
+    "description": "my account got locked out AGAIN. this is the 3rd time this week. every time i have to call IT and wait 30 mins. cant u guys just turn off the lockout policy or something??",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "catn loign to ServiceNow",
+    "description": "tryed logging in to ServiceNow multiple times but keeps saying wrong passwrd. i KNOW my password is right!! pls help asap, i have a deadline tomorrow and cant do anything im on windows 11",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "cant login to Jira",
+    "description": "tryed logging in to Jira multiple times but keeps saying wrong passwrd. i KNOW my password is right!! pls help asap, i have a client demo today and cant do anything",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "who approved access for Lisa Park??",
+    "description": "found that Lisa Park (contractor, left since monday) still has admin access to Teams. who approved this?? they shouldve been deprovisioned when their contract ended. URGENT security issue",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "permissions wrong after dept change",
+    "description": "i moved from Marketing to Operations since monday but i still have access to Marketing stuff and cant see Operations stuff. my manager already approved the transfer in the system im on windows 11",
+    "category": "Access Management",
+    "priority": "low",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "cnat access Confluence from vpn",
+    "description": "when im on vpn i cant get to Confluence. it sasy access denied. but in office it works fine. other ppl on vpn can access it",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  },
+  {
+    "title": "the finance system SSO not working",
+    "description": "SSO login to the finance system just spisn and spins, never loads. tried diff browser, same thing. other ppl on my team having same issue. been like this since this morning",
+    "category": "Access Management",
+    "priority": "medium",
+    "error_codes": [],
+    "server_names": [],
+    "service_names": [
+      "active-directory"
+    ],
+    "_source": "synthetic",
+    "_generator": "noise-access-mgmt"
+  }
+]

@@ -24,7 +24,7 @@ RULES:
 1. Classify by ROOT CAUSE, not by symptom.
    - "502 errors because PostgreSQL is down" = Database (not Application)
    - "VPN drops after firewall rule change" = Network (not Security)
-   - "NFS mount failing after SAN firmware update" = Storage (not Infrastructure)
+   - "LDAP account locked after password rotation policy" = Access Management (not Security)
    - "API slow because of missing database index" = Database (not Application)
 
 2. Categories (pick exactly ONE):
@@ -32,8 +32,8 @@ RULES:
    - Application: App crashes, API errors, HTTP 5xx from app code, deployments, bugs
    - Database: SQL databases, Redis, connection pools, queries, replication, backups
    - Network: Firewalls, DNS, VPN, load balancers, latency, routing, SSL certificates
-   - Security: Authentication, authorization, vulnerabilities, malware, access control
-   - Storage: NFS, SAN, disk I/O, RAID, file systems, mount issues, backup storage
+   - Security: Vulnerabilities, malware, breaches, exploits, intrusions, CVEs, encryption
+   - Access Management: LDAP, Active Directory, SSO, SAML, OAuth, MFA, RBAC, permissions, account lockouts, identity, user provisioning, service accounts, group memberships
 
 3. Priority:
    - critical: Production completely down, data loss risk, security breach
@@ -157,7 +157,7 @@ Return ONLY valid JSON: {{"category": "...", "priority": "...", "confidence": 0.
 
         result = _parse_llm_response(content)
 
-        valid_cats = {"Infrastructure", "Application", "Database", "Network", "Security", "Storage"}
+        valid_cats = {"Infrastructure", "Application", "Database", "Network", "Security", "Access Management"}
         valid_pris = {"critical", "high", "medium", "low"}
 
         category = result.get("category")

@@ -242,7 +242,7 @@ RULES:
 1. Classify by ROOT CAUSE, not by symptom.
    - "502 errors because PostgreSQL is down" = Database (not Application)
    - "VPN drops after firewall rule change" = Network (not Security)
-   - "NFS mount failing after SAN firmware update" = Storage (not Infrastructure)
+   - "SSO login failing after LDAP config change" = Access Management (not Infrastructure)
 
 2. Categories (pick exactly ONE):
    - Infrastructure: Server hardware, OS, CPU, RAM, VMs, Kubernetes nodes, Docker daemon
@@ -250,7 +250,7 @@ RULES:
    - Database: SQL databases, Redis, connection pools, queries, replication, backups
    - Network: Firewalls, DNS, VPN, load balancers, latency, routing, certificates
    - Security: Authentication, authorization, vulnerabilities, malware, access control
-   - Storage: NFS, SAN, disk I/O, RAID, file systems, backups to disk, mount issues
+   - Access Management: LDAP, Active Directory, SSO, SAML, OAuth, MFA, RBAC, permissions, account lockouts
 
 3. Priority:
    - critical: Production completely down, data loss risk, security breach
@@ -285,7 +285,7 @@ at 100. FATAL: too many connections in logs. App team reporting 502 errors."
 
 Return ONLY valid JSON (no other text):
 {
-  "category": "one of: Infrastructure, Application, Security, Database, Storage, Network",
+  "category": "one of: Infrastructure, Application, Security, Database, Access Management, Network",
   "priority": "one of: critical, high, medium, low",
   "confidence": 0.0 to 1.0,
   "reasoning": "2-3 sentences explaining root cause analysis"
@@ -343,7 +343,7 @@ Category centroids (pre-computed once, updated periodically):
   Database centroid:       [0.77, -0.12, 0.29, ...]
   Network centroid:        [-0.05, 0.55, 0.18, ...]
   Security centroid:       [0.33, 0.08, -0.41, ...]
-  Storage centroid:        [0.44, -0.27, 0.51, ...]
+  Access Management centroid: [0.44, -0.27, 0.51, ...]
 ```
 
 Compare the new ticket's embedding to each centroid:
@@ -354,7 +354,7 @@ New ticket embedding: [0.82, -0.15, 0.33, ...]
 Distances:
   Database:       0.12  ← CLOSEST (most similar to Database tickets overall)
   Infrastructure: 0.45
-  Storage:        0.52
+  Access Management: 0.52
   Application:    0.61
   Network:        0.68
   Security:       0.74
@@ -383,8 +383,8 @@ Keyword dictionaries:
                   route, subnet, bandwidth, proxy, load balancer, certificate
   Security:       authentication, authorization, rbac, token, encryption,
                   breach, vulnerability, malware, phishing, audit, permission
-  Storage:        nfs, san, nas, lun, iscsi, ceph, s3, backup, snapshot,
-                  volume, mount, filesystem, disk full, quota, raid
+  Access Management: ldap, active directory, sso, saml, oauth, mfa, rbac, permission,
+                  account lockout, group policy, kerberos, identity, provisioning, directory service
 
 Scan: "PostgreSQL not accepting connections on prod-db-01.
        FATAL: too many connections. App team reporting 502."
@@ -395,7 +395,7 @@ Matches:
   Infrastructure: (none)                                      → score: 0
   Network:        (none)                                      → score: 0
   Security:       (none)                                      → score: 0
-  Storage:        (none)                                      → score: 0
+  Access Management: (none)                                   → score: 0
 
 Winner: Database (score 3)
 ```

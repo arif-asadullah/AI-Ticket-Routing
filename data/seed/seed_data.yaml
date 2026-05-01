@@ -35,10 +35,10 @@ teams:
     high: 4
     medium: 8
     low: 24
-- _key: storage-ops
-  name: Storage Ops
-  domain: Storage
-  escalation_contact: storage-lead@company.com
+- _key: access-mgmt
+  name: Access Management
+  domain: Access Management
+  escalation_contact: access-mgmt-lead@company.com
   sla_hours:
     critical: 2
     high: 4
@@ -312,22 +312,22 @@ engineers:
   email: farhana.begum@company.com
 - _key: eng-011
   name: Amit Joshi
-  role: Storage Engineer
+  role: IAM Engineer
   expertise:
-  - NFS
-  - SAN
-  - backup
-  - RAID
-  - Ceph
+  - Active Directory
+  - LDAP
+  - SSO
+  - RBAC
+  - OAuth
   email: amit.joshi@company.com
 - _key: eng-012
   name: Zainab Siddiqui
-  role: Storage Admin
+  role: Access Management Admin
   expertise:
-  - NetApp
-  - NFS
-  - disaster-recovery
-  - archival
+  - Azure AD
+  - SAML
+  - MFA
+  - identity-governance
   email: zainab.siddiqui@company.com
 network_devices:
 - _key: fw-prod-01
@@ -423,13 +423,13 @@ error_codes:
   pattern: Unauthorized access attempt detected
   service: api-gateway
   severity: critical
-- _key: ERR-NFS-001
-  pattern: 'NFS: stale file handle'
-  service: nfs
+- _key: ERR-AD-001
+  pattern: 'LDAP bind failed — invalid credentials'
+  service: active-directory
   severity: high
-- _key: ERR-NFS-002
-  pattern: 'mount.nfs: access denied by server'
-  service: nfs
+- _key: ERR-AD-002
+  pattern: 'SAML response signature validation failed'
+  service: active-directory
   severity: medium
 runbooks:
 - _key: KB-0001
@@ -478,14 +478,14 @@ runbooks:
   - 'Reload service: sudo systemctl reload nginx'
   category: Security
 - _key: KB-0006
-  title: NFS mount failure recovery
+  title: LDAP account lockout resolution
   steps:
-  - 'Check NFS server is running: systemctl status nfs-server'
-  - 'Verify exports: showmount -e prod-nfs-01'
-  - 'Check client mount: mount | grep nfs'
-  - 'Unmount stale mount: umount -f /mnt/shared'
-  - 'Remount: mount -t nfs prod-nfs-01:/export/shared /mnt/shared'
-  category: Storage
+  - 'Check account status: Get-ADUser -Identity <username> -Properties LockedOut'
+  - 'Unlock account: Unlock-ADAccount -Identity <username>'
+  - 'Review failed login attempts in Event Viewer: Event ID 4740'
+  - 'Check lockout policy: Get-ADDefaultDomainPasswordPolicy'
+  - 'If repeated lockouts, investigate source IP from logs'
+  category: Access Management
 - _key: KB-0007
   title: Redis memory management
   steps:
@@ -587,21 +587,21 @@ routing_rules:
   priority: low
   target_team: db-admin
   is_active: true
-- category: Storage
+- category: Access Management
   priority: critical
-  target_team: storage-ops
+  target_team: access-mgmt
   is_active: true
-- category: Storage
+- category: Access Management
   priority: high
-  target_team: storage-ops
+  target_team: access-mgmt
   is_active: true
-- category: Storage
+- category: Access Management
   priority: medium
-  target_team: storage-ops
+  target_team: access-mgmt
   is_active: true
-- category: Storage
+- category: Access Management
   priority: low
-  target_team: storage-ops
+  target_team: access-mgmt
   is_active: true
 - category: Network
   priority: critical
@@ -1382,147 +1382,148 @@ tickets:
   quality_score: HIGH
   secondary_category: null
   classifier_votes: null
-- title: NFS mount failing on prod-app-01
-  description: 'NFS mount point /mnt/shared on prod-app-01 is not accessible. mount command returns ''NFS: stale file handle''. Application cannot write uploaded files. Affects file upload feature.'
-  category: Storage
+- title: LDAP account lockout affecting multiple users
+  description: 'Multiple users reporting LDAP account lockouts across the organization. Active Directory showing Event ID 4740 for repeated failed authentication attempts. Affects login to all SSO-integrated applications.'
+  category: Access Management
   priority: high
   status: closed
   submitted_by: amit.joshi@company.com
   created_at: '2026-03-02T08:00:00Z'
   resolved_at: '2026-03-02T09:30:00Z'
   affects_servers:
-  - prod-nfs-01
-  - prod-app-01
+  - prod-ldap-01
   affects_services:
-  - nfs
+  - active-directory
   error_codes:
-  - ERR-NFS-001
+  - ERR-AD-001
   quality_score: HIGH
   secondary_category: null
   classifier_votes: null
-- title: Stale NFS file handle on shared storage
-  description: Multiple application servers reporting stale NFS file handles when accessing /mnt/shared. The NFS server prod-nfs-01 was restarted yesterday for maintenance but clients were not remounted.
-  category: Storage
+- title: SSO token expiry not refreshing — users forced to re-login
+  description: SSO tokens are not being refreshed properly. Users are getting kicked out of all applications every 15 minutes instead of the configured 8-hour session. SAML assertion validation is failing on token renewal.
+  category: Access Management
   priority: high
   status: closed
   submitted_by: zainab.siddiqui@company.com
   created_at: '2026-03-04T10:00:00Z'
   resolved_at: '2026-03-04T11:30:00Z'
   affects_servers:
-  - prod-nfs-01
+  - prod-app-01
   affects_services:
-  - nfs
+  - active-directory
   error_codes:
-  - ERR-NFS-001
+  - ERR-AD-001
   quality_score: HIGH
   secondary_category: null
   classifier_votes: null
-- title: Backup storage quota exceeded
-  description: Backup storage on prod-nfs-01 has exceeded the 2TB quota. New backup jobs are failing with 'Disk quota exceeded'. Last 3 nightly backups did not complete. Data retention policy needs review.
-  category: Storage
+- title: Service account password expired — batch jobs failing
+  description: The service account svc-etl-prod used by the nightly ETL pipeline has an expired password. All scheduled batch jobs are failing with 'LDAP bind failed — invalid credentials'. Affects data warehouse refresh.
+  category: Access Management
   priority: medium
   status: closed
   submitted_by: amit.joshi@company.com
   created_at: '2026-03-06T07:00:00Z'
   resolved_at: '2026-03-06T10:00:00Z'
   affects_servers:
-  - prod-nfs-01
+  - prod-ldap-01
   affects_services:
-  - nfs
+  - active-directory
   error_codes: []
   quality_score: HIGH
   secondary_category: null
   classifier_votes: null
-- title: NFS server prod-nfs-01 not responding
-  description: NFS server prod-nfs-01 is completely unresponsive. All NFS clients are hung waiting for I/O. This is affecting all application servers that depend on shared storage. File uploads, logs, and
-    shared configs are inaccessible.
-  category: Storage
+- title: Active Directory replication failure between DCs
+  description: Active Directory replication between the primary and secondary domain controllers has stopped. Users authenticating against the secondary DC are getting stale group memberships. Some users cannot access resources they should have access to.
+  category: Access Management
   priority: critical
   status: closed
   submitted_by: zainab.siddiqui@company.com
   created_at: '2026-03-08T06:00:00Z'
   resolved_at: '2026-03-08T08:00:00Z'
   affects_servers:
-  - prod-nfs-01
+  - prod-ldap-01
   affects_services:
-  - nfs
+  - active-directory
   error_codes: []
   quality_score: HIGH
   secondary_category: null
   classifier_votes: null
-- title: SAN LUN mapping incorrect after firmware update
-  description: After SAN firmware update on prod-nfs-01, LUN mappings changed. The /data partition is now mounted from the wrong LUN. Data integrity check needed before any writes are allowed.
-  category: Storage
+- title: OAuth2 callback URL misconfigured after domain migration
+  description: After migrating to the new domain, OAuth2 callback URLs for third-party integrations (Slack, Jira, GitHub) are pointing to the old domain. Users cannot complete OAuth flow for these integrations.
+  category: Access Management
   priority: high
   status: closed
   submitted_by: amit.joshi@company.com
   created_at: '2026-03-10T14:00:00Z'
   resolved_at: '2026-03-10T18:00:00Z'
   affects_servers:
-  - prod-nfs-01
-  affects_services: []
+  - prod-app-01
+  affects_services:
+  - active-directory
   error_codes: []
   quality_score: HIGH
   secondary_category: null
   classifier_votes: null
-- title: File system corruption detected on /data partition
-  description: fsck on prod-db-01 detected file system corruption on the /data partition where PostgreSQL data directory resides. Read-only mode engaged. Database is serving stale reads only.
-  category: Storage
+- title: MFA enrollment failing for new employees
+  description: New employees cannot complete MFA enrollment through the self-service portal. The TOTP QR code generation is returning 500 errors. Affects all new hires this week — they cannot access any systems until MFA is set up.
+  category: Access Management
   priority: critical
   status: closed
   submitted_by: zainab.siddiqui@company.com
   created_at: '2026-03-12T03:00:00Z'
   resolved_at: '2026-03-12T08:00:00Z'
   affects_servers:
-  - prod-db-01
+  - prod-ldap-01
   affects_services:
-  - postgresql
+  - active-directory
   error_codes: []
   quality_score: HIGH
-  secondary_category: Database
+  secondary_category: null
   classifier_votes: null
-- title: RAID array degraded on prod-nfs-01
-  description: RAID-5 array on prod-nfs-01 is in degraded state. One disk has failed (slot 3). Array is still operational but with no redundancy. Another disk failure will cause data loss.
-  category: Storage
+- title: RBAC permissions not propagating after role change
+  description: When users are moved between departments in Active Directory, their RBAC role assignments in the application are not updating. Users retain old permissions and do not get new ones. Group membership sync appears broken.
+  category: Access Management
   priority: critical
   status: closed
   submitted_by: amit.joshi@company.com
   created_at: '2026-03-14T09:00:00Z'
   resolved_at: '2026-03-14T14:00:00Z'
   affects_servers:
-  - prod-nfs-01
-  affects_services: []
+  - prod-ldap-01
+  affects_services:
+  - active-directory
   error_codes: []
   quality_score: HIGH
   secondary_category: null
   classifier_votes: null
-- title: Disk I/O latency spike on prod-db-02
-  description: Disk I/O latency on prod-db-02 has spiked from 2ms to 45ms. PostgreSQL replica is falling behind due to slow WAL replay. iostat shows 100% disk utilization on /dev/sda.
-  category: Storage
+- title: SAML certificate expired — SSO login broken
+  description: The SAML signing certificate for our identity provider expired today. All SSO logins are failing with 'SAML response signature validation failed'. No users can access SSO-protected applications.
+  category: Access Management
   priority: high
   status: closed
   submitted_by: zainab.siddiqui@company.com
   created_at: '2026-03-16T12:00:00Z'
   resolved_at: '2026-03-16T15:00:00Z'
   affects_servers:
-  - prod-db-02
+  - prod-ldap-01
   affects_services:
-  - postgresql
+  - active-directory
   error_codes: []
   quality_score: HIGH
-  secondary_category: Database
+  secondary_category: Security
   classifier_votes: null
-- title: Snapshot cleanup needed — 500GB reclaimable
-  description: Old VM snapshots on prod-nfs-01 are consuming 500GB of storage. These are from 3 months ago when we did the server migration. They can be safely deleted to reclaim space.
-  category: Storage
+- title: Audit — review orphaned service accounts
+  description: Quarterly access review found 15 service accounts that belong to decommissioned applications. These accounts still have elevated privileges in Active Directory. Need to disable and document them for compliance.
+  category: Access Management
   priority: low
   status: closed
   submitted_by: amit.joshi@company.com
   created_at: '2026-03-18T10:00:00Z'
   resolved_at: '2026-03-19T10:00:00Z'
   affects_servers:
-  - prod-nfs-01
-  affects_services: []
+  - prod-ldap-01
+  affects_services:
+  - active-directory
   error_codes: []
   quality_score: HIGH
   secondary_category: null
@@ -1698,7 +1699,7 @@ resolutions:
   - Updated LB health check URL to match new endpoint
   effectiveness: 0.85
   references_runbook: null
-- title: SSL certificate expired on api-gateway
+- ticket_title: SSL certificate expired on api-gateway
   steps:
   - 'Verified certificate expiry: openssl x509 -in cert.pem -noout -dates'
   - Generated new CSR with correct SAN entries
@@ -1742,48 +1743,48 @@ resolutions:
   - Verified no unauthorized access occurred
   effectiveness: 0.95
   references_runbook: null
-- ticket_title: NFS mount failing on prod-app-01
+- ticket_title: LDAP account lockout affecting multiple users
   steps:
-  - 'Checked NFS server status: systemctl status nfs-server — running'
-  - 'Verified exports: showmount -e prod-nfs-01'
-  - 'Unmounted stale mount: umount -f /mnt/shared'
-  - 'Remounted: mount -t nfs prod-nfs-01:/export/shared /mnt/shared'
-  - Verified file access working
+  - 'Checked account status: Get-ADUser -Identity affected_users -Properties LockedOut'
+  - 'Unlocked accounts: Unlock-ADAccount -Identity <username>'
+  - 'Reviewed Event ID 4740 logs — found brute force from 10.0.3.50'
+  - Blocked source IP in firewall
+  - Verified all users can login again
   effectiveness: 0.85
   references_runbook: KB-0006
-- ticket_title: Stale NFS file handle on shared storage
+- ticket_title: SSO token expiry not refreshing — users forced to re-login
   steps:
-  - Identified all clients with stale handles
-  - Unmounted NFS on all affected clients
-  - 'Cleared NFS client cache: echo 3 > /proc/sys/vm/drop_caches'
-  - Remounted NFS shares on all clients
+  - Identified SAML assertion lifetime was set to 15 minutes instead of 8 hours
+  - Updated IdP token lifetime policy in Azure AD
+  - Cleared SAML metadata cache on service provider side
+  - Verified token refresh working for test users
   effectiveness: 0.8
   references_runbook: KB-0006
-- ticket_title: NFS server prod-nfs-01 not responding
+- ticket_title: Active Directory replication failure between DCs
   steps:
-  - SSH'd into prod-nfs-01 — server responsive but NFS daemon hung
-  - 'Identified hung NFS threads: ps aux | grep nfsd'
-  - 'Killed hung processes: killall -9 nfsd'
-  - 'Restarted NFS daemon: systemctl restart nfs-server'
-  - Verified all client mounts recovered
+  - 'Ran replication diagnostics: repadmin /replsummary'
+  - Found network connectivity issue between DCs — port 389 blocked by new firewall rule
+  - Removed blocking firewall rule
+  - 'Forced replication sync: repadmin /syncall /AdeP'
+  - Verified all DCs in sync
   effectiveness: 0.9
-  references_runbook: KB-0006
-- ticket_title: File system corruption detected on /data partition
+  references_runbook: null
+- ticket_title: MFA enrollment failing for new employees
   steps:
-  - Stopped PostgreSQL to prevent further writes
-  - 'Ran fsck: fsck -y /dev/sda2'
-  - Repaired 3 corrupt inodes
-  - Restored 2 missing files from last night's backup
-  - Restarted PostgreSQL and verified data integrity
+  - Identified TOTP secret generation API was returning 500 due to expired TLS cert
+  - Renewed internal TLS certificate for the MFA service
+  - Restarted MFA enrollment service
+  - Tested enrollment flow with 3 new hires — all successful
+  - Enrolled remaining 8 pending employees
   effectiveness: 0.75
   references_runbook: null
-- ticket_title: RAID array degraded on prod-nfs-01
+- ticket_title: RBAC permissions not propagating after role change
   steps:
-  - 'Identified failed disk in slot 3: mdadm --detail /dev/md0'
-  - Hot-swapped failed disk with new drive
-  - 'Started RAID rebuild: mdadm --manage /dev/md0 --add /dev/sdd'
-  - 'Monitored rebuild progress: cat /proc/mdstat'
-  - Rebuild completed in 4 hours, array healthy
+  - 'Identified AD group membership sync job was stuck: Get-ADSyncScheduler'
+  - 'Restarted Azure AD Connect sync: Start-ADSyncSyncCycle -PolicyType Delta'
+  - Cleared application RBAC cache
+  - Verified group memberships updated for affected users
+  - Set up monitoring alert for sync failures
   effectiveness: 0.95
   references_runbook: null
 - ticket_title: BGP peering down with ISP
@@ -1865,9 +1866,9 @@ edges:
   - _from: servers/prod-k8s-node-02
     _to: teams/infra-ops
   - _from: servers/prod-nfs-01
-    _to: teams/storage-ops
+    _to: teams/infra-ops
   - _from: servers/prod-ldap-01
-    _to: teams/security-ops
+    _to: teams/access-mgmt
   depends_on:
   - _from: services/order-service
     _to: services/postgresql
@@ -1907,9 +1908,9 @@ edges:
   - _from: engineers/eng-010
     _to: teams/network-eng
   - _from: engineers/eng-011
-    _to: teams/storage-ops
+    _to: teams/access-mgmt
   - _from: engineers/eng-012
-    _to: teams/storage-ops
+    _to: teams/access-mgmt
 category_centroids:
 - _key: infrastructure
   category: Infrastructure
@@ -1931,8 +1932,8 @@ category_centroids:
   embedding: null
   ticket_count: 0
   last_updated: null
-- _key: storage
-  category: Storage
+- _key: access-management
+  category: Access Management
   embedding: null
   ticket_count: 0
   last_updated: null

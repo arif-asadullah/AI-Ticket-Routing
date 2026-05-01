@@ -105,7 +105,7 @@ Every ticket is classified into one of these:
 | **Database** | SQL, connections, replication, backups | Database Admin |
 | **Network** | DNS, firewall, VPN, latency, load balancer | Network Engineering |
 | **Security** | Auth, certificates, vulnerabilities, access | Security Ops |
-| **Storage** | NFS, SAN, disk I/O, RAID, backups, file systems | Storage Ops |
+| **Access Management** | LDAP, Active Directory, SSO, SAML, OAuth, MFA, RBAC, permissions, account lockouts | Access Management |
 
 ## Reading Order
 

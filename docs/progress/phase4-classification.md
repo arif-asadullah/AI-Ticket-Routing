@@ -71,8 +71,8 @@ postgresql, redis → Database
 nginx, order-service → Application
 kubernetes, linux → Infrastructure
 firewall, vpn, dns → Network
-active-directory → Security
-nfs → Storage
+active-directory → Access Management
+nfs → Infrastructure
 ```
 
 ---
@@ -239,7 +239,7 @@ Distances (similarity scores):
   Infrastructure: 0.64
   Network:        0.60
   Security:       0.54
-  Storage:        0.45
+  Access Management: 0.45
 
 Winner: Database (confidence: 0.99)
 ```

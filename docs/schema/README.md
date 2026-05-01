@@ -108,7 +108,7 @@ One query, follows the connections directly. This is what makes DeskMind's AI ro
 | Application | Apps, APIs, deployments, bugs | Application Support |
 | Security | Auth, encryption, vulnerabilities | Security Ops |
 | Database | SQL, connections, replication | Database Admin |
-| Storage | Disk, NFS, SAN, backups | Storage Ops |
+| Access Management | LDAP, Active Directory, SSO, SAML, OAuth, MFA, RBAC, permissions, account lockouts | Access Management |
 | Network | DNS, firewall, VPN, latency | Network Engineering |
 
 ## Where are Vectors (Embeddings) Stored?

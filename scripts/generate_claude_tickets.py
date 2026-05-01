@@ -194,21 +194,21 @@ def main():
     for t in FRUSTRATED_DB: all_templates.append((t, "frustrated_user", "Database"))
     for t in FRUSTRATED_NET: all_templates.append((t, "frustrated_user", "Network"))
     for t in FRUSTRATED_SEC: all_templates.append((t, "frustrated_user", "Security"))
-    for t in FRUSTRATED_STORAGE: all_templates.append((t, "frustrated_user", "Storage"))
+    for t in FRUSTRATED_STORAGE: all_templates.append((t, "frustrated_user", "Access Management"))
 
     # L2 Engineer
     for t in L2_INFRA: all_templates.append((t, "l2_engineer", "Infrastructure"))
     for t in L2_DB: all_templates.append((t, "l2_engineer", "Database"))
     for t in L2_NET: all_templates.append((t, "l2_engineer", "Network"))
     for t in L2_SEC: all_templates.append((t, "l2_engineer", "Security"))
-    for t in L2_STORAGE: all_templates.append((t, "l2_engineer", "Storage"))
+    for t in L2_STORAGE: all_templates.append((t, "l2_engineer", "Access Management"))
 
     # Manager
     for t in MANAGER_INFRA: all_templates.append((t, "manager", "Infrastructure"))
     for t in MANAGER_DB: all_templates.append((t, "manager", "Database"))
     for t in MANAGER_NET: all_templates.append((t, "manager", "Network"))
     for t in MANAGER_SEC: all_templates.append((t, "manager", "Security"))
-    for t in MANAGER_STORAGE: all_templates.append((t, "manager", "Storage"))
+    for t in MANAGER_STORAGE: all_templates.append((t, "manager", "Access Management"))
 
     new_tickets = []
     for template, persona, category in all_templates:

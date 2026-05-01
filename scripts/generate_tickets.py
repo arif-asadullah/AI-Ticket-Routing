@@ -23,7 +23,7 @@ OUTPUT_DIR = Path("data/synthetic/strategy1_multimodel")
 OLLAMA_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "phi4-mini")
 
-CATEGORIES = ["Infrastructure", "Application", "Database", "Network", "Security", "Storage"]
+CATEGORIES = ["Infrastructure", "Application", "Database", "Network", "Security", "Access Management"]
 PRIORITIES = ["critical", "high", "medium", "low"]
 PERSONAS = ["frustrated_user", "l2_engineer", "manager"]
 
@@ -34,7 +34,7 @@ CATEGORY_DIST = {
     "Database": 4,
     "Network": 4,
     "Security": 4,
-    "Storage": 3,
+    "Access Management": 3,
 }
 
 # Valid references from seed_data.yaml
@@ -111,7 +111,7 @@ OUTPUT FORMAT — return ONLY a valid JSON array, no other text:
   {{
     "title": "short descriptive title",
     "description": "ticket description matching the persona style",
-    "category": "one of: Infrastructure, Application, Database, Network, Security, Storage",
+    "category": "one of: Infrastructure, Application, Database, Network, Security, Access Management",
     "priority": "one of: critical, high, medium, low",
     "affects_servers": ["server-name"] or [],
     "affects_services": ["service-name"] or [],

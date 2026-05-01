@@ -32,16 +32,18 @@ KEYWORD_DICT = {
         "ping", "traceroute", "nslookup",
     ],
     "Security": [
-        "authentication", "authorization", "rbac", "token", "encryption",
-        "breach", "vulnerability", "malware", "phishing", "audit", "permission",
-        "password", "login", "lockout", "mfa", "2fa", "cve", "exploit",
-        "intrusion", "access denied", "unauthorized", "sso", "ldap", "active directory",
+        "breach", "vulnerability", "malware", "phishing", "cve", "exploit",
+        "intrusion", "unauthorized", "encryption", "ransomware", "trojan",
+        "worm", "firewall rule", "ids", "ips", "siem", "threat", "attack",
+        "injection", "xss", "csrf", "penetration", "compliance", "forensic",
     ],
-    "Storage": [
-        "nfs", "san", "nas", "lun", "iscsi", "ceph", "s3", "backup", "snapshot",
-        "volume", "mount", "filesystem", "disk full", "quota", "raid",
-        "deduplication", "thin provision", "zfs", "lvm", "inode",
-        "stale file handle", "archive",
+    "Access Management": [
+        "ldap", "active directory", "sso", "saml", "oauth", "mfa", "2fa",
+        "rbac", "password", "login", "lockout", "authentication", "authorization",
+        "token", "permission", "provisioning", "deprovisioning", "identity",
+        "group membership", "service account", "access review", "access denied",
+        "kerberos", "certificate auth", "smart card", "federation",
+        "directory", "account locked", "password expired", "role assignment",
     ],
 }
 
