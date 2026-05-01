@@ -12,7 +12,7 @@ from backend.core.auth import (
     require_engineer_or_admin,
     require_team_access,
 )
-from backend.schemas.ticket import TicketCreate, TicketResolve, TicketResponse, TicketStatusUpdate
+from backend.schemas.ticket import TicketCreate, TicketFeedback, TicketResolve, TicketResponse, TicketStatusUpdate
 from backend.services.orchestrator import classify
 
 logger = logging.getLogger(__name__)
@@ -389,6 +389,50 @@ async def resolve_ticket(
     # Return updated ticket
     updated = collection.get(ticket_id)
     return _doc_to_response(updated)
+
+
+@router.post("/{ticket_id}/feedback", status_code=201)
+async def submit_feedback(
+    ticket_id: str,
+    feedback: TicketFeedback,
+    request: Request,
+    user: dict = Depends(get_current_user),
+):
+    """Submit feedback on AI classification/resolution suggestion."""
+    db = getattr(request.app.state, "arango_db", None)
+    if db is None:
+        raise HTTPException(503, "Database unavailable")
+
+    collection = db.collection("tickets")
+    doc = collection.get(ticket_id)
+    if doc is None:
+        raise HTTPException(404, "Ticket not found")
+
+    if feedback.rating not in ("helpful", "not_helpful"):
+        raise HTTPException(400, "Rating must be 'helpful' or 'not_helpful'")
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    try:
+        db.collection("audit_log").insert({
+            "ticket_id": ticket_id,
+            "action": "feedback",
+            "actor": user["email"],
+            "old_value": None,
+            "new_value": {
+                "rating": feedback.rating,
+                "comment": feedback.comment,
+            },
+            "confidence_score": doc.get("confidence_score"),
+            "reasoning": f"AI suggestion rated '{feedback.rating}' by {user['email']}",
+            "created_at": now,
+        })
+    except Exception as exc:
+        logger.warning("Failed to write feedback: %s", exc)
+
+    logger.info("Feedback on ticket %s: %s by %s", ticket_id, feedback.rating, user["email"])
+
+    return {"status": "ok", "ticket_id": ticket_id, "rating": feedback.rating}
 
 
 @router.delete("/{ticket_id}", status_code=204)

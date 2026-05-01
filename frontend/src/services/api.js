@@ -139,6 +139,50 @@ export async function fetchTickets() {
   return res.json();
 }
 
+export async function fetchTicket(id) {
+  const res = await authFetch(`${API_BASE}/tickets/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch ticket");
+  return res.json();
+}
+
+export async function updateTicketStatus(id, status, assignedTo = null) {
+  const body = { status };
+  if (assignedTo) body.assigned_to = assignedTo;
+  const res = await authFetch(`${API_BASE}/tickets/${id}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to update ticket status");
+  }
+  return res.json();
+}
+
+export async function resolveTicket(id, data) {
+  const res = await authFetch(`${API_BASE}/tickets/${id}/resolve`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to resolve ticket");
+  }
+  return res.json();
+}
+
+export async function submitFeedback(id, rating, comment = null) {
+  const res = await authFetch(`${API_BASE}/tickets/${id}/feedback`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rating, comment }),
+  });
+  if (!res.ok) throw new Error("Failed to submit feedback");
+  return res.json();
+}
+
 export async function createTicket(ticket) {
   const res = await authFetch(`${API_BASE}/tickets`, {
     method: "POST",
