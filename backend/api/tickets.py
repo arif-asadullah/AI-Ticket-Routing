@@ -90,6 +90,10 @@ async def create_ticket(
         "submitted_by": user["email"],
         "routed_to": result["recommended_team"],
         "embedding": result["embedding"],
+        "suggested_resolution": result["suggested_resolution"],
+        "resolution_effectiveness": result["resolution_effectiveness"],
+        "suggested_runbook": result["suggested_runbook"],
+        "recommended_expert": result["recommended_expert"],
         "created_at": now,
         "resolved_at": None,
         "_source": "user",
@@ -214,6 +218,14 @@ async def update_ticket_status(
     if doc.get("status") in ("resolved", "closed"):
         raise HTTPException(400, "Cannot update status of resolved/closed ticket")
 
+    # Prevent double pick-up — if ticket is already picked up by another engineer
+    if update.status == "in_progress" and doc.get("picked_up_by"):
+        if doc["picked_up_by"] != user["email"]:
+            raise HTTPException(
+                409,
+                f"Ticket already picked up by {doc['picked_up_by']}"
+            )
+
     now = datetime.now(timezone.utc).isoformat()
     old_status = doc.get("status")
 
@@ -222,6 +234,12 @@ async def update_ticket_status(
         "_key": ticket_id,
         "status": update.status,
     }
+
+    # Track who picked up / release on escalate
+    if update.status == "in_progress":
+        update_fields["picked_up_by"] = user["email"]
+    elif update.status in ("escalated", "routed"):
+        update_fields["picked_up_by"] = None
 
     # If reassigning to a different team
     new_team = None
@@ -293,6 +311,10 @@ async def resolve_ticket(
 
     # Team access check
     await require_team_access(doc.get("routed_to"), user, db)
+
+    # Only the engineer who picked up the ticket can resolve it (admins can always resolve)
+    if user["role"] == "engineer" and doc.get("picked_up_by") and doc["picked_up_by"] != user["email"]:
+        raise HTTPException(403, f"Only {doc['picked_up_by']} can resolve this ticket (they picked it up)")
 
     if doc.get("status") == "closed":
         raise HTTPException(400, "Ticket is already closed")
@@ -468,6 +490,7 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         resolution_effectiveness=doc.get("resolution_effectiveness"),
         suggested_runbook=doc.get("suggested_runbook"),
         recommended_expert=doc.get("recommended_expert"),
+        picked_up_by=doc.get("picked_up_by"),
         created_at=doc.get("created_at"),
         resolved_at=doc.get("resolved_at"),
     )

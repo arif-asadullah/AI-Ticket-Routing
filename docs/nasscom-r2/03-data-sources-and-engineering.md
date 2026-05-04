@@ -254,5 +254,7 @@ As DeskMind processes real tickets:
 2. **Resolution submitted** → embedded + linked → future suggestions improve
 3. **AI suggestion confirmed** → effectiveness score updated → ranking improves
 4. **Category centroids** → recomputed periodically → classification adapts
+5. **User-resolved tickets feed back into retrieval** → the vector similarity search now includes tickets with status `"resolved"` (not just `"closed"`), so engineer-resolved incidents immediately become available as context for classifying and suggesting resolutions for new tickets. The AQL filter is `FILTER ticket.status IN ["closed", "resolved"]`.
+6. **Feedback ratings** → users rate AI suggestions via `POST /api/tickets/{id}/feedback` as helpful or not_helpful. These ratings are logged in the audit trail and surfaced in the analytics dashboard, enabling continuous monitoring of AI suggestion quality.
 
-This creates a **positive feedback loop**: more resolved tickets → better suggestions → faster resolution → more confirmed suggestions.
+This creates a **live feedback loop**: more resolved tickets → better suggestions → faster resolution → more confirmed suggestions → higher suggestion quality over time.

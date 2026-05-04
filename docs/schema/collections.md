@@ -633,7 +633,7 @@ Centroid classifier says: Database
 Authentication accounts for DeskMind. Each user has an email, hashed password, role, and optional link to an engineer in the knowledge graph.
 
 ### Why it exists
-RBAC (Role-Based Access Control) — controls who can access what. Engineers only see tickets routed to their team. Admins see everything. Viewers can submit tickets but can't resolve them.
+RBAC (Role-Based Access Control) — controls who can access what. Engineers only see tickets routed to their team. Admins see everything. Users can submit tickets but can't resolve them.
 
 ### Real-world analogy
 The employee badge system. Your badge determines which doors you can open and which floors you can access.
@@ -645,11 +645,11 @@ The employee badge system. Your badge determines which doors you can open and wh
 | `_key` | string (auto) | Unique document key |
 | `email` | string (unique) | Login email — indexed with unique constraint |
 | `password_hash` | string | Bcrypt-hashed password — plaintext is never stored |
-| `role` | string | `"admin"`, `"engineer"`, or `"viewer"` |
+| `role` | string | `"admin"`, `"engineer"`, or `"user"` |
 | `first_name` | string | User's first name |
 | `last_name` | string | User's last name |
-| `engineer_key` | string \| null | Links to `engineers._key` (e.g., `"eng-001"`). Null for admin/viewer. |
-| `team_key` | string \| null | Links to `teams._key` (e.g., `"db-admin"`). Auto-resolved from `member_of` edge at registration. Null for admin/viewer. |
+| `engineer_key` | string \| null | Links to `engineers._key` (e.g., `"eng-001"`). Null for admin/user. |
+| `team_key` | string \| null | Links to `teams._key` (e.g., `"db-admin"`). Auto-resolved from `member_of` edge at registration. Null for admin/user. |
 | `is_active` | boolean | `true` = can log in, `false` = deactivated by admin |
 
 ### Roles explained
@@ -658,7 +658,7 @@ The employee badge system. Your badge determines which doors you can open and wh
 |------|------------|----------------|--------------|---------|--------|-------------|
 | **admin** | All teams | Yes | Yes (any) | Yes (any) | Yes | Yes |
 | **engineer** | Own team only | Yes | Yes (own team) | Yes (own team) | No | No |
-| **viewer** | All teams | Yes | No | No | No | No |
+| **user** | All teams | Yes | No | No | No | No |
 
 ### Example document — admin
 

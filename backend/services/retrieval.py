@@ -53,7 +53,7 @@ def search_similar_tickets(db: StandardDatabase, embedding: list[float], limit: 
     try:
         query = """
         FOR ticket IN tickets
-            FILTER ticket.status == "closed"
+            FILTER ticket.status IN ["closed", "resolved"]
             LET sim = COSINE_SIMILARITY(ticket.embedding, @embedding)
             SORT sim DESC
             LIMIT @limit
@@ -68,7 +68,8 @@ def search_similar_tickets(db: StandardDatabase, embedding: list[float], limit: 
                 priority: ticket.priority,
                 description: LEFT(ticket.description, 200),
                 similarity: sim,
-                resolution_steps: resolution.steps
+                resolution_steps: resolution.steps,
+                effectiveness: resolution.effectiveness
             }
         """
         cursor = db.aql.execute(query, bind_vars={"embedding": embedding, "limit": limit})

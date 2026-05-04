@@ -26,7 +26,7 @@ The main page after login. Different view per role:
 |------|-------------|
 | **Admin** | 6 domain cards (Infrastructure, Application, Database, Network, Security, Access Management) → click one → filtered ticket list |
 | **Engineer** | Directly sees their team's tickets (e.g., Database Admin sees only Database tickets) |
-| **Viewer** | All tickets across all domains (read-only) |
+| **User** | All tickets across all domains (read-only) |
 
 Features:
 - **Stats header**: Open, In Progress, Resolved counts

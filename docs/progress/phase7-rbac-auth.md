@@ -31,7 +31,7 @@ Password stored as **bcrypt hash** — plaintext never saved. Token payload cont
 |------|------------|--------|--------------|---------|--------|-------------|
 | **Admin** | All 6 domains | Yes | Yes (any team) | Yes (any team) | Yes | Yes |
 | **Engineer** | Own team only | Yes | Yes (own team) | Yes (own team) | No | No |
-| **Viewer** | All domains | Yes | No | No | No | No |
+| **User** | All domains | Yes | No | No | No | No |
 
 ### 3. Team-Scoped Access
 
@@ -45,7 +45,7 @@ When a Database Admin engineer calls `GET /api/tickets`, they only see tickets w
 
 This is enforced by three FastAPI dependencies:
 - `get_current_user()` — extract user from JWT Bearer token
-- `require_role(*roles)` — check role (admin, engineer, viewer)
+- `require_role(*roles)` — check role (admin, engineer, user)
 - `require_team_access()` — check engineer belongs to ticket's team
 
 ### 4. Protected Endpoints

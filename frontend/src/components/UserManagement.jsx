@@ -18,7 +18,7 @@ const T = {
 const roleBadge = {
   admin: { bg: "rgba(249,115,22,0.12)", color: T.accent },
   engineer: { bg: "rgba(34,197,94,0.12)", color: T.success },
-  viewer: { bg: "rgba(245,158,11,0.12)", color: T.warning },
+  user: { bg: "rgba(245,158,11,0.12)", color: T.warning },
 };
 
 export default function UserManagement() {
@@ -196,7 +196,7 @@ export default function UserManagement() {
                   style={selectStyle}
                 >
                   <option value="engineer">Engineer</option>
-                  <option value="viewer">Viewer</option>
+                  <option value="user">User</option>
                   <option value="admin">Admin</option>
                 </select>
               </div>
@@ -304,7 +304,7 @@ export default function UserManagement() {
 
         {/* User Rows */}
         {users.map((u) => {
-          const badge = roleBadge[u.role] || roleBadge.viewer;
+          const badge = roleBadge[u.role] || roleBadge.user;
           return (
             <div
               key={u.email}

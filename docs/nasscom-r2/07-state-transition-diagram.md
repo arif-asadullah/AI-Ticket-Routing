@@ -56,6 +56,9 @@ stateDiagram-v2
         Auth: require_engineer_or_admin
         Guard: require_team_access
         (engineer must belong to ticket team)
+        picked_up_by = engineer email
+        409 if already picked up by another engineer
+        Only picked_up_by engineer (or admin) can resolve
         PATCH /api/tickets/{id}/status
     end note
 
@@ -81,7 +84,7 @@ stateDiagram-v2
 | **Submitted** | `open` | The ticket has just been created through the frontend form or API. The system immediately invokes the 5-stage classification pipeline. This is a transient state -- the ticket moves to Routed or Escalated within seconds, as soon as the AI pipeline returns a result. No human action is required. |
 | **Routed** | `routed` | The AI ensemble classified the ticket with confidence >= 0.70 (configurable threshold). The system has automatically assigned the ticket to a target team via the `assigned_to` edge. The ticket appears in that team's queue. The response includes a suggested resolution, recommended expert, and matching runbook. An `audit_log` entry records the classification decision, all 4 classifier votes, confidence signals, and reasoning. |
 | **Escalated** | `escalated` | The AI could not classify the ticket with sufficient confidence (< 0.70), OR an engineer has manually re-escalated the ticket because it needs a different team or additional expertise. The ticket is flagged for human review by L1 support staff. The escalation reason is logged in `audit_log`. L1 support can inspect the AI's partial classification, then either manually route the ticket or request more information from the submitter. |
-| **In Progress** | `in_progress` | An engineer has picked up the ticket and is actively working on it. This transition is triggered via `PATCH /api/tickets/{id}/status` with `status: "in_progress"`. If the engineer is from a different team than the original assignment, the `assigned_to` edge is updated (old edge removed, new edge created). The audit log records who picked up the ticket and when. |
+| **In Progress** | `in_progress` | An engineer has picked up the ticket and is actively working on it. The `picked_up_by` field is set to the engineer's email, establishing ownership. If another engineer tries to pick up the same ticket, the API returns a **409 Conflict** (`"Ticket already picked up by {email}"`). Only the engineer who picked up the ticket (or an admin) can resolve it. This transition is triggered via `PATCH /api/tickets/{id}/status` with `status: "in_progress"`. If the engineer is from a different team than the original assignment, the `assigned_to` edge is updated (old edge removed, new edge created). The audit log records who picked up the ticket and when. |
 | **Resolved** | `resolved` | The engineer has applied a fix and reported the resolution steps via `POST /api/tickets/{id}/resolve`. This creates a new `resolutions` document with the fix steps and an effectiveness score, a `resolved_with` edge linking the ticket to its resolution, and optionally a `references` edge if a runbook was followed. The ticket's `resolved_at` timestamp is set. If the engineer confirmed the AI's suggested resolution was used, the effectiveness of the source resolution is boosted by +0.05, improving future suggestions. |
 | **Closed** | `closed` | The requester has confirmed the fix works and the ticket is permanently closed. This is the terminal state. The full lifecycle -- from submission to closure -- is preserved in the `audit_log` for compliance, analytics, and continuous improvement of the classification models. |
 
@@ -92,11 +95,11 @@ stateDiagram-v2
 | 1 | `[*]` | Submitted | `POST /api/tickets` | `require_any_authenticated` — any logged-in user | User (any role) | Ticket document created with `_source: "user"`, `submitted_by` = user.email from JWT, embedding computed |
 | 2 | Submitted | Routed | Pipeline returns | `confidence >= 0.70` | AI Orchestrator | `assigned_to` edge created, `audit_log` entry with action `classified` |
 | 3 | Submitted | Escalated | Pipeline returns | `confidence < 0.70` | AI Orchestrator | `audit_log` entry with action `escalated`, no `assigned_to` edge |
-| 4 | Routed | In Progress | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` (engineer must be on ticket's team) | Engineer or Admin | `audit_log` records status change with actor = user.email from JWT |
-| 5 | Escalated | In Progress | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` | L1 Support (admin) | `assigned_to` edge created or updated, `audit_log` records triage decision |
+| 4 | Routed | In Progress | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` (engineer must be on ticket's team). If `picked_up_by` is already set to another engineer's email, returns 409. | Engineer or Admin | `picked_up_by` set to engineer email; `audit_log` records status change with actor = user.email from JWT |
+| 5 | Escalated | In Progress | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` | L1 Support (admin) | `picked_up_by` set to engineer email; `assigned_to` edge created or updated; `audit_log` records triage decision |
 | 6 | Escalated | Routed | `PATCH .../status` | `require_engineer_or_admin` — admin can route to any team | Admin | `assigned_to` edge created, status changes to `routed` |
-| 7 | In Progress | Resolved | `POST .../resolve` | `require_engineer_or_admin` + `require_team_access` | Engineer or Admin | `resolutions` doc created, `resolved_with` edge, optional `references` edge, `resolved_at` timestamp set |
-| 8 | In Progress | Escalated | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` | Engineer or Admin | Old `assigned_to` edge may be removed, `audit_log` records re-escalation |
+| 7 | In Progress | Resolved | `POST .../resolve` | `require_engineer_or_admin` + `require_team_access`. Only the engineer who picked up the ticket (or admin) can resolve -- 403 otherwise. | Engineer or Admin | `resolutions` doc created, `resolved_with` edge, optional `references` edge, `resolved_at` timestamp set |
+| 8 | In Progress | Escalated | `PATCH .../status` | `require_engineer_or_admin` + `require_team_access` | Engineer or Admin | `picked_up_by` cleared (set to null); old `assigned_to` edge may be removed; `audit_log` records re-escalation |
 | 9 | Resolved | Closed | Confirmation | Requester verifies the fix works | Requester | Terminal state reached |
 | 10 | Resolved | In Progress | Reopen | Fix did not work, issue recurs | Requester | `resolved_at` cleared, resolution effectiveness reduced |
 

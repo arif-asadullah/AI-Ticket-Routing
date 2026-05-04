@@ -7,6 +7,7 @@ import TicketList from "./components/TicketList";
 import ChatPanel from "./components/ChatPanel";
 import UserManagement from "./components/UserManagement";
 import DomainDashboard from "./components/DomainDashboard";
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import { fetchTickets, createTicket, deleteTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
@@ -206,6 +207,7 @@ export default function App() {
                 <a href="#dashboard" onClick={(e) => { e.preventDefault(); setActiveTab("dashboard"); }} style={{ color: activeTab === "dashboard" ? T.accent : T.textMuted, cursor: "pointer" }}>Dashboard</a>
                 <a href="#tickets" onClick={(e) => { e.preventDefault(); setActiveTab("tickets"); }} style={{ color: activeTab === "tickets" ? T.accent : T.textMuted, cursor: "pointer" }}>New Ticket</a>
                 <a href="#chat" onClick={(e) => { e.preventDefault(); setActiveTab("chat"); }} style={{ color: activeTab === "chat" ? T.accent : T.textMuted, cursor: "pointer" }}>Chat AI</a>
+                <a href="#analytics" onClick={(e) => { e.preventDefault(); setActiveTab("analytics"); }} style={{ color: activeTab === "analytics" ? T.accent : T.textMuted, cursor: "pointer" }}>Analytics</a>
                 {user?.role === "admin" && (
                   <a href="#users" onClick={(e) => { e.preventDefault(); setActiveTab("users"); }} style={{ color: activeTab === "users" ? T.accent : T.textMuted, cursor: "pointer" }}>Users</a>
                 )}
@@ -244,6 +246,11 @@ export default function App() {
 
           {/* ── Chat Tab ── */}
           {activeTab === "chat" && <ChatPanel />}
+
+          {/* ── Analytics Tab ── */}
+          {activeTab === "analytics" && user && (
+            <AnalyticsDashboard user={user} />
+          )}
 
           {/* ── Users Tab (admin only) ── */}
           {activeTab === "users" && user?.role === "admin" && (

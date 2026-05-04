@@ -121,7 +121,7 @@ def require_role(*allowed_roles: str):
 
 require_admin = require_role("admin")
 require_engineer_or_admin = require_role("admin", "engineer")
-require_any_authenticated = require_role("admin", "engineer", "viewer")
+require_any_authenticated = require_role("admin", "engineer", "user")
 
 
 # ── Team Access Check ──
@@ -139,7 +139,7 @@ async def require_team_access(ticket_routed_to: str | None, user: dict, db) -> b
     """
     if user["role"] == "admin":
         return True
-    if user["role"] == "viewer":
+    if user["role"] == "user":
         raise HTTPException(403, "Viewers cannot modify tickets")
 
     # Resolve engineer's team_key to team name

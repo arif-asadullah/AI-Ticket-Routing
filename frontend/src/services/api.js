@@ -212,6 +212,22 @@ export async function sendChat(message, history = []) {
 
 // ── Health (public, no auth needed) ──
 
+// ── Stats (authenticated) ──
+
+export async function fetchStats() {
+  const res = await authFetch(`${API_BASE}/stats`);
+  if (!res.ok) throw new Error("Failed to fetch stats");
+  return res.json();
+}
+
+export async function fetchTicketTimeline(ticketId) {
+  const res = await authFetch(`${API_BASE}/stats/tickets/${ticketId}/timeline`);
+  if (!res.ok) throw new Error("Failed to fetch timeline");
+  return res.json();
+}
+
+// ── Health (public, no auth needed) ──
+
 export async function fetchHealth() {
   const res = await fetch("/health");
   if (!res.ok) throw new Error("Failed to fetch health");

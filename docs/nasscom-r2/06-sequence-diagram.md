@@ -165,8 +165,9 @@ sequenceDiagram
         API ->> API: status = "escalated"
     end
 
-    API ->> ArangoDB: collection("tickets").insert({<br/>title, description, category: "Database",<br/>priority: "critical", status: "routed",<br/>confidence_score: 0.939, embedding: float[384],<br/>routed_to: "Database Admin", _source: "user", ...})
+    API ->> ArangoDB: collection("tickets").insert({<br/>title, description, category: "Database",<br/>priority: "critical", status: "routed",<br/>confidence_score: 0.939, embedding: float[384],<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>resolution_effectiveness: 0.95,<br/>suggested_runbook: "KB-0003: PostgreSQL Emergency Recovery",<br/>recommended_expert: "Priya Sharma",<br/>_source: "user", ...})
     ArangoDB -->> API: {_key: "T-856"}
+    Note right of ArangoDB: AI enrichment fields (suggested_resolution,<br/>resolution_effectiveness, suggested_runbook,<br/>recommended_expert) are stored directly<br/>in the ticket document — not just<br/>returned in the API response.
 
     API ->> API: _lookup_team_key(db, "Database Admin")
     API ->> ArangoDB: collection("assigned_to").insert({<br/>_from: "tickets/T-856", _to: "teams/db-admin"})
@@ -217,6 +218,9 @@ sequenceDiagram
     else doc.status in ("resolved", "closed")
         API -->> React: 400 "Cannot update status of resolved/closed ticket"
         React -->> Eng: Error: Cannot update resolved ticket
+    else status == "in_progress" AND doc.picked_up_by != user.email
+        API -->> React: 409 "Ticket already picked up by {doc.picked_up_by}"
+        React -->> Eng: Error: Ticket already picked up by another engineer
     else Valid status update
         Note over API: Build Update Fields
         API ->> API: old_status = doc.status  # "routed"<br/>update_fields = {_key: "T-856", status: "in_progress"}
@@ -238,8 +242,11 @@ sequenceDiagram
             end
         end
 
+        Note over API: Set picked_up_by (ownership tracking)
+        API ->> API: if status == "in_progress":<br/>  update_fields["picked_up_by"] = user.email<br/>elif status in ("escalated", "routed"):<br/>  update_fields["picked_up_by"] = null
+
         Note over API, ArangoDB: Apply Update
-        API ->> ArangoDB: collection("tickets").update({<br/>  _key: "T-856",<br/>  status: "in_progress"<br/>})
+        API ->> ArangoDB: collection("tickets").update({<br/>  _key: "T-856",<br/>  status: "in_progress",<br/>  picked_up_by: "priya@company.com"<br/>})
         ArangoDB -->> API: Updated
 
         Note over API, ArangoDB: Audit Log
@@ -630,7 +637,7 @@ Request with Bearer token
     │
     └── require_team_access() [inline, for ticket mutations]
             ├── Admin → bypass
-            ├── Viewer → 403 "cannot modify"
+            ├── User → 403 "cannot modify"
             └── Engineer → resolve team_key → compare with ticket.routed_to OR raise 403
 ```
 

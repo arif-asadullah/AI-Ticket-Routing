@@ -84,8 +84,13 @@
 | Component | File | Purpose |
 |-----------|------|---------|
 | Landing Page | `LandingPage.jsx` | Animated hero, live system status, "How it works" cards |
-| Ticket Form | `App.jsx` | Submit ticket with title, description, priority |
-| Ticket List | `TicketList.jsx` | Grid table with status, priority badges, team assignment |
+| Domain Dashboard | `DomainDashboard.jsx` | Ticket queue grouped by IT domain, create ticket form, stats summary bar |
+| Ticket Detail | `TicketDetail.jsx` | Full ticket view with status actions, resolve form, feedback widget, audit timeline |
+| Resolve Form | `ResolveForm.jsx` | Resolution steps form with AI suggestion pre-fill and runbook selection |
+| Feedback Widget | `FeedbackWidget.jsx` | Rate AI suggestion as helpful/not_helpful with optional comment |
+| Analytics Dashboard | `AnalyticsDashboard.jsx` | Interactive charts (Recharts): category bar chart, status donut, priority breakdown, daily trend area chart, team workload, feedback stats, classifier agreement |
+| Audit Timeline | `AuditTimeline.jsx` | Visual timeline of all actions on a ticket (classified, routed, picked up, resolved, feedback) |
+| Stats Summary Bar | `StatsSummaryBar.jsx` | Animated counters showing total tickets, avg confidence, escalation rate, avg resolution time |
 | Chat AI | `ChatPanel.jsx` | Direct chat with LLM for ad-hoc queries |
 | Status Bar | `StatusBar.jsx` | Real-time ArangoDB/Redis/Ollama health indicators |
 | Splash Screen | `DeskMindSplash.jsx` | Animated brand intro (3.2s) |
@@ -111,7 +116,10 @@
 | `/api/tickets/{id}` | GET | Any authenticated | Get single ticket (engineers: own team only) |
 | `/api/tickets/{id}/status` | PATCH | Engineer or Admin | Engineer picks up / reassigns / escalates (team-scoped) |
 | `/api/tickets/{id}/resolve` | POST | Engineer or Admin | Close ticket with resolution steps (team-scoped) |
+| `/api/tickets/{id}/feedback` | POST | Any authenticated | Rate AI suggestion (helpful/not_helpful) |
 | `/api/tickets/{id}` | DELETE | Admin only | Delete a ticket |
+| `/api/stats` | GET | Any authenticated | Aggregated metrics (admin=global, engineer=team-scoped) |
+| `/api/stats/tickets/{id}/timeline` | GET | Any authenticated | Audit trail for a ticket |
 | `/api/chat` | POST | Any authenticated | Direct LLM chat |
 | `/health` | GET | Public | System health check |
 
@@ -155,6 +163,19 @@
 - Ranks by effectiveness score (0.0-1.0)
 - Matches runbooks by category
 - Identifies expert from graph traversal (team member with relevant expertise)
+- Stores `suggested_resolution`, `resolution_effectiveness`, `suggested_runbook`, and `recommended_expert` directly in the ticket document for later reference
+
+#### Ticket Ownership
+- When an engineer picks up a ticket (status -> `in_progress`), the `picked_up_by` field is set to the engineer's email
+- If another engineer tries to pick up the same ticket, the API returns a 409 Conflict
+- Only the engineer who picked up the ticket (or an admin) can resolve it
+- When a ticket is escalated or re-routed, `picked_up_by` is cleared
+
+#### Effectiveness Feedback Loop
+- Users can rate the AI suggestion via `POST /api/tickets/{id}/feedback` (helpful/not_helpful)
+- When an engineer resolves a ticket, they indicate whether the AI suggestion was used ("yes", "partially", "no")
+- Resolved tickets (status `resolved`) are included in the vector similarity search alongside closed tickets, so user-resolved incidents feed back into future resolution suggestions
+- This creates a live feedback loop: more resolved tickets with confirmed AI suggestions improve the quality of future suggestions
 
 #### Graceful Degradation
 
@@ -174,7 +195,7 @@ ArangoDB serves as a **triple-purpose database**:
 2. **Graph Engine** — infrastructure relationships via 9 edge collections
 3. **Vector Database** — 384-dim embeddings with APPROX_NEAR_COSINE similarity search
 
-**13 Document Collections**: tickets, teams, engineers, servers, services, network_devices, error_codes, runbooks, resolutions, routing_rules, audit_log, category_centroids, users
+**13 Document Collections**: tickets (with `picked_up_by` field to track engineer ownership), teams, engineers, servers, services, network_devices, error_codes, runbooks, resolutions, routing_rules, audit_log, category_centroids, users
 
 **9 Edge Collections**: hosts, managed_by, depends_on, member_of, affects, assigned_to, resolved_with, references, triggered_by
 
@@ -360,7 +381,7 @@ User → Login (email + password) → Backend verifies bcrypt hash
 |------|------------|--------|--------------|---------|--------|-------------|
 | **Admin** | All 6 domains | Yes | Yes (any team) | Yes (any team) | Yes | Yes |
 | **Engineer** | Own team only | Yes | Yes (own team) | Yes (own team) | No | No |
-| **Viewer** | All domains | Yes | No | No | No | No |
+| **User** | All domains | Yes | No | No | No | No |
 
 ### Team-Scoped Access (the key feature)
 

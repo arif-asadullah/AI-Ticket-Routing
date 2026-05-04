@@ -3,6 +3,7 @@ import { updateTicketStatus, resolveTicket, submitFeedback } from "../services/a
 import DeskMindSpinner from "./DeskMindSpinner";
 import ResolveForm from "./ResolveForm";
 import FeedbackWidget from "./FeedbackWidget";
+import AuditTimeline from "./AuditTimeline";
 
 // ── Theme tokens ──
 const T = {
@@ -93,7 +94,7 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
     setLoading(true);
     setError(null);
     try {
-      await updateTicketStatus(t.id, newStatus, newStatus === "in_progress" ? user?.email : null);
+      await updateTicketStatus(t.id, newStatus);
       onStatusChange(t.id, newStatus);
     } catch (err) {
       setError(err.message);
@@ -687,8 +688,27 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
                 </div>
               )}
 
-              {/* In progress actions */}
-              {t.status === "in_progress" && !loading && !showResolveForm && (
+              {/* In progress — show who picked it up */}
+              {t.status === "in_progress" && t.picked_up_by && (
+                <div style={{
+                  fontSize: 12,
+                  color: "#3b82f6",
+                  marginBottom: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <circle cx="6" cy="4" r="2.5" stroke="#3b82f6" strokeWidth="1.2" />
+                    <path d="M1.5 11c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="#3b82f6" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                  Picked up by <strong>{t.picked_up_by.split("@")[0]}</strong>
+                </div>
+              )}
+
+              {/* In progress actions — only for the engineer who picked it up (or admin) */}
+              {t.status === "in_progress" && !loading && !showResolveForm &&
+               (user?.role === "admin" || !t.picked_up_by || t.picked_up_by === user?.email) && (
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                   <ActionButton
                     label="Resolve"
@@ -806,6 +826,9 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
                   />
                 </div>
               )}
+
+              {/* ── Audit Timeline ── */}
+              <AuditTimeline ticketId={t.id} />
             </div>
           )}
         </div>

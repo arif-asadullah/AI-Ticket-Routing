@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class UserRegister(BaseModel):
     email: str
     password: str
-    role: str = "viewer"  # "admin", "engineer", "viewer"
+    role: str = "user"  # "admin", "engineer", "user"
     engineer_key: str | None = None  # required if role == "engineer"
 
 

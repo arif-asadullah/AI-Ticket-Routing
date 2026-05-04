@@ -25,6 +25,12 @@ erDiagram
         string quality_score
         object classifier_votes
         string submitted_by
+        string routed_to
+        array suggested_resolution
+        float resolution_effectiveness
+        string suggested_runbook
+        string recommended_expert
+        string picked_up_by
         array embedding
         datetime created_at
         datetime resolved_at
@@ -157,7 +163,7 @@ Every document collection in the `deskmind_graph`, its purpose, key fields, and 
 
 | # | Collection | Purpose | Key Fields | Records |
 |---|-----------|---------|------------|---------|
-| 1 | `tickets` | Every support ticket submitted to or ingested by DeskMind. This is the central collection -- all other entities exist to help classify, route, and resolve these tickets. | `title`, `description`, `category`, `priority`, `status`, `confidence_score`, `embedding` (384-dim), `classifier_votes` | **855** (55 seed + 396 GPT-4o + 191 Claude + 200 noise + user-submitted) |
+| 1 | `tickets` | Every support ticket submitted to or ingested by DeskMind. This is the central collection -- all other entities exist to help classify, route, and resolve these tickets. AI enrichment fields (`suggested_resolution`, `resolution_effectiveness`, `suggested_runbook`, `recommended_expert`) are stored directly in the document. The `picked_up_by` field tracks which engineer has claimed ownership of the ticket. | `title`, `description`, `category`, `priority`, `status`, `confidence_score`, `embedding` (384-dim), `classifier_votes`, `routed_to`, `suggested_resolution`, `resolution_effectiveness`, `suggested_runbook`, `recommended_expert`, `picked_up_by` | **855** (55 seed + 396 GPT-4o + 191 Claude + 200 noise + user-submitted) |
 | 2 | `teams` | The 6 IT specialist teams that own ticket resolution. Each team maps to one of the 6 classification categories and defines SLA targets per priority level. | `name`, `domain`, `escalation_contact`, `sla_hours` | **6** |
 | 3 | `engineers` | Individual team members with named expertise. Used by the graph traversal to recommend a specific expert for each ticket based on matching skills. | `name`, `role`, `expertise` (array), `email` | **12** (2 per team) |
 | 4 | `servers` | Physical or virtual machines in the managed infrastructure. Entity extraction recognizes server hostnames in ticket text and uses them to enter the knowledge graph. | `ip`, `type`, `datacenter`, `os`, `cpu`, `ram_gb` | **15** |
@@ -169,7 +175,7 @@ Every document collection in the `deskmind_graph`, its purpose, key fields, and 
 | 10 | `routing_rules` | A configurable lookup table mapping `{category, priority}` pairs to target teams. 4 rules per category (one per priority level). Updateable without code changes. | `category`, `priority`, `target_team`, `is_active` | **24** |
 | 11 | `audit_log` | Immutable log of every action taken on every ticket -- classification, routing, escalation, human overrides, resolution. Provides full decision traceability for compliance and debugging. | `ticket_id`, `action`, `actor`, `old_value`, `new_value`, `confidence_score`, `confidence_signals`, `reasoning`, `created_at` | **Growing** (1 per classification + 1 per status change) |
 | 12 | `category_centroids` | The average embedding (centroid) for each of the 6 ticket categories. Used by the centroid classifier to determine which category center a new ticket is closest to. Recomputed periodically. | `category`, `embedding` (384-dim), `ticket_count`, `last_updated` | **6** |
-| 13 | `users` | Authentication accounts for RBAC. Each user has an email, bcrypt-hashed password, role (admin/engineer/viewer), and optional links to an engineer and team. Engineers are team-scoped — they can only see tickets routed to their team. | `email` (unique), `password_hash`, `role`, `first_name`, `last_name`, `engineer_key`, `team_key`, `is_active` | **Growing** (1 admin seeded, rest created via UI) |
+| 13 | `users` | Authentication accounts for RBAC. Each user has an email, bcrypt-hashed password, role (admin/engineer/user), and optional links to an engineer and team. Engineers are team-scoped — they can only see tickets routed to their team. | `email` (unique), `password_hash`, `role`, `first_name`, `last_name`, `engineer_key`, `team_key`, `is_active` | **Growing** (1 admin seeded, rest created via UI) |
 
 **Totals**: 1,796 documents across 13 collections; 3,831 edges across 9 edge collections.
 
@@ -241,7 +247,7 @@ The graph has four conceptual layers:
 
 **Incident Layer** -- Tickets affect servers and services. Tickets are assigned to teams. Tickets are resolved with specific resolution steps. Resolutions reference runbooks. Error codes trigger tickets. This layer captures the history of incidents and their fixes, enabling the system to learn from past experience.
 
-**Authentication Layer** -- Users are authentication accounts linked to engineers via `engineer_key` and to teams via `team_key`. This layer controls access: admins see all tickets, engineers only see their team's tickets, viewers have read-only access. The `users` collection is deliberately separate from `engineers` — auth accounts and knowledge graph entities have different lifecycles.
+**Authentication Layer** -- Users are authentication accounts linked to engineers via `engineer_key` and to teams via `team_key`. This layer controls access: admins see all tickets, engineers only see their team's tickets, users have read-only access. The `users` collection is deliberately separate from `engineers` — auth accounts and knowledge graph entities have different lifecycles.
 
 The magic happens when the AI traverses **across** these layers in a single query. A new ticket mentioning "prod-db-01" does not just find the server -- it follows edges to discover the services, the team, the experts, past incidents, their resolutions, and the matching runbooks. All of this context is injected into the classification pipeline.
 
