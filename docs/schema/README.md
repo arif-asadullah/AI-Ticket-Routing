@@ -222,7 +222,7 @@ Step 4: GRAPH TRAVERSAL (find context)
    teams/db-admin ←──member_of── Alex Chen (PostgreSQL expert)
          ↓
 Step 5: LLM CLASSIFICATION
-   Phi-3-mini reads ticket + graph context
+   Qwen 2.5:3B reads ticket + graph context
    → category: "Database", priority: "high", confidence: 0.95
          ↓
 Step 6: ROUTING RULE LOOKUP

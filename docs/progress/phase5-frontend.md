@@ -41,7 +41,7 @@ Dark page with:
 - **Animated background** (`AnimatedBackground.jsx`) — floating graph nodes with connecting lines (canvas animation). Represents the knowledge graph.
 - **Hero section** — large DeskMind logo with glow effect, tagline "AI-powered ticket routing that learns your infrastructure"
 - **"Raise Ticket" button** — glowing orange CTA
-- **Status pills** — live indicators showing ArangoDB Connected, Redis Connected, Phi-3 LLM Ready
+- **Status pills** — live indicators showing ArangoDB Connected, Redis Connected, Qwen 2.5 LLM Ready
 - **"How It Works"** — 3 glass-morphism cards: Submit → Classify → Route
 - **Live stats bar** — ticket count, team count, service count
 - **Footer CTA** — "Ready to route smarter?"

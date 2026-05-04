@@ -14,7 +14,7 @@ const T = {
 
 export default function ChatPanel() {
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi! I'm DeskMind AI powered by Phi-3-mini. Ask me anything about IT issues, or paste a ticket description and I'll classify it." },
+    { role: "assistant", content: "Hi! I'm DeskMind AI powered by Qwen 2.5:3B. Ask me anything about IT issues, or paste a ticket description and I'll classify it." },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);

@@ -494,7 +494,7 @@ A patient's medical chart. Every doctor visit, every test, every prescription is
 | `_key` | string (auto) | `"99001"` | Unique log entry ID. |
 | `ticket_id` | string | `"12345"` | Which ticket this action is about. Indexed for fast lookup: "show me everything that happened to ticket #12345." |
 | `action` | string | `"classified"` | What happened: `classified` (AI assigned category), `routed` (sent to team), `escalated` (AI not confident), `overridden` (human changed AI's decision), `resolved` (ticket fixed), `cache_hit` (used cached result), `fallback_triggered` (AI failed, used backup method). |
-| `actor` | string | `"ai-phi3"` or `"alex.chen@company.com"` | Who did it — an AI model name or a human's email. Helps distinguish: "the AI classified it, then a human overrode it." |
+| `actor` | string | `"ai-qwen2.5-3b"` or `"alex.chen@company.com"` | Who did it — an AI model name or a human's email. Helps distinguish: "the AI classified it, then a human overrode it." |
 | `old_value` | object | `{"category": "Network"}` | What it was before. Only for changes — if the AI classified as Network but a human changed it to Database, old_value = Network. |
 | `new_value` | object | `{"category": "Database"}` | What it became after the action. |
 | `confidence_score` | float | `0.62` | AI's confidence at that moment. Especially useful for escalations — "the AI was only 62% sure, so it escalated." |
@@ -509,7 +509,7 @@ A patient's medical chart. Every doctor visit, every test, every prescription is
   "_key": "99001",
   "ticket_id": "12345",
   "action": "classified",
-  "actor": "ai-phi3",
+  "actor": "ai-qwen2.5-3b",
   "old_value": null,
   "new_value": {
     "category": "Database",
@@ -567,8 +567,8 @@ FOR log IN audit_log
 **Result:**
 ```json
 [
-  { "time": "2026-04-23T10:00:05Z", "action": "classified", "by": "ai-phi3", "details": {"category": "Database"}, "confidence": 0.92 },
-  { "time": "2026-04-23T10:00:06Z", "action": "routed", "by": "ai-phi3", "details": {"team": "db-admin"}, "confidence": 0.92 },
+  { "time": "2026-04-23T10:00:05Z", "action": "classified", "by": "ai-qwen2.5-3b", "details": {"category": "Database"}, "confidence": 0.92 },
+  { "time": "2026-04-23T10:00:06Z", "action": "routed", "by": "ai-qwen2.5-3b", "details": {"team": "db-admin"}, "confidence": 0.92 },
   { "time": "2026-04-23T10:15:00Z", "action": "overridden", "by": "alex.chen@company.com", "details": {"category": "Infrastructure"}, "confidence": null },
   { "time": "2026-04-23T12:30:00Z", "action": "resolved", "by": "raj.kumar@company.com", "details": {"resolution": "Replaced failed DIMM"}, "confidence": null }
 ]

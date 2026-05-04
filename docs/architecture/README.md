@@ -47,7 +47,7 @@ DeskMind reads an IT support ticket, **understands what the problem is**, finds 
 ┌─────────────────────────────────────────────────────────────────┐
 │                    STEP 3: CLASSIFY (LLM)                       │
 │                                                                 │
-│  Phi-3-mini reads:                                              │
+│  Qwen 2.5:3B reads:                                              │
 │  - The new ticket description                                   │
 │  - 5 similar past tickets with their resolutions                │
 │  - Graph context (what server, what service, who manages it)    │
@@ -88,7 +88,7 @@ DeskMind reads an IT support ticket, **understands what the problem is**, finds 
 | Technology | Role in DeskMind | Analogy |
 |-----------|-----------------|---------|
 | **ArangoDB** | Stores everything — tickets, servers, teams, resolutions, and the graph connections between them | A filing cabinet that also understands how the files are related to each other |
-| **Phi-3-mini (Ollama)** | The AI brain — reads tickets, understands them, classifies them | A very fast junior IT analyst who can read and categorize tickets |
+| **Qwen 2.5:3B (Ollama)** | The AI brain — reads tickets, understands them, classifies them | A very fast junior IT analyst who can read and categorize tickets |
 | **MiniLM (sentence-transformers)** | Converts text into numbers (embeddings) so we can compare ticket meanings mathematically | A translator that converts English into "meaning coordinates" |
 | **Redis** | Caches frequent results so the same ticket type doesn't need re-processing | A sticky note on your desk with answers to frequently asked questions |
 | **FastAPI** | The backend server that receives tickets and returns routing decisions | The reception desk that receives tickets and sends them to the right department |
