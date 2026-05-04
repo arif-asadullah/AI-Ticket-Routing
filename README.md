@@ -2,7 +2,7 @@
 
 AI-powered ticket routing system using RAG over a knowledge graph, with local LLM inference.
 
-**Stack:** FastAPI + React + ArangoDB + Redis + Ollama (Phi-3-mini)
+**Stack:** FastAPI + React + ArangoDB + Redis + Ollama (Qwen 2.5:3B)
 
 ---
 
@@ -175,7 +175,7 @@ Ollama runs on the host machine (not inside Docker).
 ```bash
 brew install ollama
 ollama serve
-ollama pull phi3:mini
+ollama pull qwen2.5:3b
 ```
 
 ### Windows
@@ -183,7 +183,7 @@ ollama pull phi3:mini
 Download from https://ollama.com/download. Install and run, then:
 
 ```bash
-ollama pull phi3:mini
+ollama pull qwen2.5:3b
 ```
 
 ### Verify
@@ -192,7 +192,7 @@ ollama pull phi3:mini
 ollama list
 ```
 
-Expected: `phi3:mini` appears in the list.
+Expected: `qwen2.5:3b` appears in the list.
 
 See [docs/ollama-setup.md](docs/ollama-setup.md) for full details.
 
@@ -219,7 +219,7 @@ Loaded from `.env` file via [pydantic-settings](https://docs.pydantic.dev/latest
 | Variable | Default | Description |
 |---|---|---|
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama API server |
-| `OLLAMA_MODEL` | `phi3:mini` | LLM model tag |
+| `OLLAMA_MODEL` | `qwen2.5:3b` | LLM model tag |
 | `ARANGO_URL` | `http://localhost:8529` | ArangoDB endpoint |
 | `ARANGO_DB` | `ticket_agent` | Database name |
 | `ARANGO_USER` | `root` | Database user |

@@ -227,7 +227,7 @@ This is the core of the improved architecture. Instead of one classifier, we use
 
 ### Classifier 1: LLM with Context (Weight: 0.40)
 
-The strongest classifier. Phi-3-mini reads the ticket **plus all context gathered in Stage 2**.
+The strongest classifier. Qwen 2.5:3B reads the ticket **plus all context gathered in Stage 2**.
 
 **Why it's the strongest**: It understands natural language, can reason about root cause vs symptom, and uses context from similar past tickets.
 

@@ -102,7 +102,7 @@ export default function LandingPage({ onEnter, health, ticketCount }) {
           {[
             { label: "ArangoDB", ok: health?.arango === "connected" },
             { label: "Redis", ok: health?.redis === "connected" },
-            { label: "Phi-3 LLM", ok: true },
+            { label: "Qwen 2.5 LLM", ok: true },
           ].map(({ label, ok }) => (
             <div key={label} style={{
               display: "flex",
