@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
-VALID_ROLES = {"admin", "engineer", "viewer"}
+VALID_ROLES = {"admin", "engineer", "user"}
 
 
 def _get_db(request: Request):

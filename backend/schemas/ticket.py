@@ -46,5 +46,6 @@ class TicketResponse(BaseModel):
     resolution_effectiveness: float | None = None
     suggested_runbook: str | None = None
     recommended_expert: str | None = None
+    picked_up_by: str | None = None
     created_at: str | None = None
     resolved_at: str | None = None

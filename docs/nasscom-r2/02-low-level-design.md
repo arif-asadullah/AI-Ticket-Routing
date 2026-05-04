@@ -96,7 +96,13 @@ Call graph (function-level):
       │       ├── find_runbook(db, category, resolution_steps)
       │       └── [resolution selection from 3 sources]
       │
-      ├── db.collection("tickets").insert(...)
+      ├── db.collection("tickets").insert({
+      │       title, description, category, secondary_category,
+      │       priority, status, confidence_score, ai_reasoning,
+      │       quality_score, classifier_votes, submitted_by, routed_to,
+      │       embedding, suggested_resolution, resolution_effectiveness,
+      │       suggested_runbook, recommended_expert, created_at, _source: "user"
+      │   })
       ├── db.collection("assigned_to").insert(...)
       └── db.collection("audit_log").insert(...)
 
@@ -122,7 +128,7 @@ Call graph (function-level):
       │
       └── auth.require_team_access(ticket.routed_to, user, db)  [inline, for ticket mutations]
               ├── admin → bypass
-              ├── viewer → 403
+              ├── user → 403
               └── engineer → db.collection("teams").get(team_key) → compare name
 ```
 
@@ -152,6 +158,10 @@ class TicketResolve(BaseModel):
     used_runbook: str | None = None     # "KB-0001" or null
     resolved_by: str | None = None      # Engineer email
 
+class TicketFeedback(BaseModel):
+    rating: str                         # "helpful" | "not_helpful"
+    comment: str | None = None          # Optional free-text comment
+
 class TicketResponse(BaseModel):
     id: str                                         # ArangoDB _key
     title: str
@@ -170,6 +180,7 @@ class TicketResponse(BaseModel):
     resolution_effectiveness: float | None = None   # 0.0 - 1.0
     suggested_runbook: str | None = None            # "KB-0001: Restart PostgreSQL"
     recommended_expert: str | None = None           # Best engineer for this issue
+    picked_up_by: str | None = None                 # Email of engineer who picked up the ticket
     created_at: str | None = None                   # ISO 8601 UTC timestamp
     resolved_at: str | None = None                  # ISO 8601 UTC timestamp
 ```
@@ -395,8 +406,9 @@ class Settings(BaseSettings):
 | `GET /api/tickets` | `list_tickets` | `get_current_user` | List tickets — engineers see own team only |
 | `POST /api/tickets` | `create_ticket` | `require_any_authenticated` | Create + classify + route (submitted_by = user email) |
 | `GET /api/tickets/{id}` | `get_ticket` | `get_current_user` | Get ticket — engineers only if routed to their team |
-| `PATCH /api/tickets/{id}/status` | `update_ticket_status` | `require_engineer_or_admin` + `require_team_access` | Engineer picks up / reassigns / escalates |
-| `POST /api/tickets/{id}/resolve` | `resolve_ticket` | `require_engineer_or_admin` + `require_team_access` | Resolve ticket (team-scoped) |
+| `PATCH /api/tickets/{id}/status` | `update_ticket_status` | `require_engineer_or_admin` + `require_team_access` | Engineer picks up / reassigns / escalates. Sets `picked_up_by` to engineer email on `in_progress`; clears it on `escalated`/`routed`. Returns 409 if ticket is already picked up by another engineer. |
+| `POST /api/tickets/{id}/resolve` | `resolve_ticket` | `require_engineer_or_admin` + `require_team_access` | Resolve ticket (team-scoped). Only the engineer who picked up the ticket (or admin) can resolve it — 403 otherwise. |
+| `POST /api/tickets/{id}/feedback` | `submit_feedback` | `get_current_user` | Rate AI suggestion as "helpful" or "not_helpful" with optional comment. Logged to `audit_log`. |
 | `DELETE /api/tickets/{id}` | `delete_ticket` | `require_admin` | Admin only |
 
 ### 3.16 `core/auth.py` — Authentication & Authorization
@@ -425,7 +437,14 @@ class Settings(BaseSettings):
 | `PATCH /api/auth/users/{email}/toggle-active` | `toggle_user_active` | Admin only | Activate/deactivate user |
 | `GET /api/auth/engineers` | `list_engineers` | Admin only | List engineers with team info (for user creation form) |
 
-### 3.18 `schemas/auth.py` — Auth Pydantic Models
+### 3.18 `api/stats.py` — Stats & Timeline API Endpoints
+
+| Endpoint | Function | Auth Guard | Description |
+|----------|----------|-----------|-------------|
+| `GET /api/stats` | `get_stats` | `get_current_user` | Aggregated metrics — admin sees global stats, engineer sees team-scoped. Cached in Redis (60s TTL). Returns: total tickets, by_category, by_status, by_priority, avg_confidence, confidence_by_category, escalation_rate, avg_resolution_minutes, daily_trend, top_teams, feedback (helpful/not_helpful counts), classifier_agreement. |
+| `GET /api/stats/tickets/{id}/timeline` | `get_ticket_timeline` | `get_current_user` | Audit trail for a specific ticket. Returns all `audit_log` entries for the ticket sorted by `created_at` ASC. Engineers can only view timelines for their team's tickets. |
+
+### 3.19 `schemas/auth.py` — Auth Pydantic Models
 
 | Model | Fields | Description |
 |-------|--------|-------------|
@@ -434,6 +453,18 @@ class Settings(BaseSettings):
 | `TokenResponse` | access_token, refresh_token, token_type | Login/refresh response |
 | `TokenRefreshRequest` | refresh_token | Refresh request |
 | `UserResponse` | email, role, team_key, team_name, engineer_key, is_active | User info response |
+
+### 3.20 Frontend Components — File Summary
+
+| Component | File | Purpose |
+|-----------|------|---------|
+| `DomainDashboard` | `frontend/src/components/DomainDashboard.jsx` | Main ticket queue view. Grouped by 6 IT domains (Infrastructure, Application, Database, Network, Security, Access Management). Contains ticket creation form, filtering, and embeds `StatsSummaryBar` and `TicketDetail`. |
+| `TicketDetail` | `frontend/src/components/TicketDetail.jsx` | Expanded ticket view with full classification details, status actions (pick up, escalate, reassign), and embeds `ResolveForm`, `FeedbackWidget`, and `AuditTimeline`. |
+| `ResolveForm` | `frontend/src/components/ResolveForm.jsx` | Resolution form. Pre-fills resolution steps from `ticket.suggested_resolution` when available. Engineer indicates AI suggestion usage (yes/partially/no) and runbook reference. |
+| `FeedbackWidget` | `frontend/src/components/FeedbackWidget.jsx` | Inline widget to rate AI classification/resolution suggestion as helpful or not_helpful with an optional comment. Calls `POST /api/tickets/{id}/feedback`. |
+| `AnalyticsDashboard` | `frontend/src/components/AnalyticsDashboard.jsx` | Full analytics page built with Recharts. Includes category distribution bar chart, status donut chart, priority breakdown, daily ticket trend area chart, top teams, feedback (helpful vs not_helpful), and classifier agreement rate. |
+| `AuditTimeline` | `frontend/src/components/AuditTimeline.jsx` | Visual audit trail for a ticket. Displays classified, routed, escalated, in_progress, resolved, feedback, and closed events with timestamps, actors, and confidence signals. Calls `GET /api/stats/tickets/{id}/timeline`. |
+| `StatsSummaryBar` | `frontend/src/components/StatsSummaryBar.jsx` | Animated counter bar showing total tickets, average confidence, escalation rate, and average resolution time. Uses animated value hooks for smooth number transitions. Calls `GET /api/stats`. |
 
 ---
 
@@ -929,9 +960,11 @@ Winner = **Database** (0.776).
 -- From retrieval.py — search_similar_tickets()
 -- Finds top 5 semantically similar past tickets using cosine similarity
 -- on 384-dimensional MiniLM embeddings stored in the vector index.
+-- Includes both "closed" (seed/synthetic) and "resolved" (user-resolved) tickets,
+-- creating a live feedback loop where engineer resolutions improve future suggestions.
 
 FOR ticket IN tickets
-    FILTER ticket.status == "closed"
+    FILTER ticket.status IN ["closed", "resolved"]
     LET sim = COSINE_SIMILARITY(ticket.embedding, @embedding)
     SORT sim DESC
     LIMIT @limit
@@ -946,7 +979,8 @@ FOR ticket IN tickets
         priority: ticket.priority,
         description: LEFT(ticket.description, 200),
         similarity: sim,
-        resolution_steps: resolution.steps
+        resolution_steps: resolution.steps,
+        effectiveness: resolution.effectiveness
     }
 ```
 
@@ -1282,7 +1316,7 @@ Request arrives
 
 | Collection | Key Fields | Purpose |
 |-----------|------------|---------|
-| `tickets` | `_key`, title, description, category, secondary_category, priority, status, confidence_score, ai_reasoning, quality_score, classifier_votes, submitted_by, routed_to, embedding(384), created_at, resolved_at, `_source` | Primary ticket storage |
+| `tickets` | `_key`, title, description, category, secondary_category, priority, status, confidence_score, ai_reasoning, quality_score, classifier_votes, submitted_by, routed_to, embedding(384), suggested_resolution, resolution_effectiveness, suggested_runbook, recommended_expert, picked_up_by, created_at, resolved_at, `_source` | Primary ticket storage |
 | `teams` | `_key`, name, domain | IT teams (6 teams) |
 | `engineers` | `_key`, name, role, expertise | Team members (12) |
 | `servers` | `_key`, type, datacenter | Infrastructure nodes (15) |
@@ -1524,11 +1558,11 @@ db.collection("audit_log").insert({
 db.collection("audit_log").insert({
     "ticket_id": ticket_id,
     "action": update.status,
-    "actor": update.updated_by or "unknown",
+    "actor": user["email"],
     "old_value": {"status": old_status, "team": doc.get("routed_to")},
     "new_value": {"status": update.status, "team": new_team or doc.get("routed_to")},
     "confidence_score": None,
-    "reasoning": f"Status changed by {update.updated_by or 'unknown'}",
+    "reasoning": f"Status changed by {user['email']}",
     "created_at": now,
 })
 ```
@@ -1540,7 +1574,7 @@ db.collection("audit_log").insert({
 db.collection("audit_log").insert({
     "ticket_id": ticket_id,
     "action": "resolved",
-    "actor": resolve.resolved_by or "unknown",
+    "actor": user["email"],
     "old_value": {"status": doc.get("status")},
     "new_value": {
         "status": "resolved",
@@ -1549,8 +1583,26 @@ db.collection("audit_log").insert({
         "used_runbook": resolve.used_runbook,
     },
     "confidence_score": None,
-    "reasoning": f"Resolved by {resolve.resolved_by or 'unknown'}. "
-                 f"AI suggestion {'used' if resolve.used_ai_suggestion == 'yes' else 'not used'}.",
+    "reasoning": f"Resolved by {user['email']}. AI suggestion {'used' if resolve.used_ai_suggestion == 'yes' else 'not used'}.",
+    "created_at": now,
+})
+```
+
+### Feedback Audit Entry
+
+```python
+# From api/tickets.py — submit_feedback()
+db.collection("audit_log").insert({
+    "ticket_id": ticket_id,
+    "action": "feedback",
+    "actor": user["email"],
+    "old_value": None,
+    "new_value": {
+        "rating": feedback.rating,
+        "comment": feedback.comment,
+    },
+    "confidence_score": doc.get("confidence_score"),
+    "reasoning": f"AI suggestion rated '{feedback.rating}' by {user['email']}",
     "created_at": now,
 })
 ```

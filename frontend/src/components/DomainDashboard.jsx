@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
-import { fetchTickets, createTicket } from "../services/api";
+import { fetchTickets, createTicket, fetchStats } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 import TicketDetail from "./TicketDetail";
+import StatsSummaryBar from "./StatsSummaryBar";
 
 // ── Theme tokens ──
 const T = {
@@ -92,6 +93,8 @@ export default function DomainDashboard({ user, onBack }) {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [stats, setStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState("all");
@@ -113,6 +116,10 @@ export default function DomainDashboard({ user, onBack }) {
 
   useEffect(() => {
     loadTickets();
+    fetchStats()
+      .then(setStats)
+      .catch(() => {})
+      .finally(() => setStatsLoading(false));
   }, []);
 
   async function loadTickets() {
@@ -162,7 +169,7 @@ export default function DomainDashboard({ user, onBack }) {
   }, [tickets, statusFilter, priorityFilter, search, selectedDomain, user]);
 
   // Stats
-  const stats = useMemo(() => {
+  const localStats = useMemo(() => {
     const base = user?.role === "admin" && selectedDomain
       ? tickets.filter((t) => (t.category || "") === selectedDomain)
       : user?.role === "engineer" && user?.team_key
@@ -295,6 +302,8 @@ export default function DomainDashboard({ user, onBack }) {
               Select a domain to view its tickets and team activity
             </p>
           </div>
+
+          <StatsSummaryBar stats={stats} loading={statsLoading} />
 
           <div style={{
             display: "grid",
@@ -486,9 +495,9 @@ export default function DomainDashboard({ user, onBack }) {
               {dashboardTitle}
             </h1>
             <div style={{ display: "flex", gap: 16, marginTop: 10 }}>
-              <StatBadge label="Open" value={stats.open} color={T.accent} />
-              <StatBadge label="In Progress" value={stats.in_progress} color="#3b82f6" />
-              <StatBadge label="Resolved" value={stats.resolved} color={T.success} />
+              <StatBadge label="Open" value={localStats.open} color={T.accent} />
+              <StatBadge label="In Progress" value={localStats.in_progress} color="#3b82f6" />
+              <StatBadge label="Resolved" value={localStats.resolved} color={T.success} />
             </div>
           </div>
 
@@ -537,6 +546,9 @@ export default function DomainDashboard({ user, onBack }) {
             {error}
           </div>
         )}
+
+        {/* ── Stats Summary Bar ── */}
+        <StatsSummaryBar stats={stats} loading={statsLoading} />
 
         {/* ── Create Ticket Form ── */}
         {showCreateForm && (

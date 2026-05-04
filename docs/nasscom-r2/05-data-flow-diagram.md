@@ -152,7 +152,7 @@ flowchart TB
     D1[("D1: ArangoDB\ntickets collection\nerror_codes collection\nservers collection\nservices collection\nresolved_with edges\ntriggered_by edges\nhosts edges\nmanaged_by edges\naffects edges\nmember_of edges\ndepends_on edges")]
 
     %% Sub-processes
-    P41["P4.1: Vector Similarity Search\nsearch_similar_tickets(db, embedding, limit=5)\n\nAQL: COSINE_SIMILARITY(ticket.embedding, @embedding)\nFILTER ticket.status == 'closed'\nSORT sim DESC, LIMIT 5\n+ resolved_with edge traversal"]
+    P41["P4.1: Vector Similarity Search\nsearch_similar_tickets(db, embedding, limit=5)\n\nAQL: COSINE_SIMILARITY(ticket.embedding, @embedding)\nFILTER ticket.status IN ['closed', 'resolved']\nSORT sim DESC, LIMIT 5\n+ resolved_with edge traversal\n\nNote: includes user-resolved tickets,\ncreating a live feedback loop"]
 
     P42["P4.2: Error Code Match\nsearch_by_error_codes(db, error_codes)\n\nAQL: 1..1 OUTBOUND error_codes triggered_by\nFILTER ticket.status == 'closed'\n+ resolved_with edge for resolution\nDeduplicate by ticket key"]
 
@@ -184,7 +184,7 @@ flowchart TB
 
 | Method | Function | AQL Pattern | Data Traversal | Output Fields |
 |--------|----------|-------------|----------------|---------------|
-| Vector Similarity | `search_similar_tickets(db, embedding, limit=5)` | `COSINE_SIMILARITY(ticket.embedding, @embedding)` on closed tickets, sorted DESC, LIMIT 5 | `tickets` -> `resolved_with` -> `resolutions` | key, title, category, priority, description (200 chars), similarity, resolution_steps |
+| Vector Similarity | `search_similar_tickets(db, embedding, limit=5)` | `COSINE_SIMILARITY(ticket.embedding, @embedding)` on closed and resolved tickets (`status IN ["closed", "resolved"]`), sorted DESC, LIMIT 5. Including resolved tickets creates a live feedback loop where engineer resolutions improve future suggestions. | `tickets` -> `resolved_with` -> `resolutions` | key, title, category, priority, description (200 chars), similarity, resolution_steps, effectiveness |
 | Error Code Match | `search_by_error_codes(db, error_codes)` | `1..1 OUTBOUND error_codes triggered_by` per matched error code | `error_codes` -> `triggered_by` -> `tickets` -> `resolved_with` -> `resolutions` | key, title, category, error_code, resolution_steps, effectiveness |
 | Graph Traversal | `traverse_graph(db, entities)` | Multi-hop: server -> hosts -> services, server -> managed_by -> teams, teams <- member_of <- engineers | `servers` -> `hosts` -> `services`, `servers` -> `managed_by` -> `teams`, `teams` <- `member_of` <- `engineers`, `servers` <- `affects` <- `tickets` | server_type, datacenter, team, domain, services, past_tickets, experts |
 | Full-text Search | `search_fulltext(db, text, limit=5)` | `FULLTEXT(tickets, "description", @term)` per keyword (up to 5 terms, len > 3) | `tickets` fulltext index | key, title, category, description (150 chars) |

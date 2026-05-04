@@ -53,6 +53,7 @@
 | **React** | 19.1.0 | MIT | UI component library. Builds the ticket form, ticket list, chat interface, and landing page. |
 | **React DOM** | 19.1.0 | MIT | React renderer for web browsers. |
 | **Vite** | 6.3.5 | MIT | Build tool and dev server. Provides instant hot module replacement (HMR) and API proxy to backend during development. |
+| **Recharts** | 3.x | MIT | Interactive charts for analytics dashboard (bar, donut, area charts). Built on React and D3. Powers the AnalyticsDashboard component with category distribution, status breakdown, daily trend, and feedback visualizations. |
 
 ---
 
@@ -105,7 +106,7 @@ Traditional GraphRAG requires 3 separate databases: Neo4j (graph), Pinecone (vec
 
 | License | Libraries | Commercial Use |
 |---------|-----------|---------------|
-| MIT | FastAPI, React, Vite, Pydantic, python-arango, redis, python-jose, spaCy | Allowed |
+| MIT | FastAPI, React, Vite, Recharts, Pydantic, python-arango, redis, python-jose, spaCy | Allowed |
 | Apache 2.0 | ArangoDB, Docker, sentence-transformers, Qwen 2.5, MiniLM, Ollama, bcrypt | Allowed |
 | BSD 3-Clause | Uvicorn, httpx, python-dotenv, Redis, passlib | Allowed |
 
