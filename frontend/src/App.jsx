@@ -8,6 +8,7 @@ import ChatPanel from "./components/ChatPanel";
 import UserManagement from "./components/UserManagement";
 import DomainDashboard from "./components/DomainDashboard";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import DepartmentsView from "./components/DepartmentsView";
 import { fetchTickets, createTicket, deleteTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
@@ -66,6 +67,7 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [isClassifying, setIsClassifying] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [health, setHealth] = useState(null);
@@ -207,6 +209,7 @@ export default function App() {
                 <a href="#dashboard" onClick={(e) => { e.preventDefault(); setActiveTab("dashboard"); }} style={{ color: activeTab === "dashboard" ? T.accent : T.textMuted, cursor: "pointer" }}>Dashboard</a>
                 <a href="#tickets" onClick={(e) => { e.preventDefault(); setActiveTab("tickets"); }} style={{ color: activeTab === "tickets" ? T.accent : T.textMuted, cursor: "pointer" }}>New Ticket</a>
                 <a href="#chat" onClick={(e) => { e.preventDefault(); setActiveTab("chat"); }} style={{ color: activeTab === "chat" ? T.accent : T.textMuted, cursor: "pointer" }}>Chat AI</a>
+                <a href="#departments" onClick={(e) => { e.preventDefault(); setActiveTab("departments"); }} style={{ color: activeTab === "departments" ? T.accent : T.textMuted, cursor: "pointer" }}>Departments</a>
                 <a href="#analytics" onClick={(e) => { e.preventDefault(); setActiveTab("analytics"); }} style={{ color: activeTab === "analytics" ? T.accent : T.textMuted, cursor: "pointer" }}>Analytics</a>
                 {user?.role === "admin" && (
                   <a href="#users" onClick={(e) => { e.preventDefault(); setActiveTab("users"); }} style={{ color: activeTab === "users" ? T.accent : T.textMuted, cursor: "pointer" }}>Users</a>
@@ -250,6 +253,22 @@ export default function App() {
           {/* ── Analytics Tab ── */}
           {activeTab === "analytics" && user && (
             <AnalyticsDashboard user={user} />
+          )}
+
+          {/* ── Departments Tab ── */}
+          {activeTab === "departments" && user && (
+            <main style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px 80px" }}>
+              <DepartmentsView
+                tickets={tickets}
+                selectedDepartment={selectedDepartment}
+                onSelectDepartment={setSelectedDepartment}
+                onCreateTicket={async (ticket) => {
+                  const created = await createTicket(ticket);
+                  setTickets((prev) => [created, ...prev]);
+                  return created;
+                }}
+              />
+            </main>
           )}
 
           {/* ── Users Tab (admin only) ── */}
