@@ -206,13 +206,13 @@ flowchart TB
     D1[("D1: ArangoDB\ncategory_centroids\ncollection")]
 
     %% Sub-processes
-    P51["P5.1: LLM Classifier\nclassify_llm(title, description, context)\nWeight: 0.40 | Accuracy: ~85%\n\n1. _build_context_section(context)\n2. Build SYSTEM_PROMPT + user_prompt\n3. POST /v1/chat/completions\n   {model: qwen2.5:3b, temperature: 0.1}\n4. _parse_llm_response(content)\n5. Validate category in 6 valid categories\n\nSkipped when: health.ollama == false"]
+    P51["P5.1: LLM Classifier\nclassify_llm(title, description, context)\nWeight: 0.40 | Accuracy: ~85%\n\n1. _build_context_section(context)\n2. Build SYSTEM_PROMPT (12 disambiguation rules\n   + 6 few-shot examples)\n3. POST /v1/chat/completions\n   {model: qwen2.5:3b, temperature: 0.1}\n4. _parse_llm_response(content)\n5. Validate category in 6 valid categories\n\nSkipped when: health.ollama == false"]
 
-    P52["P5.2: KNN Classifier\nclassify_knn(similar_tickets, k=5)\nWeight: 0.30 | Accuracy: ~80%\n\n1. Take top K similar tickets\n2. Weighted vote by similarity score\n3. confidence = agreeing / total\n\nSkipped when: health.db_has_data == false\nor similar_tickets is empty"]
+    P52["P5.2: KNN Classifier\nclassify_knn(similar_tickets, k=5)\nWeight: 0.15 | Accuracy: ~80%\n\n1. Take top K similar tickets\n2. Weighted vote by similarity score\n3. confidence = agreeing / total\n\nSkipped when: health.db_has_data == false\nor similar_tickets is empty"]
 
-    P53["P5.3: Centroid Classifier\nclassify_centroid(embedding, db)\nWeight: 0.20 | Accuracy: ~75%\n\n1. _load_centroids(db) (1h cache)\n2. _cosine_similarity() vs 6 centroids\n3. confidence = 0.5 + gap * 5\n\nSkipped when: health.db_has_data == false"]
+    P53["P5.3: Centroid Classifier\nclassify_centroid(embedding, db)\nWeight: 0.30 | Accuracy: ~75%\n\n1. _load_centroids(db) (1h cache)\n2. _cosine_similarity() vs 6 centroids\n3. confidence = 0.5 + gap * 5\n\nSkipped when: health.db_has_data == false"]
 
-    P54["P5.4: Keyword Classifier\nclassify_keyword(description)\nWeight: 0.10 | Accuracy: ~55%\n\n1. Match against KEYWORD_DICT\n   (25+ keywords x 6 categories)\n2. confidence = winner_score / total\n\nAlways available (no dependencies)"]
+    P54["P5.4: Keyword Classifier\nclassify_keyword(description)\nWeight: 0.15 | Accuracy: ~60%\n\n1. Word-boundary regex match against\n   KEYWORD_DICT (25+ keywords x 6 categories)\n2. confidence = winner_score / total\n\nAlways available (no dependencies)"]
 
     %% Output
     OUTPUT(["To P6: Aggregation\nvotes: dict"])
@@ -238,9 +238,9 @@ flowchart TB
 
 | Level | Name | Ollama | DB Data | Active Classifiers | Weights |
 |-------|------|--------|---------|-------------------|---------|
-| 4 | Full | Up | Has data | LLM + KNN + Centroid + Keyword | 0.40, 0.30, 0.20, 0.10 |
+| 4 | Full | Up | Has data | LLM + KNN + Centroid + Keyword | 0.40, 0.15, 0.30, 0.15 |
 | 3 | No Data | Up | Empty | LLM + Keyword | 0.80, 0.20 |
-| 2 | No LLM | Down | Has data | KNN + Centroid + Keyword | 0.45, 0.35, 0.20 |
+| 2 | No LLM | Down | Has data | KNN + Centroid + Keyword | 0.25, 0.50, 0.25 |
 | 1 | Emergency | Down | Empty | Keyword only | 1.00 |
 
 ### Classifier Output Schemas
@@ -428,7 +428,9 @@ fulltext_matches: [
 ]
 ```
 
-### Stage 3 -- Classification
+### Stage 3 -- Classification (Parallel via `asyncio.gather`)
+
+All 4 classifiers run concurrently — total Stage 3 time = max(individual times) ≈ LLM time.
 
 **classify_llm(title, description, context):**
 ```
@@ -465,7 +467,7 @@ fulltext_matches: [
 
 ```
 Step 1 -- Weighted category scores:
-  Database:    (0.40 * 0.96) + (0.30 * 0.80) + (0.20 * 0.87) + (0.10 * 0.60) = 0.858
+  Database:    (0.40 * 0.96) + (0.15 * 0.80) + (0.30 * 0.87) + (0.15 * 0.60) = 0.855
   Application: (small residual from KNN + Keyword) = ~0.06
 
 Step 2 -- Agreement: 4/4 agree on Database
@@ -476,17 +478,21 @@ Step 3 -- Contextual bonuses:
   graph_confirms_category = true                              -->  +0.02
   Total bonus = +0.10
 
-Step 4 -- Raw confidence: 0.858 + 0.10 = 0.958
+Step 4 -- Raw confidence: 0.855 + 0.10 = 0.955
 
 Step 5 -- Calibration: 4/4 agree and raw >= 0.90
-  calibrated = 0.958 * 0.98 = 0.939
+  calibrated = 0.955 * 0.98 = 0.936
 
 Step 6 -- Quality cap: HIGH --> 0.99
-  final_confidence = min(0.939, 0.99) = 0.939
+  final_confidence = min(0.936, 0.99) = 0.936
+
+Step 5.5 -- Disagreement safety check:
+  max_individual_conf = 0.96 (LLM) > 0.60 --> skip cap
+  (If no classifier had >60% confidence, cap at 0.55 to force escalation)
 
 Result:
   { category: "Database", secondary_category: null, priority: "critical",
-    confidence: 0.939, agreement: "4/4", quality_score: "HIGH" }
+    confidence: 0.936, agreement: "4/4", quality_score: "HIGH" }
 ```
 
 ### Stage 5 -- Decision & Enrichment
@@ -575,7 +581,7 @@ ClassificationResult(
 | Stage 4 | aggregate() | < 1 ms | Weighted arithmetic |
 | Stage 5 | lookup_team() + find_runbook() | ~5-10 ms | 2 AQL queries |
 | Post-pipeline | DB inserts (ticket + edge + audit) | ~10-20 ms | 3 document inserts |
-| **Total** | **End-to-end** | **~2,500-5,500 ms** | **LLM dominates (~80% of time)** |
+| **Total** | **End-to-end** | **~2,000-5,000 ms** | **Classifiers run in parallel (asyncio.gather) — LLM dominates** |
 | **Level 2 (No LLM)** | **Without classify_llm()** | **~150-300 ms** | **Sub-second without LLM** |
 
 ### Data Volume Summary

@@ -140,14 +140,17 @@
 
 | Classifier | Weight | Method | Accuracy | Speed |
 |-----------|--------|--------|----------|-------|
-| LLM (Qwen 2.5:3B) | 0.40 | Reads ticket + all Stage 2 context, reasons about root cause | ~85% | ~2-5s |
-| KNN Voting | 0.30 | Top 5 similar tickets vote by category (weighted by similarity) | ~80% | ~10ms |
-| Centroid Distance | 0.20 | Compares embedding to 6 pre-computed category centroids | ~75% | ~5ms |
-| Keyword Rules | 0.10 | 25+ keywords per category dictionary, count matches | ~55% | ~1ms |
+| LLM (Qwen 2.5:3B) | 0.40 | Reads ticket + all Stage 2 context with 12 disambiguation rules and 6 few-shot examples. Reasons about root cause. | ~85% | ~2s |
+| KNN Voting | 0.15 | Top 5 similar tickets vote by category (weighted by similarity) | ~80% | ~10ms |
+| Centroid Distance | 0.30 | Compares embedding to 6 pre-computed category centroids | ~75% | ~5ms |
+| Keyword Rules | 0.15 | 25+ keywords per category with word-boundary matching (regex) | ~60% | ~1ms |
+
+**Note**: All 4 classifiers run in parallel via `asyncio.gather()`. Total classification time = LLM time only (~2s), not the sum of all 4.
 
 **Stage 4 — AGGREGATE**:
 - Weighted voting across all 4 classifiers
 - Agreement bonus (+0.05 if 4/4 agree) or penalty (-0.10 if 1/4 disagree)
+- Disagreement safety: if no individual classifier has >60% confidence, force escalation
 - Error code confirmation bonus (+0.03)
 - Graph context confirmation bonus (+0.02)
 - Confidence calibration based on agreement level
@@ -181,12 +184,27 @@
 
 | Level | Condition | Available Classifiers | Weights | Expected Accuracy |
 |-------|-----------|----------------------|---------|-------------------|
-| 4 (Full) | All systems up | LLM + KNN + Centroid + Keywords | 0.40, 0.30, 0.20, 0.10 | ~90%+ |
+| 4 (Full) | All systems up | LLM + KNN + Centroid + Keywords | 0.40, 0.15, 0.30, 0.15 | **83.7%** (eval-tested) |
 | 3 (No Data) | Ollama up, DB empty | LLM + Keywords | 0.80, 0.20 | ~80% |
-| 2 (No LLM) | Ollama down, DB up | KNN + Centroid + Keywords | 0.45, 0.35, 0.20 | ~70% |
+| 2 (No LLM) | Ollama down, DB up | KNN + Centroid + Keywords | 0.25, 0.50, 0.25 | ~70% |
 | 1 (Emergency) | Ollama down, DB empty | Keywords only | 1.00 | ~55% |
 
 Health checks run every 5 seconds (cached). The system never fully crashes — it always falls back to keyword classification.
+
+#### Evaluated Accuracy (50-ticket eval set)
+
+| Category | Accuracy |
+|----------|----------|
+| Database | **100%** (8/8) |
+| Access Management | **87.5%** (7/8) |
+| Application | **87.5%** (7/8) |
+| Infrastructure | **80.0%** (8/10) |
+| Network | **75.0%** (6/8) |
+| Security | **71.4%** (5/7) |
+| **Overall** | **83.7%** (41/49) |
+| **Auto-routed accuracy** | **96.6%** (confidence ≥ 0.70) |
+
+When all 4 classifiers agree → **94% accuracy**. When they disagree → correctly escalated to human review.
 
 ### 3.3 Knowledge Graph — ArangoDB 3.12
 

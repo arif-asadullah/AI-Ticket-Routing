@@ -116,7 +116,7 @@ stateDiagram-v2
     state Level4_Full {
         [*] --> AllUp
         AllUp : Ollama UP + DB has data
-        AllUp : Classifiers: LLM(0.40) + KNN(0.30) + Centroid(0.20) + Keyword(0.10)
+        AllUp : Classifiers: LLM(0.40) + KNN(0.15) + Centroid(0.30) + Keyword(0.15)
         AllUp : Expected accuracy ~90%+
     }
 
@@ -130,7 +130,7 @@ stateDiagram-v2
     state Level2_NoLLM {
         [*] --> DataOnly
         DataOnly : Ollama DOWN + DB has data
-        DataOnly : Classifiers: KNN(0.45) + Centroid(0.35) + Keyword(0.20)
+        DataOnly : Classifiers: KNN(0.25) + Centroid(0.50) + Keyword(0.25)
         DataOnly : Expected accuracy ~70%
     }
 
@@ -161,9 +161,9 @@ stateDiagram-v2
 
 | Level | Name | Condition | Available Classifiers | Weights | Expected Accuracy | Notes |
 |-------|------|-----------|----------------------|---------|-------------------|-------|
-| **4** | Full | Ollama UP, DB has data | LLM + KNN + Centroid + Keyword | 0.40, 0.30, 0.20, 0.10 | ~90%+ | Normal operating mode. All 4 classifiers active. Graph traversal, vector search, error matching, and full-text search all available. Maximum context for decisions. |
+| **4** | Full | Ollama UP, DB has data | LLM + KNN + Centroid + Keyword | 0.40, 0.15, 0.30, 0.15 | ~90%+ | Normal operating mode. All 4 classifiers run in parallel via `asyncio.gather`. Graph traversal, vector search, error matching, and full-text search all available. Maximum context for decisions. |
 | **3** | No Data | Ollama UP, DB empty or inaccessible | LLM + Keyword | 0.80, 0.20 | ~80% | Occurs on fresh deployment before `seed_db.py` runs, or if ArangoDB loses its data volume. KNN and Centroid classifiers are disabled because there are no past tickets to compare against. The LLM compensates with higher weight. No graph traversal or resolution suggestions. |
-| **2** | No LLM | Ollama DOWN, DB has data | KNN + Centroid + Keyword | 0.45, 0.35, 0.20 | ~70% | Occurs if Ollama crashes, runs out of memory, or the host machine is unreachable. The three data-driven classifiers take over. Still has access to similar tickets, centroids, and graph context. No LLM reasoning or chat. |
+| **2** | No LLM | Ollama DOWN, DB has data | KNN + Centroid + Keyword | 0.25, 0.50, 0.25 | ~70% | Occurs if Ollama crashes, runs out of memory, or the host machine is unreachable. The three data-driven classifiers take over. Still has access to similar tickets, centroids, and graph context. No LLM reasoning or chat. |
 | **1** | Emergency | Ollama DOWN, DB empty | Keyword | 1.00 | ~55% | Worst case. Only the keyword dictionary classifier is available. It uses 25+ keywords per category to make a best-effort classification. No context, no similarity, no graph, no LLM. The system is still operational and still routes tickets -- just with lower accuracy. |
 
 ### 2.2 Transition Descriptions
@@ -243,9 +243,9 @@ stateDiagram-v2
     state Classifying {
         [*] --> fork_classify
         fork_classify --> LLM_Classifier : Weight 0.40 (if Ollama UP)
-        fork_classify --> KNN_Classifier : Weight 0.30 (if DB has data)
-        fork_classify --> Centroid_Classifier : Weight 0.20 (if DB has data)
-        fork_classify --> Keyword_Classifier : Weight 0.10 (always)
+        fork_classify --> KNN_Classifier : Weight 0.15 (if DB has data)
+        fork_classify --> Centroid_Classifier : Weight 0.30 (if DB has data)
+        fork_classify --> Keyword_Classifier : Weight 0.15 (always)
         LLM_Classifier --> join_classify
         KNN_Classifier --> join_classify
         Centroid_Classifier --> join_classify
@@ -259,7 +259,8 @@ stateDiagram-v2
         [*] --> WeightedVoting
         WeightedVoting --> AgreementCheck : Weighted scores computed
         AgreementCheck --> ConfidenceBonuses : Agreement level determined
-        ConfidenceBonuses --> QualityCap : Bonuses applied
+        ConfidenceBonuses --> DisagreementSafety : Bonuses applied
+        DisagreementSafety --> QualityCap : Cap at 0.55 if no classifier >60%
         QualityCap --> [*] : Final confidence set
     }
 
@@ -347,14 +348,14 @@ This stage runs 4 searches in parallel:
 | **Output** | 1-4 votes, each with a category and confidence |
 | **Duration** | ~2-5s (dominated by LLM if available) |
 
-Each classifier runs independently. The number of active classifiers depends on the degradation level.
+All active classifiers run in parallel via `asyncio.gather()` — total Stage 3 time equals the slowest classifier (typically LLM). The number of active classifiers depends on the degradation level.
 
 | Classifier | Weight | Method | Available When | Description |
 |-----------|--------|--------|---------------|-------------|
 | **LLM** (Qwen 2.5:3B) | 0.40 | Prompt-based reasoning | Ollama UP (Level 3, 4) | Sends the ticket text + all retrieved context to Qwen 2.5:3B via Ollama's OpenAI-compatible API. The prompt includes category definitions and instructs the model to identify the root cause. Returns a category and confidence. Slowest but most accurate classifier. |
-| **KNN** | 0.30 | Weighted voting by 5 nearest neighbors | DB has data (Level 2, 4) | Takes the top 5 similar tickets from vector search. Each neighbor votes for its category, weighted by similarity score. The majority category wins. Fast and data-driven. |
-| **Centroid** | 0.20 | Distance to 6 category centroids | DB has data (Level 2, 4) | Compares the ticket's 384-dim embedding to the 6 pre-computed category centroids. The category with the smallest cosine distance wins. Robust even when no single past ticket is very similar. |
-| **Keyword** | 0.10 | Dictionary-based pattern matching | Always | Counts occurrences of 25+ keywords per category in the ticket text. The category with the highest keyword match count wins. Fastest classifier (sub-millisecond). Always available as the last line of defense. |
+| **KNN** | 0.15 | Weighted voting by 5 nearest neighbors | DB has data (Level 2, 4) | Takes the top 5 similar tickets from vector search. Each neighbor votes for its category, weighted by similarity score. The majority category wins. Fast and data-driven. |
+| **Centroid** | 0.30 | Distance to 6 category centroids | DB has data (Level 2, 4) | Compares the ticket's 384-dim embedding to the 6 pre-computed category centroids. The category with the smallest cosine distance wins. Robust even when no single past ticket is very similar. |
+| **Keyword** | 0.15 | Dictionary-based word-boundary matching | Always | Uses `re.search(r'\b...\b')` to match 25+ keywords per category (prevents "access" matching "accessibility"). The category with the highest keyword match count wins. Fastest classifier (sub-millisecond). Always available as the last line of defense. |
 
 #### Stage 4: Aggregating
 
@@ -372,6 +373,7 @@ This stage applies weighted voting and confidence calibration:
 | **Weighted Voting** | Each classifier's confidence is multiplied by its weight. The category with the highest weighted sum wins. Weights are redistributed based on degradation level (e.g., at Level 2, LLM's 0.40 weight is split among KNN, Centroid, and Keyword). |
 | **Agreement Check** | Determines how many classifiers agree on the winning category. If 4/4 agree: "unanimous" (+0.05 bonus). If 3/4 agree: "majority" (no adjustment). If only 1/4 or 2/4 agree: "split" (-0.10 penalty). |
 | **Confidence Bonuses** | Error code match adds +0.03 if the error-implied category matches the winning category. Graph context confirmation adds +0.02 if the `managed_by` domain from the graph matches the winning category. |
+| **Disagreement Safety** | If no individual classifier has >60% confidence and at least 3 classifiers are active, the final confidence is capped at 0.55 — forcing escalation to human review. This prevents the weighted sum from producing a deceptively high confidence when all classifiers are uncertain. |
 | **Quality Cap** | The final confidence is capped by the quality score from Stage 1: HIGH = 0.99, MEDIUM = 0.85, LOW = 0.75. This prevents overconfident classifications on vague or short tickets. |
 
 #### Stage 5: Deciding
@@ -416,9 +418,9 @@ Not all stages execute at every degradation level. The following table shows wha
 | **Retrieving: Graph Traversal** | Yes | Skipped | Yes | Skipped |
 | **Retrieving: Full-Text Search** | Yes | Skipped | Yes | Skipped |
 | **Classifying: LLM** | Yes (0.40) | Yes (0.80) | Skipped | Skipped |
-| **Classifying: KNN** | Yes (0.30) | Skipped | Yes (0.45) | Skipped |
-| **Classifying: Centroid** | Yes (0.20) | Skipped | Yes (0.35) | Skipped |
-| **Classifying: Keyword** | Yes (0.10) | Yes (0.20) | Yes (0.20) | Yes (1.00) |
+| **Classifying: KNN** | Yes (0.15) | Skipped | Yes (0.25) | Skipped |
+| **Classifying: Centroid** | Yes (0.30) | Skipped | Yes (0.50) | Skipped |
+| **Classifying: Keyword** | Yes (0.15) | Yes (0.20) | Yes (0.25) | Yes (1.00) |
 | **Aggregating** | Yes (4 votes) | Yes (2 votes) | Yes (3 votes) | Yes (1 vote) |
 | **Deciding: Team Lookup** | Yes | No (no rules) | Yes | No (no rules) |
 | **Deciding: Resolution Search** | Yes | No | Yes | No |

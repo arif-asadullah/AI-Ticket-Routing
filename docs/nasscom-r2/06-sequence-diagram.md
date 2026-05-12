@@ -99,7 +99,7 @@ sequenceDiagram
     Ret -->> Orch: RetrievalResult {similar_tickets,<br/>error_matched_tickets, graph_context, fulltext_matches}
     deactivate Ret
 
-    Note over Orch, KW: Stage 3 -- Classification (4 classifiers, based on level)
+    Note over Orch, KW: Stage 3 -- Classification (4 classifiers in parallel via asyncio.gather)
     par LLM Classifier (weight: 0.40)
         Orch ->> LLM: classify_llm(title, description, context)
         activate LLM
@@ -109,13 +109,13 @@ sequenceDiagram
         LLM ->> LLM: _parse_llm_response(content)<br/>Validate category in 6 valid_cats<br/>Validate priority in valid_pris<br/>Clamp confidence to [0.0, 1.0]
         LLM -->> Orch: {category: "Database", priority: "critical",<br/>confidence: 0.96, reasoning: "Root cause is..."}
         deactivate LLM
-    and KNN Classifier (weight: 0.30)
+    and KNN Classifier (weight: 0.15)
         Orch ->> KNN: classify_knn(context.similar_tickets, k=5)
         activate KNN
         KNN ->> KNN: Take top K tickets<br/>Weighted vote by similarity<br/>confidence = agreeing / total
         KNN -->> Orch: {category: "Database", confidence: 0.80,<br/>vote_counts: {Database: 4, Application: 1}}
         deactivate KNN
-    and Centroid Classifier (weight: 0.20)
+    and Centroid Classifier (weight: 0.30)
         Orch ->> Cent: classify_centroid(embedding, db)
         activate Cent
         Cent ->> Cent: _load_centroids(db) (1h cache)
@@ -124,7 +124,7 @@ sequenceDiagram
         Cent ->> Cent: _cosine_similarity() vs 6 centroids<br/>confidence = 0.5 + gap * 5
         Cent -->> Orch: {category: "Database", confidence: 0.87,<br/>distances: {Database: 0.92, ...}}
         deactivate Cent
-    and Keyword Classifier (weight: 0.10)
+    and Keyword Classifier (weight: 0.15)
         Orch ->> KW: classify_keyword(description)
         activate KW
         KW ->> KW: Match KEYWORD_DICT<br/>(25+ keywords x 6 categories)<br/>confidence = winner / total
@@ -136,14 +136,15 @@ sequenceDiagram
     Orch ->> Orch: graph_confirms = (graph_context.managed_by_domain == llm_category)
     Orch ->> Agg: aggregate(votes, quality_score="HIGH",<br/>error_codes=[{error_key: "ERR-DB-003", ...}],<br/>graph_confirms_category=true)
     activate Agg
-    Agg ->> Agg: _get_weights(active_votes)<br/>{llm: 0.40, knn: 0.30, centroid: 0.20, keyword: 0.10}
-    Agg ->> Agg: Step 1: Weighted category scores<br/>Database = 0.40*0.96 + 0.30*0.80 + 0.20*0.87 + 0.10*0.60 = 0.858
+    Agg ->> Agg: _get_weights(active_votes)<br/>{llm: 0.40, knn: 0.15, centroid: 0.30, keyword: 0.15}
+    Agg ->> Agg: Step 1: Weighted category scores<br/>Database = 0.40*0.96 + 0.15*0.80 + 0.30*0.87 + 0.15*0.60 = 0.855
     Agg ->> Agg: Step 2: Agreement 4/4 -> bonus +0.05
     Agg ->> Agg: Step 3: errors_confirm_category() -> +0.03<br/>graph_confirms -> +0.02
-    Agg ->> Agg: Step 4: Raw = 0.858 + 0.10 = 0.958
-    Agg ->> Agg: Step 5: Calibrate (4/4, raw>=0.90) -> 0.958 * 0.98 = 0.939
-    Agg ->> Agg: Step 6: Quality cap HIGH=0.99 -> min(0.939, 0.99) = 0.939
-    Agg -->> Orch: {category: "Database", secondary_category: null,<br/>priority: "critical", confidence: 0.939,<br/>agreement: "4/4", quality_score: "HIGH"}
+    Agg ->> Agg: Step 4: Raw = 0.855 + 0.10 = 0.955
+    Agg ->> Agg: Step 5: Calibrate (4/4, raw>=0.90) -> 0.955 * 0.98 = 0.936
+    Agg ->> Agg: Step 5.5: Disagreement safety: max_individual=0.96 > 0.60 -> skip cap
+    Agg ->> Agg: Step 6: Quality cap HIGH=0.99 -> min(0.936, 0.99) = 0.936
+    Agg -->> Orch: {category: "Database", secondary_category: null,<br/>priority: "critical", confidence: 0.936,<br/>agreement: "4/4", quality_score: "HIGH"}
     deactivate Agg
 
     Note over Orch, ArangoDB: Stage 5 -- Decision & Enrichment
@@ -154,7 +155,7 @@ sequenceDiagram
     ArangoDB -->> Orch: "KB-0003: PostgreSQL Emergency Recovery"
     Orch ->> Orch: recommended_expert = graph_context.experts[0].name<br/>= "Priya Sharma"
 
-    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.939, recommended_team: "Database Admin",<br/>suggested_resolution: [...], recommended_expert: "Priya Sharma",<br/>processing_time_ms: 2847, ...17 fields total}
+    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.936, recommended_team: "Database Admin",<br/>suggested_resolution: [...], recommended_expert: "Priya Sharma",<br/>processing_time_ms: 2147, ...17 fields total}
     deactivate Orch
 
     Note over API, ArangoDB: Post-Pipeline -- Persist & Respond
@@ -165,16 +166,16 @@ sequenceDiagram
         API ->> API: status = "escalated"
     end
 
-    API ->> ArangoDB: collection("tickets").insert({<br/>title, description, category: "Database",<br/>priority: "critical", status: "routed",<br/>confidence_score: 0.939, embedding: float[384],<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>resolution_effectiveness: 0.95,<br/>suggested_runbook: "KB-0003: PostgreSQL Emergency Recovery",<br/>recommended_expert: "Priya Sharma",<br/>_source: "user", ...})
+    API ->> ArangoDB: collection("tickets").insert({<br/>title, description, category: "Database",<br/>priority: "critical", status: "routed",<br/>confidence_score: 0.936, embedding: float[384],<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>resolution_effectiveness: 0.95,<br/>suggested_runbook: "KB-0003: PostgreSQL Emergency Recovery",<br/>recommended_expert: "Priya Sharma",<br/>_source: "user", ...})
     ArangoDB -->> API: {_key: "T-856"}
     Note right of ArangoDB: AI enrichment fields (suggested_resolution,<br/>resolution_effectiveness, suggested_runbook,<br/>recommended_expert) are stored directly<br/>in the ticket document — not just<br/>returned in the API response.
 
     API ->> API: _lookup_team_key(db, "Database Admin")
     API ->> ArangoDB: collection("assigned_to").insert({<br/>_from: "tickets/T-856", _to: "teams/db-admin"})
 
-    API ->> ArangoDB: collection("audit_log").insert({<br/>ticket_id: "T-856", action: "classified",<br/>actor: "ai-4-classifier-ensemble",<br/>new_value: {category: "Database", priority: "critical",<br/>team: "Database Admin"},<br/>confidence_score: 0.939,<br/>confidence_signals: {llm: 0.96, knn: 0.80,<br/>centroid: 0.87, keyword: 0.60}})
+    API ->> ArangoDB: collection("audit_log").insert({<br/>ticket_id: "T-856", action: "classified",<br/>actor: "ai-4-classifier-ensemble",<br/>new_value: {category: "Database", priority: "critical",<br/>team: "Database Admin"},<br/>confidence_score: 0.936,<br/>confidence_signals: {llm: 0.96, knn: 0.80,<br/>centroid: 0.87, keyword: 0.60}})
 
-    API -->> React: 201 Created<br/>TicketResponse {id: "T-856", category: "Database",<br/>status: "routed", confidence_score: 0.939,<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>recommended_expert: "Priya Sharma", ...}
+    API -->> React: 201 Created<br/>TicketResponse {id: "T-856", category: "Database",<br/>status: "routed", confidence_score: 0.936,<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>recommended_expert: "Priya Sharma", ...}
     React -->> User: Display routed ticket with<br/>AI reasoning, confidence, team,<br/>suggested resolution, expert
 ```
 
@@ -405,15 +406,15 @@ sequenceDiagram
     Note over Orch, KW: Stage 3 -- Classification (LLM SKIPPED)
     Orch ->> Orch: health.ollama == false<br/>logger.warning("Skipping LLM classifier (Ollama down)")
 
-    par KNN Classifier (re-weighted: 0.45)
+    par KNN Classifier (re-weighted: 0.25)
         Orch ->> KNN: classify_knn(context.similar_tickets, k=5)
         KNN -->> Orch: {category: "Database", confidence: 0.80,<br/>vote_counts: {Database: 4, Application: 1}}
-    and Centroid Classifier (re-weighted: 0.35)
+    and Centroid Classifier (re-weighted: 0.50)
         Orch ->> Cent: classify_centroid(embedding, db)
         Cent ->> ArangoDB: _load_centroids(db)
         ArangoDB -->> Cent: 6 centroids
         Cent -->> Orch: {category: "Database", confidence: 0.87,<br/>distances: {Database: 0.92, ...}}
-    and Keyword Classifier (re-weighted: 0.20)
+    and Keyword Classifier (re-weighted: 0.25)
         Orch ->> KW: classify_keyword(description)
         KW -->> Orch: {category: "Database", confidence: 0.60,<br/>scores: {Database: 3, ...}}
     end
@@ -421,8 +422,8 @@ sequenceDiagram
     Note over Orch, Agg: Stage 4 -- Aggregation (degraded weights)
     Orch ->> Agg: aggregate(votes={knn, centroid, keyword},<br/>quality_score="HIGH", error_codes=[...],<br/>graph_confirms_category=true)
     activate Agg
-    Agg ->> Agg: _get_weights(active_votes)<br/>llm not in active_keys<br/>Return DEGRADED_WEIGHTS["no_llm"]<br/>{knn: 0.45, centroid: 0.35, keyword: 0.20}
-    Agg ->> Agg: Weighted score:<br/>Database = 0.45*0.80 + 0.35*0.87 + 0.20*0.60 = 0.785
+    Agg ->> Agg: _get_weights(active_votes)<br/>llm not in active_keys<br/>Return DEGRADED_WEIGHTS["no_llm"]<br/>{knn: 0.25, centroid: 0.50, keyword: 0.25}
+    Agg ->> Agg: Weighted score:<br/>Database = 0.25*0.80 + 0.50*0.87 + 0.25*0.60 = 0.785
     Agg ->> Agg: Agreement: 3/3 -> +0.05<br/>Error confirm: +0.03<br/>Graph confirm: +0.02<br/>Raw = 0.785 + 0.10 = 0.885
     Agg ->> Agg: Calibrate (3/3, raw>=0.70): 0.885 * 0.95 = 0.841
     Agg ->> Agg: Quality cap HIGH=0.99: min(0.841, 0.99) = 0.841
@@ -435,7 +436,7 @@ sequenceDiagram
     Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.841, degradation_level: 2,<br/>processing_time_ms: ~250, ...}
     deactivate Orch
 
-    Note right of API: Level 2 Result:<br/>Correct category: Database<br/>Confidence: 0.841 (vs 0.939 at Level 4)<br/>Latency: ~250ms (vs ~2800ms at Level 4)<br/>LLM reasoning: not available<br/>Priority: "medium" (LLM not available for priority)
+    Note right of API: Level 2 Result:<br/>Correct category: Database<br/>Confidence: 0.841 (vs 0.936 at Level 4)<br/>Latency: ~250ms (vs ~2100ms at Level 4)<br/>LLM reasoning: not available<br/>Priority: "medium" (LLM not available for priority)
 ```
 
 ### Scenario B -- Level 1: Emergency Mode (Ollama Down, Database Empty)
@@ -530,10 +531,10 @@ sequenceDiagram
 | Aspect | Level 4 (Full) | Level 3 (No Data) | Level 2 (No LLM) | Level 1 (Emergency) |
 |--------|---------------|-------------------|-------------------|---------------------|
 | Classifiers | LLM + KNN + Centroid + Keyword | LLM + Keyword | KNN + Centroid + Keyword | Keyword only |
-| Weights | 0.40, 0.30, 0.20, 0.10 | 0.80, 0.20 | 0.45, 0.35, 0.20 | 1.00 |
+| Weights | 0.40, 0.15, 0.30, 0.15 | 0.80, 0.20 | 0.25, 0.50, 0.25 | 1.00 |
 | Retrieval | All 4 searches | None (no data) | All 4 searches | None (no data) |
 | Expected accuracy | ~90%+ | ~80% | ~70% | ~55% |
-| Typical latency | 2.5-5.5s | 2-5s (LLM dominates) | 150-300ms | 50-120ms |
+| Typical latency | 2-5s (parallel) | 2-5s (LLM dominates) | 150-300ms | 50-120ms |
 | Resolution suggestion | Yes (3 sources) | No (no past tickets) | Yes (3 sources) | No (no past tickets) |
 | Expert recommendation | Yes (from graph) | No (no graph data) | Yes (from graph) | No (no graph data) |
 | Auto-route likely? | Yes (high confidence) | Yes (LLM is strong) | Yes (if data-backed) | No (escalates to human) |

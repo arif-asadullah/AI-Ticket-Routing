@@ -372,13 +372,13 @@ class Settings(BaseSettings):
 | `_parse_llm_response` | `(text: str) -> dict` | `dict` | Extracts JSON from LLM output, handles markdown code blocks |
 | `classify_llm` | `async (title, description, context) -> dict` | `dict` | Sends to Ollama, validates category/priority/confidence |
 
-### 3.11 `services/knn_classifier.py` — KNN Classifier (weight: 0.30)
+### 3.11 `services/knn_classifier.py` — KNN Classifier (weight: 0.15)
 
 | Function | Signature | Returns | Description |
 |----------|-----------|---------|-------------|
 | `classify_knn` | `(similar_tickets, k=5) -> dict` | `dict` | Similarity-weighted voting on top K neighbors |
 
-### 3.12 `services/centroid_classifier.py` — Centroid Classifier (weight: 0.20)
+### 3.12 `services/centroid_classifier.py` — Centroid Classifier (weight: 0.30)
 
 | Function | Signature | Returns | Description |
 |----------|-----------|---------|-------------|
@@ -386,7 +386,7 @@ class Settings(BaseSettings):
 | `_load_centroids` | `(db) -> list[dict]` | `list[dict]` | Loads category_centroids from ArangoDB (1-hour in-memory cache) |
 | `classify_centroid` | `(embedding, db) -> dict` | `dict` | Compares embedding to 6 centroids, returns closest with gap-based confidence |
 
-### 3.13 `services/keyword_classifier.py` — Keyword Classifier (weight: 0.10)
+### 3.13 `services/keyword_classifier.py` — Keyword Classifier (weight: 0.15)
 
 | Function | Signature | Returns | Description |
 |----------|-----------|---------|-------------|
@@ -487,11 +487,13 @@ class Settings(BaseSettings):
 | 2c | Graph Traversal | `entities.servers[0]` | `GraphContext` (team, services, past tickets, experts) | ~30-80ms |
 | 2d | Fulltext Search | Top 5 keywords from description | Matching past tickets from FULLTEXT() index | ~10-30ms |
 
-### Stage 3: CLASSIFY (4 independent classifiers)
+### Stage 3: CLASSIFY (4 classifiers in parallel via `asyncio.gather()`)
+
+All 4 classifiers run concurrently. Total time = LLM time (~2s), not the sum of all 4.
 
 | Step | Classifier | Input | Output | Latency |
 |------|-----------|-------|--------|---------|
-| 3a | LLM (Qwen 2.5:3B) | title + description + full Stage 2 context | {category, priority, confidence, reasoning} | ~2,000-5,000ms |
+| 3a | LLM (Qwen 2.5:3B) | title + description + full Stage 2 context + 12 disambiguation rules + 6 few-shot examples | {category, priority, confidence, reasoning} | ~2,000ms |
 | 3b | KNN Voting | `context.similar_tickets` (top 5) | {category, confidence, neighbors, vote_counts} | ~1ms |
 | 3c | Centroid Distance | 384-dim embedding + cached centroids | {category, confidence, distances} | ~2ms |
 | 3d | Keyword Rules | description text | {category, confidence, scores} | ~1ms |
@@ -516,7 +518,7 @@ class Settings(BaseSettings):
 | 5d | Runbook Matching | category + resolution_steps | Runbook key + title | ~5ms |
 | 5e | Expert Recommendation | graph_context.experts | Best expert name | <1ms |
 
-**Total pipeline latency**: ~2,200-5,400ms (LLM-dominated). Without LLM (Level 2): ~100-300ms.
+**Total pipeline latency**: ~2,000ms (classifiers run in parallel via asyncio.gather — LLM-dominated). Without LLM (Level 2): ~100-300ms.
 
 ---
 
@@ -592,7 +594,7 @@ confidence = max(0.0, min(1.0, float(confidence)))
 
 ---
 
-### 5.2 KNN Classifier (weight: 0.30, accuracy: ~80%)
+### 5.2 KNN Classifier (weight: 0.15, accuracy: ~80%)
 
 **Algorithm**: Similarity-weighted K-Nearest Neighbors voting on vector search results.
 
@@ -640,7 +642,7 @@ confidence = count(neighbors agreeing with winner) / K
 
 ---
 
-### 5.3 Centroid Classifier (weight: 0.20, accuracy: ~75%)
+### 5.3 Centroid Classifier (weight: 0.30, accuracy: ~75%)
 
 **Algorithm**: Cosine distance to pre-computed category centroid embeddings.
 
@@ -708,7 +710,7 @@ confidence = min(0.5 + gap * 5, 0.99)
 
 ---
 
-### 5.4 Keyword Classifier (weight: 0.10, accuracy: ~55%)
+### 5.4 Keyword Classifier (weight: 0.15, accuracy: ~60%)
 
 **Algorithm**: Dictionary-based keyword counting per category.
 
@@ -739,12 +741,17 @@ KEYWORD_DICT = {
 3. **Compute scores** per category:
 
 ```python
-# From keyword_classifier.py
+# From keyword_classifier.py — uses word-boundary matching to avoid false positives
+import re
 for category, keywords in KEYWORD_DICT.items():
     score = 0
     for kw in keywords:
-        if kw in text_lower:
-            score += 1
+        if " " in kw:
+            if kw in text_lower:  # Multi-word: substring match
+                score += 1
+        else:
+            if re.search(r'\b' + re.escape(kw) + r'\b', text_lower):  # Single word: boundary match
+                score += 1
     scores[category] = score
 ```
 
@@ -776,17 +783,17 @@ Note: Despite Application winning keyword count, the KNN and Centroid classifier
 ### Constants
 
 ```python
-# From aggregator.py
+# From aggregator.py (tuned via eval — ATR-55)
 WEIGHTS = {
     "llm": 0.40,
-    "knn": 0.30,
-    "centroid": 0.20,
-    "keyword": 0.10,
+    "knn": 0.15,       # reduced from 0.30 — similar tickets less reliable than centroid
+    "centroid": 0.30,  # boosted from 0.20 — category center distance is very reliable
+    "keyword": 0.15,   # boosted from 0.10 — useful fallback after word-boundary fix
 }
 
 DEGRADED_WEIGHTS = {
     "no_data":    {"llm": 0.80, "keyword": 0.20},
-    "no_llm":     {"knn": 0.45, "centroid": 0.35, "keyword": 0.20},
+    "no_llm":     {"knn": 0.25, "centroid": 0.50, "keyword": 0.25},
     "emergency":  {"keyword": 1.0},
 }
 
@@ -808,8 +815,8 @@ weights = _get_weights(active_votes)
 ```
 
 Weight selection logic:
-- All 4 active: `{llm: 0.40, knn: 0.30, centroid: 0.20, keyword: 0.10}`
-- No LLM: `{knn: 0.45, centroid: 0.35, keyword: 0.20}`
+- All 4 active: `{llm: 0.40, knn: 0.15, centroid: 0.30, keyword: 0.15}`
+- No LLM: `{knn: 0.25, centroid: 0.50, keyword: 0.25}`
 - LLM + Keywords only: `{llm: 0.80, keyword: 0.20}`
 - Keywords only: `{keyword: 1.0}`
 - Other combination: even split `1.0 / n` per active classifier
@@ -873,6 +880,19 @@ else:
     calibrated = raw * 0.75     # Weak agreement → heavy dampening
 ```
 
+**Step 5.5: Disagreement Safety Check**
+
+Prevents dangerous high-confidence wrong routing. If no individual classifier has >60% confidence on the winning category, force low confidence to trigger escalation:
+
+```python
+max_individual_conf = max(
+    vote.get("confidence", 0) for vote in active_votes.values()
+    if vote["category"] == winner
+)
+if max_individual_conf < 0.60 and total_active >= 3:
+    calibrated = min(calibrated, 0.55)  # Force escalation
+```
+
 **Step 6: Quality Cap**
 
 ```python
@@ -906,11 +926,11 @@ if len(sorted_cats) >= 2 and sorted_cats[1][1] > 0.15:
 | Centroid | Database | 0.84 |
 | Keyword | Application | 0.60 |
 
-**Step 0**: All 4 active. Weights = `{llm: 0.40, knn: 0.30, centroid: 0.20, keyword: 0.10}`.
+**Step 0**: All 4 active. Weights = `{llm: 0.40, knn: 0.15, centroid: 0.30, keyword: 0.15}`.
 
 **Step 1**: Weighted scores:
 ```
-Database    = (0.40 * 0.92) + (0.30 * 0.80) + (0.20 * 0.84) = 0.368 + 0.240 + 0.168 = 0.776
+Database    = (0.40 * 0.92) + (0.15 * 0.80) + (0.30 * 0.84) + (0.15 * 0.60) = 0.368 + 0.120 + 0.252 + 0.090 = 0.830
 Application = (0.10 * 0.60) = 0.060
 ```
 Winner = **Database** (0.776).
