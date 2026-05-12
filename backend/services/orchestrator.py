@@ -16,6 +16,7 @@ Usage:
     result = await orchestrator.classify(title, description, db, redis_client)
 """
 
+import asyncio
 import logging
 import time
 from datetime import datetime, timezone
@@ -239,29 +240,47 @@ async def classify(
             "fulltext_matches": [],
         }
 
-    # ── Stage 3: Classify (based on degradation level) ──
+    # ── Stage 3: Classify (parallel execution — ATR-76) ──
+    # Run all available classifiers concurrently using asyncio.gather().
+    # LLM takes ~2-5s, others take <10ms — parallel = total time ≈ LLM time only.
     votes = {}
+    tasks = {}
 
     # Classifier 1: LLM (skip if Ollama down)
     if health["ollama"]:
-        votes["llm"] = await classify_llm(title, description, context)
+        tasks["llm"] = classify_llm(title, description, context)
     else:
         logger.warning("Skipping LLM classifier (Ollama down)")
 
-    # Classifier 2: KNN (skip if no data)
-    if health["db_has_data"] and context["similar_tickets"]:
-        votes["knn"] = classify_knn(context["similar_tickets"])
-    else:
+    # Classifiers 2-4: sync functions wrapped as coroutines to run in parallel with LLM
+    async def run_knn():
+        if health["db_has_data"] and context["similar_tickets"]:
+            return classify_knn(context["similar_tickets"])
         logger.info("Skipping KNN classifier (no data)")
+        return None
 
-    # Classifier 3: Centroid (skip if no data)
-    if health["db_has_data"] and db:
-        votes["centroid"] = classify_centroid(embedding, db=db)
-    else:
+    async def run_centroid():
+        if health["db_has_data"] and db:
+            return classify_centroid(embedding, db=db)
         logger.info("Skipping Centroid classifier (no data)")
+        return None
 
-    # Classifier 4: Keywords (always available)
-    votes["keyword"] = classify_keyword(description)
+    async def run_keyword():
+        return classify_keyword(description)
+
+    tasks["knn"] = run_knn()
+    tasks["centroid"] = run_centroid()
+    tasks["keyword"] = run_keyword()
+
+    # Run all classifiers in parallel
+    task_names = list(tasks.keys())
+    results_list = await asyncio.gather(*tasks.values(), return_exceptions=True)
+
+    for name, result in zip(task_names, results_list):
+        if isinstance(result, Exception):
+            logger.warning("Classifier %s failed: %s", name, result)
+        elif result is not None:
+            votes[name] = result
 
     # ── Stage 4: Aggregate ──
     graph_ctx = context.get("graph_context")
