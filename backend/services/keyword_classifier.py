@@ -1,10 +1,12 @@
 """
-Keyword Classifier — Classifier 4 (weight: 0.10)
+Keyword Classifier — Classifier 4 (weight: 0.15)
 
-Counts keyword matches per category. No AI, no database — pure string matching.
+Counts keyword matches per category using word-boundary matching.
 Fastest classifier (~1ms). Fallback when everything else is down.
-Accuracy: ~55% alone.
+Accuracy: ~55-60% alone.
 """
+
+import re
 
 KEYWORD_DICT = {
     "Infrastructure": [
@@ -65,8 +67,16 @@ def classify_keyword(text: str) -> dict:
     for category, keywords in KEYWORD_DICT.items():
         score = 0
         for kw in keywords:
-            if kw in text_lower:
-                score += 1
+            if " " in kw:
+                # Multi-word phrase: substring match is fine
+                if kw in text_lower:
+                    score += 1
+            else:
+                # Single word: use word boundary to avoid false positives
+                # "access" should NOT match "accessibility"
+                # "api" should NOT match "capital"
+                if re.search(r'\b' + re.escape(kw) + r'\b', text_lower):
+                    score += 1
         scores[category] = score
 
     total = sum(scores.values())

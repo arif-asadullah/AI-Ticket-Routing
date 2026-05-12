@@ -13,7 +13,7 @@
         "centroid": "Security",
         "keyword": "Infrastructure"
       },
-      "elapsed_ms": 12235
+      "elapsed_ms": 12088
     },
     {
       "title": "JWT secret key shared across all environments",
@@ -28,7 +28,7 @@
         "centroid": "Security",
         "keyword": "Application"
       },
-      "elapsed_ms": 2386
+      "elapsed_ms": 3049
     },
     {
       "title": "prod-app-02 down",
@@ -43,7 +43,7 @@
         "centroid": "Infrastructure",
         "keyword": "Network"
       },
-      "elapsed_ms": 2452
+      "elapsed_ms": 2555
     },
     {
       "title": "prod-app-01 down",
@@ -58,7 +58,7 @@
         "centroid": "Infrastructure",
         "keyword": "Network"
       },
-      "elapsed_ms": 2033
+      "elapsed_ms": 2351
     },
     {
       "title": "Network slowness",
@@ -73,7 +73,7 @@
         "centroid": "Network",
         "keyword": null
       },
-      "elapsed_ms": 1547
+      "elapsed_ms": 1761
     },
     {
       "title": "computer wont turn on",
@@ -88,7 +88,7 @@
         "centroid": "Infrastructure",
         "keyword": null
       },
-      "elapsed_ms": 2591
+      "elapsed_ms": 1841
     },
     {
       "title": "who approved access for Deepak Sharma??",
@@ -103,7 +103,7 @@
         "centroid": "Access Management",
         "keyword": null
       },
-      "elapsed_ms": 2037
+      "elapsed_ms": 1925
     },
     {
       "title": "Replication lag on staging-db-01 #6",
@@ -118,7 +118,7 @@
         "centroid": "Database",
         "keyword": "Database"
       },
-      "elapsed_ms": 2083
+      "elapsed_ms": 2411
     },
     {
       "title": "Application Performance Bottleneck",
@@ -133,7 +133,7 @@
         "centroid": "Application",
         "keyword": "Application"
       },
-      "elapsed_ms": 1832
+      "elapsed_ms": 1771
     },
     {
       "title": "System updates failed",
@@ -148,22 +148,22 @@
         "centroid": "Infrastructure",
         "keyword": "Infrastructure"
       },
-      "elapsed_ms": 1722
+      "elapsed_ms": 1704
     },
     {
       "title": "prod-k8s-master Load Distribution Issues",
       "ground_truth": "Network",
-      "predicted": "Network",
-      "correct": true,
-      "confidence": 0.175,
-      "agreement": "1/3",
+      "predicted": "Infrastructure",
+      "correct": false,
+      "confidence": 0.48,
+      "agreement": "2/3",
       "votes": {
-        "llm": "Network",
+        "llm": "Infrastructure",
         "knn": "Infrastructure",
         "centroid": "Application",
         "keyword": null
       },
-      "elapsed_ms": 1711
+      "elapsed_ms": 2273
     },
     {
       "title": "Network Latency Increase",
@@ -178,29 +178,29 @@
         "centroid": "Network",
         "keyword": "Network"
       },
-      "elapsed_ms": 1733
+      "elapsed_ms": 2260
     },
     {
       "title": "prod-mail-01 Incorrect Email Routing",
       "ground_truth": "Application",
       "predicted": "Network",
       "correct": false,
-      "confidence": 0.801,
-      "agreement": "4/4",
+      "confidence": 0.685,
+      "agreement": "3/3",
       "votes": {
         "llm": "Network",
         "knn": "Network",
         "centroid": "Network",
-        "keyword": "Network"
+        "keyword": null
       },
-      "elapsed_ms": 2040
+      "elapsed_ms": 2186
     },
     {
       "title": "Database replication lagging",
       "ground_truth": "Database",
       "predicted": "Database",
       "correct": true,
-      "confidence": 0.99,
+      "confidence": 0.967,
       "agreement": "4/4",
       "votes": {
         "llm": "Database",
@@ -208,22 +208,22 @@
         "centroid": "Database",
         "keyword": "Database"
       },
-      "elapsed_ms": 2563
+      "elapsed_ms": 2518
     },
     {
       "title": "Database Resource Limit Exceeded",
       "ground_truth": "Database",
       "predicted": "Database",
       "correct": true,
-      "confidence": 0.294,
-      "agreement": "2/4",
+      "confidence": 0.477,
+      "agreement": "2/3",
       "votes": {
         "llm": "Infrastructure",
         "knn": "Database",
         "centroid": "Database",
-        "keyword": "Application"
+        "keyword": null
       },
-      "elapsed_ms": 2857
+      "elapsed_ms": 2933
     },
     {
       "title": "email not sending",
@@ -238,7 +238,7 @@
         "centroid": "Application",
         "keyword": null
       },
-      "elapsed_ms": 1811
+      "elapsed_ms": 1833
     },
     {
       "title": "Connection leak detected \u2014 idle connections growing linearly",
@@ -253,14 +253,14 @@
         "centroid": "Database",
         "keyword": "Database"
       },
-      "elapsed_ms": 3444
+      "elapsed_ms": 3255
     },
     {
       "title": "Penetration test scheduled for next week \u2014 coordination need",
       "ground_truth": "Security",
       "predicted": "Security",
       "correct": true,
-      "confidence": 0.811,
+      "confidence": 0.85,
       "agreement": "4/4",
       "votes": {
         "llm": "Security",
@@ -268,7 +268,7 @@
         "centroid": "Security",
         "keyword": "Security"
       },
-      "elapsed_ms": 1935
+      "elapsed_ms": 2450
     },
     {
       "title": "Redis Cluster Synchronization Failure",
@@ -283,22 +283,22 @@
         "centroid": "Database",
         "keyword": "Database"
       },
-      "elapsed_ms": 1851
+      "elapsed_ms": 2025
     },
     {
       "title": "EMAILS NOT ARRIVING",
       "ground_truth": "Application",
       "predicted": "Application",
       "correct": true,
-      "confidence": 0.371,
-      "agreement": "2/3",
+      "confidence": 0.804,
+      "agreement": "3/3",
       "votes": {
-        "llm": "Network",
+        "llm": "Application",
         "knn": "Application",
         "centroid": "Application",
         "keyword": null
       },
-      "elapsed_ms": 1601
+      "elapsed_ms": 2276
     },
     {
       "title": "DNS Resolution Failure",
@@ -313,7 +313,7 @@
         "centroid": "Network",
         "keyword": "Network"
       },
-      "elapsed_ms": 1793
+      "elapsed_ms": 1963
     },
     {
       "title": "order history not loading",
@@ -328,14 +328,14 @@
         "centroid": "Database",
         "keyword": null
       },
-      "elapsed_ms": 2051
+      "elapsed_ms": 2390
     },
     {
       "title": "PostgreSQL Connection Pool Exhausted on prod-db-02",
       "ground_truth": "Database",
       "predicted": "Database",
       "correct": true,
-      "confidence": 0.983,
+      "confidence": 0.933,
       "agreement": "4/4",
       "votes": {
         "llm": "Database",
@@ -343,7 +343,7 @@
         "centroid": "Database",
         "keyword": "Database"
       },
-      "elapsed_ms": 2621
+      "elapsed_ms": 3236
     },
     {
       "title": "AuthService rate limiter blocking legitimate traffic",
@@ -358,7 +358,7 @@
         "centroid": "Security",
         "keyword": "Application"
       },
-      "elapsed_ms": 2492
+      "elapsed_ms": 2640
     },
     {
       "title": "new hire Ravi Kumar cant access anything",
@@ -373,7 +373,7 @@
         "centroid": "Access Management",
         "keyword": null
       },
-      "elapsed_ms": 1976
+      "elapsed_ms": 2403
     },
     {
       "title": "Multiple Login Failures Detected on auth-service",
@@ -388,7 +388,7 @@
         "centroid": "Security",
         "keyword": "Security"
       },
-      "elapsed_ms": 2257
+      "elapsed_ms": 2330
     },
     {
       "title": "Certificate-Based Authentication Failure in VPN",
@@ -403,7 +403,7 @@
         "centroid": "Security",
         "keyword": "Network"
       },
-      "elapsed_ms": 2540
+      "elapsed_ms": 2234
     },
     {
       "title": "React frontend build failing \u2014 node_modules corruption",
@@ -418,22 +418,22 @@
         "centroid": "Infrastructure",
         "keyword": "Application"
       },
-      "elapsed_ms": 2619
+      "elapsed_ms": 3403
     },
     {
       "title": "Grafana Dashboard Access Issue",
       "ground_truth": "Application",
       "predicted": "Application",
       "correct": true,
-      "confidence": 0.942,
-      "agreement": "4/4",
+      "confidence": 0.409,
+      "agreement": "3/4",
       "votes": {
-        "llm": "Application",
+        "llm": "Access Management",
         "knn": "Application",
         "centroid": "Application",
         "keyword": "Application"
       },
-      "elapsed_ms": 1924
+      "elapsed_ms": 1951
     },
     {
       "title": "PROD-K8S-NODE-01 DOWN [SENT FROM IPHONE]",
@@ -448,7 +448,7 @@
         "centroid": "Infrastructure",
         "keyword": "Infrastructure"
       },
-      "elapsed_ms": 2353
+      "elapsed_ms": 3136
     },
     {
       "title": "2FA app showing wrong code btw im using a Dell laptop",
@@ -463,22 +463,22 @@
         "centroid": "Access Management",
         "keyword": "Access Management"
       },
-      "elapsed_ms": 2267
+      "elapsed_ms": 3166
     },
     {
       "title": "exchange server queue buildup",
       "ground_truth": "Infrastructure",
-      "predicted": "Network",
+      "predicted": "Application",
       "correct": false,
-      "confidence": 0.356,
-      "agreement": "2/4",
+      "confidence": 0.404,
+      "agreement": "3/4",
       "votes": {
-        "llm": "Network",
+        "llm": "Application",
         "knn": "Application",
         "centroid": "Network",
         "keyword": "Application"
       },
-      "elapsed_ms": 2379
+      "elapsed_ms": 2798
     },
     {
       "title": "Role-Based Access Control Not Reflecting Recent Changes",
@@ -486,14 +486,14 @@
       "predicted": "Access Management",
       "correct": true,
       "confidence": 0.85,
-      "agreement": "4/4",
+      "agreement": "3/3",
       "votes": {
         "llm": "Access Management",
         "knn": "Access Management",
         "centroid": "Access Management",
-        "keyword": "Access Management"
+        "keyword": null
       },
-      "elapsed_ms": 2028
+      "elapsed_ms": 2450
     },
     {
       "title": "GDPR data deletion request backlog \u2014 200 pending requests",
@@ -508,22 +508,22 @@
         "centroid": "Database",
         "keyword": null
       },
-      "elapsed_ms": 2585
+      "elapsed_ms": 2725
     },
     {
       "title": "Nginx reverse proxy failed",
       "ground_truth": "Infrastructure",
       "predicted": "Application",
       "correct": false,
-      "confidence": 0.505,
-      "agreement": "2/3",
+      "confidence": 0.99,
+      "agreement": "3/3",
       "votes": {
-        "llm": "Network",
+        "llm": "Application",
         "knn": "Application",
         "centroid": "Application",
         "keyword": null
       },
-      "elapsed_ms": 1966
+      "elapsed_ms": 2932
     },
     {
       "title": "User locked out",
@@ -538,22 +538,22 @@
         "centroid": "Access Management",
         "keyword": "Access Management"
       },
-      "elapsed_ms": 1889
+      "elapsed_ms": 2149
     },
     {
       "title": "prod-web-01 HTTP 500 Errors",
       "ground_truth": "Application",
-      "predicted": "Infrastructure",
-      "correct": false,
-      "confidence": 0.312,
-      "agreement": "2/4",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.499,
+      "agreement": "3/4",
       "votes": {
-        "llm": "Infrastructure",
+        "llm": "Application",
         "knn": "Infrastructure",
         "centroid": "Application",
         "keyword": "Application"
       },
-      "elapsed_ms": 3015
+      "elapsed_ms": 3637
     },
     {
       "title": "Server not booting up",
@@ -568,7 +568,7 @@
         "centroid": "Infrastructure",
         "keyword": "Infrastructure"
       },
-      "elapsed_ms": 2136
+      "elapsed_ms": 2211
     },
     {
       "title": "Password Reset NOT WORKING!!!",
@@ -583,7 +583,7 @@
         "centroid": "Access Management",
         "keyword": "Access Management"
       },
-      "elapsed_ms": 1893
+      "elapsed_ms": 2254
     },
     {
       "title": "Network Configuration Anomaly",
@@ -598,7 +598,7 @@
         "centroid": "Network",
         "keyword": null
       },
-      "elapsed_ms": 1812
+      "elapsed_ms": 2330
     },
     {
       "title": "AWS access keys found in GitHub public repo",
@@ -613,7 +613,7 @@
         "centroid": "Security",
         "keyword": "Application"
       },
-      "elapsed_ms": 2305
+      "elapsed_ms": 2894
     },
     {
       "title": "SSL CERTIFICATE EXPIRED",
@@ -628,7 +628,7 @@
         "centroid": "Access Management",
         "keyword": "Network"
       },
-      "elapsed_ms": 1658
+      "elapsed_ms": 2412
     },
     {
       "title": "LDAP Bind Failure: Service Account Locked",
@@ -643,14 +643,14 @@
         "centroid": "Access Management",
         "keyword": "Access Management"
       },
-      "elapsed_ms": 2978
+      "elapsed_ms": 3835
     },
     {
       "title": "Kubernetes Pod Eviction on prod-k8s-node-02",
       "ground_truth": "Infrastructure",
       "predicted": "Infrastructure",
       "correct": true,
-      "confidence": 0.958,
+      "confidence": 0.99,
       "agreement": "4/4",
       "votes": {
         "llm": "Infrastructure",
@@ -658,7 +658,7 @@
         "centroid": "Infrastructure",
         "keyword": "Infrastructure"
       },
-      "elapsed_ms": 2902
+      "elapsed_ms": 3919
     },
     {
       "title": "Unauthorized firewall rule change",
@@ -673,14 +673,14 @@
         "centroid": "Security",
         "keyword": "Security"
       },
-      "elapsed_ms": 1640
+      "elapsed_ms": 2449
     },
     {
       "title": "cant access internal wiki",
       "ground_truth": "Network",
       "predicted": "Network",
       "correct": true,
-      "confidence": 0.195,
+      "confidence": 0.225,
       "agreement": "1/4",
       "votes": {
         "llm": "Network",
@@ -688,7 +688,7 @@
         "centroid": "Access Management",
         "keyword": "Application"
       },
-      "elapsed_ms": 1548
+      "elapsed_ms": 1930
     },
     {
       "title": "Network Latency Affecting API Gateway",
@@ -703,29 +703,29 @@
         "centroid": "Network",
         "keyword": "Infrastructure"
       },
-      "elapsed_ms": 1879
+      "elapsed_ms": 2469
     },
     {
       "title": "Unencrypted PII in application debug logs",
       "ground_truth": "Security",
-      "predicted": "Security",
-      "correct": true,
-      "confidence": 0.195,
-      "agreement": "1/4",
+      "predicted": "Application",
+      "correct": false,
+      "confidence": 0.389,
+      "agreement": "2/3",
       "votes": {
-        "llm": "Security",
+        "llm": "Application",
         "knn": "Application",
         "centroid": "Database",
-        "keyword": "Application"
+        "keyword": null
       },
-      "elapsed_ms": 2705
+      "elapsed_ms": 3178
     },
     {
       "title": "Kubernetes Pod Resource Starvation",
       "ground_truth": "Infrastructure",
       "predicted": "Infrastructure",
       "correct": true,
-      "confidence": 0.958,
+      "confidence": 0.967,
       "agreement": "4/4",
       "votes": {
         "llm": "Infrastructure",
@@ -733,20 +733,20 @@
         "centroid": "Infrastructure",
         "keyword": "Infrastructure"
       },
-      "elapsed_ms": 2888
+      "elapsed_ms": 3947
     }
   ],
   "summary": {
-    "accuracy": 0.8571428571428571,
+    "accuracy": 0.8367346938775511,
     "total": 49,
-    "correct": 42,
+    "correct": 41,
     "per_category": {
       "Access Management": {
         "correct": 7,
         "total": 8
       },
       "Application": {
-        "correct": 6,
+        "correct": 7,
         "total": 8
       },
       "Database": {
@@ -758,11 +758,11 @@
         "total": 10
       },
       "Network": {
-        "correct": 7,
+        "correct": 6,
         "total": 8
       },
       "Security": {
-        "correct": 6,
+        "correct": 5,
         "total": 7
       }
     }
