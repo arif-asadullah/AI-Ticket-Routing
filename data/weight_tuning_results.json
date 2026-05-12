@@ -1,0 +1,120 @@
+{
+  "current_weights": {
+    "llm": 0.4,
+    "knn": 0.3,
+    "centroid": 0.2,
+    "keyword": 0.1
+  },
+  "current_accuracy": 0.8571428571428571,
+  "best_weights": {
+    "llm": 0.35,
+    "knn": 0.05,
+    "centroid": 0.35,
+    "keyword": 0.25
+  },
+  "best_accuracy": 0.8775510204081632,
+  "improvement": 0.020408163265306145,
+  "tested_combinations": 969,
+  "top_10": [
+    {
+      "weights": {
+        "llm": 0.35,
+        "knn": 0.05,
+        "centroid": 0.35,
+        "keyword": 0.25
+      },
+      "accuracy": 0.8775510204081632,
+      "correct": 43
+    },
+    {
+      "weights": {
+        "llm": 0.35,
+        "knn": 0.1,
+        "centroid": 0.3,
+        "keyword": 0.25
+      },
+      "accuracy": 0.8775510204081632,
+      "correct": 43
+    },
+    {
+      "weights": {
+        "llm": 0.35,
+        "knn": 0.1,
+        "centroid": 0.35,
+        "keyword": 0.2
+      },
+      "accuracy": 0.8775510204081632,
+      "correct": 43
+    },
+    {
+      "weights": {
+        "llm": 0.4,
+        "knn": 0.05,
+        "centroid": 0.4,
+        "keyword": 0.15
+      },
+      "accuracy": 0.8775510204081632,
+      "correct": 43
+    },
+    {
+      "weights": {
+        "llm": 0.3,
+        "knn": 0.1,
+        "centroid": 0.3,
+        "keyword": 0.3
+      },
+      "accuracy": 0.8571428571428571,
+      "correct": 42
+    },
+    {
+      "weights": {
+        "llm": 0.3,
+        "knn": 0.15,
+        "centroid": 0.25,
+        "keyword": 0.3
+      },
+      "accuracy": 0.8571428571428571,
+      "correct": 42
+    },
+    {
+      "weights": {
+        "llm": 0.3,
+        "knn": 0.15,
+        "centroid": 0.3,
+        "keyword": 0.25
+      },
+      "accuracy": 0.8571428571428571,
+      "correct": 42
+    },
+    {
+      "weights": {
+        "llm": 0.35,
+        "knn": 0.15,
+        "centroid": 0.3,
+        "keyword": 0.2
+      },
+      "accuracy": 0.8571428571428571,
+      "correct": 42
+    },
+    {
+      "weights": {
+        "llm": 0.35,
+        "knn": 0.15,
+        "centroid": 0.35,
+        "keyword": 0.15
+      },
+      "accuracy": 0.8571428571428571,
+      "correct": 42
+    },
+    {
+      "weights": {
+        "llm": 0.35,
+        "knn": 0.2,
+        "centroid": 0.3,
+        "keyword": 0.15
+      },
+      "accuracy": 0.8571428571428571,
+      "correct": 42
+    }
+  ]
+}

@@ -12,12 +12,15 @@ from backend.services.error_scanner import errors_confirm_category
 
 logger = logging.getLogger(__name__)
 
-# Default classifier weights
+# Default classifier weights (tuned via eval — ATR-55)
+# Centroid boosted from 0.20→0.30 (reliable category center signal)
+# KNN reduced from 0.30→0.15 (similar tickets less reliable than centroid)
+# Keyword boosted from 0.10→0.15 (useful fallback signal)
 WEIGHTS = {
     "llm": 0.40,
-    "knn": 0.30,
-    "centroid": 0.20,
-    "keyword": 0.10,
+    "knn": 0.15,
+    "centroid": 0.30,
+    "keyword": 0.15,
 }
 
 # Degradation weight redistribution
@@ -25,7 +28,7 @@ DEGRADED_WEIGHTS = {
     # Level 3: No graph data (LLM + Keywords only)
     "no_data": {"llm": 0.80, "keyword": 0.20},
     # Level 2: No LLM (KNN + Centroid + Keywords)
-    "no_llm": {"knn": 0.45, "centroid": 0.35, "keyword": 0.20},
+    "no_llm": {"knn": 0.25, "centroid": 0.50, "keyword": 0.25},
     # Level 1: Emergency (Keywords only)
     "emergency": {"keyword": 1.0},
 }
