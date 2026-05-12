@@ -1,0 +1,770 @@
+{
+  "results": [
+    {
+      "title": "SECURITY UPDATE REQUIRED",
+      "ground_truth": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Security",
+        "centroid": "Security",
+        "keyword": "Infrastructure"
+      },
+      "elapsed_ms": 11440
+    },
+    {
+      "title": "JWT secret key shared across all environments",
+      "ground_truth": "Security",
+      "predicted": "Access Management",
+      "correct": false,
+      "confidence": 0.225,
+      "agreement": "1/4",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Application",
+        "centroid": "Security",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 2594
+    },
+    {
+      "title": "prod-app-02 down",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.555,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": "Network"
+      },
+      "elapsed_ms": 2730
+    },
+    {
+      "title": "prod-app-01 down",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.522,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": "Network"
+      },
+      "elapsed_ms": 2039
+    },
+    {
+      "title": "Network slowness",
+      "ground_truth": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.807,
+      "agreement": "3/3",
+      "votes": {
+        "llm": "Network",
+        "knn": "Network",
+        "centroid": "Network",
+        "keyword": null
+      },
+      "elapsed_ms": 1865
+    },
+    {
+      "title": "computer wont turn on",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.742,
+      "agreement": "3/3",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": null
+      },
+      "elapsed_ms": 2302
+    },
+    {
+      "title": "who approved access for Deepak Sharma??",
+      "ground_truth": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "3/3",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Access Management",
+        "centroid": "Access Management",
+        "keyword": null
+      },
+      "elapsed_ms": 1918
+    },
+    {
+      "title": "Replication lag on staging-db-01 #6",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.929,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Database",
+        "knn": "Database",
+        "centroid": "Database",
+        "keyword": "Database"
+      },
+      "elapsed_ms": 2048
+    },
+    {
+      "title": "Application Performance Bottleneck",
+      "ground_truth": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.508,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Application",
+        "knn": "Network",
+        "centroid": "Application",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 1827
+    },
+    {
+      "title": "System updates failed",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.509,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Application",
+        "centroid": "Infrastructure",
+        "keyword": "Infrastructure"
+      },
+      "elapsed_ms": 1746
+    },
+    {
+      "title": "prod-k8s-master Load Distribution Issues",
+      "ground_truth": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.175,
+      "agreement": "1/3",
+      "votes": {
+        "llm": "Network",
+        "knn": "Infrastructure",
+        "centroid": "Application",
+        "keyword": null
+      },
+      "elapsed_ms": 1687
+    },
+    {
+      "title": "Network Latency Increase",
+      "ground_truth": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Network",
+        "knn": "Network",
+        "centroid": "Network",
+        "keyword": "Network"
+      },
+      "elapsed_ms": 1853
+    },
+    {
+      "title": "prod-mail-01 Incorrect Email Routing",
+      "ground_truth": "Application",
+      "predicted": "Network",
+      "correct": false,
+      "confidence": 0.753,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Network",
+        "knn": "Network",
+        "centroid": "Network",
+        "keyword": "Network"
+      },
+      "elapsed_ms": 2157
+    },
+    {
+      "title": "Database replication lagging",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.478,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Network",
+        "knn": "Database",
+        "centroid": "Database",
+        "keyword": "Database"
+      },
+      "elapsed_ms": 2370
+    },
+    {
+      "title": "Database Resource Limit Exceeded",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.31,
+      "agreement": "2/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Database",
+        "centroid": "Database",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 2834
+    },
+    {
+      "title": "email not sending",
+      "ground_truth": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.523,
+      "agreement": "2/3",
+      "votes": {
+        "llm": "Application",
+        "knn": "Network",
+        "centroid": "Application",
+        "keyword": null
+      },
+      "elapsed_ms": 1873
+    },
+    {
+      "title": "Connection leak detected \u2014 idle connections growing linearly",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.964,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Database",
+        "knn": "Database",
+        "centroid": "Database",
+        "keyword": "Database"
+      },
+      "elapsed_ms": 3322
+    },
+    {
+      "title": "Penetration test scheduled for next week \u2014 coordination need",
+      "ground_truth": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.759,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Security",
+        "centroid": "Security",
+        "keyword": "Security"
+      },
+      "elapsed_ms": 2310
+    },
+    {
+      "title": "Redis Cluster Synchronization Failure",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.531,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Database",
+        "knn": "Application",
+        "centroid": "Database",
+        "keyword": "Database"
+      },
+      "elapsed_ms": 1915
+    },
+    {
+      "title": "EMAILS NOT ARRIVING",
+      "ground_truth": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.371,
+      "agreement": "2/3",
+      "votes": {
+        "llm": "Network",
+        "knn": "Application",
+        "centroid": "Application",
+        "keyword": null
+      },
+      "elapsed_ms": 1658
+    },
+    {
+      "title": "DNS Resolution Failure",
+      "ground_truth": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Network",
+        "knn": "Network",
+        "centroid": "Network",
+        "keyword": "Network"
+      },
+      "elapsed_ms": 1832
+    },
+    {
+      "title": "order history not loading",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.422,
+      "agreement": "2/3",
+      "votes": {
+        "llm": "Database",
+        "knn": "Application",
+        "centroid": "Database",
+        "keyword": null
+      },
+      "elapsed_ms": 1869
+    },
+    {
+      "title": "PostgreSQL Connection Pool Exhausted on prod-db-02",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.99,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Database",
+        "knn": "Database",
+        "centroid": "Database",
+        "keyword": "Database"
+      },
+      "elapsed_ms": 2795
+    },
+    {
+      "title": "AuthService rate limiter blocking legitimate traffic",
+      "ground_truth": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.456,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Application",
+        "knn": "Application",
+        "centroid": "Security",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 2512
+    },
+    {
+      "title": "new hire Ravi Kumar cant access anything",
+      "ground_truth": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "3/3",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Access Management",
+        "centroid": "Access Management",
+        "keyword": null
+      },
+      "elapsed_ms": 1860
+    },
+    {
+      "title": "Multiple Login Failures Detected on auth-service",
+      "ground_truth": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.427,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Application",
+        "centroid": "Security",
+        "keyword": "Security"
+      },
+      "elapsed_ms": 2532
+    },
+    {
+      "title": "Certificate-Based Authentication Failure in VPN",
+      "ground_truth": "Access Management",
+      "predicted": "Security",
+      "correct": false,
+      "confidence": 0.555,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Security",
+        "centroid": "Security",
+        "keyword": "Network"
+      },
+      "elapsed_ms": 2296
+    },
+    {
+      "title": "React frontend build failing \u2014 node_modules corruption",
+      "ground_truth": "Application",
+      "predicted": "Infrastructure",
+      "correct": false,
+      "confidence": 0.309,
+      "agreement": "2/4",
+      "votes": {
+        "llm": "Application",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 2932
+    },
+    {
+      "title": "Grafana Dashboard Access Issue",
+      "ground_truth": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.971,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Application",
+        "knn": "Application",
+        "centroid": "Application",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 1985
+    },
+    {
+      "title": "PROD-K8S-NODE-01 DOWN [SENT FROM IPHONE]",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.988,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": "Infrastructure"
+      },
+      "elapsed_ms": 2491
+    },
+    {
+      "title": "2FA app showing wrong code btw im using a Dell laptop",
+      "ground_truth": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Access Management",
+        "centroid": "Access Management",
+        "keyword": "Access Management"
+      },
+      "elapsed_ms": 2408
+    },
+    {
+      "title": "exchange server queue buildup",
+      "ground_truth": "Infrastructure",
+      "predicted": "Network",
+      "correct": false,
+      "confidence": 0.31,
+      "agreement": "2/4",
+      "votes": {
+        "llm": "Network",
+        "knn": "Application",
+        "centroid": "Network",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 2652
+    },
+    {
+      "title": "Role-Based Access Control Not Reflecting Recent Changes",
+      "ground_truth": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Access Management",
+        "centroid": "Access Management",
+        "keyword": "Access Management"
+      },
+      "elapsed_ms": 2088
+    },
+    {
+      "title": "GDPR data deletion request backlog \u2014 200 pending requests",
+      "ground_truth": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.374,
+      "agreement": "2/3",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Database",
+        "centroid": "Database",
+        "keyword": null
+      },
+      "elapsed_ms": 2834
+    },
+    {
+      "title": "Nginx reverse proxy failed",
+      "ground_truth": "Infrastructure",
+      "predicted": "Application",
+      "correct": false,
+      "confidence": 0.505,
+      "agreement": "2/3",
+      "votes": {
+        "llm": "Network",
+        "knn": "Application",
+        "centroid": "Application",
+        "keyword": null
+      },
+      "elapsed_ms": 2279
+    },
+    {
+      "title": "User locked out",
+      "ground_truth": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Access Management",
+        "centroid": "Access Management",
+        "keyword": "Access Management"
+      },
+      "elapsed_ms": 2128
+    },
+    {
+      "title": "prod-web-01 HTTP 500 Errors",
+      "ground_truth": "Application",
+      "predicted": "Infrastructure",
+      "correct": false,
+      "confidence": 0.36,
+      "agreement": "2/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Application",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 2963
+    },
+    {
+      "title": "Server not booting up",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": "Infrastructure"
+      },
+      "elapsed_ms": 2487
+    },
+    {
+      "title": "Password Reset NOT WORKING!!!",
+      "ground_truth": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.558,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Security",
+        "centroid": "Access Management",
+        "keyword": "Access Management"
+      },
+      "elapsed_ms": 2323
+    },
+    {
+      "title": "Network Configuration Anomaly",
+      "ground_truth": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "3/3",
+      "votes": {
+        "llm": "Network",
+        "knn": "Network",
+        "centroid": "Network",
+        "keyword": null
+      },
+      "elapsed_ms": 2001
+    },
+    {
+      "title": "AWS access keys found in GitHub public repo",
+      "ground_truth": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.775,
+      "agreement": "3/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Security",
+        "centroid": "Security",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 3038
+    },
+    {
+      "title": "SSL CERTIFICATE EXPIRED",
+      "ground_truth": "Network",
+      "predicted": "Security",
+      "correct": false,
+      "confidence": 0.472,
+      "agreement": "2/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Security",
+        "centroid": "Access Management",
+        "keyword": "Network"
+      },
+      "elapsed_ms": 2228
+    },
+    {
+      "title": "LDAP Bind Failure: Service Account Locked",
+      "ground_truth": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.99,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Access Management",
+        "knn": "Access Management",
+        "centroid": "Access Management",
+        "keyword": "Access Management"
+      },
+      "elapsed_ms": 3687
+    },
+    {
+      "title": "Kubernetes Pod Eviction on prod-k8s-node-02",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.975,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": "Infrastructure"
+      },
+      "elapsed_ms": 4467
+    },
+    {
+      "title": "Unauthorized firewall rule change",
+      "ground_truth": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.844,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Security",
+        "centroid": "Security",
+        "keyword": "Security"
+      },
+      "elapsed_ms": 2273
+    },
+    {
+      "title": "cant access internal wiki",
+      "ground_truth": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.195,
+      "agreement": "1/4",
+      "votes": {
+        "llm": "Network",
+        "knn": "Infrastructure",
+        "centroid": "Access Management",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 2060
+    },
+    {
+      "title": "Network Latency Affecting API Gateway",
+      "ground_truth": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.428,
+      "agreement": "2/4",
+      "votes": {
+        "llm": "Network",
+        "knn": "Application",
+        "centroid": "Network",
+        "keyword": "Infrastructure"
+      },
+      "elapsed_ms": 2619
+    },
+    {
+      "title": "Unencrypted PII in application debug logs",
+      "ground_truth": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.195,
+      "agreement": "1/4",
+      "votes": {
+        "llm": "Security",
+        "knn": "Application",
+        "centroid": "Database",
+        "keyword": "Application"
+      },
+      "elapsed_ms": 3648
+    },
+    {
+      "title": "Kubernetes Pod Resource Starvation",
+      "ground_truth": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.975,
+      "agreement": "4/4",
+      "votes": {
+        "llm": "Infrastructure",
+        "knn": "Infrastructure",
+        "centroid": "Infrastructure",
+        "keyword": "Infrastructure"
+      },
+      "elapsed_ms": 3977
+    }
+  ],
+  "summary": {
+    "accuracy": 0.8367346938775511,
+    "total": 49,
+    "correct": 41,
+    "per_category": {
+      "Access Management": {
+        "correct": 7,
+        "total": 8
+      },
+      "Application": {
+        "correct": 5,
+        "total": 8
+      },
+      "Database": {
+        "correct": 8,
+        "total": 8
+      },
+      "Infrastructure": {
+        "correct": 8,
+        "total": 10
+      },
+      "Network": {
+        "correct": 7,
+        "total": 8
+      },
+      "Security": {
+        "correct": 6,
+        "total": 7
+      }
+    }
+  }
+}

@@ -22,6 +22,7 @@ This folder documents everything we've built, step by step, so any developer can
 | [Phase 6: Ticket Lifecycle](phase6-ticket-lifecycle.md) | Full lifecycle: status updates, resolve, resolution suggestions, Jira cleanup | Done |
 | [Phase 7: Auth & RBAC](phase7-rbac-auth.md) | JWT auth, 3 roles (admin/engineer/user), team-scoped access, user management UI | Done |
 | [Phase 8: Domain Dashboard](phase8-domain-dashboard.md) | Domain dashboard, ticket detail, resolve form, feedback, Storage→Access Management rename | Done |
+| [Phase 9: Eval & Label Cleanup](phase9-eval-label-cleanup.md) | Eval script, 48 mislabeled tickets fixed, accuracy 78%→83.7% | Done |
 
 ## Tech Stack
 
@@ -78,6 +79,7 @@ If you're new to the project, read in this order:
 7. Phase 6 — understand the ticket lifecycle (status, resolve, feedback loop)
 8. Phase 7 — understand authentication and RBAC (roles, team-scoping, JWT)
 9. Phase 8 — understand the domain dashboard (ticket lifecycle UI, resolve, feedback)
+10. Phase 9 — understand accuracy evaluation and label quality
 
 For architecture details, see `docs/architecture/`.
 For database schema details, see `docs/schema/`.

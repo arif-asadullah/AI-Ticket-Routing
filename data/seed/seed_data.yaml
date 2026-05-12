@@ -1251,7 +1251,7 @@ tickets:
   classifier_votes: null
 - title: LDAP user locked out after password change
   description: User meera.patel@company.com is locked out of all systems after changing their password. LDAP showing invalid credentials error. Password change may not have replicated to all domain controllers.
-  category: Security
+  category: Access Management
   priority: medium
   status: closed
   submitted_by: meera.patel@company.com
@@ -1302,7 +1302,7 @@ tickets:
   classifier_votes: null
 - title: API Gateway token expired for service account
   description: Service account svc-orderservice has an expired JWT token on the API Gateway. All service-to-service calls from OrderService are being rejected with 401 Unauthorized.
-  category: Security
+  category: Access Management
   priority: high
   status: closed
   submitted_by: imran.sheikh@company.com
@@ -1351,7 +1351,7 @@ tickets:
   classifier_votes: null
 - title: Expired service account credentials blocking CI/CD
   description: CI/CD pipeline cannot deploy to Kubernetes because the service account token for the deploy-bot has expired. All deployments are stuck in pending state. 3 releases waiting.
-  category: Security
+  category: Access Management
   priority: high
   status: closed
   submitted_by: vikram.singh@company.com
