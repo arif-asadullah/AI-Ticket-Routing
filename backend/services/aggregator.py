@@ -130,6 +130,21 @@ def aggregate(
     else:
         calibrated = raw * 0.75
 
+    # Step 5.5: Disagreement safety check
+    # If no individual classifier is confident enough about the winner, cap confidence
+    # This prevents high-confidence wrong routing (e.g., 4/4 agree but all are guessing)
+    max_individual_conf = 0.0
+    for clf, vote in active_votes.items():
+        if vote["category"] == winner:
+            clf_conf = vote.get("confidence", 0)
+            if clf_conf > max_individual_conf:
+                max_individual_conf = clf_conf
+
+    if max_individual_conf < 0.60 and total_active >= 3:
+        # No classifier is confident — force low confidence to trigger escalation
+        calibrated = min(calibrated, 0.55)
+        logger.info("Disagreement safety: max individual confidence %.2f < 0.60, capping at 0.55", max_individual_conf)
+
     # Step 6: Quality cap
     cap = QUALITY_CAPS.get(quality_score, 0.99)
     final_confidence = min(max(calibrated, 0.0), cap)
