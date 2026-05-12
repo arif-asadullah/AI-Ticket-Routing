@@ -56,7 +56,7 @@
   {
     "title": "Can't login to system",
     "description": "LOGIN ERROR! can't get into my account. password not working. pls resolve",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -160,7 +160,7 @@
   {
     "title": "Grafana dashboards empty",
     "description": "nothing showing on grafana, must check metrics! nothing loads",
-    "category": "Infrastructure",
+    "category": "Application",
     "priority": "medium",
     "affects_servers": [
       "prod-mon-01"
@@ -420,7 +420,7 @@
   {
     "title": "Redis cache miss",
     "description": "getting cache misses! REDIS not caching, what's wrong??",
-    "category": "Application",
+    "category": "Database",
     "priority": "high",
     "affects_servers": [
       "prod-app-02"
@@ -447,7 +447,7 @@
   {
     "title": "User locked out",
     "description": "can't login! says I'm locked out, NEED ACCESS NOW!!",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "medium",
     "affects_servers": [
       "prod-ldap-01"
@@ -700,7 +700,7 @@
   {
     "title": "GOT LOCKED OUT!!",
     "description": "I was just working and suddenly got locked out! Can't log back in, HELP!!!",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [],
     "affects_services": [
@@ -969,7 +969,7 @@
   {
     "title": "Redis cache overload",
     "description": "Cache is overloaded and slowing down everythinggg, FIX IT NOW!!!",
-    "category": "Application",
+    "category": "Database",
     "priority": "critical",
     "affects_servers": [
       "prod-app-01"
@@ -1046,7 +1046,7 @@
   {
     "title": "Kubernetes pod crash",
     "description": "Pods are crashing constantly in Kubernetes, can't keep them running!!!",
-    "category": "Application",
+    "category": "Infrastructure",
     "priority": "high",
     "affects_servers": [
       "prod-k8s-node-02"
@@ -1419,7 +1419,7 @@
   {
     "title": "Web app not loading dashboards",
     "description": "Can\u2019t see any dashboards!! NEED them for daily reports! Fix ASAP",
-    "category": "Infrastructure",
+    "category": "Application",
     "priority": "high",
     "affects_servers": [
       "prod-app-03"
@@ -1575,7 +1575,7 @@
   {
     "title": "Active Directory authentication delay",
     "description": "prod-ldap-01 shows high response times for authentication requests as of 2026-04-14T10:00Z. Average response time of 500ms exceeds threshold of 200ms.",
-    "category": "Application",
+    "category": "Access Management",
     "priority": "medium",
     "affects_servers": [
       "prod-ldap-01"
@@ -1783,7 +1783,7 @@
   {
     "title": "Authentication service overload",
     "description": "prod-ldap-01 under heavy load causing authentication delays since 2026-04-14T17:00Z. ERR-AUTH-001 indicates too many concurrent requests.",
-    "category": "Application",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -2162,7 +2162,7 @@
   {
     "title": "Kubernetes Pod Not Scheduling",
     "description": "prod-k8s-node-02 unable to schedule new pods due to node taint 'NoExecute'. Pod deployment attempted at 2026-04-13T21:15Z. Recent node maintenance conducted under CHG-1150. Review taint settings.",
-    "category": "Application",
+    "category": "Infrastructure",
     "priority": "high",
     "affects_servers": [
       "prod-k8s-node-02"
@@ -2237,7 +2237,7 @@
   {
     "title": "LDAP Group Membership Sync Failed",
     "description": "prod-ldap-01 failed to synchronize group membership data with active directory at 2026-04-14T03:45Z. Error: 'LDAP sync timeout'. Review network connectivity and sync interval settings.",
-    "category": "Application",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -2367,7 +2367,7 @@
   {
     "title": "Order-service Data Integrity Issue",
     "description": "Data integrity check for order-service on prod-app-02 identified discrepancies between transaction logs and database records at 2026-04-14T07:20Z. Recent update CHG-1190 may be the cause. Reconciliation required.",
-    "category": "Application",
+    "category": "Database",
     "priority": "high",
     "affects_servers": [
       "prod-app-02"
@@ -2472,7 +2472,7 @@
   {
     "title": "Redis Memory Leak Detected",
     "description": "prod-app-03 using redis shows gradual memory increase over time, leading to OOM errors at 2026-04-13T23:30Z. Review recent code changes under CHG-1165 for potential object retention issues.",
-    "category": "Application",
+    "category": "Database",
     "priority": "high",
     "affects_servers": [
       "prod-app-03"
@@ -2522,7 +2522,7 @@
   {
     "title": "Service Account Password Expired",
     "description": "prod-app-01 alert for expired service account password detected at 2026-04-14T06:05Z. No recent password change recorded. Immediate reset required to restore service functionality.",
-    "category": "Application",
+    "category": "Access Management",
     "priority": "medium",
     "affects_servers": [
       "prod-app-01"
@@ -2726,7 +2726,7 @@
   {
     "title": "LDAP Service Synchronization Error",
     "description": "Synchronization errors noted in prod-ldap-01 at 2023-10-05T16:00Z. Logs indicate sync job failure due to schema mismatch post CHG-5432. Error ERR-LDAP-001 recorded with failed object count of 134. Immediate schema reconciliation required.",
-    "category": "Application",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-ldap-01"
@@ -2776,7 +2776,7 @@
   {
     "title": "Redis Cache Eviction Policy Misconfiguration",
     "description": "prod-app-03 reporting cache eviction spikes since 2023-10-05T21:18Z. Redis logs indicate frequent key evictions post upgrade CHG-6574. Eviction policy set to 'noeviction' contradicts maxmemory limits leading to ERR-REDIS-001.",
-    "category": "Application",
+    "category": "Database",
     "priority": "high",
     "affects_servers": [
       "prod-app-03"
@@ -3341,7 +3341,7 @@
   {
     "title": "Exchange Server Unavailability",
     "description": "Customers are unable to access email services due to Exchange server downtime, leading to disrupted client communications. This could impact client satisfaction and contracts. Priority escalation requested.",
-    "category": "Application",
+    "category": "Infrastructure",
     "priority": "critical",
     "affects_servers": [
       "prod-mail-01"
@@ -4067,7 +4067,7 @@
   {
     "title": "NGINX Module Conflict Detected",
     "description": "Module conflict in nginx on prod-web-02 is degrading web app performance. This must be addressed to ensure seamless user access.",
-    "category": "Infrastructure",
+    "category": "Application",
     "priority": "medium",
     "affects_servers": [
       "prod-web-02"
@@ -4325,7 +4325,7 @@
   {
     "title": "Active Directory Sync Delay",
     "description": "HR is unable to sync new employee data to active directory, affecting onboarding processes. Expedite resolution to prevent further administrative delays.",
-    "category": "Infrastructure",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -4554,7 +4554,7 @@
   {
     "title": "CAN'T LOGIN HELP",
     "description": "i keep getting login errors, NEED TO GET TO MY FILES URGENTLY!!!",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -4899,7 +4899,7 @@
   {
     "title": "AUTH SERVICE FAILURE",
     "description": "system not recognizing my logins, NEED TO GET TO MY WORK NOW!",
-    "category": "Application",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-app-03"
@@ -5239,7 +5239,7 @@
   {
     "title": "SSL CERTIFICATE EXPIRED",
     "description": "WEBSITE SAYS CERTIFICATE IS EXPIRED, USERS CAN'T LOGIN! PANIC!",
-    "category": "Security",
+    "category": "Network",
     "priority": "critical",
     "affects_servers": [
       "prod-web-02"
@@ -5502,7 +5502,7 @@
   {
     "title": "SERVER NOT RESPONDING",
     "description": "SERVER IS DEAD, NO RESPONSE, CAN'T CONNECT TO ANYTHING!",
-    "category": "Network",
+    "category": "Infrastructure",
     "priority": "critical",
     "affects_servers": [
       "prod-app-01"
@@ -5656,7 +5656,7 @@
   {
     "title": "CAN'T LOGIN TO APP",
     "description": "Keeps saying wrong password, but it's correct! Tried resetting, still no luck. NEED ACCESS!",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-ldap-01"
@@ -5947,7 +5947,7 @@
   {
     "title": "REDIS CACHE NOT WORKING",
     "description": "Cache is down, everything slow, can't work like this!! Fix pls!",
-    "category": "Application",
+    "category": "Database",
     "priority": "high",
     "affects_servers": [
       "prod-app-01"
@@ -6698,7 +6698,7 @@
   {
     "title": "Exchange Mailbox Database Mount Failure",
     "description": "The mailbox database on prod-mail-01 failed to mount on 2026-05-13T10:08Z. Error logs indicate corruption in the EDB file following a sudden power failure. Data consistency checks must be performed to assess damage.",
-    "category": "Application",
+    "category": "Database",
     "priority": "critical",
     "affects_servers": [
       "prod-mail-01"
@@ -6723,7 +6723,7 @@
   {
     "title": "Unauthorized LDAP Access Attempt Detected",
     "description": "A suspicious unauthorized access attempt to prod-ldap-01 was detected on 2026-05-12T04:50Z. Multiple failed login attempts noted from IP 203.0.113.5. Account lockout policy triggered, and IP blacklisted.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-ldap-01"
@@ -7054,7 +7054,7 @@
   {
     "title": "Redis Memory Usage Alarm on prod-app-03",
     "description": "Memory usage on Redis instance in prod-app-03 exceeded 85% since 2026-05-12T19:45Z. Triggered by increasing cache volume post update CHG-8920. Potential need for memory upgrade.",
-    "category": "Application",
+    "category": "Database",
     "priority": "medium",
     "affects_servers": [
       "prod-app-03"
@@ -7262,7 +7262,7 @@
   {
     "title": "prod-mail-01 SMTP Authentication Failures",
     "description": "Multiple SMTP authentication failures reported on prod-mail-01 since 2026-04-30T08:00Z. Logs indicate incorrect credentials being used possibly due to outdated passwords post CHG-8845.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "medium",
     "affects_servers": [
       "prod-mail-01"
@@ -7472,7 +7472,7 @@
   {
     "title": "prod-app-01 Service Restart Loop",
     "description": "prod-app-01 stuck in a service restart loop since 2026-05-07T13:00Z. Suspected misconfiguration after service update CHG-8859. Restart cycle every 5 minutes observed.",
-    "category": "Application",
+    "category": "Infrastructure",
     "priority": "high",
     "affects_servers": [
       "prod-app-01"
@@ -7767,7 +7767,7 @@
   {
     "title": "Firewall Misconfiguration on prod-app-03",
     "description": "A firewall misconfiguration on prod-app-03 is preventing external API requests, affecting third-party integrations. This may disrupt partner services and agreements. Escalate to IT security.",
-    "category": "Security",
+    "category": "Network",
     "priority": "critical",
     "affects_servers": [
       "prod-app-03"
@@ -8164,7 +8164,7 @@
   {
     "title": "Active Directory Authentication Failures",
     "description": "Our HR department is unable to perform essential tasks due to authentication issues with Active Directory. This affects onboarding and payroll processing. Need escalation and a swift resolution.",
-    "category": "Application",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -8345,7 +8345,7 @@
   {
     "title": "Redis Cache Saturation",
     "description": "Our marketing platform's performance is degraded due to Redis cache saturation, leading to slower transaction times. This impacts customer experience. Please provide an ETA on resolution.",
-    "category": "Application",
+    "category": "Database",
     "priority": "medium",
     "affects_servers": [
       "prod-app-01"
@@ -8534,7 +8534,7 @@
   {
     "title": "LDAP Sync Failure Notice",
     "description": "There are synchronization failures with our LDAP server affecting user authentication and access control across departments. This needs immediate attention to prevent further disruptions.",
-    "category": "Infrastructure",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -9111,7 +9111,7 @@
   {
     "title": "CANT LOGIN TO ANYTHING",
     "description": "help!! nothing is working since this morning. tried logging into CRM, tried email, tried VPN - everything says invalid credentials. i didnt change my password!! my laptop is fine for internet tho. meeting in 20 mins and i cant access my files pls someone help ASAP",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -9222,7 +9222,7 @@
   {
     "title": "monitoring dashboard blank",
     "description": "grafana is showing nothing. all the dashboards are just blank white screens. no graphs no numbers nothing. we had an alert earlier that we couldnt check because of this. how are we supposed to monitor anything if the monitoring is broken lol. fix pls",
-    "category": "Infrastructure",
+    "category": "Application",
     "priority": "medium",
     "affects_servers": [
       "prod-mon-01"
@@ -9299,7 +9299,7 @@
   {
     "title": "getting security warning on website",
     "description": "when i go to our internal portal i get a big red warning saying the connection is not secure. tried ignoring it but some pages wont load at all. started this morning. is our site hacked?? should i be worried??? other people seeing same thing",
-    "category": "Network",
+    "category": "Security",
     "priority": "high",
     "affects_servers": [],
     "affects_services": [
@@ -9861,7 +9861,7 @@
   {
     "title": "app crashes when i click reports",
     "description": "every time i try to generate a report in the CRM it just crashes. gives some error about memory or something i didnt read it fast enough. need these reports for end of month!!! worked fine last week",
-    "category": "Infrastructure",
+    "category": "Application",
     "priority": "high",
     "affects_servers": [
       "prod-app-02"
@@ -10831,7 +10831,7 @@
   {
     "title": "Kubernetes RBAC misconfiguration \u2014 default service account has cluster-admin",
     "description": "Security audit found default service account in 'production' namespace bound to cluster-admin ClusterRole. Every pod in production namespace has full cluster access. kubectl auth can-i --as=system:serviceaccount:production:default '*' '*' returns 'yes'. Immediate risk: any compromised pod has full cluster control.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-k8s-master"
@@ -11235,7 +11235,7 @@
   {
     "title": "SOC2 audit finding \u2014 MFA not enforced on all admin accounts",
     "description": "Our SOC2 auditor flagged that MFA is not enforced on 12 administrator accounts. This is a high-severity finding that could affect our certification. Compliance team needs confirmation that MFA is enforced on all admin accounts by next Friday.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -11712,7 +11712,7 @@
   {
     "title": "export to excel broken",
     "description": "trying to export our customer list to excel and it either times out or gives an error. list has about 50,000 records. used to work fine last month. need this for marketing campaign",
-    "category": "Database",
+    "category": "Application",
     "priority": "medium",
     "affects_servers": [
       "prod-db-01"
@@ -11878,7 +11878,7 @@
   {
     "title": "locked out of EVERYTHING after vacation",
     "description": "came back from 2 weeks vacation and now i cant login to anything. password expired? account deactivated?? i wasnt told about any changes. stuck sitting at my desk doing nothing",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -11906,7 +11906,7 @@
   {
     "title": "random 2FA codes on my phone",
     "description": "keep getting 2FA authentication codes on my phone that i didnt request. like 5 in the last hour. is someone trying to hack my account??? very concerned",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-ldap-01"
@@ -12275,7 +12275,7 @@
   {
     "title": "Spring Boot actuator endpoints exposed to public internet",
     "description": "Discovered /actuator/env and /actuator/heapdump accessible without auth on prod-app-01:8080. Contains database credentials and JVM heap data. Security scanner flagged as critical. Need to restrict actuator to management port or add auth.",
-    "category": "Application",
+    "category": "Security",
     "priority": "critical",
     "affects_servers": [
       "prod-app-01"
@@ -13218,7 +13218,7 @@
   {
     "title": "Third-party vendor access not revoked after contract ended",
     "description": "Procurement flagged that 3 vendor accounts still have VPN and system access despite contracts ending in Q4 2025. This is a security and compliance violation. Need immediate access revocation and process fix.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-ldap-01"
@@ -13360,7 +13360,7 @@
   {
     "title": "WEIRD LOGIN PROBLEM!",
     "description": "WHY ISN'T MY ACCOUNT WORKING??? I keep getting kicked out after logging in\u2026 it's driving me crazy!!!! PLEASE HELP!!!",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-ldap-01"
@@ -13576,7 +13576,7 @@
   {
     "title": "Kubernetes Master Service Unavailable",
     "description": "The Kubernetes master service on prod-k8s-master has been unavailable since this morning, causing significant disruption to our CI/CD pipelines. This is impacting multiple development teams and delaying the delivery of new features due for release next week.",
-    "category": "Application",
+    "category": "Infrastructure",
     "priority": "high",
     "affects_services": [
       "kubernetes"
@@ -13618,7 +13618,7 @@
   {
     "title": "Auth-Service Authentication Failure Post-Migration",
     "description": "The authentication services (prod-auth-service) are failing after migrating our user database. Our security team is unable to authenticate users, impacting internal access controls and possibly exposing sensitive data risks.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_services": [
       "auth-service"
@@ -13734,7 +13734,7 @@
   {
     "title": "User locked out on prod-app-03 #2",
     "description": "User locked out after password change. ERR-NFS-001. Team unable to work",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-app-03"
@@ -13787,7 +13787,7 @@
   {
     "title": "User locked out on prod-k8s-master #3",
     "description": "48 failed login attempts on admin account from 192.168.1.100. CUSTOMERS COMPLAINING (MY LAPTOP IS DELL BTW)",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-k8s-master"
@@ -14010,7 +14010,7 @@
   {
     "title": "Failed login attempts on prod-nfs-01 #2",
     "description": "Service account token expired on redis. All API calls rejected.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-nfs-01"
@@ -14084,7 +14084,7 @@
   {
     "title": "User locked out on prod-k8s-node-01 #5",
     "description": "Service account token expired on prometheus. All API calls rejected.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-k8s-node-01"
@@ -14264,7 +14264,7 @@
   {
     "title": "User locked out on prod-db-01 #6",
     "description": "30 failed login attempts on admin account from 172.16.0.50. Affecting production",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-db-01"
@@ -14312,7 +14312,7 @@
   {
     "title": "kubernetes timeout",
     "description": "Deployment v2.4.0 failed on prod-k8s-node-02. Rollback needed. SLA at risk",
-    "category": "Application",
+    "category": "Infrastructure",
     "priority": "low",
     "affects_servers": [
       "prod-k8s-node-02"
@@ -14633,7 +14633,7 @@
   {
     "title": "User locked out on prod-db-01 #8",
     "description": "TLS certificate mismatch on kubernetes. Monitoring alerts firing \u2014 using Chrome on Mac",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "medium",
     "affects_servers": [
       "prod-db-01"
@@ -14906,7 +14906,7 @@
   {
     "title": "User locked out on prod-k8s-node-02 #9",
     "description": "42 failed login attempts on admin account from 203.0.113.42. Critical for business",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-k8s-node-02"
@@ -15295,7 +15295,7 @@
   {
     "title": "User locked out on prod-nfs-01 #10",
     "description": "40 failed login attempts on admin account from 192.168.1.100. Affecting producton",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "medium",
     "affects_servers": [
       "prod-nfs-01"
@@ -16418,7 +16418,7 @@
   {
     "title": "postgresql timeout",
     "description": "Config syntax error in postgresql after update!!!!!!!!! SLA at risk",
-    "category": "Application",
+    "category": "Database",
     "priority": "low",
     "affects_servers": [
       "prod-app-01"
@@ -16651,7 +16651,7 @@
   {
     "title": "FAILED LOGIN ATTEMPTS\nNOTE: I'M WORKING FROM HOME TODAY",
     "description": "Service account token expired on kubernetes. All API calls rejected.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "high",
     "affects_servers": [
       "prod-app-03"
@@ -16703,7 +16703,7 @@
   {
     "title": "Deploy failed postgresql",
     "description": "POSTGRESQL THROWING NULLPOINTEREXCEPTION IN CACHEMANAGER. 95% of requests failing. (my laptop is Dell btw)",
-    "category": "Application",
+    "category": "Database",
     "priority": "medium",
     "affects_servers": [
       "prod-web-02"
@@ -17190,7 +17190,7 @@
   {
     "title": "Deploy failed kubernetes on prod-k8s-node-01 #2",
     "description": "kubernetes returning ERR-K8S-001 errors on prod-k8s-node-01. Monitoring alerts firing \u2014 using Chrome on Mac",
-    "category": "Application",
+    "category": "Infrastructure",
     "priority": "medium",
     "affects_servers": [
       "prod-k8s-node-01"
@@ -17340,7 +17340,7 @@
   {
     "title": "User locked out on prod-db-02 #11",
     "description": "Service account token expired on nfs. All API calls rejected.",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "critical",
     "affects_servers": [
       "prod-db-02"
@@ -17390,7 +17390,7 @@
   {
     "title": "User locked out on prod-k8s-master #12",
     "description": "Privilege escalation attempt detected on prod-k8s-master. Critical for business",
-    "category": "Security",
+    "category": "Access Management",
     "priority": "low",
     "affects_servers": [
       "prod-k8s-master"
@@ -18729,7 +18729,7 @@
   {
     "title": "API gateway not forwarding user identity headers",
     "description": "The API gateway (Kong) is stripping the X-Forwarded-User and X-User-Groups headers when proxying requests to backend services. Backend services receive anonymous requests and cannot enforce RBAC. Started after the gateway plugin update yesterday. Affects all authenticated API routes.",
-    "category": "Access Management",
+    "category": "Application",
     "priority": "high",
     "error_codes": [
       "403 Forbidden: Missing user identity"
