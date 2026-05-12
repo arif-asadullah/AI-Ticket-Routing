@@ -23,6 +23,7 @@ This folder documents everything we've built, step by step, so any developer can
 | [Phase 7: Auth & RBAC](phase7-rbac-auth.md) | JWT auth, 3 roles (admin/engineer/user), team-scoped access, user management UI | Done |
 | [Phase 8: Domain Dashboard](phase8-domain-dashboard.md) | Domain dashboard, ticket detail, resolve form, feedback, Storage→Access Management rename | Done |
 | [Phase 9: Eval & Label Cleanup](phase9-eval-label-cleanup.md) | Eval script, 48 mislabeled tickets fixed, accuracy 78%→83.7% | Done |
+| [Phase 10: Accuracy & Performance](phase10-accuracy-performance.md) | Weight tuning, LLM prompt disambiguation, keyword bug fix, parallel classifiers, threshold calibration | Done |
 
 ## Tech Stack
 
@@ -80,6 +81,7 @@ If you're new to the project, read in this order:
 8. Phase 7 — understand authentication and RBAC (roles, team-scoping, JWT)
 9. Phase 8 — understand the domain dashboard (ticket lifecycle UI, resolve, feedback)
 10. Phase 9 — understand accuracy evaluation and label quality
+11. Phase 10 — understand accuracy improvements, weight tuning, and parallel execution
 
 For architecture details, see `docs/architecture/`.
 For database schema details, see `docs/schema/`.
