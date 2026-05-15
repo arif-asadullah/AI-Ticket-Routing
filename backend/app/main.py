@@ -52,3 +52,7 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+
+# Mount Socket.IO for real-time updates
+from backend.services.socketio_manager import socket_app  # noqa: E402
+app.mount("/ws", socket_app)

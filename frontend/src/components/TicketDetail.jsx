@@ -1,23 +1,11 @@
 import { useState } from "react";
+import { useTheme } from "../theme/ThemeContext";
 import { updateTicketStatus, resolveTicket, submitFeedback } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 import ResolveForm from "./ResolveForm";
 import FeedbackWidget from "./FeedbackWidget";
 import AuditTimeline from "./AuditTimeline";
 
-// ── Theme tokens ──
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  success: "#22c55e",
-  warning: "#f59e0b",
-  danger: "#ef4444",
-};
 
 const priorityStyles = {
   critical: { bg: "rgba(239,68,68,0.15)", color: "#ef4444" },
@@ -33,15 +21,17 @@ const statusStyles = {
   resolved: { bg: "rgba(34,197,94,0.12)", color: "#22c55e" },
 };
 
-const labelStyle = {
-  fontSize: 10,
-  fontWeight: 600,
-  color: T.textDim,
-  textTransform: "uppercase",
-  letterSpacing: 1,
-  fontFamily: "'JetBrains Mono', monospace",
-  marginBottom: 4,
-};
+function getLabelStyle(T) {
+  return {
+    fontSize: 10,
+    fontWeight: 600,
+    color: T.textDim,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+    fontFamily: "'JetBrains Mono', monospace",
+    marginBottom: 4,
+  };
+}
 
 function timeAgo(dateStr) {
   if (!dateStr) return "";
@@ -72,6 +62,8 @@ function formatDate(dateStr) {
 }
 
 export default function TicketDetail({ ticket, user, onClose, onStatusChange, onResolve, onFeedback }) {
+  const { T } = useTheme();
+  const labelStyle = getLabelStyle(T);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -820,6 +812,7 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
 
 // ── Reusable action button ──
 function ActionButton({ label, color, icon, onClick, type = "button", disabled = false }) {
+  const { T } = useTheme();
   return (
     <button
       type={type}

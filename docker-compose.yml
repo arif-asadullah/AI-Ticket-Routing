@@ -43,6 +43,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+      - hf_cache:/root/.cache/huggingface
     env_file:
       - .env
     environment:
@@ -88,6 +89,7 @@ services:
 
 volumes:
   arango_data:
+  hf_cache:
 
 networks:
   atr-network:

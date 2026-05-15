@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTheme } from "../theme/ThemeContext";
 import { fetchTickets, fetchStats } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 import TicketDetail from "./TicketDetail";
@@ -13,21 +14,6 @@ import imgNetwork from "../assets/images/network.png";
 import imgSecurity from "../assets/images/Security.png";
 import imgAccessMgmt from "../assets/images/accessmanagement.png";
 
-// ── Theme tokens ──
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  borderGlow: "rgba(249,115,22,0.3)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  accentGlow: "rgba(249,115,22,0.15)",
-  success: "#22c55e",
-  warning: "#f59e0b",
-  danger: "#ef4444",
-};
 
 const priorityStyles = {
   critical: { bg: "rgba(239,68,68,0.15)", color: "#ef4444", dot: "#ef4444" },
@@ -52,34 +38,38 @@ const domainCards = [
   { key: "Access Management", label: "Access Management", icon: "IAM", desc: "LDAP, SSO, MFA, RBAC, permissions", img: imgAccessMgmt },
 ];
 
-const labelStyle = {
-  display: "block",
-  fontSize: 11,
-  fontWeight: 600,
-  color: T.textMuted,
-  marginBottom: 6,
-  letterSpacing: 1,
-  textTransform: "uppercase",
-  fontFamily: "'JetBrains Mono', monospace",
-};
+function getStyles(T) {
+  const labelStyle = {
+    display: "block",
+    fontSize: 11,
+    fontWeight: 600,
+    color: T.textMuted,
+    marginBottom: 6,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontFamily: "'JetBrains Mono', monospace",
+  };
 
-const inputStyle = {
-  width: "100%",
-  padding: "10px 14px",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: 8,
-  color: T.text,
-  fontSize: 13,
-  outline: "none",
-  boxSizing: "border-box",
-  fontFamily: "'Inter', system-ui",
-};
+  const inputStyle = {
+    width: "100%",
+    padding: "10px 14px",
+    background: T.inputBg,
+    border: `1px solid ${T.inputBorder}`,
+    borderRadius: 8,
+    color: T.text,
+    fontSize: 13,
+    outline: "none",
+    boxSizing: "border-box",
+    fontFamily: "'Inter', system-ui",
+  };
 
-const selectStyle = {
-  ...inputStyle,
-  appearance: "none",
-};
+  const selectStyle = {
+    ...inputStyle,
+    appearance: "none",
+  };
+
+  return { labelStyle, inputStyle, selectStyle };
+}
 
 function timeAgo(dateStr) {
   if (!dateStr) return "";
@@ -98,7 +88,9 @@ function timeAgo(dateStr) {
   return `${diffWeek}w ago`;
 }
 
-export default function DomainDashboard({ user, onBack }) {
+export default function DomainDashboard({ user, onBack, refreshKey }) {
+  const { T } = useTheme();
+  const { labelStyle, inputStyle, selectStyle } = getStyles(T);
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -128,7 +120,7 @@ export default function DomainDashboard({ user, onBack }) {
       .then(setStats)
       .catch(() => {})
       .finally(() => setStatsLoading(false));
-  }, []);
+  }, [refreshKey]);
 
   // Reset page when filters or domain change
   useEffect(() => { setPage(1); }, [selectedDomain, statusFilter, priorityFilter, search]);
@@ -348,7 +340,7 @@ export default function DomainDashboard({ user, onBack }) {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "perspective(800px) rotateY(0deg) rotateX(0deg)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.borderColor = T.border;
                 }}
                 style={{
                   position: "relative",
@@ -360,69 +352,28 @@ export default function DomainDashboard({ user, onBack }) {
                   cursor: "pointer",
                   textAlign: "left",
                   transformStyle: "preserve-3d",
+                  boxShadow: T.cardShadow,
                 }}
               >
-                {/* Image area */}
-                <div style={{ height: 130, overflow: "hidden", position: "relative" }}>
-                  <img className="card-img" src={d.img} alt={d.label} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s ease" }} />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #0C0C0F 5%, rgba(12,12,15,0.4) 50%, transparent 100%)" }} />
-
-                  {/* Corner brackets */}
-                  {[[0, 0, "borderTop,borderLeft"], [0, 1, "borderTop,borderRight"], [1, 0, "borderBottom,borderLeft"], [1, 1, "borderBottom,borderRight"]].map(([row, col, borders]) => (
-                    <div key={`${row}-${col}`} className="corner-bracket" style={{
-                      position: "absolute",
-                      top: row === 0 ? 8 : "auto",
-                      bottom: row === 1 ? 8 : "auto",
-                      left: col === 0 ? 8 : "auto",
-                      right: col === 1 ? 8 : "auto",
-                      width: 14, height: 14,
-                      borderTop: borders.includes("borderTop") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
-                      borderBottom: borders.includes("borderBottom") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
-                      borderLeft: borders.includes("borderLeft") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
-                      borderRight: borders.includes("borderRight") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
-                      animation: `cornerPulse 3s ease-in-out infinite`,
-                      animationDelay: `${idx * 0.4 + (row + col) * 0.3}s`,
-                    }} />
-                  ))}
-
-                  {/* Particle dots */}
-                  {[
-                    { left: "20%", top: "30%", dur: "3s", del: "0s" },
-                    { left: "70%", top: "20%", dur: "3.5s", del: "0.8s" },
-                    { left: "45%", top: "60%", dur: "4s", del: "1.5s" },
-                    { left: "85%", top: "50%", dur: "3.2s", del: "2s" },
-                  ].map((dot, i) => (
-                    <div key={i} style={{
-                      position: "absolute", left: dot.left, top: dot.top,
-                      width: 3, height: 3, borderRadius: "50%",
-                      background: "rgba(249,115,22,0.7)",
-                      boxShadow: "0 0 6px rgba(249,115,22,0.5)",
-                      animation: `floatDot ${dot.dur} ease-in-out infinite`,
-                      animationDelay: dot.del,
-                    }} />
-                  ))}
-
-                  {/* Icon badge */}
-                  <div style={{
-                    position: "absolute", top: 10, right: 10,
-                    padding: "4px 10px", borderRadius: 8,
-                    background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
-                    fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: T.accent,
-                    border: "1px solid rgba(249,115,22,0.2)",
-                  }}>
-                    {d.icon}
-                  </div>
-                </div>
-
                 {/* Content */}
-                <div style={{ padding: "12px 20px 20px" }}>
-                  <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
-                    {d.label}
+                <div style={{ padding: "20px 22px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 10,
+                      background: `${T.accent}15`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: T.accent,
+                    }}>
+                      {d.icon}
+                    </div>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
+                      {d.label}
+                    </div>
                   </div>
-                  <div style={{ fontSize: 11, color: T.textMuted, marginTop: 2 }}>
+                  <div style={{ fontSize: 11, color: T.textMuted, marginBottom: 12 }}>
                     {d.desc}
                   </div>
-                  <div style={{ marginTop: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: d.count > 0 ? T.accent : T.textDim }}>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: d.count > 0 ? T.accent : T.textDim }}>
                     {d.count}
                   </div>
                 </div>
@@ -888,6 +839,7 @@ export default function DomainDashboard({ user, onBack }) {
 
 // ── Small stat badge component ──
 function StatBadge({ label, value, color }) {
+  const { T } = useTheme();
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <div style={{

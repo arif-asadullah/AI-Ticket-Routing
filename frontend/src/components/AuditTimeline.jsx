@@ -1,30 +1,19 @@
 import { useState, useEffect } from "react";
 import { fetchTicketTimeline } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
+import { useTheme } from "../theme/ThemeContext";
 
-const T = {
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  success: "#22c55e",
-  warning: "#f59e0b",
-  danger: "#ef4444",
-  blue: "#3b82f6",
-  purple: "#8b5cf6",
-};
-
-const actionConfig = {
-  classified: { color: T.accent, label: "AI Classified", icon: "brain" },
-  routed: { color: T.blue, label: "Routed to Team", icon: "arrow" },
-  escalated: { color: T.danger, label: "Escalated", icon: "up" },
-  in_progress: { color: T.blue, label: "Picked Up", icon: "play" },
-  resolved: { color: T.success, label: "Resolved", icon: "check" },
-  feedback: { color: T.purple, label: "Feedback", icon: "star" },
-  closed: { color: T.success, label: "Closed", icon: "check" },
-};
+function getActionConfig(T) {
+  return {
+    classified: { color: T.accent, label: "AI Classified", icon: "brain" },
+    routed: { color: T.blue, label: "Routed to Team", icon: "arrow" },
+    escalated: { color: T.danger, label: "Escalated", icon: "up" },
+    in_progress: { color: T.blue, label: "Picked Up", icon: "play" },
+    resolved: { color: T.success, label: "Resolved", icon: "check" },
+    feedback: { color: T.purple, label: "Feedback", icon: "star" },
+    closed: { color: T.success, label: "Closed", icon: "check" },
+  };
+}
 
 function ActionIcon({ type, color }) {
   const icons = {
@@ -89,6 +78,7 @@ function formatTime(dateStr) {
 }
 
 function ConfidenceBars({ signals }) {
+  const { T } = useTheme();
   if (!signals) return null;
   const classifiers = [
     { key: "llm", label: "LLM", color: T.accent },
@@ -137,6 +127,8 @@ function ConfidenceBars({ signals }) {
 }
 
 function TimelineEntry({ event, isLast }) {
+  const { T } = useTheme();
+  const actionConfig = getActionConfig(T);
   const config = actionConfig[event.action] || { color: T.textMuted, label: event.action, icon: "arrow" };
 
   const isAI = event.actor?.startsWith("ai-");
@@ -313,6 +305,7 @@ function TimelineEntry({ event, isLast }) {
 }
 
 export default function AuditTimeline({ ticketId }) {
+  const { T } = useTheme();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
 

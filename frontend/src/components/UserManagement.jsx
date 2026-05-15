@@ -1,27 +1,20 @@
 import { useState, useEffect } from "react";
+import { useTheme } from "../theme/ThemeContext";
 import { fetchUsers, registerUser, toggleUserActive, fetchEngineers } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  success: "#22c55e",
-  danger: "#ef4444",
-  warning: "#f59e0b",
-};
 
-const roleBadge = {
-  admin: { bg: "rgba(249,115,22,0.12)", color: T.accent },
-  engineer: { bg: "rgba(34,197,94,0.12)", color: T.success },
-  user: { bg: "rgba(245,158,11,0.12)", color: T.warning },
-};
+function getRoleBadge(T) {
+  return {
+    admin: { bg: "rgba(249,115,22,0.12)", color: T.accent },
+    engineer: { bg: "rgba(34,197,94,0.12)", color: T.success },
+    user: { bg: "rgba(245,158,11,0.12)", color: T.warning },
+  };
+}
 
 export default function UserManagement() {
+  const { T } = useTheme();
+  const roleBadge = getRoleBadge(T);
   const [users, setUsers] = useState([]);
   const [engineers, setEngineers] = useState([]);
   const [loading, setLoading] = useState(true);

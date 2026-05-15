@@ -6,16 +6,7 @@ import {
 } from "recharts";
 import { fetchStats } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
-
-// ── Theme tokens ──
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  muted: "#78716C",
-  accent: "#F97316",
-};
+import { useTheme } from "../theme/ThemeContext";
 
 const CATEGORY_COLORS = {
   Infrastructure: "#3b82f6",
@@ -41,22 +32,26 @@ const PRIORITY_COLORS = {
 };
 
 // ── Shared styles ──
-const cardStyle = {
-  background: T.card,
-  border: `1px solid ${T.border}`,
-  borderRadius: 16,
-  padding: 24,
-  backdropFilter: "blur(12px)",
-};
+function getCardStyle(T) {
+  return {
+    background: T.card,
+    border: `1px solid ${T.border}`,
+    borderRadius: 16,
+    padding: 24,
+    backdropFilter: "blur(12px)",
+  };
+}
 
-const titleStyle = {
-  fontFamily: "'Inter', sans-serif",
-  fontSize: 15,
-  fontWeight: 600,
-  color: T.text,
-  marginBottom: 16,
-  letterSpacing: 0.2,
-};
+function getTitleStyle(T) {
+  return {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 15,
+    fontWeight: 600,
+    color: T.text,
+    marginBottom: 16,
+    letterSpacing: 0.2,
+  };
+}
 
 const dataFont = "'JetBrains Mono', monospace";
 
@@ -85,45 +80,50 @@ function DarkTooltip({ active, payload, label }) {
 }
 
 // ── Custom pie label renderer ──
-function renderPercentLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }) {
-  if (percent < 0.05) return null;
-  const RADIAN = Math.PI / 180;
-  const radius = outerRadius + 18;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  return (
-    <text
-      x={x}
-      y={y}
-      fill={T.text}
-      textAnchor={x > cx ? "start" : "end"}
-      dominantBaseline="central"
-      style={{ fontSize: 11, fontFamily: dataFont }}
-    >
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
+function makeRenderPercentLabel(T) {
+  return function renderPercentLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }) {
+    if (percent < 0.05) return null;
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius + 18;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    return (
+      <text
+        x={x}
+        y={y}
+        fill={T.text}
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+        style={{ fontSize: 11, fontFamily: dataFont }}
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 }
 
 // ── Custom bar label for horizontal bar chart ──
-function renderBarLabel(props) {
-  const { x, y, width, height, value } = props;
-  return (
-    <text
-      x={x + width + 8}
-      y={y + height / 2}
-      fill={T.text}
-      textAnchor="start"
-      dominantBaseline="central"
-      style={{ fontSize: 11, fontFamily: dataFont }}
-    >
-      {value}
-    </text>
-  );
+function makeRenderBarLabel(T) {
+  return function renderBarLabel(props) {
+    const { x, y, width, height, value } = props;
+    return (
+      <text
+        x={x + width + 8}
+        y={y + height / 2}
+        fill={T.text}
+        textAnchor="start"
+        dominantBaseline="central"
+        style={{ fontSize: 11, fontFamily: dataFont }}
+      >
+        {value}
+      </text>
+    );
+  };
 }
 
 // ── Center text for donut charts ──
 function CenterLabel({ cx, cy, text, sub }) {
+  const { T } = useTheme();
   return (
     <g>
       <text
@@ -141,7 +141,7 @@ function CenterLabel({ cx, cy, text, sub }) {
           y={cy + 16}
           textAnchor="middle"
           dominantBaseline="central"
-          style={{ fontSize: 10, fill: T.muted, fontFamily: dataFont }}
+          style={{ fontSize: 10, fill: T.textMuted, fontFamily: dataFont }}
         >
           {sub}
         </text>
@@ -152,13 +152,17 @@ function CenterLabel({ cx, cy, text, sub }) {
 
 // ── Chart 1: Tickets by Category (horizontal bar) ──
 function CategoryBarChart({ data }) {
+  const { T } = useTheme();
+  const cardStyle = getCardStyle(T);
+  const titleStyle = getTitleStyle(T);
+  const renderBarLabel = makeRenderBarLabel(T);
   return (
     <div style={{ ...cardStyle, gridColumn: "1 / -1" }}>
       <div style={titleStyle}>Tickets by Category</div>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} layout="vertical" margin={{ left: 20, right: 40, top: 5, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
-          <XAxis type="number" tick={{ fill: T.muted, fontSize: 11, fontFamily: dataFont }} axisLine={false} tickLine={false} />
+          <XAxis type="number" tick={{ fill: T.textMuted, fontSize: 11, fontFamily: dataFont }} axisLine={false} tickLine={false} />
           <YAxis
             type="category"
             dataKey="category"
@@ -181,6 +185,10 @@ function CategoryBarChart({ data }) {
 
 // ── Chart 2: Status Distribution (donut) ──
 function StatusPieChart({ data, total }) {
+  const { T } = useTheme();
+  const cardStyle = getCardStyle(T);
+  const titleStyle = getTitleStyle(T);
+  const renderPercentLabel = makeRenderPercentLabel(T);
   return (
     <div style={cardStyle}>
       <div style={titleStyle}>Status Distribution</div>
@@ -199,7 +207,7 @@ function StatusPieChart({ data, total }) {
             labelLine={false}
           >
             {data.map((entry, i) => (
-              <Cell key={i} fill={STATUS_COLORS[entry.status] || T.muted} stroke="none" />
+              <Cell key={i} fill={STATUS_COLORS[entry.status] || T.textMuted} stroke="none" />
             ))}
           </Pie>
           <Tooltip content={<DarkTooltip />} />
@@ -236,7 +244,7 @@ function StatusPieChart({ data, total }) {
             y="52%"
             textAnchor="middle"
             dominantBaseline="central"
-            style={{ fontSize: 10, fill: T.muted, fontFamily: dataFont }}
+            style={{ fontSize: 10, fill: T.textMuted, fontFamily: dataFont }}
           >
             total
           </text>
@@ -248,6 +256,10 @@ function StatusPieChart({ data, total }) {
 
 // ── Chart 3: Priority Distribution (donut) ──
 function PriorityPieChart({ data }) {
+  const { T } = useTheme();
+  const cardStyle = getCardStyle(T);
+  const titleStyle = getTitleStyle(T);
+  const renderPercentLabel = makeRenderPercentLabel(T);
   const total = data.reduce((sum, d) => sum + d.count, 0);
   return (
     <div style={cardStyle}>
@@ -267,7 +279,7 @@ function PriorityPieChart({ data }) {
             labelLine={false}
           >
             {data.map((entry, i) => (
-              <Cell key={i} fill={PRIORITY_COLORS[entry.priority] || T.muted} stroke="none" />
+              <Cell key={i} fill={PRIORITY_COLORS[entry.priority] || T.textMuted} stroke="none" />
             ))}
           </Pie>
           <Tooltip content={<DarkTooltip />} />
@@ -290,7 +302,7 @@ function PriorityPieChart({ data }) {
             y="52%"
             textAnchor="middle"
             dominantBaseline="central"
-            style={{ fontSize: 10, fill: T.muted, fontFamily: dataFont }}
+            style={{ fontSize: 10, fill: T.textMuted, fontFamily: dataFont }}
           >
             total
           </text>
@@ -302,6 +314,9 @@ function PriorityPieChart({ data }) {
 
 // ── Chart 4: Daily Ticket Volume (area) ──
 function DailyTrendChart({ data }) {
+  const { T } = useTheme();
+  const cardStyle = getCardStyle(T);
+  const titleStyle = getTitleStyle(T);
   return (
     <div style={{ ...cardStyle, gridColumn: "1 / -1" }}>
       <div style={titleStyle}>Daily Ticket Volume</div>
@@ -316,7 +331,7 @@ function DailyTrendChart({ data }) {
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
           <XAxis
             dataKey="date"
-            tick={{ fill: T.muted, fontSize: 11, fontFamily: dataFont }}
+            tick={{ fill: T.textMuted, fontSize: 11, fontFamily: dataFont }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(d) => {
@@ -325,7 +340,7 @@ function DailyTrendChart({ data }) {
             }}
           />
           <YAxis
-            tick={{ fill: T.muted, fontSize: 11, fontFamily: dataFont }}
+            tick={{ fill: T.textMuted, fontSize: 11, fontFamily: dataFont }}
             axisLine={false}
             tickLine={false}
             allowDecimals={false}
@@ -349,6 +364,9 @@ function DailyTrendChart({ data }) {
 
 // ── Chart 5: Confidence by Category (vertical bar) ──
 function ConfidenceBarChart({ data }) {
+  const { T } = useTheme();
+  const cardStyle = getCardStyle(T);
+  const titleStyle = getTitleStyle(T);
   return (
     <div style={cardStyle}>
       <div style={titleStyle}>Confidence by Category</div>
@@ -357,7 +375,7 @@ function ConfidenceBarChart({ data }) {
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
           <XAxis
             dataKey="category"
-            tick={{ fill: T.muted, fontSize: 10, fontFamily: "'Inter', sans-serif" }}
+            tick={{ fill: T.textMuted, fontSize: 10, fontFamily: "'Inter', sans-serif" }}
             axisLine={false}
             tickLine={false}
             interval={0}
@@ -367,7 +385,7 @@ function ConfidenceBarChart({ data }) {
           />
           <YAxis
             domain={[0, 1]}
-            tick={{ fill: T.muted, fontSize: 11, fontFamily: dataFont }}
+            tick={{ fill: T.textMuted, fontSize: 11, fontFamily: dataFont }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(v) => `${(v * 100).toFixed(0)}%`}
@@ -398,6 +416,10 @@ function ConfidenceBarChart({ data }) {
 
 // ── Chart 6: AI Feedback (donut) ──
 function FeedbackPieChart({ feedback }) {
+  const { T } = useTheme();
+  const cardStyle = getCardStyle(T);
+  const titleStyle = getTitleStyle(T);
+  const renderPercentLabel = makeRenderPercentLabel(T);
   const data = [
     { name: "Helpful", value: feedback?.helpful || 0 },
     { name: "Not Helpful", value: feedback?.not_helpful || 0 },
@@ -447,7 +469,7 @@ function FeedbackPieChart({ feedback }) {
             y="52%"
             textAnchor="middle"
             dominantBaseline="central"
-            style={{ fontSize: 10, fill: T.muted, fontFamily: dataFont }}
+            style={{ fontSize: 10, fill: T.textMuted, fontFamily: dataFont }}
           >
             helpful
           </text>
@@ -459,6 +481,7 @@ function FeedbackPieChart({ feedback }) {
 
 // ── Main component ──
 export default function AnalyticsDashboard({ user }) {
+  const { T } = useTheme();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -526,22 +549,22 @@ export default function AnalyticsDashboard({ user }) {
         gap: 12,
       }}>
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <rect x="4" y="8" width="40" height="32" rx="6" stroke={T.muted} strokeWidth="1.5" />
-          <line x1="12" y1="20" x2="36" y2="20" stroke={T.muted} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
-          <line x1="12" y1="26" x2="28" y2="26" stroke={T.muted} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
-          <line x1="12" y1="32" x2="20" y2="32" stroke={T.muted} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+          <rect x="4" y="8" width="40" height="32" rx="6" stroke={T.textMuted} strokeWidth="1.5" />
+          <line x1="12" y1="20" x2="36" y2="20" stroke={T.textMuted} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+          <line x1="12" y1="26" x2="28" y2="26" stroke={T.textMuted} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+          <line x1="12" y1="32" x2="20" y2="32" stroke={T.textMuted} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
         </svg>
         <span style={{
           fontFamily: "'Inter', sans-serif",
           fontSize: 14,
-          color: T.muted,
+          color: T.textMuted,
         }}>
           No data yet
         </span>
         <span style={{
           fontFamily: "'Inter', sans-serif",
           fontSize: 12,
-          color: T.muted,
+          color: T.textMuted,
           opacity: 0.6,
         }}>
           Analytics will appear once tickets are created.
@@ -575,7 +598,7 @@ export default function AnalyticsDashboard({ user }) {
           <p style={{
             fontFamily: "'Inter', sans-serif",
             fontSize: 13,
-            color: T.muted,
+            color: T.textMuted,
             margin: "6px 0 0",
           }}>
             {stats.total_all != null

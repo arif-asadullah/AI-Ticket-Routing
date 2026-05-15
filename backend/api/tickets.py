@@ -14,6 +14,7 @@ from backend.core.auth import (
 )
 from backend.schemas.ticket import TicketCreate, TicketFeedback, TicketResolve, TicketResponse, TicketStatusUpdate
 from backend.services.orchestrator import classify
+from backend.services.socketio_manager import emit_ticket_event
 
 logger = logging.getLogger(__name__)
 
@@ -150,6 +151,8 @@ async def create_ticket(
         result["confidence"] * 100, result["agreement"],
         result["degradation_level"], result["processing_time_ms"],
     )
+
+    await emit_ticket_event("ticket:created", {"id": ticket_key, "title": ticket.title, "status": status, "category": result["category"], "routed_to": result["recommended_team"], "actor": user["email"]})
 
     return TicketResponse(
         id=ticket_key,
@@ -293,6 +296,7 @@ async def update_ticket_status(
     )
 
     updated = collection.get(ticket_id)
+    await emit_ticket_event("ticket:updated", {"id": ticket_id, "status": update.status, "actor": user["email"], "title": updated.get("title", "")})
     return _doc_to_response(updated)
 
 
@@ -414,6 +418,7 @@ async def resolve_ticket(
 
     # Return updated ticket
     updated = collection.get(ticket_id)
+    await emit_ticket_event("ticket:resolved", {"id": ticket_id, "status": "resolved", "actor": user["email"], "title": updated.get("title", "")})
     return _doc_to_response(updated)
 
 
@@ -492,6 +497,7 @@ async def delete_ticket(ticket_id: str, request: Request, admin: dict = Depends(
         logger.warning("Failed to clean up audit_log: %s", exc)
 
     collection.delete(ticket_id)
+    await emit_ticket_event("ticket:deleted", {"id": ticket_id, "actor": admin["email"]})
 
 
 def _doc_to_response(doc: dict) -> TicketResponse:

@@ -1,30 +1,20 @@
 import { useEffect, useRef } from "react";
+import { useTheme } from "../theme/ThemeContext";
 
-const T = {
-  bg: "#1a1a1f",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.12)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  success: "#22c55e",
-  danger: "#ef4444",
-  blue: "#3b82f6",
-  purple: "#8b5cf6",
-};
-
-const labelStyle = {
-  fontSize: 9,
-  fontWeight: 600,
-  color: T.textDim,
-  textTransform: "uppercase",
-  letterSpacing: 1,
-  fontFamily: "'JetBrains Mono', monospace",
-  marginBottom: 2,
-};
+function getLabelStyle(T) {
+  return {
+    fontSize: 9,
+    fontWeight: 600,
+    color: T.textDim,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+    fontFamily: "'JetBrains Mono', monospace",
+    marginBottom: 2,
+  };
+}
 
 export default function ChipTooltip({ entity, anchorRect, onClose }) {
+  const { T } = useTheme();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -59,15 +49,16 @@ export default function ChipTooltip({ entity, anchorRect, onClose }) {
     <>
       <style>{`@keyframes chipFadeIn { from { opacity:0; transform:translateY(-4px) } to { opacity:1; transform:translateY(0) } }`}</style>
       <div ref={ref} style={style}>
-        {type === "ticket" && <TicketTooltip data={data} />}
-        {type === "engineer" && <EngineerTooltip data={data} />}
-        {type === "team" && <TeamTooltip data={data} />}
+        {type === "ticket" && <TicketTooltip data={data} T={T} />}
+        {type === "engineer" && <EngineerTooltip data={data} T={T} />}
+        {type === "team" && <TeamTooltip data={data} T={T} />}
       </div>
     </>
   );
 }
 
-function TicketTooltip({ data }) {
+function TicketTooltip({ data, T }) {
+  const labelStyle = getLabelStyle(T);
   const statusColor = { routed: T.accent, escalated: T.danger, in_progress: T.blue, resolved: T.success, closed: T.textDim };
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -86,17 +77,18 @@ function TicketTooltip({ data }) {
       </div>
       {data.title && <div style={{ fontSize: 12, fontWeight: 500, color: T.text, lineHeight: 1.4 }}>{data.title}</div>}
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        {data.category && <Field label="Category" value={data.category} />}
-        {data.priority && <Field label="Priority" value={data.priority} />}
+        {data.category && <Field label="Category" value={data.category} T={T} />}
+        {data.priority && <Field label="Priority" value={data.priority} T={T} />}
       </div>
-      {data.routed_to && <Field label="Team" value={data.routed_to} />}
-      {data.created_at && <Field label="Created" value={new Date(data.created_at).toLocaleDateString()} />}
-      {data.confidence != null && <Field label="Confidence" value={`${Math.round(data.confidence * 100)}%`} />}
+      {data.routed_to && <Field label="Team" value={data.routed_to} T={T} />}
+      {data.created_at && <Field label="Created" value={new Date(data.created_at).toLocaleDateString()} T={T} />}
+      {data.confidence != null && <Field label="Confidence" value={`${Math.round(data.confidence * 100)}%`} T={T} />}
     </div>
   );
 }
 
-function EngineerTooltip({ data }) {
+function EngineerTooltip({ data, T }) {
+  const labelStyle = getLabelStyle(T);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -110,7 +102,7 @@ function EngineerTooltip({ data }) {
         </div>
         <span style={{ fontSize: 13, fontWeight: 600, color: T.text }}>{data.name}</span>
       </div>
-      {data.email && <Field label="Email" value={data.email} />}
+      {data.email && <Field label="Email" value={data.email} T={T} />}
       {data.expertise && data.expertise.length > 0 && (
         <div>
           <div style={labelStyle}>Expertise</div>
@@ -129,11 +121,12 @@ function EngineerTooltip({ data }) {
   );
 }
 
-function TeamTooltip({ data }) {
+function TeamTooltip({ data, T }) {
+  const labelStyle = getLabelStyle(T);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div style={{ fontSize: 13, fontWeight: 600, color: T.blue }}>{data.name}</div>
-      {data.domain && <Field label="Domain" value={data.domain} />}
+      {data.domain && <Field label="Domain" value={data.domain} T={T} />}
       {data.members && data.members.length > 0 && (
         <div>
           <div style={labelStyle}>Members</div>
@@ -148,7 +141,8 @@ function TeamTooltip({ data }) {
   );
 }
 
-function Field({ label, value }) {
+function Field({ label, value, T }) {
+  const labelStyle = getLabelStyle(T);
   return (
     <div>
       <div style={labelStyle}>{label}</div>

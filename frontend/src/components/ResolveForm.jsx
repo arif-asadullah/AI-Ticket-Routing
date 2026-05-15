@@ -1,20 +1,9 @@
 import { useState } from "react";
+import { useTheme } from "../theme/ThemeContext";
 import DeskMindSpinner from "./DeskMindSpinner";
 
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  success: "#22c55e",
-  danger: "#ef4444",
-  warning: "#f59e0b",
-};
-
 export default function ResolveForm({ ticket, onSubmit, onCancel }) {
+  const { T } = useTheme();
   const hasAiSuggestion =
     ticket.suggested_resolution && ticket.suggested_resolution.length > 0;
 

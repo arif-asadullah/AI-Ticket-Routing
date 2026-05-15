@@ -221,6 +221,15 @@ export async function sendChat(message, history = []) {
   return res.json();
 }
 
+// ── Graph ──
+
+export async function fetchGraph(category) {
+  const url = category ? `${API_BASE}/graph?category=${encodeURIComponent(category)}` : `${API_BASE}/graph`;
+  const res = await authFetch(url);
+  if (!res.ok) throw new Error("Failed to fetch graph");
+  return res.json();
+}
+
 // ── Health (public, no auth needed) ──
 
 // ── Stats (authenticated) ──

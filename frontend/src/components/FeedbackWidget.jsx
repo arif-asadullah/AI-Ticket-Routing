@@ -1,19 +1,9 @@
 import { useState } from "react";
-
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  success: "#22c55e",
-  danger: "#ef4444",
-  warning: "#f59e0b",
-};
+import { useTheme } from "../theme/ThemeContext";
 
 export default function FeedbackWidget({ ticketId, onSubmit }) {
+  const { T } = useTheme();
+  const { containerStyle, headingStyle, textareaStyle, submitButtonStyle, thankYouStyle, checkIconStyle } = getFeedbackStyles(T);
   const [rating, setRating] = useState(null); // "helpful" | "not_helpful"
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -129,24 +119,77 @@ export default function FeedbackWidget({ ticketId, onSubmit }) {
 
 // ── Styles ──
 
-const containerStyle = {
-  background: T.card,
-  border: `1px solid ${T.border}`,
-  borderRadius: 12,
-  padding: 20,
-  backdropFilter: "blur(8px)",
-};
+function getFeedbackStyles(T) {
+  const containerStyle = {
+    background: T.card,
+    border: `1px solid ${T.border}`,
+    borderRadius: 12,
+    padding: 20,
+    backdropFilter: "blur(8px)",
+  };
 
-const headingStyle = {
-  display: "block",
-  fontSize: 11,
-  fontWeight: 600,
-  color: T.textMuted,
-  marginBottom: 12,
-  letterSpacing: 1,
-  textTransform: "uppercase",
-  fontFamily: "'JetBrains Mono', monospace",
-};
+  const headingStyle = {
+    display: "block",
+    fontSize: 11,
+    fontWeight: 600,
+    color: T.textMuted,
+    marginBottom: 12,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontFamily: "'JetBrains Mono', monospace",
+  };
+
+  const textareaStyle = {
+    width: "100%",
+    padding: "10px 14px",
+    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: 8,
+    color: T.text,
+    fontSize: 13,
+    fontFamily: "'JetBrains Mono', monospace",
+    outline: "none",
+    boxSizing: "border-box",
+    resize: "vertical",
+    marginBottom: 10,
+  };
+
+  const submitButtonStyle = {
+    padding: "7px 16px",
+    background: T.accent,
+    border: "none",
+    borderRadius: 6,
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: 600,
+    boxShadow: "0 0 14px rgba(249,115,22,0.25)",
+  };
+
+  const thankYouStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    fontSize: 14,
+    fontWeight: 600,
+    color: T.success,
+    fontFamily: "'Inter', system-ui",
+  };
+
+  const checkIconStyle = {
+    width: 24,
+    height: 24,
+    borderRadius: "50%",
+    background: "rgba(34,197,94,0.15)",
+    color: T.success,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 13,
+    fontWeight: 700,
+  };
+
+  return { containerStyle, headingStyle, textareaStyle, submitButtonStyle, thankYouStyle, checkIconStyle };
+}
 
 const ratingButtonBase = {
   display: "flex",
@@ -160,53 +203,4 @@ const ratingButtonBase = {
   cursor: "pointer",
   transition: "all 0.15s",
   background: "transparent",
-};
-
-const textareaStyle = {
-  width: "100%",
-  padding: "10px 14px",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: 8,
-  color: T.text,
-  fontSize: 13,
-  fontFamily: "'JetBrains Mono', monospace",
-  outline: "none",
-  boxSizing: "border-box",
-  resize: "vertical",
-  marginBottom: 10,
-};
-
-const submitButtonStyle = {
-  padding: "7px 16px",
-  background: T.accent,
-  border: "none",
-  borderRadius: 6,
-  color: "#fff",
-  fontSize: 12,
-  fontWeight: 600,
-  boxShadow: "0 0 14px rgba(249,115,22,0.25)",
-};
-
-const thankYouStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  fontSize: 14,
-  fontWeight: 600,
-  color: T.success,
-  fontFamily: "'Inter', system-ui",
-};
-
-const checkIconStyle = {
-  width: 24,
-  height: 24,
-  borderRadius: "50%",
-  background: "rgba(34,197,94,0.15)",
-  color: T.success,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: 13,
-  fontWeight: 700,
 };

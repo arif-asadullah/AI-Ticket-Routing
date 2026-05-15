@@ -1,19 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import DeskMindSpinner from "./DeskMindSpinner";
-
-const T = {
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  success: "#22c55e",
-  warning: "#f59e0b",
-  danger: "#ef4444",
-  purple: "#8b5cf6",
-  blue: "#3b82f6",
-};
+import { useTheme } from "../theme/ThemeContext";
 
 // ── Animated counter hook ──
 function useAnimatedValue(target, duration = 800) {
@@ -44,6 +31,7 @@ function useAnimatedValue(target, duration = 800) {
 }
 
 function MetricCard({ label, value, suffix = "", color, format = "number", icon }) {
+  const { T } = useTheme();
   const numericValue = typeof value === "number" ? value : 0;
   const animated = useAnimatedValue(numericValue);
 
@@ -119,6 +107,7 @@ function MetricCard({ label, value, suffix = "", color, format = "number", icon 
 }
 
 export default function StatsSummaryBar({ stats, loading }) {
+  const { T } = useTheme();
   if (loading) {
     return (
       <div style={{

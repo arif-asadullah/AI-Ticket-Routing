@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import DeskMindSplash from "./components/DeskMindSplash";
 import DeskMindSpinner from "./components/DeskMindSpinner";
 import LoginPage from "./components/LoginPage";
@@ -6,49 +6,43 @@ import ChatPanel from "./components/ChatPanel";
 import UserManagement from "./components/UserManagement";
 import DomainDashboard from "./components/DomainDashboard";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import GraphVisualization from "./components/GraphVisualization";
 import { fetchTickets, createTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
+import { useSocket } from "./services/socket";
+import { ThemeProvider, useTheme } from "./theme/ThemeContext";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
+import logoLandscapeLight from "./assets/logo/deskmind-logo-landscape.svg";
 import icon from "./assets/logo/deskmind-icon.svg";
 
-// ── Theme tokens ──
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  cardHover: "rgba(255,255,255,0.07)",
-  border: "rgba(255,255,255,0.08)",
-  borderGlow: "rgba(249,115,22,0.3)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-  accentGlow: "rgba(249,115,22,0.15)",
-  success: "#22c55e",
-  warning: "#f59e0b",
-  danger: "#ef4444",
-};
+function getInputBase(T) {
+  return {
+    width: "100%",
+    padding: "12px 16px",
+    borderRadius: 10,
+    border: `1px solid ${T.border}`,
+    fontSize: 14,
+    fontFamily: "'Inter', system-ui, sans-serif",
+    outline: "none",
+    boxSizing: "border-box",
+    background: "rgba(255,255,255,0.03)",
+    color: T.text,
+    transition: "border-color 0.2s, box-shadow 0.2s",
+  };
+}
 
-const inputBase = {
-  width: "100%",
-  padding: "12px 16px",
-  borderRadius: 10,
-  border: `1px solid ${T.border}`,
-  fontSize: 14,
-  fontFamily: "'Inter', system-ui, sans-serif",
-  outline: "none",
-  boxSizing: "border-box",
-  background: "rgba(255,255,255,0.03)",
-  color: T.text,
-  transition: "border-color 0.2s, box-shadow 0.2s",
-};
-
-const inputFocus = {
-  borderColor: T.borderGlow,
-  boxShadow: `0 0 0 3px ${T.accentGlow}`,
-};
+function getInputFocus(T) {
+  return {
+    borderColor: T.borderGlow,
+    boxShadow: `0 0 0 3px ${T.accentGlow}`,
+  };
+}
 
 function FocusInput({ as: Tag = "input", style, ...props }) {
+  const { T } = useTheme();
   const [focused, setFocused] = useState(false);
+  const inputBase = getInputBase(T);
+  const inputFocus = getInputFocus(T);
   return (
     <Tag
       {...props}
@@ -59,7 +53,8 @@ function FocusInput({ as: Tag = "input", style, ...props }) {
   );
 }
 
-export default function App() {
+function AppContent() {
+  const { T, mode, toggleTheme } = useTheme();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
@@ -70,6 +65,7 @@ export default function App() {
   const [tickets, setTickets] = useState([]);
   const [health, setHealth] = useState(null);
   const [error, setError] = useState(null);
+  const [toasts, setToasts] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("medium");
@@ -90,6 +86,28 @@ export default function App() {
       loadHealth();
     }
   }, [splashDone, isAuthenticated]);
+
+  // Socket.IO real-time updates
+  const handleSocketEvent = useCallback((event, data) => {
+    const labels = {
+      "ticket:created": "New ticket",
+      "ticket:updated": "Ticket updated",
+      "ticket:resolved": "Ticket resolved",
+      "ticket:deleted": "Ticket deleted",
+    };
+    const msg = `${labels[event] || event}: #${data.id || "?"} ${data.title ? "— " + data.title : ""}`;
+    setToasts((prev) => [...prev.slice(-4), { id: Date.now(), msg }]);
+    // Refresh tickets list
+    loadTickets();
+  }, []);
+  useSocket(isAuthenticated ? handleSocketEvent : null);
+
+  // Auto-dismiss toasts
+  useEffect(() => {
+    if (toasts.length === 0) return;
+    const timer = setTimeout(() => setToasts((prev) => prev.slice(1)), 5000);
+    return () => clearTimeout(timer);
+  }, [toasts]);
 
   async function handleLogin(email, password) {
     await login(email, password);
@@ -183,14 +201,14 @@ export default function App() {
             justifyContent: "space-between",
             padding: "12px 32px",
             borderBottom: `1px solid ${T.border}`,
-            background: "rgba(12,12,15,0.8)",
+            background: mode === "dark" ? "rgba(12,12,15,0.8)" : "rgba(255,255,255,0.85)",
             backdropFilter: "blur(12px)",
             position: "sticky",
             top: 0,
             zIndex: 100,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <img src={logoLandscapeDark} alt="DeskMind" style={{ height: 40 }} />
+              <img src={mode === "dark" ? logoLandscapeDark : logoLandscapeLight} alt="DeskMind" style={{ height: 40 }} />
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <nav style={{ display: "flex", gap: 20, fontSize: 13, fontWeight: 500, alignItems: "center" }}>
@@ -198,8 +216,41 @@ export default function App() {
                 <a href="#new-ticket" onClick={(e) => { e.preventDefault(); setShowNewTicket(true); setLastResult(null); }} style={{ color: T.textMuted, cursor: "pointer" }}>New Ticket</a>
                 <a href="#analytics" onClick={(e) => { e.preventDefault(); setActiveTab("analytics"); }} style={{ color: activeTab === "analytics" ? T.accent : T.textMuted, cursor: "pointer" }}>Analytics</a>
                 {user?.role === "admin" && (
+                  <a href="#graph" onClick={(e) => { e.preventDefault(); setActiveTab("graph"); }} style={{ color: activeTab === "graph" ? T.accent : T.textMuted, cursor: "pointer" }}>Graph</a>
+                )}
+                {user?.role === "admin" && (
                   <a href="#users" onClick={(e) => { e.preventDefault(); setActiveTab("users"); }} style={{ color: activeTab === "users" ? T.accent : T.textMuted, cursor: "pointer" }}>Users</a>
                 )}
+                {/* Theme toggle */}
+                <button
+                  onClick={toggleTheme}
+                  title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                  style={{
+                    background: "none",
+                    border: `1px solid ${T.border}`,
+                    borderRadius: 8,
+                    padding: "6px 8px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: T.textMuted,
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.color = T.accent; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.textMuted; }}
+                >
+                  {mode === "dark" ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.4 3.4l.7.7M11.9 11.9l.7.7M3.4 12.6l.7-.7M11.9 4.1l.7-.7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M14 9.3A6 6 0 016.7 2 6 6 0 1014 9.3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </button>
                 <div style={{ width: 1, height: 20, background: T.border, margin: "0 4px" }} />
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ textAlign: "right" }}>
@@ -230,13 +281,18 @@ export default function App() {
 
           {/* ── Domain Dashboard Tab ── */}
           {activeTab === "dashboard" && user && (
-            <DomainDashboard user={user} onBack={() => setActiveTab("tickets")} />
+            <DomainDashboard user={user} onBack={() => setActiveTab("tickets")} refreshKey={tickets.length} />
           )}
 
 
           {/* ── Analytics Tab ── */}
           {activeTab === "analytics" && user && (
             <AnalyticsDashboard user={user} />
+          )}
+
+          {/* ── Graph Tab (admin only) ── */}
+          {activeTab === "graph" && user?.role === "admin" && (
+            <GraphVisualization user={user} />
           )}
 
           {/* ── Users Tab (admin only) ── */}
@@ -259,7 +315,7 @@ export default function App() {
               onClick={(e) => { if (e.target === e.currentTarget && !isClassifying) setShowNewTicket(false); }}
             >
               <div style={{
-                background: "#141418", borderRadius: 20,
+                background: T.bgAlt, borderRadius: 20,
                 border: `1px solid ${T.border}`,
                 padding: 32, width: "100%", maxWidth: 560,
                 maxHeight: "90vh", overflowY: "auto",
@@ -387,6 +443,30 @@ export default function App() {
               </div>
             </div>
           )}
+          {/* ── Toast Notifications ── */}
+          {toasts.length > 0 && (
+            <div style={{ position: "fixed", top: 76, right: 24, zIndex: 400, display: "flex", flexDirection: "column", gap: 8 }}>
+              {toasts.map((t) => (
+                <div key={t.id} style={{
+                  background: "rgba(17,17,20,0.95)",
+                  border: `1px solid ${T.border}`,
+                  borderLeft: `3px solid ${T.accent}`,
+                  borderRadius: 10,
+                  padding: "10px 16px",
+                  fontSize: 12,
+                  color: T.text,
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                  maxWidth: 320,
+                  animation: "chatSlideUp 0.2s ease-out",
+                  fontFamily: "'Inter', system-ui",
+                }}>
+                  {t.msg}
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* ── Floating Chat ── */}
           <style>{`
             @keyframes chatSlideUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
@@ -449,7 +529,7 @@ export default function App() {
               maxHeight: 700,
               borderRadius: 16,
               border: `1px solid ${T.border}`,
-              background: "#111114",
+              background: T.bgAlt,
               boxShadow: "0 16px 60px rgba(0,0,0,0.5)",
               overflow: "hidden",
               animation: "chatSlideUp 0.2s ease-out",
@@ -462,5 +542,13 @@ export default function App() {
         </div>
       )}
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

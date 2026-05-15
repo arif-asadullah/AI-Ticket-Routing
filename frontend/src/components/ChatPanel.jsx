@@ -1,19 +1,11 @@
 import { useState, useRef, useEffect } from "react";
+import { useTheme } from "../theme/ThemeContext";
 import { sendChat } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 import RichMessage from "./RichMessage";
 
-const T = {
-  bg: "#0C0C0F",
-  card: "rgba(255,255,255,0.04)",
-  border: "rgba(255,255,255,0.08)",
-  text: "#F5F5F4",
-  textMuted: "#78716C",
-  textDim: "#44403C",
-  accent: "#F97316",
-};
-
 export default function ChatPanel({ onClose, compact }) {
+  const { T } = useTheme();
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hi! I'm Mindy, your DeskMind AI assistant. Ask me about tickets, teams, or IT issues.\n\nTry: \"status of ticket #206129\" or \"which team handles database?\"" },
   ]);

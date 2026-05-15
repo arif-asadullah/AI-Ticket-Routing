@@ -2,9 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import LoginBackground from "./LoginBackground";
 import logoIcon from "../assets/logo/deskmind-icon.svg";
 import logoLandscapeDark from "../assets/logo/deskmind-logo-landscape-dark.svg";
+import logoLandscapeLight from "../assets/logo/deskmind-logo-landscape.svg";
 import DeskMindSpinner from "./DeskMindSpinner";
+import { useTheme } from "../theme/ThemeContext";
 
 export default function LoginPage({ onLogin }) {
+  const { T, mode } = useTheme();
+  const isDark = mode === "dark";
+  const { labelStyle, inputStyle } = getLoginStyles(T, isDark);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,12 +36,12 @@ export default function LoginPage({ onLogin }) {
       onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
       style={{
         minHeight: "100vh",
-        color: "#F5F5F4",
+        color: T.text,
         position: "relative",
         display: "flex",
       }}
     >
-      <LoginBackground />
+      {isDark && <LoginBackground />}
 
       {/* ── Left Side: Login Form — deep navy panel ── */}
       <div style={{
@@ -49,9 +54,11 @@ export default function LoginPage({ onLogin }) {
         alignItems: "center",
         justifyContent: "center",
         padding: "40px 48px",
-        background: "linear-gradient(160deg, #0a0f1a 0%, #0d1117 40%, #101820 100%)",
-        borderRight: "1px solid rgba(249,115,22,0.2)",
-        boxShadow: "4px 0 40px rgba(0,0,0,0.6)",
+        background: isDark
+          ? "linear-gradient(160deg, #0a0f1a 0%, #0d1117 40%, #101820 100%)"
+          : "linear-gradient(160deg, #ffffff 0%, #f8f9fa 40%, #f0f1f3 100%)",
+        borderRight: `1px solid ${isDark ? "rgba(249,115,22,0.2)" : "rgba(0,0,0,0.08)"}`,
+        boxShadow: isDark ? "4px 0 40px rgba(0,0,0,0.6)" : "4px 0 40px rgba(0,0,0,0.06)",
       }}>
         <div style={{ width: "100%", maxWidth: 360 }}>
           {/* Welcome text */}
@@ -64,7 +71,7 @@ export default function LoginPage({ onLogin }) {
             Welcome back
           </h2>
           <p style={{
-            color: "#78716C",
+            color: T.textMuted,
             fontSize: 14,
             marginBottom: 32,
           }}>
@@ -79,7 +86,7 @@ export default function LoginPage({ onLogin }) {
               borderRadius: 8,
               padding: "10px 14px",
               marginBottom: 20,
-              color: "#EF4444",
+              color: T.danger,
               fontSize: 13,
               textAlign: "center",
             }}>
@@ -97,8 +104,8 @@ export default function LoginPage({ onLogin }) {
               placeholder="you@company.com"
               required
               style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = "#F97316"}
-              onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.1)"}
+              onFocus={(e) => e.target.style.borderColor = T.accent}
+              onBlur={(e) => e.target.style.borderColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.12)"}
             />
 
             <label style={{ ...labelStyle, marginTop: 18 }}>Password</label>
@@ -109,8 +116,8 @@ export default function LoginPage({ onLogin }) {
               placeholder="Enter your password"
               required
               style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = "#F97316"}
-              onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.1)"}
+              onFocus={(e) => e.target.style.borderColor = T.accent}
+              onBlur={(e) => e.target.style.borderColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.12)"}
             />
 
             <button
@@ -148,7 +155,7 @@ export default function LoginPage({ onLogin }) {
           {/* Footer */}
           <p style={{
             textAlign: "center",
-            color: "#44403C",
+            color: T.textDim,
             fontSize: 11,
             marginTop: 40,
             letterSpacing: 2,
@@ -159,7 +166,7 @@ export default function LoginPage({ onLogin }) {
       </div>
 
       {/* ── Center Logo Badge — Interactive ── */}
-      <CenterLogoBadge mousePos={mousePos} />
+      <CenterLogoBadge mousePos={mousePos} isDark={isDark} />
 
       {/* ── Right Side: Product Showcase ── */}
       <div style={{
@@ -172,15 +179,16 @@ export default function LoginPage({ onLogin }) {
         justifyContent: "center",
         padding: "60px 48px",
         overflow: "auto",
+        background: isDark ? "transparent" : "linear-gradient(160deg, #f0f0f3 0%, #e8e8ec 40%, #f5f5f7 100%)",
       }}>
         {/* Logo */}
         <img
-          src={logoLandscapeDark}
+          src={isDark ? logoLandscapeDark : logoLandscapeLight}
           alt="DeskMind"
           style={{
             height: 52,
             marginBottom: 32,
-            filter: "drop-shadow(0 0 24px rgba(249,115,22,0.3))",
+            filter: isDark ? "drop-shadow(0 0 24px rgba(249,115,22,0.3))" : "none",
           }}
         />
 
@@ -193,7 +201,7 @@ export default function LoginPage({ onLogin }) {
           maxWidth: 520,
           marginBottom: 16,
           textAlign: "center",
-          background: "linear-gradient(135deg, #F5F5F4 0%, #A8A29E 100%)",
+          background: isDark ? "linear-gradient(135deg, #F5F5F4 0%, #A8A29E 100%)" : "linear-gradient(135deg, #1a1a1a 0%, #444 100%)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
         }}>
@@ -202,7 +210,7 @@ export default function LoginPage({ onLogin }) {
 
         <p style={{
           fontSize: 15,
-          color: "#78716C",
+          color: T.textMuted,
           maxWidth: 440,
           lineHeight: 1.6,
           marginBottom: 48,
@@ -271,13 +279,13 @@ export default function LoginPage({ onLogin }) {
             <div key={step} style={{
               padding: 22,
               borderRadius: 14,
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)",
+              border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}`,
               backdropFilter: "blur(8px)",
               transition: "border-color 0.3s",
             }}
               onMouseEnter={(e) => e.currentTarget.style.borderColor = "rgba(249,115,22,0.25)"}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                 {icon}
@@ -295,11 +303,11 @@ export default function LoginPage({ onLogin }) {
                 fontSize: 16,
                 fontWeight: 600,
                 marginBottom: 6,
-                color: "#F5F5F4",
+                color: T.text,
               }}>
                 {title}
               </h3>
-              <p style={{ fontSize: 12, color: "#78716C", lineHeight: 1.5 }}>
+              <p style={{ fontSize: 12, color: T.textMuted, lineHeight: 1.5 }}>
                 {desc}
               </p>
             </div>
@@ -320,10 +328,10 @@ export default function LoginPage({ onLogin }) {
               gap: 6,
               padding: "5px 12px",
               borderRadius: 20,
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)",
+              border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}`,
               fontSize: 11,
-              color: "#78716C",
+              color: T.textMuted,
             }}>
               <span style={{
                 width: 5,
@@ -343,7 +351,7 @@ export default function LoginPage({ onLogin }) {
 
 // ── Interactive Center Logo ──
 
-function CenterLogoBadge({ mousePos }) {
+function CenterLogoBadge({ mousePos, isDark }) {
   const ref = useRef(null);
 
   // Compute tilt and glow from mouse position
@@ -384,7 +392,7 @@ function CenterLogoBadge({ mousePos }) {
           width: 76,
           height: 76,
           borderRadius: "50%",
-          background: "radial-gradient(circle at 40% 35%, #1a1a2e, #0C0C0F)",
+          background: isDark ? "radial-gradient(circle at 40% 35%, #2a2a3e, #1a1a2e)" : "radial-gradient(circle at 40% 35%, #ffffff, #f0f0f3)",
           border: `2px solid rgba(249,115,22,${borderAlpha})`,
           display: "flex",
           alignItems: "center",
@@ -392,7 +400,9 @@ function CenterLogoBadge({ mousePos }) {
           cursor: "pointer",
           transform: `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`,
           transition: "box-shadow 0.2s",
-          boxShadow: `0 0 ${20 + glow * 60}px rgba(249,115,22,${glow}), 0 0 80px rgba(0,0,0,0.4)`,
+          boxShadow: isDark
+            ? `0 0 ${20 + glow * 60}px rgba(249,115,22,${glow}), 0 0 80px rgba(0,0,0,0.4)`
+            : `0 0 ${10 + glow * 30}px rgba(249,115,22,${glow * 0.5}), 0 4px 20px rgba(0,0,0,0.08)`,
         }}
       >
         {/* Pulse rings */}
@@ -421,23 +431,26 @@ function CenterLogoBadge({ mousePos }) {
   );
 }
 
-const labelStyle = {
-  display: "block",
-  fontSize: 13,
-  color: "#A8A29E",
-  marginBottom: 6,
-  fontWeight: 500,
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "11px 14px",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: 8,
-  color: "#F5F5F4",
-  fontSize: 14,
-  outline: "none",
-  boxSizing: "border-box",
-  transition: "border-color 0.2s",
-};
+function getLoginStyles(T, isDark) {
+  return {
+    labelStyle: {
+      display: "block",
+      fontSize: 13,
+      color: T.textMuted,
+      marginBottom: 6,
+      fontWeight: 500,
+    },
+    inputStyle: {
+      width: "100%",
+      padding: "11px 14px",
+      background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.03)",
+      border: `1px solid ${isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.12)"}`,
+      borderRadius: 8,
+      color: T.text,
+      fontSize: 14,
+      outline: "none",
+      boxSizing: "border-box",
+      transition: "border-color 0.2s",
+    },
+  };
+}
