@@ -26,6 +26,9 @@ export function isLoggedIn() {
 
 // ── Authenticated Fetch Wrapper ──
 
+// Mutex: only one refresh at a time; concurrent 401s share the same refresh promise
+let _refreshPromise = null;
+
 async function authFetch(url, options = {}) {
   const headers = {
     ...options.headers,
@@ -35,10 +38,18 @@ async function authFetch(url, options = {}) {
 
   // If 401, try refreshing the token and retry once
   if (res.status === 401) {
-    const refreshed = await refreshTokens();
+    // Deduplicate concurrent refresh attempts
+    if (!_refreshPromise) {
+      _refreshPromise = refreshTokens().finally(() => { _refreshPromise = null; });
+    }
+    const refreshed = await _refreshPromise;
     if (refreshed) {
       headers.Authorization = `Bearer ${getAccessToken()}`;
       res = await fetch(url, { ...options, headers });
+    } else {
+      // Refresh failed — force logout so user isn't stuck in broken auth state
+      logout();
+      window.location.reload();
     }
   }
   return res;

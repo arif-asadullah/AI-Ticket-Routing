@@ -166,10 +166,10 @@ async def refresh(body: TokenRefreshRequest, request: Request):
     """Exchange a valid refresh token for new access + refresh tokens."""
     try:
         payload = decode_token(body.refresh_token)
-        if payload.get("type") != "refresh":
-            raise HTTPException(401, "Not a refresh token")
     except Exception:
         raise HTTPException(401, "Invalid or expired refresh token")
+    if payload.get("type") != "refresh":
+        raise HTTPException(401, "Not a refresh token")
 
     db = _get_db(request)
 

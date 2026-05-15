@@ -314,7 +314,7 @@ function TimelineEntry({ event, isLast }) {
 
 export default function AuditTimeline({ ticketId }) {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!ticketId) return;

@@ -77,12 +77,8 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
 
   // Resolve form state
   const [showResolveForm, setShowResolveForm] = useState(false);
-  const [resolutionNote, setResolutionNote] = useState("");
-
   // Feedback widget state
   const [showFeedback, setShowFeedback] = useState(false);
-  const [feedbackRating, setFeedbackRating] = useState(0);
-  const [feedbackComment, setFeedbackComment] = useState("");
 
   const t = ticket;
   const p = priorityStyles[t.priority] || priorityStyles.medium;
@@ -103,22 +99,7 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
     }
   }
 
-  async function handleResolve(e) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const data = { resolution_notes: resolutionNote };
-      await resolveTicket(t.id, data);
-      onResolve(t.id, data);
-      setShowResolveForm(false);
-      setResolutionNote("");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+
 
   async function handleFeedbackSubmit() {
     if (feedbackRating < 1) return;
@@ -742,7 +723,7 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
                     try {
                       await resolveTicket(t.id, data);
                       setShowResolveForm(false);
-                      onResolve?.(t.id);
+                      onResolve?.(t.id, data);
                     } catch (err) {
                       alert(err.message);
                     } finally {
@@ -794,14 +775,14 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M3 7.5l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
-                      Feedback submitted ({t.feedback_rating}/5)
+                      Feedback: {t.feedback_rating === "helpful" ? "\uD83D\uDC4D Helpful" : "\uD83D\uDC4E Not Helpful"}
                     </span>
                   )}
                 </div>
               )}
 
               {/* Feedback widget */}
-              {(t.status === "resolved" || showFeedback) && !loading && (
+              {showFeedback && !t.feedback_rating && !loading && (
                 <FeedbackWidget
                   ticketId={t.id}
                   onSubmit={async ({ rating, comment }) => {

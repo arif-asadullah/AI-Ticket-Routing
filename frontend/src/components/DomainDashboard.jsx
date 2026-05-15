@@ -1,8 +1,17 @@
 import { useState, useEffect, useMemo } from "react";
-import { fetchTickets, createTicket, fetchStats } from "../services/api";
+import { fetchTickets, fetchStats } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 import TicketDetail from "./TicketDetail";
 import StatsSummaryBar from "./StatsSummaryBar";
+
+// Domain card images
+import imgAllTickets from "../assets/images/all_tickets.png";
+import imgInfrastructure from "../assets/images/infrastructure.png";
+import imgApplication from "../assets/images/application.png";
+import imgDatabase from "../assets/images/database.png";
+import imgNetwork from "../assets/images/network.png";
+import imgSecurity from "../assets/images/Security.png";
+import imgAccessMgmt from "../assets/images/accessmanagement.png";
 
 // ── Theme tokens ──
 const T = {
@@ -35,12 +44,12 @@ const statusStyles = {
 };
 
 const domainCards = [
-  { key: "Infrastructure", label: "Infrastructure", icon: "INF", desc: "Servers, VMs, OS, Kubernetes, hardware" },
-  { key: "Application", label: "Application", icon: "APP", desc: "APIs, deployments, bugs, HTTP errors" },
-  { key: "Database", label: "Database", icon: "DB", desc: "PostgreSQL, Redis, queries, replication" },
-  { key: "Network", label: "Network", icon: "NET", desc: "DNS, firewall, VPN, SSL, latency" },
-  { key: "Security", label: "Security", icon: "SEC", desc: "Vulnerabilities, breaches, malware" },
-  { key: "Access Management", label: "Access Management", icon: "IAM", desc: "LDAP, SSO, MFA, RBAC, permissions" },
+  { key: "Infrastructure", label: "Infrastructure", icon: "INF", desc: "Servers, VMs, OS, Kubernetes, hardware", img: imgInfrastructure },
+  { key: "Application", label: "Application", icon: "APP", desc: "APIs, deployments, bugs, HTTP errors", img: imgApplication },
+  { key: "Database", label: "Database", icon: "DB", desc: "PostgreSQL, Redis, queries, replication", img: imgDatabase },
+  { key: "Network", label: "Network", icon: "NET", desc: "DNS, firewall, VPN, SSL, latency", img: imgNetwork },
+  { key: "Security", label: "Security", icon: "SEC", desc: "Vulnerabilities, breaches, malware", img: imgSecurity },
+  { key: "Access Management", label: "Access Management", icon: "IAM", desc: "LDAP, SSO, MFA, RBAC, permissions", img: imgAccessMgmt },
 ];
 
 const labelStyle = {
@@ -107,12 +116,11 @@ export default function DomainDashboard({ user, onBack }) {
   // Detail view
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  // Create ticket form
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [createTitle, setCreateTitle] = useState("");
-  const [createDesc, setCreateDesc] = useState("");
-  const [createPriority, setCreatePriority] = useState("medium");
-  const [isClassifying, setIsClassifying] = useState(false);
+  // View toggle + pagination
+  const [view, setView] = useState("card");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
+
 
   useEffect(() => {
     loadTickets();
@@ -121,6 +129,9 @@ export default function DomainDashboard({ user, onBack }) {
       .catch(() => {})
       .finally(() => setStatsLoading(false));
   }, []);
+
+  // Reset page when filters or domain change
+  useEffect(() => { setPage(1); }, [selectedDomain, statusFilter, priorityFilter, search]);
 
   async function loadTickets() {
     setLoading(true);
@@ -140,7 +151,7 @@ export default function DomainDashboard({ user, onBack }) {
     let result = [...tickets];
 
     // Domain filter: admin picks a domain, engineer sees their team
-    if (user?.role === "admin" && selectedDomain) {
+    if (user?.role === "admin" && selectedDomain && selectedDomain !== "ALL") {
       result = result.filter(
         (t) => (t.category || "") === selectedDomain
       );
@@ -186,28 +197,6 @@ export default function DomainDashboard({ user, onBack }) {
     };
   }, [tickets, selectedDomain, user]);
 
-  async function handleCreateTicket(e) {
-    e.preventDefault();
-    if (!createTitle.trim() || !createDesc.trim()) return;
-    setIsClassifying(true);
-    setError(null);
-    try {
-      const [created] = await Promise.all([
-        createTicket({ title: createTitle, description: createDesc, priority: createPriority }),
-        new Promise((r) => setTimeout(r, 1500)),
-      ]);
-      setTickets((prev) => [created, ...prev]);
-      setCreateTitle("");
-      setCreateDesc("");
-      setCreatePriority("medium");
-      setShowCreateForm(false);
-    } catch {
-      setError("Failed to create ticket. Check backend connection.");
-    } finally {
-      setIsClassifying(false);
-    }
-  }
-
   function handleStatusChange(ticketId, newStatus) {
     setTickets((prev) =>
       prev.map((t) => (t.id === ticketId ? { ...t, status: newStatus } : t))
@@ -236,7 +225,12 @@ export default function DomainDashboard({ user, onBack }) {
   }
 
   function handleFeedback(ticketId, rating, comment) {
-    // Optimistic: just mark that feedback was given
+    // Optimistic: mark that feedback was given in both tickets array and selected ticket
+    setTickets((prev) =>
+      prev.map((t) =>
+        t.id === ticketId ? { ...t, feedback_rating: rating } : t
+      )
+    );
     if (selectedTicket?.id === ticketId) {
       setSelectedTicket((prev) => ({ ...prev, feedback_rating: rating }));
     }
@@ -305,128 +299,135 @@ export default function DomainDashboard({ user, onBack }) {
 
           <StatsSummaryBar stats={stats} loading={statsLoading} />
 
+          {/* AI Card Animations */}
+          <style>{`
+            @keyframes cornerPulse {
+              0%, 100% { opacity: 0.25; }
+              50% { opacity: 0.7; }
+            }
+            @keyframes floatDot {
+              0%, 100% { transform: translateY(0px); opacity: 0.2; }
+              50% { transform: translateY(-8px); opacity: 0.7; }
+            }
+            @keyframes glowPulse {
+              0%, 100% { box-shadow: 0 0 0px rgba(249,115,22,0), 0 0 0px rgba(249,115,22,0); }
+              50% { box-shadow: 0 0 20px rgba(249,115,22,0.25), 0 0 40px rgba(249,115,22,0.1); }
+            }
+            .ai-card { transition: all 0.3s ease; }
+            .ai-card:hover { animation: glowPulse 2s ease infinite; }
+            .ai-card:hover .card-img { transform: scale(1.08) !important; }
+            .ai-card:hover .corner-bracket { opacity: 0.8 !important; }
+          `}</style>
+
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
             gap: 16,
           }}>
-            {/* All tickets card */}
-            <button
-              onClick={() => setSelectedDomain("ALL")}
-              style={{
-                background: T.card,
-                border: `1px solid ${T.border}`,
-                borderRadius: 16,
-                padding: 24,
-                cursor: "pointer",
-                textAlign: "left",
-                transition: "all 0.2s",
-                backdropFilter: "blur(8px)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = T.accent;
-                e.currentTarget.style.background = "rgba(249,115,22,0.06)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = T.border;
-                e.currentTarget.style.background = T.card;
-              }}
-            >
-              <div style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10,
-                background: "rgba(249,115,22,0.12)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 12,
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 12,
-                fontWeight: 700,
-                color: T.accent,
-              }}>
-                ALL
-              </div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
-                All Tickets
-              </div>
-              <div style={{ fontSize: 12, color: T.textMuted, marginTop: 4 }}>
-                View all domains combined
-              </div>
-              <div style={{
-                marginTop: 12,
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 20,
-                fontWeight: 700,
-                color: T.accent,
-              }}>
-                {tickets.length}
-              </div>
-            </button>
+            {/* All tickets card + domain cards */}
+            {[
+              { key: "ALL", label: "All Tickets", desc: "View all domains combined", icon: "ALL", img: imgAllTickets, count: tickets.length },
+              ...domainCards.map((d) => ({
+                ...d,
+                count: tickets.filter(
+                  (t) => (t.category || "").toLowerCase() === d.key.toLowerCase() ||
+                         (t.routed_to || "").toLowerCase().includes(d.key.toLowerCase())
+                ).length,
+              })),
+            ].map((d, idx) => (
+              <button
+                className="ai-card"
+                key={d.key}
+                onClick={() => setSelectedDomain(d.key)}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = (e.clientX - rect.left) / rect.width - 0.5;
+                  const y = (e.clientY - rect.top) / rect.height - 0.5;
+                  e.currentTarget.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+                  e.currentTarget.style.borderColor = "#F97316";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "perspective(800px) rotateY(0deg) rotateX(0deg)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                }}
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  background: T.card,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 16,
+                  padding: 0,
+                  cursor: "pointer",
+                  textAlign: "left",
+                  transformStyle: "preserve-3d",
+                }}
+              >
+                {/* Image area */}
+                <div style={{ height: 130, overflow: "hidden", position: "relative" }}>
+                  <img className="card-img" src={d.img} alt={d.label} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s ease" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #0C0C0F 5%, rgba(12,12,15,0.4) 50%, transparent 100%)" }} />
 
-            {domainCards.map((d) => {
-              const count = tickets.filter(
-                (t) => (t.category || "").toUpperCase() === d.key ||
-                       (t.routed_to || "").toUpperCase().includes(d.key)
-              ).length;
-              return (
-                <button
-                  key={d.key}
-                  onClick={() => setSelectedDomain(d.key)}
-                  style={{
-                    background: T.card,
-                    border: `1px solid ${T.border}`,
-                    borderRadius: 16,
-                    padding: 24,
-                    cursor: "pointer",
-                    textAlign: "left",
-                    transition: "all 0.2s",
-                    backdropFilter: "blur(8px)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = T.accent;
-                    e.currentTarget.style.background = "rgba(249,115,22,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = T.border;
-                    e.currentTarget.style.background = T.card;
-                  }}
-                >
+                  {/* Corner brackets */}
+                  {[[0, 0, "borderTop,borderLeft"], [0, 1, "borderTop,borderRight"], [1, 0, "borderBottom,borderLeft"], [1, 1, "borderBottom,borderRight"]].map(([row, col, borders]) => (
+                    <div key={`${row}-${col}`} className="corner-bracket" style={{
+                      position: "absolute",
+                      top: row === 0 ? 8 : "auto",
+                      bottom: row === 1 ? 8 : "auto",
+                      left: col === 0 ? 8 : "auto",
+                      right: col === 1 ? 8 : "auto",
+                      width: 14, height: 14,
+                      borderTop: borders.includes("borderTop") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
+                      borderBottom: borders.includes("borderBottom") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
+                      borderLeft: borders.includes("borderLeft") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
+                      borderRight: borders.includes("borderRight") ? "1.5px solid rgba(249,115,22,0.6)" : "none",
+                      animation: `cornerPulse 3s ease-in-out infinite`,
+                      animationDelay: `${idx * 0.4 + (row + col) * 0.3}s`,
+                    }} />
+                  ))}
+
+                  {/* Particle dots */}
+                  {[
+                    { left: "20%", top: "30%", dur: "3s", del: "0s" },
+                    { left: "70%", top: "20%", dur: "3.5s", del: "0.8s" },
+                    { left: "45%", top: "60%", dur: "4s", del: "1.5s" },
+                    { left: "85%", top: "50%", dur: "3.2s", del: "2s" },
+                  ].map((dot, i) => (
+                    <div key={i} style={{
+                      position: "absolute", left: dot.left, top: dot.top,
+                      width: 3, height: 3, borderRadius: "50%",
+                      background: "rgba(249,115,22,0.7)",
+                      boxShadow: "0 0 6px rgba(249,115,22,0.5)",
+                      animation: `floatDot ${dot.dur} ease-in-out infinite`,
+                      animationDelay: dot.del,
+                    }} />
+                  ))}
+
+                  {/* Icon badge */}
                   <div style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 10,
-                    background: "rgba(249,115,22,0.12)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: 12,
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: T.accent,
+                    position: "absolute", top: 10, right: 10,
+                    padding: "4px 10px", borderRadius: 8,
+                    background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
+                    fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: T.accent,
+                    border: "1px solid rgba(249,115,22,0.2)",
                   }}>
                     {d.icon}
                   </div>
+                </div>
+
+                {/* Content */}
+                <div style={{ padding: "12px 20px 20px" }}>
                   <div style={{ fontSize: 16, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
                     {d.label}
                   </div>
-                  <div style={{ fontSize: 12, color: T.textMuted, marginTop: 4 }}>
+                  <div style={{ fontSize: 11, color: T.textMuted, marginTop: 2 }}>
                     {d.desc}
                   </div>
-                  <div style={{
-                    marginTop: 12,
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 20,
-                    fontWeight: 700,
-                    color: count > 0 ? T.accent : T.textDim,
-                  }}>
-                    {count}
+                  <div style={{ marginTop: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: d.count > 0 ? T.accent : T.textDim }}>
+                    {d.count}
                   </div>
-                </button>
-              );
-            })}
+                </div>
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -501,35 +502,6 @@ export default function DomainDashboard({ user, onBack }) {
             </div>
           </div>
 
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            style={{
-              padding: "10px 20px",
-              background: showCreateForm ? "rgba(239,68,68,0.1)" : T.accent,
-              color: showCreateForm ? T.danger : "#fff",
-              border: showCreateForm ? "1px solid rgba(239,68,68,0.2)" : "none",
-              borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: "'Inter', system-ui",
-              boxShadow: showCreateForm ? "none" : "0 0 20px rgba(249,115,22,0.3)",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            {showCreateForm ? (
-              "Cancel"
-            ) : (
-              <>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-                Create Ticket
-              </>
-            )}
-          </button>
         </div>
 
         {/* ── Error ── */}
@@ -549,116 +521,6 @@ export default function DomainDashboard({ user, onBack }) {
 
         {/* ── Stats Summary Bar ── */}
         <StatsSummaryBar stats={stats} loading={statsLoading} />
-
-        {/* ── Create Ticket Form ── */}
-        {showCreateForm && (
-          <div style={{
-            background: T.card,
-            border: `1px solid ${T.border}`,
-            borderRadius: 16,
-            padding: 28,
-            marginBottom: 24,
-            backdropFilter: "blur(8px)",
-            animation: "fadeSlideIn 0.2s ease-out",
-          }}>
-            <style>{`@keyframes fadeSlideIn { from { opacity:0; transform:translateY(-8px) } to { opacity:1; transform:translateY(0) } }`}</style>
-            <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20, color: T.text, fontFamily: "'Inter', system-ui" }}>
-              New Ticket
-            </h3>
-            <form onSubmit={handleCreateTicket}>
-              <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>Title</label>
-                <input
-                  type="text"
-                  placeholder="Brief summary of the issue"
-                  value={createTitle}
-                  onChange={(e) => setCreateTitle(e.target.value)}
-                  required
-                  style={inputStyle}
-                />
-              </div>
-              <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>Description</label>
-                <textarea
-                  placeholder="Provide details -- affected systems, error messages, impact..."
-                  value={createDesc}
-                  onChange={(e) => setCreateDesc(e.target.value)}
-                  rows={4}
-                  required
-                  style={{ ...inputStyle, resize: "vertical", minHeight: 80 }}
-                />
-              </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
-                <div>
-                  <label style={labelStyle}>Priority</label>
-                  <div style={{ display: "flex", borderRadius: 8, overflow: "hidden", border: `1px solid ${T.border}` }}>
-                    {["low", "medium", "high"].map((p) => (
-                      <button
-                        key={p}
-                        type="button"
-                        onClick={() => setCreatePriority(p)}
-                        style={{
-                          padding: "8px 18px",
-                          fontSize: 12,
-                          fontWeight: createPriority === p ? 600 : 400,
-                          border: "none",
-                          cursor: "pointer",
-                          textTransform: "capitalize",
-                          fontFamily: "'Inter', system-ui",
-                          background: createPriority === p
-                            ? (p === "high" ? "rgba(239,68,68,0.15)" : p === "medium" ? "rgba(245,158,11,0.15)" : "rgba(34,197,94,0.15)")
-                            : "transparent",
-                          color: createPriority === p
-                            ? (p === "high" ? T.danger : p === "medium" ? T.warning : T.success)
-                            : T.textDim,
-                          borderRight: p !== "high" ? `1px solid ${T.border}` : "none",
-                          transition: "all 0.15s",
-                        }}
-                      >
-                        {p}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  disabled={!createTitle.trim() || !createDesc.trim() || isClassifying}
-                  style={{
-                    flex: 1,
-                    padding: "10px 24px",
-                    background: isClassifying ? "rgba(249,115,22,0.5)" : T.accent,
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: isClassifying ? "wait" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    fontFamily: "'Inter', system-ui",
-                    boxShadow: isClassifying ? "none" : "0 0 20px rgba(249,115,22,0.3)",
-                  }}
-                >
-                  {isClassifying ? (
-                    <>
-                      <DeskMindSpinner size="sm" />
-                      Classifying...
-                    </>
-                  ) : (
-                    <>
-                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                        <path d="M14 2L7.5 14L5.5 8.5L2 7L14 2Z" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
-                      </svg>
-                      Submit
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
 
         {/* ── Filter Bar ── */}
         <div style={{
@@ -750,6 +612,34 @@ export default function DomainDashboard({ user, onBack }) {
           }}>
             {filtered.length} result{filtered.length !== 1 ? "s" : ""}
           </span>
+
+          {/* View toggle */}
+          <div style={{
+            display: "flex",
+            border: `1px solid ${T.border}`,
+            borderRadius: 8,
+            overflow: "hidden",
+          }}>
+            {["card", "list"].map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setView(mode)}
+                style={{
+                  padding: "7px 14px",
+                  fontSize: 12,
+                  fontFamily: "'Inter', system-ui",
+                  border: "none",
+                  cursor: "pointer",
+                  background: view === mode ? T.accentGlow : "transparent",
+                  color: view === mode ? T.accent : T.textMuted,
+                  fontWeight: view === mode ? 600 : 400,
+                  textTransform: "capitalize",
+                }}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* ── Loading ── */}
@@ -780,160 +670,217 @@ export default function DomainDashboard({ user, onBack }) {
           </div>
         )}
 
-        {/* ── Ticket Cards ── */}
-        {!loading && filtered.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {filtered.map((t) => {
-              const p = priorityStyles[t.priority] || priorityStyles.medium;
-              const s = statusStyles[t.status] || statusStyles.routed;
-              const confidencePct = Math.round((t.confidence_score || 0) * 100);
+        {/* ── Ticket List/Card View ── */}
+        {!loading && filtered.length > 0 && (() => {
+          const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+          const safePage = Math.min(page, totalPages);
+          const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-              return (
-                <div
-                  key={t.id}
-                  onClick={() => setSelectedTicket(t)}
-                  style={{
-                    background: T.card,
-                    border: `1px solid ${T.border}`,
-                    borderRadius: 14,
-                    padding: "18px 22px",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    backdropFilter: "blur(8px)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(249,115,22,0.25)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = T.border;
-                    e.currentTarget.style.background = T.card;
-                  }}
-                >
-                  {/* Top row: ID + title + badges */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                    <span style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: 11,
-                      color: T.textDim,
-                      fontWeight: 600,
-                      minWidth: 44,
-                    }}>
-                      #{t.id}
-                    </span>
-                    <span style={{
-                      flex: 1,
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: T.text,
-                      fontFamily: "'Inter', system-ui",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}>
-                      {t.title}
-                    </span>
-                    {/* Priority badge */}
-                    <span style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      fontSize: 10,
-                      fontWeight: 600,
-                      padding: "3px 10px",
-                      borderRadius: 10,
-                      background: p.bg,
-                      color: p.color,
-                      textTransform: "capitalize",
-                      whiteSpace: "nowrap",
-                    }}>
-                      <span style={{
-                        width: 5, height: 5, borderRadius: "50%",
-                        background: p.dot,
-                        boxShadow: `0 0 6px ${p.dot}40`,
-                      }} />
-                      {t.priority}
-                    </span>
-                    {/* Status badge */}
-                    <span style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      fontSize: 10,
-                      fontWeight: 600,
-                      padding: "3px 10px",
-                      borderRadius: 10,
-                      background: s.bg,
-                      color: s.color,
-                      textTransform: "capitalize",
-                      whiteSpace: "nowrap",
-                    }}>
-                      <span style={{
-                        width: 5, height: 5, borderRadius: "50%",
-                        background: s.dot,
-                        boxShadow: `0 0 6px ${s.dot}40`,
-                      }} />
-                      {(t.status || "").replace("_", " ")}
-                    </span>
+          return (
+            <>
+              {view === "list" ? (
+                /* ── List View ── */
+                <div>
+                  {/* Header row */}
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "70px 1fr 100px 100px 90px",
+                    padding: "8px 16px",
+                    fontSize: 10,
+                    fontWeight: 600,
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: T.textDim,
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
+                    borderBottom: `1px solid ${T.border}`,
+                  }}>
+                    <span>ID</span>
+                    <span>Title</span>
+                    <span>Priority</span>
+                    <span>Status</span>
+                    <span>Created</span>
                   </div>
-
-                  {/* Bottom row: confidence + team + time */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                    {/* Confidence bar */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 160 }}>
-                      <span style={{
-                        fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: 10,
-                        color: T.textMuted,
-                        minWidth: 28,
-                      }}>
-                        {confidencePct}%
-                      </span>
-                      <div style={{
-                        flex: 1,
-                        height: 4,
-                        borderRadius: 2,
-                        background: "rgba(255,255,255,0.06)",
-                        overflow: "hidden",
-                      }}>
-                        <div style={{
-                          width: `${confidencePct}%`,
-                          height: "100%",
-                          borderRadius: 2,
-                          background: confidencePct > 70 ? T.success : confidencePct > 50 ? T.warning : T.danger,
-                          transition: "width 0.3s",
-                        }} />
+                  {pageItems.map((t) => {
+                    const p = priorityStyles[t.priority] || priorityStyles.medium;
+                    const s = statusStyles[t.status] || statusStyles.routed;
+                    return (
+                      <div
+                        key={t.id}
+                        onClick={() => setSelectedTicket(t)}
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "70px 1fr 100px 100px 90px",
+                          padding: "12px 16px",
+                          fontSize: 12,
+                          color: T.text,
+                          borderBottom: `1px solid ${T.border}`,
+                          cursor: "pointer",
+                          transition: "background 0.15s",
+                          alignItems: "center",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: T.textDim }}>
+                          #{t.id}
+                        </span>
+                        <span style={{
+                          fontWeight: 500,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          paddingRight: 12,
+                        }}>
+                          {t.title}
+                        </span>
+                        <span style={{
+                          display: "inline-flex", alignItems: "center", gap: 4,
+                          fontSize: 10, fontWeight: 600, color: p.color, textTransform: "capitalize",
+                        }}>
+                          <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.dot, boxShadow: `0 0 6px ${p.dot}40` }} />
+                          {t.priority}
+                        </span>
+                        <span style={{
+                          display: "inline-flex", alignItems: "center", gap: 4,
+                          fontSize: 10, fontWeight: 500, color: s.color, textTransform: "capitalize",
+                        }}>
+                          <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.dot, boxShadow: `0 0 6px ${s.dot}40` }} />
+                          {(t.status || "").replace(/_/g, " ")}
+                        </span>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: T.textDim }}>
+                          {timeAgo(t.created_at)}
+                        </span>
                       </div>
-                    </div>
-
-                    {/* Routed to */}
-                    {t.routed_to && (
-                      <span style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: T.accent,
-                      }}>
-                        {t.routed_to}
-                      </span>
-                    )}
-
-                    {/* Spacer */}
-                    <span style={{ flex: 1 }} />
-
-                    {/* Created at */}
-                    <span style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: 10,
-                      color: T.textDim,
-                    }}>
-                      {timeAgo(t.created_at)}
-                    </span>
-                  </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-        )}
+              ) : (
+                /* ── Card View ── */
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+                  {pageItems.map((t) => {
+                    const p = priorityStyles[t.priority] || priorityStyles.medium;
+                    const s = statusStyles[t.status] || statusStyles.routed;
+                    const confidencePct = Math.round((t.confidence_score || 0) * 100);
+                    return (
+                      <div
+                        key={t.id}
+                        onClick={() => setSelectedTicket(t)}
+                        style={{
+                          background: T.card,
+                          border: `1px solid ${T.border}`,
+                          borderRadius: 14,
+                          padding: "18px 22px",
+                          cursor: "pointer",
+                          transition: "all 0.2s",
+                          backdropFilter: "blur(8px)",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = "rgba(249,115,22,0.25)";
+                          e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = T.border;
+                          e.currentTarget.style.background = T.card;
+                        }}
+                      >
+                        {/* Top row: ID + badges */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: T.textDim, fontWeight: 600 }}>
+                            #{t.id}
+                          </span>
+                          <span style={{ flex: 1 }} />
+                          <span style={{
+                            display: "inline-flex", alignItems: "center", gap: 4,
+                            fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 10,
+                            background: p.bg, color: p.color, textTransform: "capitalize",
+                          }}>
+                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.dot, boxShadow: `0 0 6px ${p.dot}40` }} />
+                            {t.priority}
+                          </span>
+                          <span style={{
+                            display: "inline-flex", alignItems: "center", gap: 4,
+                            fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 10,
+                            background: s.bg, color: s.color, textTransform: "capitalize",
+                          }}>
+                            <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.dot, boxShadow: `0 0 6px ${s.dot}40` }} />
+                            {(t.status || "").replace(/_/g, " ")}
+                          </span>
+                        </div>
+                        {/* Title */}
+                        <div style={{ fontSize: 14, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui", marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {t.title}
+                        </div>
+                        {/* Description preview */}
+                        <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 12, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", lineHeight: 1.5 }}>
+                          {t.description}
+                        </div>
+                        {/* Bottom row: confidence + team + time */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 120 }}>
+                            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: T.textMuted }}>
+                              {confidencePct}%
+                            </span>
+                            <div style={{ flex: 1, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                              <div style={{
+                                width: `${confidencePct}%`, height: "100%", borderRadius: 2,
+                                background: confidencePct > 70 ? T.success : confidencePct > 50 ? T.warning : T.danger,
+                              }} />
+                            </div>
+                          </div>
+                          {t.routed_to && (
+                            <span style={{ fontSize: 10, fontWeight: 600, color: T.accent }}>{t.routed_to}</span>
+                          )}
+                          <span style={{ flex: 1 }} />
+                          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: T.textDim }}>
+                            {timeAgo(t.created_at)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* ── Pagination ── */}
+              {totalPages > 1 && (
+                <div style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 16,
+                  marginTop: 24,
+                  fontSize: 12,
+                  color: T.textMuted,
+                  fontFamily: "'JetBrains Mono', monospace",
+                }}>
+                  <button
+                    disabled={safePage <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    style={{
+                      background: "none", border: `1px solid ${T.border}`, borderRadius: 6,
+                      color: safePage <= 1 ? T.textDim : T.text, padding: "6px 14px",
+                      cursor: safePage <= 1 ? "default" : "pointer", fontSize: 12,
+                    }}
+                  >
+                    ‹ Prev
+                  </button>
+                  <span>{safePage} / {totalPages}</span>
+                  <button
+                    disabled={safePage >= totalPages}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    style={{
+                      background: "none", border: `1px solid ${T.border}`, borderRadius: 6,
+                      color: safePage >= totalPages ? T.textDim : T.text, padding: "6px 14px",
+                      cursor: safePage >= totalPages ? "default" : "pointer", fontSize: 12,
+                    }}
+                  >
+                    Next ›
+                  </button>
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
     </div>
   );

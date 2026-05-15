@@ -229,7 +229,7 @@ function StatusPieChart({ data, total }) {
             dominantBaseline="central"
             style={{ fontSize: 22, fontWeight: 700, fill: T.text, fontFamily: dataFont }}
           >
-            {total}
+            {total ?? 0}
           </text>
           <text
             x="50%"
@@ -283,7 +283,7 @@ function PriorityPieChart({ data }) {
             dominantBaseline="central"
             style={{ fontSize: 22, fontWeight: 700, fill: T.text, fontFamily: dataFont }}
           >
-            {total}
+            {total ?? 0}
           </text>
           <text
             x="50%"

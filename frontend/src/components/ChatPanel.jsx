@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { sendChat } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
+import RichMessage from "./RichMessage";
 
 const T = {
   bg: "#0C0C0F",
@@ -12,9 +13,9 @@ const T = {
   accent: "#F97316",
 };
 
-export default function ChatPanel() {
+export default function ChatPanel({ onClose, compact }) {
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi! I'm DeskMind AI powered by Qwen 2.5:3B. Ask me anything about IT issues, or paste a ticket description and I'll classify it." },
+    { role: "assistant", content: "Hi! I'm Mindy, your DeskMind AI assistant. Ask me about tickets, teams, or IT issues.\n\nTry: \"status of ticket #206129\" or \"which team handles database?\"" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,12 @@ export default function ChatPanel() {
     try {
       const history = messages.map(({ role, content }) => ({ role, content }));
       const data = await sendChat(userMsg, history);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply, model: data.model }]);
+      setMessages((prev) => [...prev, {
+        role: "assistant",
+        content: data.reply,
+        model: data.model,
+        entities: data.entities || null,
+      }]);
     } catch {
       setMessages((prev) => [...prev, { role: "assistant", content: "Error: Could not reach the AI. Is Ollama running?" }]);
     } finally {
@@ -48,16 +54,50 @@ export default function ChatPanel() {
     <div style={{
       display: "flex",
       flexDirection: "column",
-      height: "calc(100vh - 65px)",
-      maxWidth: 860,
-      margin: "0 auto",
-      padding: "0 24px",
+      height: compact ? "100%" : "calc(100vh - 65px)",
+      maxWidth: compact ? "none" : 860,
+      margin: compact ? 0 : "0 auto",
+      padding: compact ? 0 : "0 24px",
     }}>
+      {/* Header (compact mode) */}
+      {compact && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 16px",
+          borderBottom: `1px solid ${T.border}`,
+          background: "rgba(255,255,255,0.02)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{
+              width: 8, height: 8, borderRadius: "50%",
+              background: T.accent,
+              boxShadow: `0 0 8px ${T.accent}`,
+            }} />
+            <span style={{ fontSize: 13, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
+              Mindy
+            </span>
+            <span style={{ fontSize: 10, color: T.textDim, fontFamily: "'JetBrains Mono', monospace" }}>
+              grounded
+            </span>
+          </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", fontSize: 16, padding: 4 }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Messages */}
       <div style={{
         flex: 1,
         overflowY: "auto",
-        padding: "24px 0",
+        padding: compact ? "12px 14px" : "24px 0",
       }}>
         {messages.map((msg, i) => (
           <div
@@ -65,30 +105,39 @@ export default function ChatPanel() {
             style={{
               display: "flex",
               justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
-              marginBottom: 16,
+              marginBottom: 12,
             }}
           >
             <div style={{
-              maxWidth: "75%",
-              padding: "12px 16px",
-              borderRadius: msg.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+              maxWidth: compact ? "85%" : "75%",
+              padding: "10px 14px",
+              borderRadius: msg.role === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
               background: msg.role === "user" ? T.accent : T.card,
               border: msg.role === "user" ? "none" : `1px solid ${T.border}`,
               color: T.text,
-              fontSize: 14,
+              fontSize: 13,
               lineHeight: 1.6,
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
             }}>
-              {msg.content}
+              {msg.role === "assistant" ? (
+                <RichMessage content={msg.content} entities={msg.entities} />
+              ) : (
+                <span style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{msg.content}</span>
+              )}
               {msg.model && (
                 <div style={{
-                  marginTop: 8,
-                  fontSize: 10,
+                  marginTop: 6,
+                  fontSize: 9,
                   color: T.textDim,
                   fontFamily: "'JetBrains Mono', monospace",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
                 }}>
-                  {msg.model}
+                  <span style={{
+                    width: 5, height: 5, borderRadius: "50%",
+                    background: msg.model === "database" ? "#3b82f6" : T.accent,
+                  }} />
+                  {msg.model === "database" ? "direct lookup" : msg.model}
                 </div>
               )}
             </div>
@@ -96,10 +145,10 @@ export default function ChatPanel() {
         ))}
 
         {loading && (
-          <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 12 }}>
             <div style={{
-              padding: "16px 24px",
-              borderRadius: "16px 16px 16px 4px",
+              padding: "12px 20px",
+              borderRadius: "14px 14px 14px 4px",
               background: T.card,
               border: `1px solid ${T.border}`,
             }}>
@@ -114,24 +163,24 @@ export default function ChatPanel() {
       {/* Input */}
       <form onSubmit={handleSend} style={{
         display: "flex",
-        gap: 12,
-        padding: "16px 0 24px",
+        gap: 8,
+        padding: compact ? "10px 14px" : "16px 0 24px",
         borderTop: `1px solid ${T.border}`,
       }}>
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message... (e.g., 'Classify: NGINX 502 errors after deployment')"
+          placeholder="Ask about tickets, teams, status..."
           disabled={loading}
           style={{
             flex: 1,
-            padding: "12px 16px",
-            borderRadius: 12,
+            padding: "10px 14px",
+            borderRadius: 10,
             border: `1px solid ${T.border}`,
             background: "rgba(255,255,255,0.03)",
             color: T.text,
-            fontSize: 14,
+            fontSize: 13,
             fontFamily: "'Inter', system-ui",
             outline: "none",
             transition: "border-color 0.2s",
@@ -143,25 +192,23 @@ export default function ChatPanel() {
           type="submit"
           disabled={loading || !input.trim()}
           style={{
-            padding: "12px 20px",
-            borderRadius: 12,
+            padding: "10px 16px",
+            borderRadius: 10,
             border: "none",
             background: input.trim() && !loading ? T.accent : "rgba(249,115,22,0.3)",
             color: "#fff",
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: 600,
             cursor: input.trim() && !loading ? "pointer" : "not-allowed",
             display: "flex",
             alignItems: "center",
-            gap: 6,
-            boxShadow: input.trim() && !loading ? "0 0 15px rgba(249,115,22,0.25)" : "none",
-            transition: "all 0.2s",
+            gap: 5,
+            boxShadow: input.trim() && !loading ? "0 0 12px rgba(249,115,22,0.25)" : "none",
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path d="M14 2L7.5 14L5.5 8.5L2 7L14 2Z" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
           </svg>
-          Send
         </button>
       </form>
     </div>

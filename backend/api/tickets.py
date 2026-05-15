@@ -35,8 +35,8 @@ async def list_tickets(request: Request, user: dict = Depends(get_current_user))
     collection = db.collection("tickets")
     tickets = []
     for doc in collection.all():
-        # Only show user-submitted tickets, not seed/synthetic
-        if doc.get("_source") in ("seed", "synthetic"):
+        # Only show user-submitted tickets
+        if doc.get("_source") != "user":
             continue
         # Team scoping: engineers only see tickets routed to their team
         if user["role"] == "engineer" and doc.get("routed_to") != user_team_name:
@@ -59,12 +59,16 @@ async def create_ticket(
     redis_client = getattr(request.app.state, "redis", None)
 
     # ── Run the 4-classifier pipeline ──
-    result = await classify(
-        title=ticket.title,
-        description=ticket.description,
-        db=db,
-        redis_client=redis_client,
-    )
+    try:
+        result = await classify(
+            title=ticket.title,
+            description=ticket.description,
+            db=db,
+            redis_client=redis_client,
+        )
+    except Exception as exc:
+        logger.error("Classification pipeline failed: %s", exc)
+        raise HTTPException(500, "Classification failed. Please try again.")
 
     # Determine status based on confidence
     if result["confidence"] >= 0.70:
@@ -323,8 +327,8 @@ async def resolve_ticket(
 
     # ── Create resolution document ──
     try:
-        from sentence_transformers import SentenceTransformer
-        model = SentenceTransformer("all-MiniLM-L6-v2")
+        from backend.services.orchestrator import get_embedding_model
+        model = get_embedding_model()
         res_text = " ".join(resolve.resolution_steps)
         embedding = model.encode(res_text).tolist()
     except Exception:
@@ -372,9 +376,9 @@ async def resolve_ticket(
                 LIMIT 1
                 UPDATE res WITH { effectiveness: MIN(res.effectiveness + 0.05, 1.0) } IN resolutions
             """
-            # Find original similar ticket's resolution and boost it
-        except Exception:
-            pass
+            db.aql.execute(query, bind_vars={"ticket_id": ticket_id})
+        except Exception as exc:
+            logger.warning("Failed to boost resolution effectiveness: %s", exc)
 
     # ── Update ticket status ──
     collection.update({
@@ -467,6 +471,26 @@ async def delete_ticket(ticket_id: str, request: Request, admin: dict = Depends(
     collection = db.collection("tickets")
     if not collection.has(ticket_id):
         raise HTTPException(404, "Ticket not found")
+
+    # Clean up edges and audit log referencing this ticket
+    ticket_full_id = f"tickets/{ticket_id}"
+    for edge_col in ("assigned_to", "resolved_with"):
+        try:
+            db.aql.execute(
+                f"FOR e IN {edge_col} FILTER e._from == @tid REMOVE e IN {edge_col}",
+                bind_vars={"tid": ticket_full_id},
+            )
+        except Exception as exc:
+            logger.warning("Failed to clean up %s edges: %s", edge_col, exc)
+
+    try:
+        db.aql.execute(
+            "FOR a IN audit_log FILTER a.ticket_id == @tid REMOVE a IN audit_log",
+            bind_vars={"tid": ticket_id},
+        )
+    except Exception as exc:
+        logger.warning("Failed to clean up audit_log: %s", exc)
+
     collection.delete(ticket_id)
 
 

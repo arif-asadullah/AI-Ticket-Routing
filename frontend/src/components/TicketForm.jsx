@@ -6,15 +6,20 @@ function TicketForm({ onSubmit }) {
   const [priority, setPriority] = useState("medium");
   const [loading, setLoading] = useState(false);
 
+  const [error, setError] = useState(null);
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       await onSubmit({ title, description, priority });
       setTitle("");
       setDescription("");
       setPriority("medium");
+    } catch (err) {
+      setError(err.message || "Failed to create ticket");
     } finally {
       setLoading(false);
     }
@@ -23,6 +28,11 @@ function TicketForm({ onSubmit }) {
   return (
     <form className="ticket-form" onSubmit={handleSubmit}>
       <h2>Create Ticket</h2>
+      {error && (
+        <div style={{ color: "#ef4444", fontSize: 13, marginBottom: 10, padding: "8px 12px", background: "rgba(239,68,68,0.1)", borderRadius: 6 }}>
+          {error}
+        </div>
+      )}
       <input
         type="text"
         placeholder="Ticket title"

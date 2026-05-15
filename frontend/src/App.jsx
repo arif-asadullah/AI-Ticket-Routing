@@ -2,14 +2,11 @@ import { useState, useEffect } from "react";
 import DeskMindSplash from "./components/DeskMindSplash";
 import DeskMindSpinner from "./components/DeskMindSpinner";
 import LoginPage from "./components/LoginPage";
-import StatusBar from "./components/StatusBar";
-import TicketList from "./components/TicketList";
 import ChatPanel from "./components/ChatPanel";
 import UserManagement from "./components/UserManagement";
 import DomainDashboard from "./components/DomainDashboard";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
-import DepartmentsView from "./components/DepartmentsView";
-import { fetchTickets, createTicket, deleteTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
+import { fetchTickets, createTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
 import icon from "./assets/logo/deskmind-icon.svg";
@@ -67,7 +64,8 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [showNewTicket, setShowNewTicket] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [isClassifying, setIsClassifying] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [health, setHealth] = useState(null);
@@ -151,15 +149,6 @@ export default function App() {
     }
   }
 
-  async function handleDelete(id) {
-    try {
-      await deleteTicket(id);
-      setTickets((prev) => prev.filter((t) => t.id !== id));
-      if (lastResult?.id === id) setLastResult(null);
-    } catch {
-      setError("Failed to delete ticket.");
-    }
-  }
 
   const canSubmit = title.trim() && description.trim() && !isClassifying;
 
@@ -204,12 +193,9 @@ export default function App() {
               <img src={logoLandscapeDark} alt="DeskMind" style={{ height: 40 }} />
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-              <StatusBar health={health} />
               <nav style={{ display: "flex", gap: 20, fontSize: 13, fontWeight: 500, alignItems: "center" }}>
                 <a href="#dashboard" onClick={(e) => { e.preventDefault(); setActiveTab("dashboard"); }} style={{ color: activeTab === "dashboard" ? T.accent : T.textMuted, cursor: "pointer" }}>Dashboard</a>
-                <a href="#tickets" onClick={(e) => { e.preventDefault(); setActiveTab("tickets"); }} style={{ color: activeTab === "tickets" ? T.accent : T.textMuted, cursor: "pointer" }}>New Ticket</a>
-                <a href="#chat" onClick={(e) => { e.preventDefault(); setActiveTab("chat"); }} style={{ color: activeTab === "chat" ? T.accent : T.textMuted, cursor: "pointer" }}>Chat AI</a>
-                <a href="#departments" onClick={(e) => { e.preventDefault(); setActiveTab("departments"); }} style={{ color: activeTab === "departments" ? T.accent : T.textMuted, cursor: "pointer" }}>Departments</a>
+                <a href="#new-ticket" onClick={(e) => { e.preventDefault(); setShowNewTicket(true); setLastResult(null); }} style={{ color: T.textMuted, cursor: "pointer" }}>New Ticket</a>
                 <a href="#analytics" onClick={(e) => { e.preventDefault(); setActiveTab("analytics"); }} style={{ color: activeTab === "analytics" ? T.accent : T.textMuted, cursor: "pointer" }}>Analytics</a>
                 {user?.role === "admin" && (
                   <a href="#users" onClick={(e) => { e.preventDefault(); setActiveTab("users"); }} style={{ color: activeTab === "users" ? T.accent : T.textMuted, cursor: "pointer" }}>Users</a>
@@ -247,28 +233,10 @@ export default function App() {
             <DomainDashboard user={user} onBack={() => setActiveTab("tickets")} />
           )}
 
-          {/* ── Chat Tab ── */}
-          {activeTab === "chat" && <ChatPanel />}
 
           {/* ── Analytics Tab ── */}
           {activeTab === "analytics" && user && (
             <AnalyticsDashboard user={user} />
-          )}
-
-          {/* ── Departments Tab ── */}
-          {activeTab === "departments" && user && (
-            <main style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px 80px" }}>
-              <DepartmentsView
-                tickets={tickets}
-                selectedDepartment={selectedDepartment}
-                onSelectDepartment={setSelectedDepartment}
-                onCreateTicket={async (ticket) => {
-                  const created = await createTicket(ticket);
-                  setTickets((prev) => [created, ...prev]);
-                  return created;
-                }}
-              />
-            </main>
           )}
 
           {/* ── Users Tab (admin only) ── */}
@@ -279,344 +247,217 @@ export default function App() {
           )}
 
           {/* ── Tickets Tab ── */}
-          {activeTab === "tickets" && (
-          <main style={{ maxWidth: 860, margin: "0 auto", padding: "40px 24px 80px" }}>
-
-            {/* Error */}
-            {error && (
+          {/* ── New Ticket Modal ── */}
+          {showNewTicket && (
+            <div
+              style={{
+                position: "fixed", inset: 0, zIndex: 200,
+                background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                padding: 24,
+              }}
+              onClick={(e) => { if (e.target === e.currentTarget && !isClassifying) setShowNewTicket(false); }}
+            >
               <div style={{
-                display: "flex", alignItems: "center", gap: 10,
-                background: "rgba(239,68,68,0.1)",
-                color: T.danger,
-                padding: "12px 16px", borderRadius: 10,
-                marginBottom: 24, fontSize: 13,
-                border: "1px solid rgba(239,68,68,0.2)",
+                background: "#141418", borderRadius: 20,
+                border: `1px solid ${T.border}`,
+                padding: 32, width: "100%", maxWidth: 560,
+                maxHeight: "90vh", overflowY: "auto",
+                boxShadow: "0 24px 80px rgba(0,0,0,0.5)",
               }}>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <circle cx="8" cy="8" r="7" stroke={T.danger} strokeWidth="1.5"/>
-                  <line x1="8" y1="4.5" x2="8" y2="8.5" stroke={T.danger} strokeWidth="1.5" strokeLinecap="round"/>
-                  <circle cx="8" cy="11" r="0.75" fill={T.danger}/>
-                </svg>
-                {error}
-              </div>
-            )}
-
-            {/* ── Create Ticket Card ── */}
-            <div style={{
-              background: T.card,
-              borderRadius: 16,
-              border: `1px solid ${T.border}`,
-              padding: 32,
-              marginBottom: 32,
-              backdropFilter: "blur(8px)",
-            }}>
-              <div style={{ marginBottom: 24 }}>
-                <h1 style={{
-                  fontFamily: "'Inter', system-ui",
-                  fontSize: 22,
-                  fontWeight: 600,
-                  color: T.text,
-                  marginBottom: 6,
-                }}>
-                  Submit a ticket
-                </h1>
-                <p style={{ color: T.textMuted, fontSize: 13 }}>
-                  Describe the issue and DeskMind will classify and route it automatically.
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>
-                    Title
-                  </label>
-                  <FocusInput
-                    type="text"
-                    placeholder="Brief summary of the issue"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>
-                    Description
-                  </label>
-                  <FocusInput
-                    as="textarea"
-                    placeholder="Provide details — affected systems, error messages, impact..."
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={4}
-                    style={{ resize: "vertical", minHeight: 100 }}
-                  />
-                </div>
-
-                <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+                {/* Header */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>
-                      Priority
-                    </label>
-                    <div style={{ display: "flex", borderRadius: 8, overflow: "hidden", border: `1px solid ${T.border}` }}>
-                      {["low", "medium", "high"].map((p) => (
-                        <button
-                          key={p}
-                          type="button"
-                          onClick={() => setPriority(p)}
-                          style={{
-                            padding: "8px 18px",
-                            fontSize: 12,
-                            fontWeight: priority === p ? 600 : 400,
-                            border: "none",
-                            cursor: "pointer",
-                            textTransform: "capitalize",
-                            fontFamily: "'Inter', system-ui",
-                            background: priority === p
-                              ? (p === "high" ? "rgba(239,68,68,0.15)" : p === "medium" ? "rgba(245,158,11,0.15)" : "rgba(34,197,94,0.15)")
-                              : "transparent",
-                            color: priority === p
-                              ? (p === "high" ? T.danger : p === "medium" ? T.warning : T.success)
-                              : T.textDim,
-                            borderRight: p !== "high" ? `1px solid ${T.border}` : "none",
-                            transition: "all 0.15s",
-                          }}
-                        >
-                          {p}
-                        </button>
-                      ))}
-                    </div>
+                    <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
+                      {lastResult ? "Ticket Created" : "New Ticket"}
+                    </h2>
+                    {!lastResult && (
+                      <p style={{ margin: "4px 0 0", fontSize: 12, color: T.textMuted }}>
+                        DeskMind will classify and route it automatically.
+                      </p>
+                    )}
                   </div>
+                  {!isClassifying && (
+                    <button
+                      onClick={() => setShowNewTicket(false)}
+                      style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", fontSize: 20, padding: 4 }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
 
-                  <button
-                    type="submit"
-                    disabled={!canSubmit}
-                    style={{
-                      flex: 1,
-                      padding: "11px 24px",
-                      background: canSubmit ? T.accent : "rgba(249,115,22,0.3)",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 10,
-                      fontSize: 14,
-                      fontWeight: 600,
-                      fontFamily: "'Inter', system-ui",
-                      cursor: canSubmit ? "pointer" : "not-allowed",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      transition: "all 0.2s",
-                      boxShadow: canSubmit ? "0 0 20px rgba(249,115,22,0.3)" : "none",
-                    }}
-                  >
-                    {isClassifying ? (
-                      <>
-                        <DeskMindSpinner size="sm" />
-                        Classifying...
-                      </>
-                    ) : (
-                      <>
+                {/* Classifying state */}
+                {isClassifying && (
+                  <div style={{ textAlign: "center", padding: "40px 0" }}>
+                    <DeskMindSpinner size="lg" label="Analyzing ticket..." />
+                    <p style={{ marginTop: 16, color: T.textMuted, fontSize: 13 }}>
+                      Running classification and searching knowledge graph
+                    </p>
+                  </div>
+                )}
+
+                {/* Result */}
+                {lastResult && !isClassifying && (
+                  <div>
+                    <div style={{
+                      padding: 20, borderRadius: 14,
+                      background: "rgba(34,197,94,0.05)", border: "1px solid rgba(34,197,94,0.15)",
+                      marginBottom: 16,
+                    }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                          <path d="M3.75 9.75L7.5 13.5L14.25 4.5" stroke={T.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.text }}>
+                          #{lastResult.id} — {lastResult.status === "routed" ? "Routed" : "Escalated"}
+                        </h3>
+                      </div>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+                        <span style={{ padding: "4px 10px", borderRadius: 12, fontSize: 11, fontWeight: 600, background: "rgba(249,115,22,0.12)", color: T.accent }}>{lastResult.category}</span>
+                        <span style={{ padding: "4px 10px", borderRadius: 12, fontSize: 11, fontWeight: 600, background: "rgba(34,197,94,0.12)", color: T.success }}>{Math.round((lastResult.confidence_score || 0) * 100)}%</span>
+                        {lastResult.routed_to && <span style={{ padding: "4px 10px", borderRadius: 12, fontSize: 11, fontWeight: 600, background: "rgba(59,130,246,0.12)", color: "#3b82f6" }}>{lastResult.routed_to}</span>}
+                      </div>
+                      {lastResult.ai_reasoning && (
+                        <div style={{ fontSize: 12, color: T.textMuted, lineHeight: 1.5 }}>{lastResult.ai_reasoning}</div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => { setLastResult(null); setShowNewTicket(false); }}
+                      style={{
+                        width: "100%", padding: "11px 24px",
+                        background: T.accent, color: "#fff", border: "none",
+                        borderRadius: 10, fontSize: 14, fontWeight: 600,
+                        cursor: "pointer", fontFamily: "'Inter', system-ui",
+                        boxShadow: "0 0 20px rgba(249,115,22,0.3)",
+                      }}
+                    >
+                      Done
+                    </button>
+                  </div>
+                )}
+
+                {/* Form */}
+                {!lastResult && !isClassifying && (
+                  <form onSubmit={handleSubmit}>
+                    {error && (
+                      <div style={{ color: T.danger, fontSize: 13, marginBottom: 14, padding: "8px 12px", background: "rgba(239,68,68,0.1)", borderRadius: 8 }}>
+                        {error}
+                      </div>
+                    )}
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Title</label>
+                      <FocusInput type="text" placeholder="Brief summary of the issue" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Description</label>
+                      <FocusInput as="textarea" placeholder="Provide details — affected systems, error messages, impact..." value={description} onChange={(e) => setDescription(e.target.value)} rows={4} style={{ resize: "vertical", minHeight: 100 }} />
+                    </div>
+                    <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+                      <div>
+                        <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Priority</label>
+                        <div style={{ display: "flex", borderRadius: 8, overflow: "hidden", border: `1px solid ${T.border}` }}>
+                          {["low", "medium", "high"].map((p) => (
+                            <button key={p} type="button" onClick={() => setPriority(p)} style={{
+                              padding: "8px 18px", fontSize: 12, fontWeight: priority === p ? 600 : 400,
+                              border: "none", cursor: "pointer", textTransform: "capitalize", fontFamily: "'Inter', system-ui",
+                              background: priority === p ? (p === "high" ? "rgba(239,68,68,0.15)" : p === "medium" ? "rgba(245,158,11,0.15)" : "rgba(34,197,94,0.15)") : "transparent",
+                              color: priority === p ? (p === "high" ? T.danger : p === "medium" ? T.warning : T.success) : T.textDim,
+                              borderRight: p !== "high" ? `1px solid ${T.border}` : "none",
+                            }}>{p}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <button type="submit" disabled={!canSubmit} style={{
+                        flex: 1, padding: "11px 24px",
+                        background: canSubmit ? T.accent : "rgba(249,115,22,0.3)",
+                        color: "#fff", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 600,
+                        fontFamily: "'Inter', system-ui", cursor: canSubmit ? "pointer" : "not-allowed",
+                        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                        boxShadow: canSubmit ? "0 0 20px rgba(249,115,22,0.3)" : "none",
+                      }}>
                         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                           <path d="M14 2L7.5 14L5.5 8.5L2 7L14 2Z" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round"/>
                         </svg>
                         Submit
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            {/* ── Classifying Spinner ── */}
-            {isClassifying && (
-              <div style={{
-                textAlign: "center",
-                padding: 48,
-                background: T.card,
-                borderRadius: 16,
-                border: `1px solid ${T.border}`,
-                marginBottom: 32,
-                backdropFilter: "blur(8px)",
-              }}>
-                <DeskMindSpinner size="lg" label="Analyzing ticket..." />
-                <p style={{ marginTop: 16, color: T.textMuted, fontSize: 13 }}>
-                  Running classification and searching knowledge graph
-                </p>
-              </div>
-            )}
-
-            {/* ── Result Card ── */}
-            {lastResult && !isClassifying && (
-              <div style={{ marginBottom: 32, animation: "fadeIn 0.3s ease-out" }}>
-                <style>{`@keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }`}</style>
-
-                {/* ── Classification Result ── */}
-                <div style={{
-                  padding: 24,
-                  background: "rgba(34,197,94,0.05)",
-                  borderRadius: 16,
-                  border: "1px solid rgba(34,197,94,0.15)",
-                  marginBottom: 12,
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                    <div style={{
-                      width: 36, height: 36, borderRadius: 10,
-                      background: "rgba(34,197,94,0.1)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                        <path d="M3.75 9.75L7.5 13.5L14.25 4.5" stroke={T.success} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                      </button>
                     </div>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.text }}>
-                        Ticket #{lastResult.id} — {lastResult.status === "routed" ? "Routed" : "Escalated"}
-                      </h3>
-                      <p style={{ margin: 0, fontSize: 12, color: T.textMuted }}>
-                        {lastResult.title}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
-                    <span style={{
-                      padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
-                      background: "rgba(249,115,22,0.12)", color: T.accent,
-                    }}>
-                      {lastResult.category}
-                    </span>
-                    <span style={{
-                      padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
-                      background: "rgba(34,197,94,0.12)", color: T.success,
-                    }}>
-                      {Math.round((lastResult.confidence_score || 0) * 100)}% confidence
-                    </span>
-                    <span style={{
-                      padding: "5px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600,
-                      textTransform: "capitalize",
-                      background: lastResult.priority === "high" || lastResult.priority === "critical" ? "rgba(239,68,68,0.12)" : lastResult.priority === "medium" ? "rgba(245,158,11,0.12)" : "rgba(34,197,94,0.12)",
-                      color: lastResult.priority === "high" || lastResult.priority === "critical" ? T.danger : lastResult.priority === "medium" ? T.warning : T.success,
-                    }}>
-                      {lastResult.priority}
-                    </span>
-                  </div>
-
-                  {/* Team + Expert */}
-                  <div style={{ display: "flex", gap: 24, fontSize: 13, color: T.textMuted }}>
-                    {lastResult.routed_to && (
-                      <div>
-                        <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Team</span>
-                        <div style={{ color: T.accent, fontWeight: 600, marginTop: 2 }}>{lastResult.routed_to}</div>
-                      </div>
-                    )}
-                    {lastResult.recommended_expert && (
-                      <div>
-                        <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Expert</span>
-                        <div style={{ color: T.text, fontWeight: 500, marginTop: 2 }}>{lastResult.recommended_expert}</div>
-                      </div>
-                    )}
-                    {lastResult.quality_score && (
-                      <div>
-                        <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Input Quality</span>
-                        <div style={{ color: lastResult.quality_score === "HIGH" ? T.success : lastResult.quality_score === "LOW" ? T.danger : T.warning, fontWeight: 500, marginTop: 2 }}>{lastResult.quality_score}</div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* AI Reasoning */}
-                  {lastResult.ai_reasoning && (
-                    <div style={{
-                      marginTop: 16, padding: 12, borderRadius: 10,
-                      background: "rgba(255,255,255,0.03)", border: `1px solid ${T.border}`,
-                      fontSize: 12, color: T.textMuted, lineHeight: 1.5,
-                    }}>
-                      <span style={{ color: T.textDim, fontSize: 10, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>AI Reasoning</span>
-                      <div style={{ marginTop: 4, color: T.text }}>{lastResult.ai_reasoning}</div>
-                    </div>
-                  )}
-                </div>
-
-                {/* ── Suggested Resolution ── */}
-                {lastResult.suggested_resolution && lastResult.suggested_resolution.length > 0 && (
-                  <div style={{
-                    padding: 24,
-                    background: T.card,
-                    borderRadius: 16,
-                    border: `1px solid ${T.border}`,
-                    marginBottom: 12,
-                  }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <circle cx="10" cy="10" r="9" stroke={T.accent} strokeWidth="1.5" fill="none"/>
-                        <path d="M10 5v5.5M10 13.5v.5" stroke={T.accent} strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                      <div>
-                        <h4 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.text }}>Suggested Resolution</h4>
-                        <p style={{ margin: 0, fontSize: 11, color: T.textMuted }}>
-                          Based on similar past tickets
-                          {lastResult.resolution_effectiveness && (
-                            <span style={{ color: T.success }}> — {Math.round(lastResult.resolution_effectiveness * 100)}% effective</span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {lastResult.suggested_resolution.map((step, i) => (
-                        <div key={i} style={{
-                          display: "flex", gap: 12, alignItems: "flex-start",
-                          padding: "10px 14px", borderRadius: 10,
-                          background: "rgba(255,255,255,0.02)",
-                          border: `1px solid ${T.border}`,
-                        }}>
-                          <span style={{
-                            minWidth: 22, height: 22, borderRadius: "50%",
-                            background: "rgba(249,115,22,0.15)", color: T.accent,
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
-                          }}>
-                            {i + 1}
-                          </span>
-                          <span style={{ fontSize: 13, color: T.text, lineHeight: 1.5 }}>{step}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Runbook */}
-                    {lastResult.suggested_runbook && (
-                      <div style={{
-                        marginTop: 16, padding: "10px 14px", borderRadius: 10,
-                        background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)",
-                        display: "flex", alignItems: "center", gap: 10,
-                      }}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                          <rect x="2" y="1" width="12" height="14" rx="2" stroke={T.accent} strokeWidth="1.2" fill="none"/>
-                          <line x1="5" y1="5" x2="11" y2="5" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
-                          <line x1="5" y1="8" x2="11" y2="8" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
-                          <line x1="5" y1="11" x2="9" y2="11" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
-                        </svg>
-                        <div>
-                          <span style={{ fontSize: 10, color: T.textDim, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace" }}>Runbook</span>
-                          <div style={{ fontSize: 12, color: T.accent, fontWeight: 500, marginTop: 1 }}>{lastResult.suggested_runbook}</div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  </form>
                 )}
               </div>
-            )}
+            </div>
+          )}
+          {/* ── Floating Chat ── */}
+          <style>{`
+            @keyframes chatSlideUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
+            @keyframes fabPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.4); } 50% { box-shadow: 0 0 0 10px rgba(249,115,22,0); } }
+          `}</style>
 
-            {/* ── Tickets Table ── */}
+          {/* FAB — Nexa AI */}
+          <button
+            onClick={() => setShowChat((v) => !v)}
+            style={{
+              position: "fixed",
+              bottom: 24,
+              right: 24,
+              zIndex: 301,
+              height: 48,
+              borderRadius: 24,
+              border: "1px solid rgba(249,115,22,0.3)",
+              background: "linear-gradient(135deg, #F97316, #ea580c)",
+              color: "#fff",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: showChat ? "0 16px" : "0 18px 0 14px",
+              boxShadow: "0 4px 24px rgba(249,115,22,0.4)",
+              animation: showChat ? "none" : "fabPulse 2.5s ease-in-out infinite",
+              transition: "all 0.2s",
+              fontFamily: "'Inter', system-ui",
+              fontSize: 13,
+              fontWeight: 600,
+              letterSpacing: 0.3,
+            }}
+          >
+            {showChat ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                  <path d="M5 5l10 10M15 5L5 15" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                Close
+              </>
+            ) : (
+              <>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Ask Mindy
+              </>
+            )}
+          </button>
+
+          {/* Chat Panel */}
+          {showChat && (
             <div style={{
-              background: T.card,
+              position: "fixed",
+              bottom: 84,
+              right: 24,
+              zIndex: 300,
+              width: 420,
+              height: "calc(100vh - 140px)",
+              maxHeight: 700,
               borderRadius: 16,
               border: `1px solid ${T.border}`,
+              background: "#111114",
+              boxShadow: "0 16px 60px rgba(0,0,0,0.5)",
               overflow: "hidden",
-              backdropFilter: "blur(8px)",
+              animation: "chatSlideUp 0.2s ease-out",
+              display: "flex",
+              flexDirection: "column",
             }}>
-              <TicketList tickets={tickets} onDelete={handleDelete} user={user} />
+              <ChatPanel compact onClose={() => setShowChat(false)} />
             </div>
-          </main>
           )}
         </div>
       )}

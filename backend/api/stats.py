@@ -65,7 +65,7 @@ async def get_stats(request: Request, user: dict = Depends(get_current_user)):
 
     LET all_tickets = (
         FOR t IN tickets
-            FILTER t._source != null
+            FILTER t._source == "user"
             {team_filter}
             RETURN t
     )
@@ -188,7 +188,7 @@ async def get_stats(request: Request, user: dict = Depends(get_current_user)):
         result = next(cursor, {})
     except Exception as exc:
         logger.error("Stats query failed: %s", exc)
-        raise HTTPException(500, f"Stats query failed: {exc}")
+        raise HTTPException(500, "Stats query failed. Please try again.")
 
     # Cache in Redis (60s TTL)
     if redis_client:
@@ -241,4 +241,4 @@ async def get_ticket_timeline(
         return list(cursor)
     except Exception as exc:
         logger.error("Timeline query failed: %s", exc)
-        raise HTTPException(500, f"Timeline query failed: {exc}")
+        raise HTTPException(500, "Timeline query failed. Please try again.")

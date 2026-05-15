@@ -1,7 +1,16 @@
 const priorityStyles = {
+  critical: { bg: "rgba(239,68,68,0.12)", color: "#ef4444", dot: "#ef4444" },
   high: { bg: "rgba(239,68,68,0.12)", color: "#ef4444", dot: "#ef4444" },
   medium: { bg: "rgba(245,158,11,0.12)", color: "#f59e0b", dot: "#f59e0b" },
   low: { bg: "rgba(34,197,94,0.12)", color: "#22c55e", dot: "#22c55e" },
+};
+
+const statusStyles = {
+  routed: { color: "#3b82f6", dot: "#3b82f6" },
+  in_progress: { color: "#f59e0b", dot: "#f59e0b" },
+  escalated: { color: "#ef4444", dot: "#ef4444" },
+  resolved: { color: "#22c55e", dot: "#22c55e" },
+  closed: { color: "#78716C", dot: "#78716C" },
 };
 
 function TicketList({ tickets, onDelete, user }) {
@@ -162,14 +171,14 @@ function TicketList({ tickets, onDelete, user }) {
               gap: 4,
               fontSize: 10,
               fontWeight: 500,
-              color: "#22c55e",
+              color: (statusStyles[t.status] || statusStyles.routed).color,
             }}>
               <span style={{
                 width: 5, height: 5, borderRadius: "50%",
-                background: "#22c55e",
-                boxShadow: "0 0 6px rgba(34,197,94,0.5)",
+                background: (statusStyles[t.status] || statusStyles.routed).dot,
+                boxShadow: `0 0 6px ${(statusStyles[t.status] || statusStyles.routed).dot}50`,
               }} />
-              {t.status}
+              {(t.status || "").replace(/_/g, " ")}
             </span>
 
             {user?.role === "admin" && (

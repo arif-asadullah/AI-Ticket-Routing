@@ -44,10 +44,12 @@ export default function ResolveForm({ ticket, onSubmit, onCancel }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const validSteps = steps.filter((s) => s.trim() !== "");
+    if (validSteps.length === 0) return;
     setSubmitting(true);
     try {
       await onSubmit({
-        resolution_steps: steps.filter((s) => s.trim() !== ""),
+        resolution_steps: validSteps,
         used_ai_suggestion: aiFeedback,
         used_runbook: runbook.trim() || null,
       });
@@ -76,9 +78,9 @@ export default function ResolveForm({ ticket, onSubmit, onCancel }) {
                 <span style={aiDotStyle} />
                 AI Suggestion
               </div>
-              {ticket.effectiveness != null && (
+              {ticket.resolution_effectiveness != null && (
                 <span style={effectivenessStyle}>
-                  {ticket.effectiveness}% effective
+                  {Math.round(ticket.resolution_effectiveness * 100)}% effective
                 </span>
               )}
             </div>

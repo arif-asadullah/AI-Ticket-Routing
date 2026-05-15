@@ -70,6 +70,7 @@ export default function UserManagement() {
       }
       await registerUser(userData);
       setSuccess(`User ${formEmail} created successfully`);
+      setTimeout(() => setSuccess(null), 4000);
       setFormEmail("");
       setFormPassword("");
       setFormRole("engineer");
@@ -89,6 +90,7 @@ export default function UserManagement() {
     try {
       const updated = await toggleUserActive(email);
       setSuccess(`User ${email} ${updated.is_active ? "activated" : "deactivated"}`);
+      setTimeout(() => setSuccess(null), 4000);
       await loadData();
     } catch (err) {
       setError(err.message);
@@ -100,7 +102,7 @@ export default function UserManagement() {
     setFormEngineerKey(key);
     if (key) {
       const eng = engineers.find((e) => e.key === key);
-      if (eng?.email && !formEmail) {
+      if (eng?.email) {
         setFormEmail(eng.email);
       }
     }
@@ -190,15 +192,34 @@ export default function UserManagement() {
               {/* Role */}
               <div>
                 <label style={labelStyle}>Role</label>
-                <select
-                  value={formRole}
-                  onChange={(e) => { setFormRole(e.target.value); setFormEngineerKey(""); }}
-                  style={selectStyle}
-                >
-                  <option value="engineer">Engineer</option>
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
+                <div style={{ display: "flex", borderRadius: 8, overflow: "hidden", border: `1px solid ${T.border}` }}>
+                  {[
+                    { value: "engineer", label: "Engineer", color: T.success, bg: "rgba(34,197,94,0.15)" },
+                    { value: "user", label: "User", color: T.warning, bg: "rgba(245,158,11,0.15)" },
+                    { value: "admin", label: "Admin", color: T.accent, bg: "rgba(249,115,22,0.15)" },
+                  ].map((r, i) => (
+                    <button
+                      key={r.value}
+                      type="button"
+                      onClick={() => { setFormRole(r.value); setFormEngineerKey(""); }}
+                      style={{
+                        flex: 1,
+                        padding: "10px 14px",
+                        fontSize: 12,
+                        fontWeight: formRole === r.value ? 600 : 400,
+                        border: "none",
+                        cursor: "pointer",
+                        fontFamily: "'Inter', system-ui",
+                        background: formRole === r.value ? r.bg : "transparent",
+                        color: formRole === r.value ? r.color : T.textDim,
+                        borderRight: i < 2 ? `1px solid ${T.border}` : "none",
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      {r.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Engineer (only for engineer role) */}

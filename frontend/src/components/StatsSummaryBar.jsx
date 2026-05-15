@@ -144,7 +144,7 @@ export default function StatsSummaryBar({ stats, loading }) {
 
   const totalFeedback = (stats.feedback?.helpful || 0) + (stats.feedback?.not_helpful || 0);
   const helpfulness = totalFeedback > 0
-    ? (stats.feedback.helpful / totalFeedback)
+    ? ((stats.feedback?.helpful || 0) / totalFeedback)
     : 0;
   const helpfulnessColor = helpfulness >= 0.7 ? T.success
     : helpfulness >= 0.4 ? T.warning : T.danger;
