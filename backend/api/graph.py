@@ -51,7 +51,8 @@ async def get_graph(
         for col_name in NODE_COLLECTIONS:
             config = NODE_CONFIG[col_name]
             try:
-                for doc in db.collection(col_name).all():
+                cursor = db.aql.execute(f"FOR doc IN {col_name} LIMIT 500 RETURN doc")
+                for doc in cursor:
                     node_id = f"{col_name}/{doc['_key']}"
                     label = doc.get(config["label_field"], doc["_key"])
                     node = {
@@ -104,7 +105,8 @@ async def get_graph(
         # ── Load edges ──
         for edge_col in EDGE_COLLECTIONS:
             try:
-                for doc in db.collection(edge_col).all():
+                cursor = db.aql.execute(f"FOR doc IN {edge_col} LIMIT 2000 RETURN doc")
+                for doc in cursor:
                     source = doc.get("_from", "")
                     target = doc.get("_to", "")
                     # Only include edges where both nodes exist in our set

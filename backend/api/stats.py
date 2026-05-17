@@ -124,6 +124,8 @@ async def get_stats(request: Request, user: dict = Depends(get_current_user)):
             FILTER t.created_at != null
             COLLECT day = SUBSTRING(t.created_at, 0, 10)
             WITH COUNT INTO cnt
+            SORT day DESC
+            LIMIT 90
             SORT day ASC
             RETURN {{ date: day, count: cnt }}
     )
@@ -140,6 +142,7 @@ async def get_stats(request: Request, user: dict = Depends(get_current_user)):
     LET feedback_entries = (
         FOR a IN audit_log
             FILTER a.action == "feedback"
+            LIMIT 10000
             RETURN a.new_value.rating
     )
     LET helpful_count = LENGTH(

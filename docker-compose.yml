@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
       target: dev
-    mem_limit: 512m
+    mem_limit: 768m
     ports:
       - "8000:8000"
     volumes:
@@ -60,7 +60,7 @@ services:
       interval: 15s
       timeout: 10s
       retries: 5
-      start_period: 20s
+      start_period: 30s
     networks:
       - atr-network
 

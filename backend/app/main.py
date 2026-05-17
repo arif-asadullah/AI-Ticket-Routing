@@ -30,6 +30,14 @@ async def lifespan(app: FastAPI):
     if app.state.arango_db is not None:
         init_schema(app.state.arango_db)
 
+    # Preload embedding model at startup (avoids 3-5s cold start on first request)
+    try:
+        from backend.services.orchestrator import get_embedding_model
+        get_embedding_model()
+        logger.info("Embedding model preloaded")
+    except Exception as exc:
+        logger.warning("Failed to preload embedding model: %s", exc)
+
     yield
 
     # Shutdown

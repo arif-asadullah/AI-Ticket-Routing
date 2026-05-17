@@ -36,7 +36,10 @@ def connect_arango() -> StandardDatabase | None:
         return None
 
     try:
-        _client = ArangoClient(hosts=settings.ARANGO_URL)
+        _client = ArangoClient(
+            hosts=settings.ARANGO_URL,
+            request_timeout=30,
+        )
 
         # Connect to _system first to ensure the target database exists
         sys_db = _client.db(

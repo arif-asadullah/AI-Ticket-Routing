@@ -40,6 +40,7 @@ async def connect_redis() -> aioredis.Redis | None:
         _redis = aioredis.from_url(
             settings.REDIS_URL,
             decode_responses=True,
+            max_connections=20,
         )
         await _redis.ping()
         logger.info("Connected to Redis at %s", settings.REDIS_URL)

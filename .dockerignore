@@ -1,0 +1,40 @@
+# Version control
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.venv
+*.egg-info
+
+# Node
+node_modules
+
+# IDE
+.idea
+.vscode
+*.swp
+
+# Environment
+.env
+.env.local
+
+# Documentation (not needed in container)
+docs/
+DEMO_SCRIPT.md
+CODEOWNERS
+
+# Data (seeded at runtime, not build time)
+data/synthetic/
+
+# Tests
+tests/
+
+# Claude workspace
+.claude/
+
+# Kubernetes (not needed in container)
+k8s/
