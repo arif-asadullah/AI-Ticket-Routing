@@ -19,6 +19,13 @@ _cache_time: float = 0
 CACHE_TTL = 3600  # 1 hour
 
 
+def invalidate_cache():
+    """Clear cached centroids so they reload from DB on next classify call."""
+    global _cached_centroids, _cache_time
+    _cached_centroids = None
+    _cache_time = 0
+
+
 def _cosine_similarity(a, b):
     """Compute cosine similarity between two vectors."""
     a = np.array(a)

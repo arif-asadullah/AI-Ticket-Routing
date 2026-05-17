@@ -245,6 +245,14 @@ export async function fetchGraph(category) {
 
 // ── Health (public, no auth needed) ──
 
+// ── Corrections ──
+
+export async function fetchCorrectionStats() {
+  const res = await authFetch(`${API_BASE}/corrections/stats`);
+  if (!res.ok) throw new Error("Failed to fetch correction stats");
+  return res.json();
+}
+
 // ── Stats (authenticated) ──
 
 export async function fetchStats() {

@@ -21,6 +21,8 @@ DOCUMENT_COLLECTIONS = [
     "audit_log",
     "category_centroids",
     "users",
+    "corrections",
+    "repeated_issues",
 ]
 
 # ── Edge collections ──
@@ -115,6 +117,13 @@ def _create_indexes(db: StandardDatabase) -> None:
     users = db.collection("users")
     users.add_persistent_index(fields=["email"], name="idx_users_email", unique=True)
     logger.info("Created unique index on users.email")
+
+    # ── Persistent indexes on corrections ──
+    corrections = db.collection("corrections")
+    corrections.add_persistent_index(fields=["ticket_id"], name="idx_corrections_ticket_id")
+    corrections.add_persistent_index(fields=["is_trusted"], name="idx_corrections_trusted")
+    corrections.add_persistent_index(fields=["created_at"], name="idx_corrections_created_at")
+    logger.info("Created persistent indexes on corrections")
 
     # ── Vector indexes (384-dim, cosine similarity) ──
     # Vector subsystem may take time to initialize after ArangoDB starts.

@@ -422,6 +422,18 @@ async def override_classification(
     except Exception as exc:
         logger.warning("Failed to write audit log: %s", exc)
 
+    # ── Record correction for continuous learning ──
+    try:
+        from backend.services.corrections import record_correction
+        record_correction(
+            db=db, ticket_id=ticket_id, ticket_doc=doc,
+            new_category=body.category, new_priority=body.priority,
+            corrected_by=user["email"], corrector_role=user["role"],
+            reason=body.reason,
+        )
+    except Exception as exc:
+        logger.warning("Failed to record correction: %s", exc)
+
     logger.info(
         "Ticket %s: override %s → %s by %s (reason: %s)",
         ticket_id, old_category, body.category, user["email"], body.reason,
@@ -483,9 +495,12 @@ async def resolve_ticket(
         effectiveness = 0.90  # new fix, assume good
 
     res_doc = db.collection("resolutions").insert({
+        "ticket_id": ticket_id,
         "steps": resolve.resolution_steps,
         "effectiveness": effectiveness,
         "embedding": embedding,
+        "verified": False,
+        "created_at": now,
     })
 
     # ── Create resolved_with edge ──
@@ -600,6 +615,30 @@ async def submit_feedback(
         })
     except Exception as exc:
         logger.warning("Failed to write feedback: %s", exc)
+
+    # ── Save feedback rating on ticket ──
+    collection.update({"_key": ticket_id, "feedback_rating": feedback.rating})
+
+    # ── Quality gate: update resolution based on feedback ──
+    try:
+        if feedback.rating == "helpful":
+            # Verify resolution + boost effectiveness
+            db.aql.execute(
+                """FOR res IN 1..1 OUTBOUND CONCAT("tickets/", @tid) resolved_with
+                   LET new_eff = res.effectiveness + 0.1
+                   UPDATE res WITH { verified: true, effectiveness: new_eff > 1.0 ? 1.0 : new_eff } IN resolutions""",
+                bind_vars={"tid": ticket_id},
+            )
+        elif feedback.rating == "not_helpful":
+            # Lower effectiveness, keep unverified
+            db.aql.execute(
+                """FOR res IN 1..1 OUTBOUND CONCAT("tickets/", @tid) resolved_with
+                   LET new_eff = res.effectiveness - 0.2
+                   UPDATE res WITH { verified: false, effectiveness: new_eff < 0.3 ? 0.3 : new_eff } IN resolutions""",
+                bind_vars={"tid": ticket_id},
+            )
+    except Exception as exc:
+        logger.warning("Failed to update resolution quality: %s", exc)
 
     logger.info("Feedback on ticket %s: %s by %s", ticket_id, feedback.rating, user["email"])
 
