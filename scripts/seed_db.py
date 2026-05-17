@@ -403,14 +403,13 @@ def load_users(db, users_data):
     """Load user accounts with hashed passwords."""
     if not users_data:
         return
-    from passlib.context import CryptContext
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    import bcrypt as _bcrypt
 
     docs = []
     for u in users_data:
         docs.append({
             "email": u["email"],
-            "password_hash": pwd_context.hash(u["password"]),
+            "password_hash": _bcrypt.hashpw(u["password"].encode(), _bcrypt.gensalt()).decode(),
             "role": u["role"],
             "first_name": u.get("first_name", ""),
             "last_name": u.get("last_name", ""),

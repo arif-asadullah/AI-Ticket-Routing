@@ -143,6 +143,13 @@ function AppContent() {
     }
   }
 
+  // Poll health every 30s to detect degradation / recovery
+  useEffect(() => {
+    if (!isAuthenticated || !splashDone) return;
+    const interval = setInterval(loadHealth, 30000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated, splashDone]);
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
@@ -278,6 +285,50 @@ function AppContent() {
               </nav>
             </div>
           </header>
+
+          {/* ── Degraded Mode Banner ── */}
+          {health && health.degradation_level < 4 && (
+            <div style={{
+              padding: "10px 32px",
+              background: health.degradation_level <= 1
+                ? "linear-gradient(90deg, #dc2626, #b91c1c)"
+                : "linear-gradient(90deg, #d97706, #b45309)",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              fontSize: 13,
+              fontWeight: 500,
+              fontFamily: "'Inter', system-ui",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1l7 13H1L8 1z" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
+                  <path d="M8 6v3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="8" cy="11.5" r="0.75" fill="#fff" />
+                </svg>
+                <span>
+                  <strong>Degraded Mode (Level {health.degradation_level}/4)</strong>
+                  {" — "}{health.message}
+                </span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 12 }}>
+                {health.pending_human_count > 0 && (
+                  <span style={{
+                    padding: "3px 10px",
+                    background: "rgba(255,255,255,0.2)",
+                    borderRadius: 12,
+                    fontWeight: 600,
+                  }}>
+                    {health.pending_human_count} ticket{health.pending_human_count !== 1 ? "s" : ""} awaiting human review
+                  </span>
+                )}
+                <span style={{ opacity: 0.7 }}>
+                  Ollama: {health.ollama === "connected" ? "UP" : "DOWN"}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* ── Domain Dashboard Tab ── */}
           {activeTab === "dashboard" && user && (

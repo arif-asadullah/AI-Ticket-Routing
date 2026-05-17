@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.router import api_router
 from backend.core.config import settings
+from backend.middleware.rate_limit import RateLimitMiddleware
 from backend.services.cache import close_redis, connect_redis
 from backend.services.database import close_arango, connect_arango
 from backend.services.schema import init_schema
@@ -42,6 +43,8 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+app.add_middleware(RateLimitMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

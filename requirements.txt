@@ -9,6 +9,5 @@ pydantic-settings
 python-dotenv
 httpx
 python-jose[cryptography]
-passlib[bcrypt]
 bcrypt==4.1.3
 python-socketio

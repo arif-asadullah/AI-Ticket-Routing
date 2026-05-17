@@ -204,6 +204,19 @@ export async function createTicket(ticket) {
   return res.json();
 }
 
+export async function overrideClassification(id, { category, priority, reason }) {
+  const res = await authFetch(`${API_BASE}/tickets/${id}/override`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ category, priority: priority || undefined, reason }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to override classification");
+  }
+  return res.json();
+}
+
 export async function deleteTicket(id) {
   const res = await authFetch(`${API_BASE}/tickets/${id}`, { method: "DELETE" });
   if (!res.ok) throw new Error("Failed to delete ticket");

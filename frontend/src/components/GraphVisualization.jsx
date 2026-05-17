@@ -440,7 +440,12 @@ export default function GraphVisualization({ user }) {
             onNodeClick={(node) => setSelectedNode(node === selectedNode ? null : node)}
             cooldownTicks={100}
             d3AlphaDecay={0.025}
-            d3VelocityDecay={0.25}
+            d3VelocityDecay={0.4}
+            enableNodeDrag={false}
+            onEngineStop={() => {
+              // Freeze all node positions after layout stabilizes
+              filteredData.nodes.forEach((n) => { n.fx = n.x; n.fy = n.y; });
+            }}
             enableZoomInteraction={true}
             enablePanInteraction={true}
           />

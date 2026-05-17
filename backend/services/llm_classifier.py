@@ -12,6 +12,7 @@ import logging
 import httpx
 
 from backend.core.config import settings
+from backend.services.circuit_breaker import ollama_breaker
 from backend.services.retrieval import RetrievalResult
 
 logger = logging.getLogger(__name__)
@@ -157,6 +158,11 @@ Description: {description}
 
 Return ONLY valid JSON: {{"category": "...", "priority": "...", "confidence": 0.0-1.0, "reasoning": "..."}}"""
 
+    # Circuit breaker: fast-fail if Ollama is known to be down
+    if not ollama_breaker.is_available:
+        logger.warning("Circuit breaker OPEN — skipping Ollama call")
+        return {"category": None, "confidence": 0.0, "reasoning": "Circuit breaker open — Ollama skipped"}
+
     try:
         async with httpx.AsyncClient(timeout=TIMEOUT) as client:
             resp = await client.post(
@@ -193,6 +199,8 @@ Return ONLY valid JSON: {{"category": "...", "priority": "...", "confidence": 0.
 
         reasoning = result.get("reasoning", "")
 
+        ollama_breaker.record_success()
+
         return {
             "category": category,
             "priority": priority,
@@ -201,8 +209,10 @@ Return ONLY valid JSON: {{"category": "...", "priority": "...", "confidence": 0.
         }
 
     except httpx.ConnectError:
-        logger.warning("Ollama not reachable at %s", settings.OLLAMA_BASE_URL)
+        ollama_breaker.record_failure()
+        logger.warning("Ollama not reachable at %s (breaker: %s)", settings.OLLAMA_BASE_URL, ollama_breaker.state.value)
         return {"category": None, "confidence": 0.0, "reasoning": "Ollama unavailable"}
     except Exception as exc:
-        logger.error("LLM classification failed: %s", exc)
+        ollama_breaker.record_failure()
+        logger.error("LLM classification failed: %s (breaker: %s)", exc, ollama_breaker.state.value)
         return {"category": None, "confidence": 0.0, "reasoning": f"Error: {exc}"}

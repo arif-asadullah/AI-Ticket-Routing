@@ -12,8 +12,9 @@ from backend.core.auth import (
     require_engineer_or_admin,
     require_team_access,
 )
-from backend.schemas.ticket import TicketCreate, TicketFeedback, TicketResolve, TicketResponse, TicketStatusUpdate
+from backend.schemas.ticket import TicketCreate, TicketFeedback, TicketOverride, TicketResolve, TicketResponse, TicketStatusUpdate
 from backend.services.orchestrator import classify
+from backend.services.router import cancel_sla_timer, get_breached_tickets, get_top3_predictions, start_sla_timer
 from backend.services.socketio_manager import emit_ticket_event
 
 logger = logging.getLogger(__name__)
@@ -71,13 +72,24 @@ async def create_ticket(
         logger.error("Classification pipeline failed: %s", exc)
         raise HTTPException(500, "Classification failed. Please try again.")
 
-    # Determine status based on confidence
-    if result["confidence"] >= 0.70:
+    # Determine status based on confidence and degradation level
+    if result["degradation_level"] <= 1 and result["confidence"] < 0.50:
+        status = "pending_human"
+    elif result["confidence"] >= 0.70:
         status = "routed"
     else:
         status = "escalated"
 
     now = datetime.now(timezone.utc).isoformat()
+
+    # ── Compute SLA deadline and top-3 predictions ──
+    from backend.services.router import SLA_HOURS, get_sla_deadline
+    sla_deadline = None
+    sla_hours = SLA_HOURS.get(result["priority"], 8)
+    top3 = get_top3_predictions(result["classifier_votes"])
+
+    if status == "routed":
+        sla_deadline, _ = get_sla_deadline(result["priority"], now)
 
     # ── Save ticket to database ──
     collection = db.collection("tickets")
@@ -92,6 +104,7 @@ async def create_ticket(
         "ai_reasoning": result["reasoning"],
         "quality_score": result["quality_score"],
         "classifier_votes": result["classifier_votes"],
+        "top3_predictions": top3,
         "submitted_by": user["email"],
         "routed_to": result["recommended_team"],
         "embedding": result["embedding"],
@@ -99,6 +112,8 @@ async def create_ticket(
         "resolution_effectiveness": result["resolution_effectiveness"],
         "suggested_runbook": result["suggested_runbook"],
         "recommended_expert": result["recommended_expert"],
+        "sla_deadline": sla_deadline,
+        "sla_hours": sla_hours,
         "created_at": now,
         "resolved_at": None,
         "_source": "user",
@@ -145,6 +160,10 @@ async def create_ticket(
     except Exception as exc:
         logger.warning("Failed to write audit log for ticket %s: %s", ticket_key, exc)
 
+    # ── Start SLA timer in Redis (routed tickets only) ──
+    if status == "routed" and result["recommended_team"]:
+        await start_sla_timer(redis_client, ticket_key, result["priority"], result["recommended_team"], now)
+
     logger.info(
         "Ticket %s: %s → %s (%.1f%% confidence, %s, level=%d, %dms)",
         ticket_key, result["category"], result["recommended_team"],
@@ -172,9 +191,23 @@ async def create_ticket(
         resolution_effectiveness=result["resolution_effectiveness"],
         suggested_runbook=result["suggested_runbook"],
         recommended_expert=result["recommended_expert"],
+        top3_predictions=top3,
+        sla_deadline=sla_deadline,
+        sla_hours=sla_hours,
         created_at=now,
         resolved_at=None,
     )
+
+
+@router.get("/sla-breached")
+async def sla_breached(request: Request, user: dict = Depends(require_engineer_or_admin)):
+    """Get tickets that have breached their SLA deadline."""
+    db = getattr(request.app.state, "arango_db", None)
+    if db is None:
+        raise HTTPException(503, "Database unavailable")
+    redis_client = getattr(request.app.state, "redis", None)
+    tickets = await get_breached_tickets(db, redis_client)
+    return tickets
 
 
 @router.get("/{ticket_id}", response_model=TicketResponse)
@@ -218,7 +251,7 @@ async def update_ticket_status(
     # Team access check
     await require_team_access(doc.get("routed_to"), user, db)
 
-    valid_statuses = {"in_progress", "escalated", "routed"}
+    valid_statuses = {"in_progress", "escalated", "routed", "pending_human"}
     if update.status not in valid_statuses:
         raise HTTPException(400, f"Invalid status. Must be one of: {valid_statuses}")
 
@@ -297,6 +330,109 @@ async def update_ticket_status(
 
     updated = collection.get(ticket_id)
     await emit_ticket_event("ticket:updated", {"id": ticket_id, "status": update.status, "actor": user["email"], "title": updated.get("title", "")})
+    return _doc_to_response(updated)
+
+
+@router.put("/{ticket_id}/override", response_model=TicketResponse)
+async def override_classification(
+    ticket_id: str,
+    body: TicketOverride,
+    request: Request,
+    user: dict = Depends(require_engineer_or_admin),
+):
+    """Override AI classification — analyst manually re-categorises a ticket."""
+    db = getattr(request.app.state, "arango_db", None)
+    if db is None:
+        raise HTTPException(503, "Database unavailable")
+
+    collection = db.collection("tickets")
+    doc = collection.get(ticket_id)
+    if doc is None:
+        raise HTTPException(404, "Ticket not found")
+
+    await require_team_access(doc.get("routed_to"), user, db)
+
+    if doc.get("status") in ("resolved", "closed"):
+        raise HTTPException(400, "Cannot override resolved/closed ticket")
+
+    now = datetime.now(timezone.utc).isoformat()
+    old_category = doc.get("category")
+    old_priority = doc.get("priority")
+    old_team = doc.get("routed_to")
+
+    # Look up the team for the new category via routing_rules → teams
+    new_team = None
+    try:
+        cursor = db.aql.execute(
+            """FOR r IN routing_rules FILTER r.category == @cat AND r.is_active == true LIMIT 1
+               LET team = DOCUMENT(CONCAT("teams/", r.target_team))
+               RETURN team.name""",
+            bind_vars={"cat": body.category},
+        )
+        new_team = next(cursor, None)
+    except Exception as exc:
+        logger.warning("Failed to find routing rule for %s: %s", body.category, exc)
+
+    update_fields = {
+        "_key": ticket_id,
+        "category": body.category,
+        "override": {
+            "overridden_by": user["email"],
+            "reason": body.reason,
+            "original_category": old_category,
+            "original_confidence": doc.get("confidence_score"),
+            "overridden_at": now,
+        },
+    }
+
+    if body.priority:
+        update_fields["priority"] = body.priority
+
+    if new_team:
+        update_fields["routed_to"] = new_team
+        # Update assigned_to edge
+        try:
+            team_key = _lookup_team_key(db, new_team)
+            if team_key:
+                db.aql.execute(
+                    "FOR e IN assigned_to FILTER e._from == CONCAT('tickets/', @tid) REMOVE e IN assigned_to",
+                    bind_vars={"tid": ticket_id},
+                )
+                db.collection("assigned_to").insert({
+                    "_from": f"tickets/{ticket_id}",
+                    "_to": f"teams/{team_key}",
+                })
+        except Exception as exc:
+            logger.warning("Failed to update assigned_to edge: %s", exc)
+
+    collection.update(update_fields)
+
+    # Audit log
+    try:
+        db.collection("audit_log").insert({
+            "ticket_id": ticket_id,
+            "action": "override",
+            "actor": user["email"],
+            "old_value": {"category": old_category, "priority": old_priority, "team": old_team},
+            "new_value": {"category": body.category, "priority": body.priority or old_priority, "team": new_team or old_team},
+            "confidence_score": doc.get("confidence_score"),
+            "reasoning": body.reason,
+            "created_at": now,
+        })
+    except Exception as exc:
+        logger.warning("Failed to write audit log: %s", exc)
+
+    logger.info(
+        "Ticket %s: override %s → %s by %s (reason: %s)",
+        ticket_id, old_category, body.category, user["email"], body.reason,
+    )
+
+    updated = collection.get(ticket_id)
+    await emit_ticket_event("ticket:updated", {
+        "id": ticket_id, "category": body.category,
+        "routed_to": new_team or old_team, "override": True,
+        "actor": user["email"], "title": updated.get("title", ""),
+    })
     return _doc_to_response(updated)
 
 
@@ -390,6 +526,10 @@ async def resolve_ticket(
         "status": "resolved",
         "resolved_at": now,
     })
+
+    # ── Cancel SLA timer ──
+    redis_client = getattr(request.app.state, "redis", None)
+    await cancel_sla_timer(redis_client, ticket_id)
 
     # ── Audit log ──
     try:
@@ -520,6 +660,10 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         resolution_effectiveness=doc.get("resolution_effectiveness"),
         suggested_runbook=doc.get("suggested_runbook"),
         recommended_expert=doc.get("recommended_expert"),
+        override=doc.get("override"),
+        top3_predictions=doc.get("top3_predictions"),
+        sla_deadline=doc.get("sla_deadline"),
+        sla_hours=doc.get("sla_hours"),
         picked_up_by=doc.get("picked_up_by"),
         created_at=doc.get("created_at"),
         resolved_at=doc.get("resolved_at"),

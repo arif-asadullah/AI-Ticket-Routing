@@ -26,6 +26,7 @@ const statusStyles = {
   routed: { bg: "rgba(249,115,22,0.12)", color: "#F97316", dot: "#F97316" },
   in_progress: { bg: "rgba(59,130,246,0.12)", color: "#3b82f6", dot: "#3b82f6" },
   escalated: { bg: "rgba(239,68,68,0.12)", color: "#ef4444", dot: "#ef4444" },
+  pending_human: { bg: "rgba(220,38,38,0.15)", color: "#dc2626", dot: "#dc2626" },
   resolved: { bg: "rgba(34,197,94,0.12)", color: "#22c55e", dot: "#22c55e" },
 };
 
@@ -496,6 +497,7 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
               <option value="routed">Routed</option>
               <option value="in_progress">In Progress</option>
               <option value="escalated">Escalated</option>
+              <option value="pending_human">Pending Human</option>
               <option value="resolved">Resolved</option>
             </select>
             <svg

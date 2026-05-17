@@ -73,7 +73,7 @@ async def get_graph(
 
         try:
             cursor = db.aql.execute(
-                f"FOR t IN tickets FILTER {ticket_filter} SORT t.created_at DESC LIMIT 50 RETURN t"
+                f"FOR t IN tickets FILTER {ticket_filter} SORT t.created_at DESC LIMIT 200 RETURN t"
             )
             config = NODE_CONFIG["tickets"]
             for doc in cursor:

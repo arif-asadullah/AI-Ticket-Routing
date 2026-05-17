@@ -23,6 +23,12 @@ class TicketResolve(BaseModel):
     resolved_by: str | None = None  # engineer email
 
 
+class TicketOverride(BaseModel):
+    category: str  # new classification category
+    priority: str | None = None  # optional priority change
+    reason: str  # required justification
+
+
 class TicketFeedback(BaseModel):
     rating: str  # "helpful", "not_helpful"
     comment: str | None = None
@@ -46,6 +52,10 @@ class TicketResponse(BaseModel):
     resolution_effectiveness: float | None = None
     suggested_runbook: str | None = None
     recommended_expert: str | None = None
+    override: dict | None = None
+    top3_predictions: list[dict] | None = None
+    sla_deadline: str | None = None
+    sla_hours: int | None = None
     picked_up_by: str | None = None
     created_at: str | None = None
     resolved_at: str | None = None

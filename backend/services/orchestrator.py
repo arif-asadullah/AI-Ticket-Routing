@@ -27,6 +27,7 @@ from sentence_transformers import SentenceTransformer
 
 from backend.core.config import settings
 from backend.services.aggregator import aggregate
+from backend.services.cache import cache_get, cache_set
 from backend.services.centroid_classifier import classify_centroid
 from backend.services.entity_extractor import entity_extractor
 from backend.services.error_scanner import errors_confirm_category
@@ -56,6 +57,7 @@ class ClassificationResult(TypedDict):
     recommended_team: str | None
     recommended_expert: str | None
     processing_time_ms: int
+    cache_tier: str | None  # "A", "B", or None (miss)
 
 
 class HealthStatus(TypedDict):
@@ -218,6 +220,15 @@ async def classify(
     """
     start = time.time()
 
+    # ── Cache Check: Tier A (exact text match) ──
+    cached, tier = await cache_get(redis_client, title, description)
+    if cached is not None:
+        elapsed_ms = int((time.time() - start) * 1000)
+        cached["processing_time_ms"] = elapsed_ms
+        cached["cache_tier"] = tier
+        logger.info("Cache HIT (Tier %s) in %dms: %s", tier, elapsed_ms, cached.get("category"))
+        return ClassificationResult(**cached)
+
     # ── Health Check ──
     health = await check_health(db, redis_client)
     level = health["level"]
@@ -227,6 +238,16 @@ async def classify(
     quality = score_quality(title, description, entities)
     model = get_embedding_model()
     embedding = model.encode(description).tolist()
+
+    # ── Cache Check: Tier B (semantic similarity — needs embedding) ──
+    cached, tier = await cache_get(redis_client, title, description, embedding=embedding)
+    if cached is not None:
+        elapsed_ms = int((time.time() - start) * 1000)
+        cached["processing_time_ms"] = elapsed_ms
+        cached["cache_tier"] = tier
+        cached["embedding"] = embedding
+        logger.info("Cache HIT (Tier %s) in %dms: %s", tier, elapsed_ms, cached.get("category"))
+        return ClassificationResult(**cached)
 
     # ── Stage 2: Retrieve (skip if no data) ──
     context = None
@@ -246,11 +267,13 @@ async def classify(
     votes = {}
     tasks = {}
 
-    # Classifier 1: LLM (skip if Ollama down)
-    if health["ollama"]:
+    # Classifier 1: LLM (skip if Ollama down or circuit breaker open)
+    from backend.services.circuit_breaker import ollama_breaker
+    if health["ollama"] and ollama_breaker.is_available:
         tasks["llm"] = classify_llm(title, description, context)
     else:
-        logger.warning("Skipping LLM classifier (Ollama down)")
+        reason = "Ollama down" if not health["ollama"] else f"circuit breaker {ollama_breaker.state.value}"
+        logger.warning("Skipping LLM classifier (%s)", reason)
 
     # Classifiers 2-4: sync functions wrapped as coroutines to run in parallel with LLM
     async def run_knn():
@@ -355,7 +378,7 @@ async def classify(
         result["category"], result["confidence"], level, result["agreement"], elapsed_ms,
     )
 
-    return ClassificationResult(
+    final = ClassificationResult(
         category=result["category"],
         secondary_category=result["secondary_category"],
         priority=result["priority"],
@@ -372,4 +395,10 @@ async def classify(
         recommended_team=recommended_team,
         recommended_expert=recommended_expert,
         processing_time_ms=elapsed_ms,
+        cache_tier=None,
     )
+
+    # ── Cache Write (both tiers) ──
+    await cache_set(redis_client, title, description, embedding, dict(final))
+
+    return final

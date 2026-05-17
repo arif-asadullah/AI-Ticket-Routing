@@ -5,6 +5,7 @@ import DeskMindSpinner from "./DeskMindSpinner";
 import ResolveForm from "./ResolveForm";
 import FeedbackWidget from "./FeedbackWidget";
 import AuditTimeline from "./AuditTimeline";
+import OverrideModal from "./OverrideModal";
 
 
 const priorityStyles = {
@@ -18,6 +19,7 @@ const statusStyles = {
   routed: { bg: "rgba(249,115,22,0.12)", color: "#F97316" },
   in_progress: { bg: "rgba(59,130,246,0.12)", color: "#3b82f6" },
   escalated: { bg: "rgba(239,68,68,0.12)", color: "#ef4444" },
+  pending_human: { bg: "rgba(220,38,38,0.15)", color: "#dc2626" },
   resolved: { bg: "rgba(34,197,94,0.12)", color: "#22c55e" },
 };
 
@@ -71,6 +73,8 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
   const [showResolveForm, setShowResolveForm] = useState(false);
   // Feedback widget state
   const [showFeedback, setShowFeedback] = useState(false);
+  // Override modal state
+  const [showOverride, setShowOverride] = useState(false);
 
   const t = ticket;
   const p = priorityStyles[t.priority] || priorityStyles.medium;
@@ -333,6 +337,23 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
               <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
                 AI Classification
               </h3>
+              {t.override && (
+                <span style={{
+                  marginLeft: "auto",
+                  padding: "4px 10px",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "#8b5cf6",
+                  background: "rgba(139,92,246,0.1)",
+                  border: "1px solid rgba(139,92,246,0.25)",
+                  borderRadius: 6,
+                  fontFamily: "'JetBrains Mono', monospace",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}>
+                  Overridden by {t.override.overridden_by?.split("@")[0]}
+                </span>
+              )}
             </div>
 
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
@@ -798,6 +819,48 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
                     onClick={() => handleStatusChange("in_progress")}
                   />
                 </div>
+              )}
+
+              {/* Pending human actions */}
+              {t.status === "pending_human" && !loading && (
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <ActionButton
+                    label="Pick Up"
+                    color="#3b82f6"
+                    icon={
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                    }
+                    onClick={() => handleStatusChange("in_progress")}
+                  />
+                </div>
+              )}
+
+              {/* Override button — for escalated/in_progress/pending_human tickets */}
+              {(t.status === "escalated" || t.status === "in_progress" || t.status === "routed" || t.status === "pending_human") && !loading && (
+                <ActionButton
+                  label="Override Classification"
+                  color="#8b5cf6"
+                  icon={
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 10l3-3 2 2 5-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M8 4h4v4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  }
+                  onClick={() => setShowOverride(true)}
+                />
+              )}
+
+              {/* Override modal */}
+              {showOverride && (
+                <OverrideModal
+                  ticket={t}
+                  onClose={() => setShowOverride(false)}
+                  onOverride={(updated) => {
+                    onStatusChange?.(t.id, updated.status);
+                  }}
+                />
               )}
 
               {/* ── Audit Timeline ── */}
