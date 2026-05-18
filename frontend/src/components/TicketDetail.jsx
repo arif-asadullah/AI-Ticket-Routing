@@ -6,6 +6,7 @@ import ResolveForm from "./ResolveForm";
 import FeedbackWidget from "./FeedbackWidget";
 import AuditTimeline from "./AuditTimeline";
 import OverrideModal from "./OverrideModal";
+import EnrichmentCard from "./EnrichmentCard";
 
 
 const priorityStyles = {
@@ -63,7 +64,7 @@ function formatDate(dateStr) {
   });
 }
 
-export default function TicketDetail({ ticket, user, onClose, onStatusChange, onResolve, onFeedback }) {
+export default function TicketDetail({ ticket, user, onClose, onStatusChange, onResolve, onFeedback, onTicketUpdate }) {
   const { T } = useTheme();
   const labelStyle = getLabelStyle(T);
   const [loading, setLoading] = useState(false);
@@ -522,6 +523,21 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
               </div>
             </div>
           )}
+
+          {/* ── Enrichment ── */}
+          {t.enrichment?.answers ? (
+            <EnrichmentCard enrichment={t.enrichment} ticket={t} interactive={false} />
+          ) : t.enrichment?.needed && canAct ? (
+            <EnrichmentCard
+              enrichment={t.enrichment}
+              ticket={t}
+              interactive={true}
+              onEnriched={(updated) => {
+                onTicketUpdate?.(updated);
+                onStatusChange?.(t.id, updated.status);
+              }}
+            />
+          ) : null}
 
           {/* ── Suggested Resolution ── */}
           {t.suggested_resolution && t.suggested_resolution.length > 0 && (

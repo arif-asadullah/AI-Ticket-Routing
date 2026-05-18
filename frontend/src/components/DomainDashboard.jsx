@@ -112,16 +112,25 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
   // View toggle + pagination
   const [view, setView] = useState("card");
   const [page, setPage] = useState(1);
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 12;
 
 
-  useEffect(() => {
-    loadTickets();
+  function loadStats() {
     fetchStats()
       .then(setStats)
       .catch(() => {})
       .finally(() => setStatsLoading(false));
+  }
+
+  useEffect(() => {
+    loadTickets();
+    loadStats();
   }, [refreshKey]);
+
+  // Also refresh stats when tickets array changes (from Socket.IO)
+  useEffect(() => {
+    if (tickets.length > 0) loadStats();
+  }, [tickets.length]);
 
   // Reset page when filters or domain change
   useEffect(() => { setPage(1); }, [selectedDomain, statusFilter, priorityFilter, search]);
@@ -174,7 +183,7 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
 
   // Stats
   const localStats = useMemo(() => {
-    const base = user?.role === "admin" && selectedDomain
+    const base = user?.role === "admin" && selectedDomain && selectedDomain !== "ALL"
       ? tickets.filter((t) => (t.category || "") === selectedDomain)
       : user?.role === "engineer" && user?.team_key
         ? tickets.filter(
@@ -239,6 +248,10 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
         onStatusChange={handleStatusChange}
         onResolve={handleResolve}
         onFeedback={handleFeedback}
+        onTicketUpdate={(updated) => {
+          setSelectedTicket(updated);
+          setTickets((prev) => prev.map((t) => t.id === updated.id ? updated : t));
+        }}
       />
     );
   }
@@ -248,8 +261,8 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
     return (
       <div style={{ minHeight: "100vh", padding: "40px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          {/* Back button */}
-          {onBack && (
+          {/* Back button — hidden on domain dashboard */}
+          {false && onBack && (
             <button
               onClick={onBack}
               style={{

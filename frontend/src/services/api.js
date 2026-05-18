@@ -245,6 +245,21 @@ export async function fetchGraph(category) {
 
 // ── Health (public, no auth needed) ──
 
+// ── Enrichment ──
+
+export async function enrichTicket(id, answers) {
+  const res = await authFetch(`${API_BASE}/tickets/${id}/enrich`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answers }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to enrich ticket");
+  }
+  return res.json();
+}
+
 // ── Corrections ──
 
 export async function fetchCorrectionStats() {

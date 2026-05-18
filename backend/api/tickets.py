@@ -12,7 +12,7 @@ from backend.core.auth import (
     require_engineer_or_admin,
     require_team_access,
 )
-from backend.schemas.ticket import TicketCreate, TicketFeedback, TicketOverride, TicketResolve, TicketResponse, TicketStatusUpdate
+from backend.schemas.ticket import TicketCreate, TicketEnrich, TicketFeedback, TicketOverride, TicketResolve, TicketResponse, TicketStatusUpdate
 from backend.services.orchestrator import classify
 from backend.services.router import cancel_sla_timer, get_breached_tickets, get_top3_predictions, start_sla_timer
 from backend.services.socketio_manager import emit_ticket_event
@@ -67,6 +67,7 @@ async def create_ticket(
             description=ticket.description,
             db=db,
             redis_client=redis_client,
+            user_email=user["email"],
         )
     except Exception as exc:
         logger.error("Classification pipeline failed: %s", exc)
@@ -114,6 +115,7 @@ async def create_ticket(
         "recommended_expert": result["recommended_expert"],
         "sla_deadline": sla_deadline,
         "sla_hours": sla_hours,
+        "enrichment": result.get("enrichment"),
         "created_at": now,
         "resolved_at": None,
         "_source": "user",
@@ -194,6 +196,7 @@ async def create_ticket(
         top3_predictions=top3,
         sla_deadline=sla_deadline,
         sla_hours=sla_hours,
+        enrichment=result.get("enrichment"),
         created_at=now,
         resolved_at=None,
     )
@@ -208,6 +211,138 @@ async def sla_breached(request: Request, user: dict = Depends(require_engineer_o
     redis_client = getattr(request.app.state, "redis", None)
     tickets = await get_breached_tickets(db, redis_client)
     return tickets
+
+
+@router.post("/{ticket_id}/enrich", response_model=TicketResponse)
+async def enrich_ticket(
+    ticket_id: str,
+    body: TicketEnrich,
+    request: Request,
+    user: dict = Depends(require_any_authenticated),
+):
+    """Enrich a vague ticket with additional details, then re-classify."""
+    db = getattr(request.app.state, "arango_db", None)
+    if db is None:
+        raise HTTPException(503, "Database unavailable")
+    redis_client = getattr(request.app.state, "redis", None)
+
+    collection = db.collection("tickets")
+    doc = collection.get(ticket_id)
+    if doc is None:
+        raise HTTPException(404, "Ticket not found")
+
+    # Build enriched description
+    from backend.services.enrichment_agent import build_enriched_description
+    enriched_desc = build_enriched_description(doc.get("description", ""), body.answers)
+
+    # Re-classify with enriched text (skip cache, pure 4-classifier ensemble)
+    try:
+        new_result = await classify(
+            title=doc.get("title", ""),
+            description=enriched_desc,
+            db=db,
+            redis_client=redis_client,
+            user_email=user["email"],
+            skip_cache=True,
+        )
+    except Exception as exc:
+        logger.error("Re-classification failed: %s", exc)
+        raise HTTPException(500, "Re-classification failed")
+
+    # Upgrade priority if impact is "Production down"
+    impact_answer = body.answers.get("impact", "").strip().lower()
+    if impact_answer == "production down" and new_result["priority"] != "critical":
+        new_result["priority"] = "critical"
+
+    # Determine new status
+    old_confidence = doc.get("confidence_score", 0)
+    new_confidence = new_result["confidence"]
+    if new_result["degradation_level"] <= 1 and new_confidence < 0.50:
+        new_status = "pending_human"
+    elif new_confidence >= 0.70:
+        new_status = "routed"
+    else:
+        new_status = "escalated"
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    # Update ticket
+    update_fields = {
+        "_key": ticket_id,
+        "description": enriched_desc,
+        "category": new_result["category"],
+        "secondary_category": new_result["secondary_category"],
+        "priority": new_result["priority"],
+        "status": new_status,
+        "confidence_score": new_confidence,
+        "ai_reasoning": new_result["reasoning"],
+        "quality_score": new_result["quality_score"],
+        "classifier_votes": new_result["classifier_votes"],
+        "routed_to": new_result["recommended_team"],
+        "suggested_resolution": new_result["suggested_resolution"],
+        "recommended_expert": new_result["recommended_expert"],
+        "enrichment": {
+            "answers": body.answers,
+            "enriched_at": now,
+            "enriched_by": user["email"],
+            "confidence_before": old_confidence,
+            "confidence_after": new_confidence,
+            "improved": new_confidence > old_confidence,
+        },
+    }
+    collection.update(update_fields)
+
+    # Update graph edges if team changed
+    if new_result["recommended_team"] and new_result["recommended_team"] != doc.get("routed_to"):
+        try:
+            team_key = _lookup_team_key(db, new_result["recommended_team"])
+            if team_key:
+                db.aql.execute(
+                    "FOR e IN assigned_to FILTER e._from == CONCAT('tickets/', @tid) REMOVE e IN assigned_to",
+                    bind_vars={"tid": ticket_id},
+                )
+                db.collection("assigned_to").insert({
+                    "_from": f"tickets/{ticket_id}",
+                    "_to": f"teams/{team_key}",
+                })
+        except Exception as exc:
+            logger.warning("Failed to update edges: %s", exc)
+
+    # Start SLA if now routed
+    if new_status == "routed" and new_result["recommended_team"]:
+        await start_sla_timer(redis_client, ticket_id, new_result["priority"], new_result["recommended_team"], now)
+
+    # Audit log
+    try:
+        db.collection("audit_log").insert({
+            "ticket_id": ticket_id,
+            "action": "enriched",
+            "actor": user["email"],
+            "old_value": {"category": doc.get("category"), "quality": doc.get("quality_score")},
+            "new_value": {"category": new_result["category"], "quality": new_result["quality_score"], "answers": body.answers},
+            "confidence_score": new_confidence,
+            "confidence_signals": {
+                "llm": new_result["classifier_votes"].get("llm", {}).get("confidence"),
+                "knn": new_result["classifier_votes"].get("knn", {}).get("confidence"),
+                "centroid": new_result["classifier_votes"].get("centroid", {}).get("confidence"),
+                "keyword": new_result["classifier_votes"].get("keyword", {}).get("confidence"),
+            },
+            "reasoning": f"Enriched with additional details. Quality: {doc.get('quality_score', 'LOW')} → {new_result['quality_score']}. Category: {new_result['category']}.",
+            "created_at": now,
+        })
+    except Exception as exc:
+        logger.warning("Failed to write audit log: %s", exc)
+
+    logger.info("Ticket %s enriched: %.0f%% → %.0f%% by %s", ticket_id, old_confidence * 100, new_confidence * 100, user["email"])
+
+    await emit_ticket_event("ticket:updated", {
+        "id": ticket_id, "status": new_status,
+        "category": new_result["category"], "enriched": True,
+        "actor": user["email"], "title": doc.get("title", ""),
+    })
+
+    updated = collection.get(ticket_id)
+    return _doc_to_response(updated)
 
 
 @router.get("/{ticket_id}", response_model=TicketResponse)
@@ -703,6 +838,7 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         top3_predictions=doc.get("top3_predictions"),
         sla_deadline=doc.get("sla_deadline"),
         sla_hours=doc.get("sla_hours"),
+        enrichment=doc.get("enrichment"),
         picked_up_by=doc.get("picked_up_by"),
         created_at=doc.get("created_at"),
         resolved_at=doc.get("resolved_at"),

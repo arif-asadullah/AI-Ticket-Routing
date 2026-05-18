@@ -23,6 +23,10 @@ class TicketResolve(BaseModel):
     resolved_by: str | None = None  # engineer email
 
 
+class TicketEnrich(BaseModel):
+    answers: dict  # {"server": "prod-db-01", "error": "Connection refused", ...}
+
+
 class TicketOverride(BaseModel):
     category: str  # new classification category
     priority: str | None = None  # optional priority change
@@ -56,6 +60,7 @@ class TicketResponse(BaseModel):
     top3_predictions: list[dict] | None = None
     sla_deadline: str | None = None
     sla_hours: int | None = None
+    enrichment: dict | None = None
     picked_up_by: str | None = None
     created_at: str | None = None
     resolved_at: str | None = None

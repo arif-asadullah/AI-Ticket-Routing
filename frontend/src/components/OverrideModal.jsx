@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useTheme } from "../theme/ThemeContext";
 import { overrideClassification } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
@@ -80,7 +81,7 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
     .sort((a, b) => b[1].totalConf - a[1].totalConf)
     .slice(0, 3);
 
-  return (
+  return createPortal(
     <div
       onClick={onClose}
       style={{
@@ -310,10 +311,13 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
             <label
               style={{
                 display: "block",
-                fontSize: 12,
-                fontWeight: 500,
-                color: T.textMuted,
+                fontSize: 10,
+                fontWeight: 600,
+                color: T.textDim,
                 marginBottom: 6,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                fontFamily: "'JetBrains Mono', monospace",
               }}
             >
               New Category
@@ -323,14 +327,22 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
               onChange={(e) => setCategory(e.target.value)}
               style={{
                 width: "100%",
-                padding: "10px 12px",
+                padding: "10px 14px",
                 background: T.inputBg,
-                border: `1px solid ${T.inputBorder}`,
-                borderRadius: 8,
+                border: `2px solid ${category !== ticket.category ? "rgba(249,115,22,0.4)" : T.inputBorder}`,
+                borderRadius: 10,
                 color: T.text,
                 fontSize: 13,
-                marginBottom: 14,
+                fontWeight: 500,
+                marginBottom: 16,
                 outline: "none",
+                cursor: "pointer",
+                appearance: "none",
+                WebkitAppearance: "none",
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 4.5l3 3 3-3' stroke='%23999' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 12px center",
+                fontFamily: "'Inter', system-ui",
               }}
             >
               {CATEGORIES.map((cat) => (
@@ -345,10 +357,13 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
             <label
               style={{
                 display: "block",
-                fontSize: 12,
-                fontWeight: 500,
-                color: T.textMuted,
+                fontSize: 10,
+                fontWeight: 600,
+                color: T.textDim,
                 marginBottom: 6,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                fontFamily: "'JetBrains Mono', monospace",
               }}
             >
               Priority
@@ -358,15 +373,23 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
               onChange={(e) => setPriority(e.target.value)}
               style={{
                 width: "100%",
-                padding: "10px 12px",
+                padding: "10px 14px",
                 background: T.inputBg,
-                border: `1px solid ${T.inputBorder}`,
-                borderRadius: 8,
+                border: `2px solid ${priority !== ticket.priority ? "rgba(249,115,22,0.4)" : T.inputBorder}`,
+                borderRadius: 10,
                 color: T.text,
                 fontSize: 13,
-                marginBottom: 14,
+                fontWeight: 500,
+                marginBottom: 16,
                 outline: "none",
+                cursor: "pointer",
+                appearance: "none",
+                WebkitAppearance: "none",
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 4.5l3 3 3-3' stroke='%23999' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 12px center",
                 textTransform: "capitalize",
+                fontFamily: "'Inter', system-ui",
               }}
             >
               {PRIORITIES.map((p) => (
@@ -381,10 +404,13 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
             <label
               style={{
                 display: "block",
-                fontSize: 12,
-                fontWeight: 500,
-                color: T.textMuted,
+                fontSize: 10,
+                fontWeight: 600,
+                color: T.textDim,
                 marginBottom: 6,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                fontFamily: "'JetBrains Mono', monospace",
               }}
             >
               Reason <span style={{ color: T.danger }}>*</span>
@@ -396,10 +422,10 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
               rows={3}
               style={{
                 width: "100%",
-                padding: "10px 12px",
+                padding: "10px 14px",
                 background: T.inputBg,
-                border: `1px solid ${T.inputBorder}`,
-                borderRadius: 8,
+                border: `2px solid ${reason.trim() ? "rgba(249,115,22,0.4)" : T.inputBorder}`,
+                borderRadius: 10,
                 color: T.text,
                 fontSize: 13,
                 resize: "vertical",
@@ -482,6 +508,7 @@ export default function OverrideModal({ ticket, onClose, onOverride }) {
           </form>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

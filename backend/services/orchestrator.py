@@ -58,6 +58,7 @@ class ClassificationResult(TypedDict):
     recommended_expert: str | None
     processing_time_ms: int
     cache_tier: str | None  # "A", "B", or None (miss)
+    enrichment: dict | None  # Enrichment questions for vague tickets
 
 
 class HealthStatus(TypedDict):
@@ -206,6 +207,8 @@ async def classify(
     description: str,
     db=None,
     redis_client=None,
+    user_email: str | None = None,
+    skip_cache: bool = False,
 ) -> ClassificationResult:
     """
     Full classification pipeline — one function call.
@@ -221,7 +224,10 @@ async def classify(
     start = time.time()
 
     # ── Cache Check: Tier A (exact text match) ──
-    cached, tier = await cache_get(redis_client, title, description)
+    if skip_cache:
+        cached, tier = None, "miss"
+    else:
+        cached, tier = await cache_get(redis_client, title, description)
     if cached is not None:
         elapsed_ms = int((time.time() - start) * 1000)
         cached["processing_time_ms"] = elapsed_ms
@@ -240,7 +246,10 @@ async def classify(
     embedding = model.encode(description).tolist()
 
     # ── Cache Check: Tier B (semantic similarity — needs embedding) ──
-    cached, tier = await cache_get(redis_client, title, description, embedding=embedding)
+    if skip_cache:
+        cached, tier = None, "miss"
+    else:
+        cached, tier = await cache_get(redis_client, title, description, embedding=embedding)
     if cached is not None:
         elapsed_ms = int((time.time() - start) * 1000)
         cached["processing_time_ms"] = elapsed_ms
@@ -373,6 +382,19 @@ async def classify(
 
     elapsed_ms = int((time.time() - start) * 1000)
 
+    # ── Enrichment Agent (for vague tickets) ──
+    enrichment = None
+    try:
+        from backend.services.enrichment_agent import generate_enrichment
+        enrichment = generate_enrichment(
+            title, description, quality, result["confidence"],
+            user_email, entities, embedding, db,
+        )
+        if enrichment:
+            logger.info("Enrichment needed: %s", enrichment["reason"])
+    except Exception as exc:
+        logger.warning("Enrichment agent failed: %s", exc)
+
     logger.info(
         "Classification: %s (%.3f) | level=%d | agreement=%s | %dms",
         result["category"], result["confidence"], level, result["agreement"], elapsed_ms,
@@ -396,6 +418,7 @@ async def classify(
         recommended_expert=recommended_expert,
         processing_time_ms=elapsed_ms,
         cache_tier=None,
+        enrichment=enrichment,
     )
 
     # ── Cache Write (both tiers) ──

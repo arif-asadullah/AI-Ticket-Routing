@@ -7,6 +7,7 @@ import UserManagement from "./components/UserManagement";
 import DomainDashboard from "./components/DomainDashboard";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import GraphVisualization from "./components/GraphVisualization";
+import EnrichmentCard from "./components/EnrichmentCard";
 import { fetchTickets, createTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
 import { useSocket } from "./services/socket";
 import { ThemeProvider, useTheme } from "./theme/ThemeContext";
@@ -428,6 +429,16 @@ function AppContent() {
                       {lastResult.ai_reasoning && (
                         <div style={{ fontSize: 12, color: T.textMuted, lineHeight: 1.5 }}>{lastResult.ai_reasoning}</div>
                       )}
+                      {/* Enrichment Agent — interactive questions for vague tickets */}
+                      <EnrichmentCard
+                        enrichment={lastResult.enrichment}
+                        ticket={lastResult}
+                        interactive={true}
+                        onEnriched={(updated) => {
+                          setLastResult(updated);
+                          loadTickets();
+                        }}
+                      />
                     </div>
                     <button
                       onClick={() => { setLastResult(null); setShowNewTicket(false); }}
@@ -437,6 +448,7 @@ function AppContent() {
                         borderRadius: 10, fontSize: 14, fontWeight: 600,
                         cursor: "pointer", fontFamily: "'Inter', system-ui",
                         boxShadow: "0 0 20px rgba(249,115,22,0.3)",
+                        display: lastResult.enrichment?.needed && !lastResult.enrichment?.answers ? "none" : "block",
                       }}
                     >
                       Done
