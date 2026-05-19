@@ -44,6 +44,7 @@ services:
     volumes:
       - .:/app
       - hf_cache:/root/.cache/huggingface
+      - uploads_data:/app/backend/uploads
     env_file:
       - .env
     environment:
@@ -90,6 +91,7 @@ services:
 volumes:
   arango_data:
   hf_cache:
+  uploads_data:
 
 networks:
   atr-network:

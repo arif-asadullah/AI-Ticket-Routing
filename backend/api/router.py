@@ -9,6 +9,7 @@ from backend.api.chat import router as chat_router
 from backend.api.stats import router as stats_router
 from backend.api.graph import router as graph_router
 from backend.api.corrections import router as corrections_router
+from backend.api.upload import router as upload_router
 
 api_router = APIRouter()
 api_router.include_router(auth_router)
@@ -18,3 +19,4 @@ api_router.include_router(chat_router)
 api_router.include_router(stats_router)
 api_router.include_router(graph_router)
 api_router.include_router(corrections_router)
+api_router.include_router(upload_router)

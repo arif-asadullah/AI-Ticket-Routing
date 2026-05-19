@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Install system deps needed by some Python packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc g++ && \
+    apt-get install -y --no-install-recommends gcc g++ tesseract-ocr && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -24,7 +24,7 @@ FROM python:3.12-slim AS production
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc g++ && \
+    apt-get install -y --no-install-recommends gcc g++ tesseract-ocr && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

@@ -524,6 +524,88 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
             </div>
           )}
 
+          {/* ── Attachments & OCR ── */}
+          {t.attachments?.length > 0 && (
+            <div style={{
+              background: T.card,
+              border: `1px solid ${T.border}`,
+              borderRadius: 14, padding: 22,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <rect x="2" y="3" width="14" height="12" rx="2" stroke={T.textMuted} strokeWidth="1.3" />
+                  <circle cx="7" cy="9" r="2" stroke={T.textMuted} strokeWidth="1" />
+                  <path d="M2 13l4-3 3 2 4-3.5 3 2.5" stroke={T.textMuted} strokeWidth="1" strokeLinecap="round" />
+                </svg>
+                <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
+                  Attachments ({t.attachments.length})
+                </h3>
+              </div>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+                {t.attachments.map((att, i) => (
+                  <a key={i} href={att.file_url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
+                    <img
+                      src={att.file_url}
+                      alt={att.filename || "Screenshot"}
+                      style={{
+                        width: 120, height: 90, objectFit: "cover",
+                        borderRadius: 8, border: `1px solid ${T.border}`,
+                        cursor: "pointer",
+                      }}
+                    />
+                  </a>
+                ))}
+              </div>
+              {t.attachments.filter((a) => a.ocr_result?.raw_text).map((att, i) => (
+                <div key={i} style={{
+                  padding: 14, borderRadius: 10,
+                  background: "rgba(34,197,94,0.04)",
+                  border: "1px solid rgba(34,197,94,0.15)",
+                  marginBottom: 8,
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <span style={{
+                      padding: "3px 10px", borderRadius: 6, fontSize: 10, fontWeight: 700,
+                      background: "rgba(34,197,94,0.12)", color: T.success,
+                      textTransform: "uppercase", letterSpacing: 0.5,
+                      fontFamily: "'JetBrains Mono', monospace",
+                    }}>
+                      {att.ocr_result.screenshot_type_label || "OCR"}
+                    </span>
+                    <span style={{ fontSize: 10, color: T.textDim, fontFamily: "'JetBrains Mono', monospace" }}>
+                      {Math.round(att.ocr_result.confidence * 100)}% confidence
+                    </span>
+                  </div>
+                  <div style={{
+                    padding: "10px 12px", borderRadius: 8,
+                    background: T.bg, border: `1px solid ${T.border}`,
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 11, lineHeight: 1.6, color: T.text,
+                    maxHeight: 120, overflowY: "auto",
+                    whiteSpace: "pre-wrap", wordBreak: "break-word",
+                  }}>
+                    {att.ocr_result.raw_text}
+                  </div>
+                  {(att.ocr_result.entities?.servers?.length > 0 ||
+                    att.ocr_result.entities?.services?.length > 0 ||
+                    att.ocr_result.entities?.error_codes?.length > 0) && (
+                    <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 8 }}>
+                      {att.ocr_result.entities.servers?.map((s) => (
+                        <span key={s} style={{ padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 600, background: "rgba(59,130,246,0.1)", color: "#3b82f6" }}>{s}</span>
+                      ))}
+                      {att.ocr_result.entities.services?.map((s) => (
+                        <span key={s} style={{ padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 600, background: "rgba(249,115,22,0.1)", color: T.accent }}>{s}</span>
+                      ))}
+                      {att.ocr_result.entities.error_codes?.map((e, j) => (
+                        <span key={j} style={{ padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 600, background: "rgba(239,68,68,0.1)", color: T.danger }}>{e}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* ── Enrichment ── */}
           {t.enrichment?.answers ? (
             <EnrichmentCard enrichment={t.enrichment} ticket={t} interactive={false} />

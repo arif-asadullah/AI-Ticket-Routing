@@ -245,6 +245,24 @@ export async function fetchGraph(category) {
 
 // ── Health (public, no auth needed) ──
 
+// ── Screenshot Upload ──
+
+export async function uploadScreenshot(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  const token = getAccessToken();
+  const res = await fetch(`${API_BASE}/upload`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to upload screenshot");
+  }
+  return res.json();
+}
+
 // ── Enrichment ──
 
 export async function enrichTicket(id, answers) {

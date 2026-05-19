@@ -1,6 +1,7 @@
 """Tickets API — CRUD backed by ArangoDB with 4-classifier AI routing."""
 
 import logging
+import os
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -60,11 +61,30 @@ async def create_ticket(
 
     redis_client = getattr(request.app.state, "redis", None)
 
+    # ── Combine OCR text from attachments with description ──
+    classify_description = ticket.description
+    attachments_data = []
+    if ticket.attachment_ids:
+        import json as _json
+        for file_id in ticket.attachment_ids:
+            meta_path = os.path.join(os.path.dirname(__file__), "..", "uploads", f"{file_id}.json")
+            if os.path.exists(meta_path):
+                with open(meta_path) as f:
+                    meta = _json.load(f)
+                attachments_data.append(meta)
+                ocr = meta.get("ocr_result", {})
+                if ocr.get("raw_text"):
+                    classify_description += f"\n\n[Screenshot Analysis]\n"
+                    classify_description += f"Type: {ocr.get('screenshot_type_label', 'Screenshot')}\n"
+                    classify_description += f"Extracted text: {ocr['raw_text'][:500]}\n"
+                    if ocr.get("summary"):
+                        classify_description += f"Summary: {ocr['summary']}"
+
     # ── Run the 4-classifier pipeline ──
     try:
         result = await classify(
             title=ticket.title,
-            description=ticket.description,
+            description=classify_description,
             db=db,
             redis_client=redis_client,
             user_email=user["email"],
@@ -116,6 +136,7 @@ async def create_ticket(
         "sla_deadline": sla_deadline,
         "sla_hours": sla_hours,
         "enrichment": result.get("enrichment"),
+        "attachments": attachments_data if attachments_data else None,
         "created_at": now,
         "resolved_at": None,
         "_source": "user",
@@ -197,6 +218,7 @@ async def create_ticket(
         sla_deadline=sla_deadline,
         sla_hours=sla_hours,
         enrichment=result.get("enrichment"),
+        attachments=attachments_data if attachments_data else None,
         created_at=now,
         resolved_at=None,
     )
@@ -839,6 +861,7 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         sla_deadline=doc.get("sla_deadline"),
         sla_hours=doc.get("sla_hours"),
         enrichment=doc.get("enrichment"),
+        attachments=doc.get("attachments"),
         picked_up_by=doc.get("picked_up_by"),
         created_at=doc.get("created_at"),
         resolved_at=doc.get("resolved_at"),

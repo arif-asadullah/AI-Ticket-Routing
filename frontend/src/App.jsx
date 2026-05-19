@@ -8,7 +8,8 @@ import DomainDashboard from "./components/DomainDashboard";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import GraphVisualization from "./components/GraphVisualization";
 import EnrichmentCard from "./components/EnrichmentCard";
-import { fetchTickets, createTicket, fetchHealth, login, logout, fetchMe, isLoggedIn } from "./services/api";
+import ScreenshotUpload from "./components/ScreenshotUpload";
+import { fetchTickets, createTicket, fetchHealth, login, logout, fetchMe, isLoggedIn, uploadScreenshot } from "./services/api";
 import { useSocket } from "./services/socket";
 import { ThemeProvider, useTheme } from "./theme/ThemeContext";
 
@@ -71,6 +72,8 @@ function AppContent() {
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("medium");
   const [lastResult, setLastResult] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+  const [uploadError, setUploadError] = useState(null);
 
   // Check if already logged in on mount
   useEffect(() => {
@@ -151,6 +154,26 @@ function AppContent() {
     return () => clearInterval(interval);
   }, [isAuthenticated, splashDone]);
 
+  async function handleFileUpload(files) {
+    setUploadError(null);
+    for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) { setUploadError("File too large (max 5MB)"); return; }
+      if (!file.type.startsWith("image/")) { setUploadError("Only images allowed"); return; }
+      const preview = URL.createObjectURL(file);
+      const placeholder = { file, uploading: true, preview };
+      setAttachments((prev) => [...prev, placeholder]);
+      try {
+        const result = await uploadScreenshot(file);
+        setAttachments((prev) => prev.map((a) =>
+          a.file === file ? { ...result, uploading: false, preview } : a
+        ));
+      } catch (err) {
+        setAttachments((prev) => prev.filter((a) => a.file !== file));
+        setUploadError(err.message);
+      }
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
@@ -160,7 +183,10 @@ function AppContent() {
 
     try {
       const [created] = await Promise.all([
-        createTicket({ title, description, priority }),
+        createTicket({
+          title, description, priority,
+          attachment_ids: attachments.filter((a) => !a.uploading && a.file_id).map((a) => a.file_id) || undefined,
+        }),
         new Promise((r) => setTimeout(r, 1500)),
       ]);
       setLastResult(created);
@@ -168,6 +194,7 @@ function AppContent() {
       setTitle("");
       setDescription("");
       setPriority("medium");
+      setAttachments([]);
     } catch {
       setError("Failed to create ticket. Check backend connection.");
     } finally {
@@ -472,6 +499,12 @@ function AppContent() {
                       <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Description</label>
                       <FocusInput as="textarea" placeholder="Provide details — affected systems, error messages, impact..." value={description} onChange={(e) => setDescription(e.target.value)} rows={4} style={{ resize: "vertical", minHeight: 100 }} />
                     </div>
+                    <ScreenshotUpload
+                      attachments={attachments}
+                      onUpload={handleFileUpload}
+                      onRemove={(i) => setAttachments((prev) => prev.filter((_, idx) => idx !== i))}
+                      error={uploadError}
+                    />
                     <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
                       <div>
                         <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Priority</label>

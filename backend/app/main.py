@@ -30,6 +30,10 @@ async def lifespan(app: FastAPI):
     if app.state.arango_db is not None:
         init_schema(app.state.arango_db)
 
+    # Ensure uploads directory exists
+    import os
+    os.makedirs(os.path.join(os.path.dirname(__file__), "..", "uploads"), exist_ok=True)
+
     # Preload embedding model at startup (avoids 3-5s cold start on first request)
     try:
         from backend.services.orchestrator import get_embedding_model

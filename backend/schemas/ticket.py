@@ -8,6 +8,7 @@ class TicketCreate(BaseModel):
     description: str
     priority: str = "medium"  # critical, high, medium, low
     submitted_by: str | None = None
+    attachment_ids: list[str] | None = None  # file_ids from /api/upload
 
 
 class TicketStatusUpdate(BaseModel):
@@ -61,6 +62,7 @@ class TicketResponse(BaseModel):
     sla_deadline: str | None = None
     sla_hours: int | None = None
     enrichment: dict | None = None
+    attachments: list[dict] | None = None
     picked_up_by: str | None = None
     created_at: str | None = None
     resolved_at: str | None = None
