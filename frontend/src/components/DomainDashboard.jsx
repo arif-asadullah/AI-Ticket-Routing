@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTheme } from "../theme/ThemeContext";
-import { fetchTickets, fetchStats } from "../services/api";
+import { fetchTickets, fetchStats, fetchIncidents } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 import TicketDetail from "./TicketDetail";
 import StatsSummaryBar from "./StatsSummaryBar";
@@ -97,6 +97,7 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
   const [error, setError] = useState(null);
   const [stats, setStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [incidents, setIncidents] = useState([]);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState("all");
@@ -122,15 +123,29 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
       .finally(() => setStatsLoading(false));
   }
 
+  function loadIncidents() {
+    fetchIncidents().then(setIncidents).catch(() => {});
+  }
+
   useEffect(() => {
     loadTickets();
     loadStats();
+    loadIncidents();
   }, [refreshKey]);
 
   // Also refresh stats when tickets array changes (from Socket.IO)
   useEffect(() => {
-    if (tickets.length > 0) loadStats();
+    if (tickets.length > 0) {
+      loadStats();
+      loadIncidents();
+    }
   }, [tickets.length]);
+
+  // Auto-refresh incidents every 60s
+  useEffect(() => {
+    const interval = setInterval(loadIncidents, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Reset page when filters or domain change
   useEffect(() => { setPage(1); }, [selectedDomain, statusFilter, priorityFilter, search]);
@@ -485,7 +500,104 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
         )}
 
         {/* ── Stats Summary Bar ── */}
-        <StatsSummaryBar stats={stats} loading={statsLoading} />
+        {(() => {
+          // For specific domains, compute stats from local tickets
+          if (selectedDomain && selectedDomain !== "ALL") {
+            const domainTickets = tickets.filter((t) => t.category === selectedDomain);
+            const total = domainTickets.length;
+            const escalated = domainTickets.filter((t) => t.status === "escalated" || t.status === "pending_human").length;
+            const confidences = domainTickets.filter((t) => t.confidence_score).map((t) => t.confidence_score);
+            const avgConf = confidences.length > 0 ? confidences.reduce((a, b) => a + b, 0) / confidences.length : 0;
+            const domainStats = {
+              total: total,
+              avg_confidence: avgConf,
+              escalation_rate: total > 0 ? escalated / total : 0,
+              avg_resolution_minutes: stats?.avg_resolution_minutes || 0,
+              agreement_rate: stats?.agreement_rate || 0,
+              feedback: stats?.feedback || { helpful: 0, not_helpful: 0 },
+            };
+            return <StatsSummaryBar stats={domainStats} loading={false} />;
+          }
+          return <StatsSummaryBar stats={stats} loading={statsLoading} />;
+        })()}
+
+        {/* ── Incident Predictions Banner ── */}
+        {(() => {
+          // Filter incidents by selected domain
+          const filteredIncidents = selectedDomain && selectedDomain !== "ALL"
+            ? incidents.filter((i) => i.category === selectedDomain || i.type === "spike")
+            : incidents;
+          return filteredIncidents.length > 0 && (
+          <div style={{
+            marginBottom: 20,
+            padding: "16px 22px",
+            background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(245,158,11,0.06))",
+            border: `1px solid rgba(239,68,68,0.2)`,
+            borderLeft: "4px solid #ef4444",
+            borderRadius: 14,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div style={{
+                width: 10, height: 10, borderRadius: "50%",
+                background: "#ef4444",
+                boxShadow: "0 0 8px rgba(239,68,68,0.6)",
+                animation: "fabPulse 2s infinite",
+              }} />
+              <div>
+                <h3 style={{
+                  margin: 0, fontSize: 14, fontWeight: 700,
+                  color: T.danger, fontFamily: "'Inter', system-ui",
+                }}>
+                  AI Predicted Incidents ({filteredIncidents.length})
+                </h3>
+                <p style={{ margin: "2px 0 0", fontSize: 11, color: T.textMuted }}>
+                  DeskMind detected unusual patterns in recent tickets — these are not tickets, they are AI-generated alerts
+                </p>
+              </div>
+            </div>
+            {filteredIncidents.map((inc, i) => (
+              <div key={i} style={{
+                padding: "10px 14px",
+                background: T.card,
+                border: `1px solid ${T.border}`,
+                borderRadius: 10,
+                marginBottom: i < filteredIncidents.length - 1 ? 8 : 0,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span style={{
+                    padding: "2px 8px", borderRadius: 4,
+                    fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5,
+                    fontFamily: "'JetBrains Mono', monospace",
+                    background: inc.severity === "critical" ? "rgba(239,68,68,0.12)" : inc.severity === "high" ? "rgba(249,115,22,0.12)" : "rgba(245,158,11,0.12)",
+                    color: inc.severity === "critical" ? T.danger : inc.severity === "high" ? T.accent : T.warning,
+                  }}>
+                    {inc.severity}
+                  </span>
+                  <span style={{
+                    padding: "2px 8px", borderRadius: 4,
+                    fontSize: 9, fontWeight: 600, textTransform: "uppercase",
+                    fontFamily: "'JetBrains Mono', monospace",
+                    background: "rgba(59,130,246,0.08)", color: "#3b82f6",
+                  }}>
+                    {inc.type}
+                  </span>
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: T.text, marginBottom: 2 }}>
+                  {inc.title}
+                </div>
+                <div style={{ fontSize: 12, color: T.textMuted }}>
+                  {inc.details}
+                </div>
+                {inc.suggested_action && (
+                  <div style={{ fontSize: 11, color: T.accent, marginTop: 4, fontStyle: "italic" }}>
+                    Suggested: {inc.suggested_action}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        );
+        })()}
 
         {/* ── Filter Bar ── */}
         <div style={{

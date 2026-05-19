@@ -245,6 +245,14 @@ export async function fetchGraph(category) {
 
 // ── Health (public, no auth needed) ──
 
+// ── Incidents ──
+
+export async function fetchIncidents() {
+  const res = await authFetch(`${API_BASE}/incidents`);
+  if (!res.ok) return [];
+  return res.json();
+}
+
 // ── Screenshot Upload ──
 
 export async function uploadScreenshot(file) {
