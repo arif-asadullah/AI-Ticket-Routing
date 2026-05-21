@@ -189,3 +189,18 @@ async def cache_set(rc: aioredis.Redis, title: str, description: str, embedding:
     await tier_a_set(rc, title, description, result)
     if embedding is not None:
         await tier_b_set(rc, embedding, result)
+
+
+async def invalidate_for_correction(rc: aioredis.Redis, title: str, description: str) -> None:
+    """Invalidate cache entries after a correction so stale results aren't served."""
+    if rc is None:
+        return
+    try:
+        # Tier A: delete exact match
+        key = _tier_a_key(_text_hash(title, description))
+        await rc.delete(key)
+        # Tier B: flush all (corrections are rare, 100 entries rebuild fast)
+        await rc.delete(TIER_B_KEY)
+        logger.info("Cache invalidated after correction")
+    except Exception as exc:
+        logger.warning("Cache invalidation failed: %s", exc)

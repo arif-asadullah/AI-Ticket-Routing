@@ -18,6 +18,7 @@ Usage:
 
 import asyncio
 import logging
+import re
 import time
 from datetime import datetime, timezone
 from typing import TypedDict
@@ -145,6 +146,23 @@ def get_embedding_model() -> SentenceTransformer:
     return _embedding_model
 
 
+def preprocess_text(title: str, description: str) -> str:
+    """Clean text before embedding — remove noise, keep signal."""
+    text = f"{title}. {description}"
+    # Remove timestamps (ISO, syslog, etc.)
+    text = re.sub(r'\d{4}[-/]\d{2}[-/]\d{2}[T ]\d{2}:\d{2}:\d{2}[.\dZ]*', '', text)
+    # Replace IP addresses with token (noise for category classification)
+    text = re.sub(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', 'IP_ADDR', text)
+    # Remove UUIDs
+    text = re.sub(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', '', text, flags=re.I)
+    # Remove long file paths (keep filename only)
+    text = re.sub(r'(/[\w.-]+){3,}/', '', text)
+    # Collapse whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    # Truncate to ~512 tokens (roughly 2000 chars) to avoid embedding dilution
+    return text[:2000]
+
+
 # ── Routing Lookup ──
 
 def find_runbook(db, category: str, resolution_steps: list[str] | None) -> str | None:
@@ -243,7 +261,7 @@ async def classify(
     entities = entity_extractor.extract(description, db=db) if db else {"servers": [], "services": [], "error_codes": []}
     quality = score_quality(title, description, entities)
     model = get_embedding_model()
-    embedding = model.encode(description).tolist()
+    embedding = model.encode(preprocess_text(title, description)).tolist()
 
     # ── Cache Check: Tier B (semantic similarity — needs embedding) ──
     if skip_cache:

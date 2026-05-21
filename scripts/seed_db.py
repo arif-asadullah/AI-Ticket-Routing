@@ -19,6 +19,7 @@ Idempotent: truncates and reloads all data. Safe to run multiple times.
 """
 
 import json
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -29,6 +30,17 @@ import yaml
 from arango import ArangoClient
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
+
+
+def preprocess_text(title: str, description: str) -> str:
+    """Clean text before embedding — remove noise, keep signal."""
+    text = f"{title}. {description}"
+    text = re.sub(r'\d{4}[-/]\d{2}[-/]\d{2}[T ]\d{2}:\d{2}:\d{2}[.\dZ]*', '', text)
+    text = re.sub(r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b', 'IP_ADDR', text)
+    text = re.sub(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', '', text, flags=re.I)
+    text = re.sub(r'(/[\w.-]+){3,}/', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text[:2000]
 
 # ── Paths ──
 SEED_FILE = Path("data/seed/seed_data.yaml")
@@ -179,7 +191,7 @@ def load_tickets(db, model, seed_tickets, synthetic_tickets):
 
     # Compute embeddings
     print(f"\n  Computing embeddings for {len(all_tickets)} tickets...")
-    descriptions = [doc["description"] for doc, _ in all_tickets]
+    descriptions = [preprocess_text(doc.get('title', ''), doc['description']) for doc, _ in all_tickets]
     embeddings = []
     batch_size = 64
     for i in tqdm(range(0, len(descriptions), batch_size), desc="  Embeddings"):

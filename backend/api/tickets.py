@@ -591,6 +591,15 @@ async def override_classification(
     except Exception as exc:
         logger.warning("Failed to record correction: %s", exc)
 
+    # ── Invalidate cache so stale classification isn't served ──
+    redis_client = getattr(request.app.state, "redis", None)
+    if redis_client:
+        try:
+            from backend.services.cache import invalidate_for_correction
+            await invalidate_for_correction(redis_client, doc.get("title", ""), doc.get("description", ""))
+        except Exception as exc:
+            logger.warning("Failed to invalidate cache: %s", exc)
+
     logger.info(
         "Ticket %s: override %s → %s by %s (reason: %s)",
         ticket_id, old_category, body.category, user["email"], body.reason,

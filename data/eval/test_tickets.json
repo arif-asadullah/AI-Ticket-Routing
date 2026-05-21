@@ -1,0 +1,282 @@
+[
+  {
+    "id": 1,
+    "title": "prod-db-01 PostgreSQL replication lag critical",
+    "description": "PostgreSQL streaming replication on prod-db-01 has fallen behind by over 500MB. WAL segments are accumulating and the replica is 30 minutes behind primary. Connection pool is maxed out at 200 connections. Need immediate attention before failover becomes unsafe.",
+    "expected_category": "Database",
+    "difficulty": "clear",
+    "notes": "Clear Database ticket with server name, DB technology, and specific DB concepts"
+  },
+  {
+    "id": 2,
+    "title": "MySQL deadlock causing transaction failures",
+    "description": "Multiple transactions are hitting deadlocks on the orders table. InnoDB is reporting lock wait timeouts after 50 seconds. The slow query log shows full table scans on queries that should use the idx_customer_id index. Application is throwing 500 errors to users.",
+    "expected_category": "Database",
+    "difficulty": "clear",
+    "notes": "Clear Database with MySQL-specific terminology"
+  },
+  {
+    "id": 3,
+    "title": "Redis cluster node failing health checks",
+    "description": "Redis cluster node redis-03 is failing health checks every 30 seconds. Memory usage is at 95% and the node is refusing new connections. CLUSTER INFO shows the node as pfail. Other nodes are trying to failover but the slot migration is stuck.",
+    "expected_category": "Database",
+    "difficulty": "clear",
+    "notes": "Redis is a database - clear DB ticket"
+  },
+  {
+    "id": 4,
+    "title": "Database backup job timing out",
+    "description": "The nightly pg_dump backup of the analytics database has been running for 6 hours and still hasn't completed. Normally it finishes in 2 hours. Disk I/O on prod-db-02 is at 100% during the dump. The vacuum process seems to be competing for resources.",
+    "expected_category": "Database",
+    "difficulty": "clear",
+    "notes": "Database backup operations"
+  },
+  {
+    "id": 5,
+    "title": "prod-db-01 server running out of disk space",
+    "description": "The database server prod-db-01 has only 5GB of disk space remaining out of 500GB. WAL files are consuming most of the space. The server OS is showing kernel warnings about low disk. Need to either expand the volume or clean up old WAL segments.",
+    "expected_category": "Database",
+    "difficulty": "boundary",
+    "notes": "Boundary: disk space on DB server. Root cause is WAL files (DB) not just disk (Infra)"
+  },
+  {
+    "id": 6,
+    "title": "Kubernetes node not ready - high CPU pressure",
+    "description": "Worker node k8s-node-03 has been in NotReady state for 15 minutes. The kubelet is reporting CPU pressure and the node has 98% CPU utilization. Several pods have been evicted. The node's kernel OOM killer has triggered twice in the last hour.",
+    "expected_category": "Infrastructure",
+    "difficulty": "clear",
+    "notes": "Clear Infrastructure - K8s node level issue, not pod/app level"
+  },
+  {
+    "id": 7,
+    "title": "VMware ESXi host storage VMFS corruption",
+    "description": "ESXi host esxi-prod-02 is reporting VMFS metadata corruption on the shared datastore. Several VMs are stuck in an inconsistent state and cannot be powered on. The vSphere client shows the datastore as inaccessible. Hardware RAID controller battery is also reporting low.",
+    "expected_category": "Infrastructure",
+    "difficulty": "clear",
+    "notes": "Clear Infrastructure - hypervisor and hardware storage"
+  },
+  {
+    "id": 8,
+    "title": "Server memory hardware fault detected",
+    "description": "prod-app-02 is reporting correctable ECC memory errors on DIMM slot A2. The error rate has increased from 5 per day to over 200 per hour in the last 24 hours. IPMI logs show thermal warnings as well. The server needs to be scheduled for memory replacement before uncorrectable errors occur.",
+    "expected_category": "Infrastructure",
+    "difficulty": "clear",
+    "notes": "Clear Infrastructure - hardware memory fault"
+  },
+  {
+    "id": 9,
+    "title": "Docker daemon crashing on restart",
+    "description": "The Docker daemon on prod-web-01 crashes immediately on restart with signal SIGSEGV. Container runtime is corrupted after an interrupted system update. All containers on the host are down. The systemd journal shows repeated restart attempts hitting the rate limiter.",
+    "expected_category": "Infrastructure",
+    "difficulty": "clear",
+    "notes": "Docker daemon is infrastructure, not application"
+  },
+  {
+    "id": 10,
+    "title": "NFS mount stale on multiple servers",
+    "description": "The NFS mount /shared/data is showing as stale on prod-app-01, prod-app-02, and prod-web-01. All processes trying to access the mount are hanging in D state. The NFS server nfs-01 appears to be up but is not responding to RPC calls. Rebooting the NFS server might be needed.",
+    "expected_category": "Infrastructure",
+    "difficulty": "clear",
+    "notes": "NFS infrastructure issue"
+  },
+  {
+    "id": 11,
+    "title": "API gateway returning 502 Bad Gateway",
+    "description": "The API gateway is returning 502 Bad Gateway for all requests to the /api/v2/orders endpoint. The upstream service orders-svc is running but health checks show it's returning 503 Service Unavailable. Deployment was done 30 minutes ago with version 2.4.1. Rolling back might be needed.",
+    "expected_category": "Application",
+    "difficulty": "clear",
+    "notes": "Clear Application - deployment caused service errors"
+  },
+  {
+    "id": 12,
+    "title": "Frontend build failing on CI pipeline",
+    "description": "The React frontend build is failing in the CI pipeline with 'Module not found: Can't resolve @company/design-system'. The package was recently updated from 3.1.0 to 4.0.0 which has breaking changes. The npm audit also shows 3 high severity vulnerabilities in transitive dependencies.",
+    "expected_category": "Application",
+    "difficulty": "clear",
+    "notes": "Clear Application - build and dependency issues"
+  },
+  {
+    "id": 13,
+    "title": "Memory leak in payment processing service",
+    "description": "The payment-svc is consuming 4GB of heap memory and growing by 100MB per hour. GC logs show full GC pauses of 5+ seconds. The service was last deployed 3 days ago. Thread dumps show 500+ blocked threads in the connection pool. Response times have degraded from 200ms to 8 seconds.",
+    "expected_category": "Application",
+    "difficulty": "clear",
+    "notes": "Clear Application - application memory leak, not infrastructure"
+  },
+  {
+    "id": 14,
+    "title": "Grafana dashboard showing blank panels",
+    "description": "Multiple Grafana dashboards are showing blank panels with 'No data' messages. The Prometheus data source is configured but queries are timing out after 30 seconds. Grafana logs show connection refused errors to the Prometheus endpoint. The Grafana version was recently upgraded to 10.2.",
+    "expected_category": "Application",
+    "difficulty": "boundary",
+    "notes": "Boundary: Grafana is application software, not infrastructure"
+  },
+  {
+    "id": 15,
+    "title": "Microservice crashing with unhandled exception",
+    "description": "The inventory-svc keeps crashing with an unhandled NullPointerException in the OrderValidator class at line 147. Stack trace shows the issue is in the new batch processing feature added in PR #892. Kubernetes is restarting the pod every 2 minutes due to the CrashLoopBackOff.",
+    "expected_category": "Application",
+    "difficulty": "boundary",
+    "notes": "Boundary: Pod crash is app bug, not K8s infrastructure"
+  },
+  {
+    "id": 16,
+    "title": "VPN tunnel dropping connections intermittently",
+    "description": "The site-to-site VPN tunnel between office and AWS VPC keeps dropping every 30-60 minutes. IKE phase 2 rekey is failing with 'NO_PROPOSAL_CHOSEN' error. MTU seems to be an issue as large packets are being fragmented. The ISP recently changed our public IP which may have affected the tunnel config.",
+    "expected_category": "Network",
+    "difficulty": "clear",
+    "notes": "Clear Network - VPN, IKE, MTU issues"
+  },
+  {
+    "id": 17,
+    "title": "DNS resolution failing for internal services",
+    "description": "Internal DNS resolution is failing intermittently for *.internal.company.com domains. CoreDNS pods are running but one of the three replicas is showing high error rates. The /etc/resolv.conf on affected nodes points to the correct cluster DNS IP. nslookup works from some pods but not others.",
+    "expected_category": "Network",
+    "difficulty": "clear",
+    "notes": "Clear Network - DNS resolution"
+  },
+  {
+    "id": 18,
+    "title": "Load balancer health checks failing",
+    "description": "The AWS ALB health checks are failing for the backend target group. All 4 targets are showing unhealthy status. The security group allows traffic on port 8080 but the health check is configured on port 80. The backend services are actually running fine on port 8080. Need to update the health check configuration.",
+    "expected_category": "Network",
+    "difficulty": "clear",
+    "notes": "Clear Network - load balancer configuration"
+  },
+  {
+    "id": 19,
+    "title": "SSL certificate expiring in 2 days",
+    "description": "The wildcard SSL certificate for *.company.com is expiring in 48 hours. The auto-renewal via Let's Encrypt failed because the DNS challenge validation couldn't update the TXT record. The certificate is used by the main load balancer, API gateway, and internal services. Need manual renewal before expiry.",
+    "expected_category": "Network",
+    "difficulty": "clear",
+    "notes": "SSL/TLS certificate management is Network"
+  },
+  {
+    "id": 20,
+    "title": "High latency on inter-datacenter link",
+    "description": "Network latency between ap-south-1 and us-east-1 datacenters has increased from 150ms to 800ms. Traceroute shows packets taking an unusual route through Europe. BGP announcements seem to be preferring a suboptimal path. The impact is visible on cross-region database replication and API response times.",
+    "expected_category": "Network",
+    "difficulty": "clear",
+    "notes": "Clear Network - routing and latency"
+  },
+  {
+    "id": 21,
+    "title": "Ransomware detected on endpoint workstation",
+    "description": "Endpoint detection on workstation WS-FINANCE-03 has flagged a ransomware variant (Lockbit 3.0). Several files in the user's home directory have been encrypted with .lockbit extension. The workstation has been isolated from the network automatically. Need to assess lateral movement and check backup integrity.",
+    "expected_category": "Security",
+    "difficulty": "clear",
+    "notes": "Clear Security - ransomware incident"
+  },
+  {
+    "id": 22,
+    "title": "Critical CVE found in production dependency",
+    "description": "Vulnerability scanner found CVE-2024-3094 (CVSS 10.0) in the xz-utils package installed on all production Linux servers. This is a supply chain backdoor that affects SSH authentication. Immediate patching required across all servers running xz-utils version 5.6.0 or 5.6.1.",
+    "expected_category": "Security",
+    "difficulty": "clear",
+    "notes": "Clear Security - CVE vulnerability"
+  },
+  {
+    "id": 23,
+    "title": "Suspicious login attempts from foreign IP",
+    "description": "SIEM alerts show 500+ failed login attempts from IP 203.0.113.42 (geolocated to Eastern Europe) against the admin portal in the last hour. The attempts are using a credential stuffing pattern with different username/password combinations. Three accounts have been temporarily locked due to failed attempt thresholds.",
+    "expected_category": "Security",
+    "difficulty": "clear",
+    "notes": "Clear Security - brute force attack"
+  },
+  {
+    "id": 24,
+    "title": "Unauthorized API key usage detected",
+    "description": "An API key belonging to a terminated employee (john.doe@company.com) was used to access the customer data API 200 times in the last 24 hours. The key should have been revoked during offboarding. The access logs show data was exported from the /api/customers/export endpoint.",
+    "expected_category": "Security",
+    "difficulty": "boundary",
+    "notes": "Boundary: Could be Access Management (key revocation) but the threat is unauthorized data access (Security)"
+  },
+  {
+    "id": 25,
+    "title": "WAF blocking legitimate traffic",
+    "description": "The Web Application Firewall is blocking legitimate API requests with rule ID 942100 (SQL injection detection). The blocked requests contain JSON payloads with SQL-like syntax in a search field. False positive rate is 15% on the search endpoint. Need to tune the WAF rule to allow valid search queries while still protecting against actual SQL injection.",
+    "expected_category": "Security",
+    "difficulty": "clear",
+    "notes": "WAF configuration is Security domain"
+  },
+  {
+    "id": 26,
+    "title": "New employee cannot access JIRA and Confluence",
+    "description": "New hire Sarah Chen (sarah.chen@company.com) started today but cannot log into JIRA or Confluence. Her Active Directory account exists but she hasn't been added to the 'Engineering' group yet. SSO authentication works for email but JIRA returns 'You do not have permission to access this resource'. Her manager approved access last week.",
+    "expected_category": "Access Management",
+    "difficulty": "clear",
+    "notes": "Clear Access Management - user provisioning and group membership"
+  },
+  {
+    "id": 27,
+    "title": "MFA token not working after phone replacement",
+    "description": "User michael.park@company.com replaced their phone and the Google Authenticator MFA tokens are no longer valid. They cannot complete 2FA for VPN, email, or any SSO-protected applications. Their backup codes were stored on the old phone. Need MFA reset following the identity verification procedure.",
+    "expected_category": "Access Management",
+    "difficulty": "clear",
+    "notes": "Clear Access Management - MFA reset"
+  },
+  {
+    "id": 28,
+    "title": "Service account password expired breaking CI/CD",
+    "description": "The CI/CD pipeline service account (svc-cicd@company.com) password expired overnight and all automated deployments are failing. The account is used for pulling Docker images, accessing the artifact registry, and deploying to Kubernetes. The password policy requires rotation every 90 days but the automation for rotation was not set up.",
+    "expected_category": "Access Management",
+    "difficulty": "clear",
+    "notes": "Clear Access Management - service account credentials"
+  },
+  {
+    "id": 29,
+    "title": "LDAP sync failing between AD and cloud directory",
+    "description": "The LDAP synchronization between on-premise Active Directory and Azure AD has been failing for 3 days. Azure AD Connect shows 'stopped-deletion-threshold-exceeded' error. 150 user accounts are pending deletion which triggered the safety threshold. New hires provisioned in AD are not getting cloud accounts.",
+    "expected_category": "Access Management",
+    "difficulty": "clear",
+    "notes": "Clear Access Management - directory sync"
+  },
+  {
+    "id": 30,
+    "title": "RBAC policy preventing team from accessing production namespace",
+    "description": "The SRE team cannot access the production Kubernetes namespace after the RBAC policy update last night. kubectl commands return 'Error from server (Forbidden)'. The ClusterRoleBinding was updated but the new role doesn't include the 'get pods' permission for the production namespace. This is blocking incident response.",
+    "expected_category": "Access Management",
+    "difficulty": "boundary",
+    "notes": "Boundary: K8s RBAC is Access Management, not Infrastructure"
+  },
+  {
+    "id": 31,
+    "title": "Something is broken",
+    "description": "My system is not working since morning. Please fix it urgently.",
+    "expected_category": null,
+    "difficulty": "edge_vague",
+    "notes": "Edge case: completely vague, no category determinable. Should get LOW quality and low confidence."
+  },
+  {
+    "id": 32,
+    "title": "prod-db-01 high CPU",
+    "description": "prod-db-01 CPU at 100%",
+    "expected_category": "Database",
+    "difficulty": "edge_short",
+    "notes": "Edge case: very short but has server name. Could be Infra (CPU) or DB (DB server). Root cause is likely runaway query."
+  },
+  {
+    "id": 33,
+    "title": "Nginx returning 504 gateway timeout",
+    "description": "Users are reporting 504 Gateway Timeout errors when accessing the application through nginx. The upstream backend servers are responding slowly. Nginx access logs show request times exceeding the 60-second timeout. The issue started after the latest backend deployment. Backend pods are running but responding in 45-90 seconds instead of the normal 200ms.",
+    "expected_category": "Application",
+    "difficulty": "edge_boundary",
+    "notes": "Edge: nginx timeout could be Network (load balancer) or Application (backend slow). Root cause is backend deployment = Application."
+  },
+  {
+    "id": 34,
+    "title": "firewall blocking database connections from app servers",
+    "description": "Application servers prod-app-01 and prod-app-02 cannot connect to prod-db-01 on port 5432. The firewall rule change last night inadvertently removed the allow rule for the application subnet 10.0.2.0/24. PostgreSQL is running fine but rejecting connections at the network level. Need to restore the firewall rule.",
+    "expected_category": "Network",
+    "difficulty": "edge_multidomain",
+    "notes": "Edge: mentions Database server and Application servers, but root cause is firewall rule = Network"
+  },
+  {
+    "id": 35,
+    "title": "Kubernetes pod OOMKilled running data migration",
+    "description": "The data-migration-job pod in production namespace keeps getting OOMKilled after processing about 500,000 records. The pod memory limit is set to 2Gi but the migration script is loading too many records into memory at once. The job is migrating data from the old PostgreSQL schema to the new one. Need to either increase the memory limit or implement batch processing in the migration code.",
+    "expected_category": "Application",
+    "difficulty": "edge_multidomain",
+    "notes": "Edge: K8s OOM + PostgreSQL migration. Root cause is application code (migration script) not batching properly = Application"
+  }
+]

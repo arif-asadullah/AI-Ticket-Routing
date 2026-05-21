@@ -11,6 +11,7 @@ Each method runs independently — one failing doesn't block others.
 """
 
 import logging
+from datetime import datetime, timezone
 from typing import TypedDict
 
 from arango.database import StandardDatabase
@@ -48,6 +49,27 @@ class RetrievalResult(TypedDict):
     fulltext_matches: list[dict]
 
 
+def _rerank(tickets: list[dict]) -> list[dict]:
+    """Re-rank similar tickets by combined score: similarity + recency + effectiveness."""
+    now = datetime.now(timezone.utc)
+    for t in tickets:
+        sim = t.get("similarity", 0)
+        eff = t.get("effectiveness") or 0.7
+        created = t.get("created_at")
+        if created:
+            try:
+                age_days = (now - datetime.fromisoformat(created.replace("Z", "+00:00"))).days
+                recency = max(0.5, 1.0 - (age_days / 60))
+            except Exception:
+                recency = 0.7
+        else:
+            recency = 0.7
+        # Combined: 60% similarity + 20% recency + 20% effectiveness
+        t["_rank_score"] = 0.60 * sim + 0.20 * recency + 0.20 * eff
+    tickets.sort(key=lambda x: x.get("_rank_score", 0), reverse=True)
+    return tickets
+
+
 def search_similar_tickets(db: StandardDatabase, embedding: list[float], limit: int = 5) -> list[SimilarTicket]:
     """Vector similarity search — find top N similar past tickets."""
     try:
@@ -69,12 +91,14 @@ def search_similar_tickets(db: StandardDatabase, embedding: list[float], limit: 
                 description: LEFT(ticket.description, 200),
                 similarity: sim,
                 resolution_steps: resolution.steps,
-                effectiveness: resolution.effectiveness
+                effectiveness: resolution.effectiveness,
+                created_at: ticket.created_at
             }
         """
         cursor = db.aql.execute(query, bind_vars={"embedding": embedding, "limit": limit})
         results = list(cursor)
-        logger.info("Vector search: found %d similar tickets", len(results))
+        results = _rerank(results)
+        logger.info("Vector search: found %d similar tickets (re-ranked)", len(results))
         return results
     except Exception as exc:
         logger.warning("Vector search failed: %s", exc)

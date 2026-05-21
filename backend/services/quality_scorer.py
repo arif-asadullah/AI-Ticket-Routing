@@ -30,21 +30,47 @@ def score_quality(
     entities: ExtractedEntities,
 ) -> str:
     """
-    Score ticket input quality.
+    Multi-signal ticket quality scorer.
 
-    HIGH:   description > 50 chars AND (has server/service OR has error code)
-    MEDIUM: description > 50 chars but no entities or error codes
-    LOW:    description < 50 chars, no entities, no errors
+    Combines 5 signals: entities, error codes, description length,
+    technical keywords, and title specificity.
 
     Returns: "HIGH", "MEDIUM", or "LOW"
     """
+    score = 0
+    text = f"{title} {description}".strip().lower()
     desc_len = len(description.strip())
-    has_entities = len(entities["servers"]) > 0 or len(entities["services"]) > 0
-    has_errors = len(entities["error_codes"]) > 0
 
-    if desc_len > 50 and (has_entities or has_errors):
+    # Signal 1: Has infrastructure entities (strong signal)
+    if entities["servers"] or entities["services"]:
+        score += 3
+
+    # Signal 2: Has error codes (strong signal)
+    if entities["error_codes"]:
+        score += 3
+
+    # Signal 3: Description length (diminishing returns)
+    if desc_len > 100:
+        score += 2
+    elif desc_len > 40:
+        score += 1
+
+    # Signal 4: Has technical keywords (moderate signal)
+    tech_terms = ["error", "fail", "crash", "timeout", "refused", "denied",
+                  "down", "slow", "latency", "exception", "500", "503", "oom",
+                  "replication", "connection", "memory", "cpu", "disk",
+                  "permission", "unauthorized", "certificate", "dns", "vpn"]
+    if any(t in text for t in tech_terms):
+        score += 1
+
+    # Signal 5: Title specificity (short generic titles = vague)
+    if len(title.strip()) > 15:
+        score += 1
+
+    # Map score to quality level
+    if score >= 5:
         return "HIGH"
-    elif desc_len > 50:
+    elif score >= 3:
         return "MEDIUM"
     else:
         return "LOW"

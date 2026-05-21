@@ -48,9 +48,10 @@ def classify_knn(similar_tickets: list[dict], k: int = 5) -> dict:
     # Simple vote counts (unweighted) for transparency
     vote_counts = dict(Counter(t.get("category") for t in top_k if t.get("category")))
 
-    # Confidence = proportion of neighbors that agree
-    agreeing = vote_counts.get(winner, 0)
-    confidence = agreeing / len(top_k)
+    # Confidence = weighted vote share (proportional to actual voting strength)
+    winner_score = weighted_votes[winner]
+    total_score = sum(weighted_votes.values())
+    confidence = winner_score / total_score if total_score > 0 else 0.0
 
     return {
         "category": winner,
