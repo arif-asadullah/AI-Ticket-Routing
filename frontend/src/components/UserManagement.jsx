@@ -427,24 +427,26 @@ const labelStyle = {
 const inputStyle = {
   width: "100%",
   padding: "10px 14px",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: "#e8f0fe",
+  border: "1px solid #ccc",
   borderRadius: 8,
-  color: "#F5F5F4",
+  color: "#000",
   fontSize: 13,
   outline: "none",
   boxSizing: "border-box",
+  WebkitTextFillColor: "#000",
 };
 
 const selectStyle = {
   width: "100%",
   padding: "10px 14px",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: "#e8f0fe",
+  border: "1px solid #ccc",
   borderRadius: 8,
-  color: "#F5F5F4",
+  color: "#000",
   fontSize: 13,
   outline: "none",
   boxSizing: "border-box",
   appearance: "none",
+  colorScheme: "light",
 };
