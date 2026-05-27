@@ -7,14 +7,18 @@ export default function ResolveForm({ ticket, onSubmit, onCancel }) {
   const { T } = useTheme();
   const hasAiSuggestion =
     ticket.suggested_resolution && ticket.suggested_resolution.length > 0;
+  const hasAiGenerated =
+    ticket.ai_generated_resolution && ticket.ai_generated_resolution.steps && ticket.ai_generated_resolution.steps.length > 0;
 
   const initialSteps = hasAiSuggestion
     ? [...ticket.suggested_resolution]
+    : hasAiGenerated
+    ? [...ticket.ai_generated_resolution.steps]
     : ["", "", ""];
 
   const [steps, setSteps] = useState(initialSteps);
   const [aiFeedback, setAiFeedback] = useState(
-    hasAiSuggestion ? "yes" : "no"
+    hasAiSuggestion || hasAiGenerated ? "yes" : "no"
   );
   const [runbook, setRunbook] = useState(ticket.suggested_runbook || "");
   const [submitting, setSubmitting] = useState(false);

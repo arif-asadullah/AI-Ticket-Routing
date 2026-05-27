@@ -62,6 +62,7 @@ class TicketResponse(BaseModel):
     sla_deadline: str | None = None
     sla_hours: int | None = None
     enrichment: dict | None = None
+    ai_generated_resolution: dict | None = None
     attachments: list[dict] | None = None
     picked_up_by: str | None = None
     created_at: str | None = None

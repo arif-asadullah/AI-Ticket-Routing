@@ -1,0 +1,226 @@
+{
+  "tags": [
+    "baseline",
+    "after_title_embed",
+    "after_knn_fix"
+  ],
+  "timestamp": "2026-05-21T07:29:23.085625+00:00",
+  "summary": [
+    {
+      "tag": "baseline",
+      "total_scorable": 34,
+      "correct": 29,
+      "accuracy": 0.8529,
+      "avg_confidence": 0.801,
+      "avg_processing_time_ms": 6531.3
+    },
+    {
+      "tag": "after_title_embed",
+      "total_scorable": 34,
+      "correct": 32,
+      "accuracy": 0.9412,
+      "avg_confidence": 0.8085,
+      "avg_processing_time_ms": 6222.7
+    },
+    {
+      "tag": "after_knn_fix",
+      "total_scorable": 34,
+      "correct": 32,
+      "accuracy": 0.9412,
+      "avg_confidence": 0.8091,
+      "avg_processing_time_ms": 6895.4
+    }
+  ],
+  "per_category": {
+    "Access Management": {
+      "baseline": {
+        "correct": 4,
+        "total": 5,
+        "accuracy": 0.8,
+        "avg_confidence": 0.842
+      },
+      "after_title_embed": {
+        "correct": 5,
+        "total": 5,
+        "accuracy": 1.0,
+        "avg_confidence": 0.849
+      },
+      "after_knn_fix": {
+        "correct": 5,
+        "total": 5,
+        "accuracy": 1.0,
+        "avg_confidence": 0.8522
+      }
+    },
+    "Application": {
+      "baseline": {
+        "correct": 5,
+        "total": 7,
+        "accuracy": 0.7143,
+        "avg_confidence": 0.8237
+      },
+      "after_title_embed": {
+        "correct": 6,
+        "total": 7,
+        "accuracy": 0.8571,
+        "avg_confidence": 0.8331
+      },
+      "after_knn_fix": {
+        "correct": 6,
+        "total": 7,
+        "accuracy": 0.8571,
+        "avg_confidence": 0.8327
+      }
+    },
+    "Database": {
+      "baseline": {
+        "correct": 5,
+        "total": 6,
+        "accuracy": 0.8333,
+        "avg_confidence": 0.8158
+      },
+      "after_title_embed": {
+        "correct": 5,
+        "total": 6,
+        "accuracy": 0.8333,
+        "avg_confidence": 0.8158
+      },
+      "after_knn_fix": {
+        "correct": 5,
+        "total": 6,
+        "accuracy": 0.8333,
+        "avg_confidence": 0.8162
+      }
+    },
+    "Infrastructure": {
+      "baseline": {
+        "correct": 5,
+        "total": 5,
+        "accuracy": 1.0,
+        "avg_confidence": 0.8126
+      },
+      "after_title_embed": {
+        "correct": 5,
+        "total": 5,
+        "accuracy": 1.0,
+        "avg_confidence": 0.8476
+      },
+      "after_knn_fix": {
+        "correct": 5,
+        "total": 5,
+        "accuracy": 1.0,
+        "avg_confidence": 0.8484
+      }
+    },
+    "Network": {
+      "baseline": {
+        "correct": 6,
+        "total": 6,
+        "accuracy": 1.0,
+        "avg_confidence": 0.7473
+      },
+      "after_title_embed": {
+        "correct": 6,
+        "total": 6,
+        "accuracy": 1.0,
+        "avg_confidence": 0.7375
+      },
+      "after_knn_fix": {
+        "correct": 6,
+        "total": 6,
+        "accuracy": 1.0,
+        "avg_confidence": 0.738
+      }
+    },
+    "Security": {
+      "baseline": {
+        "correct": 4,
+        "total": 5,
+        "accuracy": 0.8,
+        "avg_confidence": 0.7632
+      },
+      "after_title_embed": {
+        "correct": 5,
+        "total": 5,
+        "accuracy": 1.0,
+        "avg_confidence": 0.7706
+      },
+      "after_knn_fix": {
+        "correct": 5,
+        "total": 5,
+        "accuracy": 1.0,
+        "avg_confidence": 0.7704
+      }
+    }
+  },
+  "classifier_accuracy": {
+    "llm": {
+      "baseline": {
+        "correct": 31,
+        "voted": 34,
+        "accuracy": 0.9118
+      },
+      "after_title_embed": {
+        "correct": 32,
+        "voted": 34,
+        "accuracy": 0.9412
+      },
+      "after_knn_fix": {
+        "correct": 32,
+        "voted": 34,
+        "accuracy": 0.9412
+      }
+    },
+    "knn": {
+      "baseline": {
+        "correct": 27,
+        "voted": 34,
+        "accuracy": 0.7941
+      },
+      "after_title_embed": {
+        "correct": 26,
+        "voted": 34,
+        "accuracy": 0.7647
+      },
+      "after_knn_fix": {
+        "correct": 26,
+        "voted": 34,
+        "accuracy": 0.7647
+      }
+    },
+    "centroid": {
+      "baseline": {
+        "correct": 24,
+        "voted": 34,
+        "accuracy": 0.7059
+      },
+      "after_title_embed": {
+        "correct": 25,
+        "voted": 34,
+        "accuracy": 0.7353
+      },
+      "after_knn_fix": {
+        "correct": 25,
+        "voted": 34,
+        "accuracy": 0.7353
+      }
+    },
+    "keyword": {
+      "baseline": {
+        "correct": 23,
+        "voted": 34,
+        "accuracy": 0.6765
+      },
+      "after_title_embed": {
+        "correct": 23,
+        "voted": 34,
+        "accuracy": 0.6765
+      },
+      "after_knn_fix": {
+        "correct": 23,
+        "voted": 34,
+        "accuracy": 0.6765
+      }
+    }
+  }
+}

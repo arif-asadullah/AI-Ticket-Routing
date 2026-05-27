@@ -60,6 +60,7 @@ class ClassificationResult(TypedDict):
     processing_time_ms: int
     cache_tier: str | None  # "A", "B", or None (miss)
     enrichment: dict | None  # Enrichment questions for vague tickets
+    ai_generated_resolution: dict | None  # LLM-generated resolution steps
 
 
 class HealthStatus(TypedDict):
@@ -398,6 +399,29 @@ async def classify(
         if graph_ctx and graph_ctx.get("experts"):
             recommended_expert = graph_ctx["experts"][0].get("name")
 
+    # ── AI Resolution Generator (when no good historical resolution) ──
+    ai_generated_resolution = None
+    if result["category"] and health["ollama"]:
+        should_generate = (
+            (not suggested_resolution or (resolution_effectiveness or 0) < 0.5)
+            and result["confidence"] >= 0.60
+        )
+        if should_generate:
+            try:
+                from backend.services.resolution_generator import generate_resolution
+                ai_generated_resolution = await generate_resolution(
+                    title, description, result["category"], result["priority"],
+                    entities, context.get("similar_tickets", []),
+                    graph_ctx, entities["error_codes"],
+                )
+                if ai_generated_resolution:
+                    # Use AI steps as suggested resolution if we had none
+                    if not suggested_resolution:
+                        suggested_resolution = ai_generated_resolution["steps"]
+                    logger.info("AI resolution generated: %d steps", len(ai_generated_resolution["steps"]))
+            except Exception as exc:
+                logger.warning("AI resolution generator failed: %s", exc)
+
     elapsed_ms = int((time.time() - start) * 1000)
 
     # ── Enrichment Agent (for vague tickets) ──
@@ -437,6 +461,7 @@ async def classify(
         processing_time_ms=elapsed_ms,
         cache_tier=None,
         enrichment=enrichment,
+        ai_generated_resolution=ai_generated_resolution,
     )
 
     # ── Cache Write (both tiers) ──

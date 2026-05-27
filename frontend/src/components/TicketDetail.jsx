@@ -678,6 +678,95 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
             </div>
           )}
 
+          {/* ── AI-Generated Resolution ── */}
+          {t.ai_generated_resolution && t.ai_generated_resolution.steps && (
+            <div style={{
+              background: `linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08))`,
+              border: `1px solid rgba(139,92,246,0.3)`,
+              borderRadius: 14,
+              padding: 22,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                <span style={{ fontSize: 18 }}>&#10024;</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
+                      AI-Generated Resolution
+                    </h3>
+                    <span style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "2px 8px",
+                      borderRadius: 6,
+                      background: "rgba(139,92,246,0.2)",
+                      color: "#a78bfa",
+                      letterSpacing: 0.5,
+                      textTransform: "uppercase",
+                    }}>
+                      {t.ai_generated_resolution.confidence || "medium"} confidence
+                    </span>
+                  </div>
+                  <p style={{ margin: "4px 0 0", fontSize: 11, color: T.muted, lineHeight: 1.4 }}>
+                    DeskMind generated a custom fix based on similar past resolutions
+                  </p>
+                </div>
+              </div>
+
+              {t.ai_generated_resolution.reasoning && (
+                <div style={{
+                  margin: "12px 0",
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  background: "rgba(139,92,246,0.06)",
+                  border: "1px solid rgba(139,92,246,0.15)",
+                  fontSize: 12,
+                  color: T.muted,
+                  lineHeight: 1.5,
+                  fontStyle: "italic",
+                }}>
+                  {t.ai_generated_resolution.reasoning}
+                </div>
+              )}
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 12 }}>
+                {t.ai_generated_resolution.steps.map((step, i) => (
+                  <div key={i} style={{
+                    display: "flex",
+                    gap: 12,
+                    alignItems: "flex-start",
+                    padding: "10px 14px",
+                    borderRadius: 10,
+                    background: "rgba(255,255,255,0.02)",
+                    border: `1px solid ${T.border}`,
+                  }}>
+                    <span style={{
+                      minWidth: 22,
+                      height: 22,
+                      borderRadius: "50%",
+                      background: "rgba(139,92,246,0.2)",
+                      color: "#a78bfa",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      fontFamily: "'JetBrains Mono', monospace",
+                    }}>
+                      {i + 1}
+                    </span>
+                    <span style={{ fontSize: 13, color: T.text, lineHeight: 1.5 }}>{step}</span>
+                  </div>
+                ))}
+              </div>
+
+              {t.ai_generated_resolution.sources_used && t.ai_generated_resolution.sources_used.length > 0 && (
+                <div style={{ marginTop: 12, fontSize: 11, color: T.muted }}>
+                  <strong>Sources:</strong> {t.ai_generated_resolution.sources_used.join(" | ")}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── Recommended Runbook ── */}
           {t.suggested_runbook && (
             <div style={{

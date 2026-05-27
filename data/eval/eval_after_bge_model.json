@@ -1,0 +1,1290 @@
+{
+  "tag": "after_bge_model",
+  "timestamp": "2026-05-21T07:35:20.030701+00:00",
+  "embedding_model": "384d",
+  "summary": {
+    "total_scorable": 34,
+    "correct": 31,
+    "accuracy": 0.9118,
+    "avg_confidence": 0.8092,
+    "avg_processing_time_ms": 7037.5
+  },
+  "per_category": {
+    "Access Management": {
+      "correct": 5,
+      "total": 5,
+      "accuracy": 1.0,
+      "avg_confidence": 0.851
+    },
+    "Application": {
+      "correct": 6,
+      "total": 7,
+      "accuracy": 0.8571,
+      "avg_confidence": 0.8124
+    },
+    "Database": {
+      "correct": 4,
+      "total": 6,
+      "accuracy": 0.6667,
+      "avg_confidence": 0.8138
+    },
+    "Infrastructure": {
+      "correct": 5,
+      "total": 5,
+      "accuracy": 1.0,
+      "avg_confidence": 0.8442
+    },
+    "Network": {
+      "correct": 6,
+      "total": 6,
+      "accuracy": 1.0,
+      "avg_confidence": 0.7508
+    },
+    "Security": {
+      "correct": 5,
+      "total": 5,
+      "accuracy": 1.0,
+      "avg_confidence": 0.7926
+    }
+  },
+  "per_difficulty": {
+    "boundary": {
+      "correct": 4,
+      "total": 5,
+      "accuracy": 0.8
+    },
+    "clear": {
+      "correct": 25,
+      "total": 25,
+      "accuracy": 1.0
+    },
+    "edge_boundary": {
+      "correct": 1,
+      "total": 1,
+      "accuracy": 1.0
+    },
+    "edge_multidomain": {
+      "correct": 1,
+      "total": 2,
+      "accuracy": 0.5
+    },
+    "edge_short": {
+      "correct": 0,
+      "total": 1,
+      "accuracy": 0.0
+    }
+  },
+  "classifier_accuracy": {
+    "llm": {
+      "correct": 32,
+      "voted": 34,
+      "accuracy": 0.9412
+    },
+    "knn": {
+      "correct": 25,
+      "voted": 34,
+      "accuracy": 0.7353
+    },
+    "centroid": {
+      "correct": 27,
+      "voted": 34,
+      "accuracy": 0.7941
+    },
+    "keyword": {
+      "correct": 23,
+      "voted": 34,
+      "accuracy": 0.6765
+    }
+  },
+  "confusion_matrix": {
+    "Access Management": {
+      "Access Management": 5,
+      "Application": 0,
+      "Database": 0,
+      "Infrastructure": 0,
+      "Network": 0,
+      "Security": 0
+    },
+    "Application": {
+      "Access Management": 0,
+      "Application": 6,
+      "Database": 0,
+      "Infrastructure": 1,
+      "Network": 0,
+      "Security": 0
+    },
+    "Database": {
+      "Access Management": 0,
+      "Application": 0,
+      "Database": 4,
+      "Infrastructure": 2,
+      "Network": 0,
+      "Security": 0
+    },
+    "Infrastructure": {
+      "Access Management": 0,
+      "Application": 0,
+      "Database": 0,
+      "Infrastructure": 5,
+      "Network": 0,
+      "Security": 0
+    },
+    "Network": {
+      "Access Management": 0,
+      "Application": 0,
+      "Database": 0,
+      "Infrastructure": 0,
+      "Network": 6,
+      "Security": 0
+    },
+    "Security": {
+      "Access Management": 0,
+      "Application": 0,
+      "Database": 0,
+      "Infrastructure": 0,
+      "Network": 0,
+      "Security": 5
+    }
+  },
+  "misclassifications": [
+    {
+      "id": 5,
+      "title": "prod-db-01 server running out of disk space",
+      "expected": "Database",
+      "predicted": "Infrastructure",
+      "confidence": 0.743,
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 0.601
+        },
+        "centroid": {
+          "category": "Database",
+          "confidence": 0.568
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 0.75
+        }
+      },
+      "difficulty": "boundary"
+    },
+    {
+      "id": 32,
+      "title": "prod-db-01 high CPU",
+      "expected": "Database",
+      "predicted": "Infrastructure",
+      "confidence": 0.75,
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.555
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        }
+      },
+      "difficulty": "edge_short"
+    },
+    {
+      "id": 35,
+      "title": "Kubernetes pod OOMKilled running data migration",
+      "expected": "Application",
+      "predicted": "Infrastructure",
+      "confidence": 0.7,
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.85
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.607
+        },
+        "keyword": {
+          "category": "Database",
+          "confidence": 0.6
+        }
+      },
+      "difficulty": "edge_multidomain"
+    }
+  ],
+  "vague_analysis": [
+    {
+      "id": 31,
+      "title": "Something is broken",
+      "predicted": "Application",
+      "confidence": 0.672,
+      "quality_score": "MEDIUM"
+    }
+  ],
+  "all_results": [
+    {
+      "id": 1,
+      "title": "prod-db-01 PostgreSQL replication lag critical",
+      "expected": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.95,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Database",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Database",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Database",
+          "confidence": 0.895
+        },
+        "keyword": {
+          "category": "Database",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 7367
+    },
+    {
+      "id": 2,
+      "title": "MySQL deadlock causing transaction failures",
+      "expected": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Database",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Database",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Database",
+          "confidence": 0.726
+        },
+        "keyword": {
+          "category": "Database",
+          "confidence": 0.8
+        }
+      },
+      "elapsed_ms": 6133
+    },
+    {
+      "id": 3,
+      "title": "Redis cluster node failing health checks",
+      "expected": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.65,
+      "agreement": "2/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Database",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Database",
+          "confidence": 0.793
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.591
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 0.5
+        }
+      },
+      "elapsed_ms": 5781
+    },
+    {
+      "id": 4,
+      "title": "Database backup job timing out",
+      "expected": "Database",
+      "predicted": "Database",
+      "correct": true,
+      "confidence": 0.94,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Database",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Database",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Database",
+          "confidence": 0.819
+        },
+        "keyword": {
+          "category": "Database",
+          "confidence": 0.75
+        }
+      },
+      "elapsed_ms": 6273
+    },
+    {
+      "id": 5,
+      "title": "prod-db-01 server running out of disk space",
+      "expected": "Database",
+      "predicted": "Infrastructure",
+      "correct": false,
+      "confidence": 0.743,
+      "agreement": "3/4",
+      "quality_score": "HIGH",
+      "difficulty": "boundary",
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 0.601
+        },
+        "centroid": {
+          "category": "Database",
+          "confidence": 0.568
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 0.75
+        }
+      },
+      "elapsed_ms": 6032
+    },
+    {
+      "id": 6,
+      "title": "Kubernetes node not ready - high CPU pressure",
+      "expected": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.843
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 6158
+    },
+    {
+      "id": 7,
+      "title": "VMware ESXi host storage VMFS corruption",
+      "expected": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.804,
+      "agreement": "3/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Database",
+          "confidence": 0.596
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.544
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 6366
+    },
+    {
+      "id": 8,
+      "title": "Server memory hardware fault detected",
+      "expected": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.811,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 0.6
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.57
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 0.667
+        }
+      },
+      "elapsed_ms": 5742
+    },
+    {
+      "id": 9,
+      "title": "Docker daemon crashing on restart",
+      "expected": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.95,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.777
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 6556
+    },
+    {
+      "id": 10,
+      "title": "NFS mount stale on multiple servers",
+      "expected": "Infrastructure",
+      "predicted": "Infrastructure",
+      "correct": true,
+      "confidence": 0.806,
+      "agreement": "3/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Network",
+          "confidence": 0.206
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.553
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 6510
+    },
+    {
+      "id": 11,
+      "title": "API gateway returning 502 Bad Gateway",
+      "expected": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.95,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Application",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Application",
+          "confidence": 0.633
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 7634
+    },
+    {
+      "id": 12,
+      "title": "Frontend build failing on CI pipeline",
+      "expected": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Application",
+          "confidence": 0.623
+        },
+        "centroid": {
+          "category": "Application",
+          "confidence": 0.569
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 5583
+    },
+    {
+      "id": 13,
+      "title": "Memory leak in payment processing service",
+      "expected": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.772,
+      "agreement": "3/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Application",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Database",
+          "confidence": 0.519
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 0.5
+        }
+      },
+      "elapsed_ms": 5913
+    },
+    {
+      "id": 14,
+      "title": "Grafana dashboard showing blank panels",
+      "expected": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.902,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "boundary",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Application",
+          "confidence": 0.792
+        },
+        "centroid": {
+          "category": "Application",
+          "confidence": 0.654
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 5958
+    },
+    {
+      "id": 15,
+      "title": "Microservice crashing with unhandled exception",
+      "expected": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.65,
+      "agreement": "2/4",
+      "quality_score": "HIGH",
+      "difficulty": "boundary",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 0.594
+        },
+        "centroid": {
+          "category": "Application",
+          "confidence": 0.509
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 5770
+    },
+    {
+      "id": 16,
+      "title": "VPN tunnel dropping connections intermittently",
+      "expected": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Network",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Network",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Network",
+          "confidence": 0.81
+        },
+        "keyword": {
+          "category": "Network",
+          "confidence": 0.667
+        }
+      },
+      "elapsed_ms": 6843
+    },
+    {
+      "id": 17,
+      "title": "DNS resolution failing for internal services",
+      "expected": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Network",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Network",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Network",
+          "confidence": 0.633
+        },
+        "keyword": {
+          "category": "Network",
+          "confidence": 0.667
+        }
+      },
+      "elapsed_ms": 6635
+    },
+    {
+      "id": 18,
+      "title": "Load balancer health checks failing",
+      "expected": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.65,
+      "agreement": "2/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Network",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Network",
+          "confidence": 0.586
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.523
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 0.5
+        }
+      },
+      "elapsed_ms": 6707
+    },
+    {
+      "id": 19,
+      "title": "SSL certificate expiring in 2 days",
+      "expected": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.678,
+      "agreement": "2/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Network",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Security",
+          "confidence": 0.607
+        },
+        "centroid": {
+          "category": "Access Management",
+          "confidence": 0.57
+        },
+        "keyword": {
+          "category": "Network",
+          "confidence": 0.667
+        }
+      },
+      "elapsed_ms": 6514
+    },
+    {
+      "id": 20,
+      "title": "High latency on inter-datacenter link",
+      "expected": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Network",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Network",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Network",
+          "confidence": 0.777
+        },
+        "keyword": {
+          "category": "Network",
+          "confidence": 0.571
+        }
+      },
+      "elapsed_ms": 7127
+    },
+    {
+      "id": 21,
+      "title": "Ransomware detected on endpoint workstation",
+      "expected": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.817,
+      "agreement": "3/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Security",
+          "confidence": 0.95
+        },
+        "knn": {
+          "category": "Security",
+          "confidence": 0.803
+        },
+        "centroid": {
+          "category": "Security",
+          "confidence": 0.755
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 0.25
+        }
+      },
+      "elapsed_ms": 7527
+    },
+    {
+      "id": 22,
+      "title": "Critical CVE found in production dependency",
+      "expected": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Security",
+          "confidence": 1.0
+        },
+        "knn": {
+          "category": "Security",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Security",
+          "confidence": 0.712
+        },
+        "keyword": {
+          "category": "Security",
+          "confidence": 0.5
+        }
+      },
+      "elapsed_ms": 7438
+    },
+    {
+      "id": 23,
+      "title": "Suspicious login attempts from foreign IP",
+      "expected": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.822,
+      "agreement": "3/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Security",
+          "confidence": 0.95
+        },
+        "knn": {
+          "category": "Security",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Security",
+          "confidence": 0.584
+        },
+        "keyword": {
+          "category": "Access Management",
+          "confidence": 0.5
+        }
+      },
+      "elapsed_ms": 8074
+    },
+    {
+      "id": 24,
+      "title": "Unauthorized API key usage detected",
+      "expected": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.776,
+      "agreement": "3/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "boundary",
+      "votes": {
+        "llm": {
+          "category": "Security",
+          "confidence": 0.95
+        },
+        "knn": {
+          "category": "Security",
+          "confidence": 0.802
+        },
+        "centroid": {
+          "category": "Security",
+          "confidence": 0.555
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 8405
+    },
+    {
+      "id": 25,
+      "title": "WAF blocking legitimate traffic",
+      "expected": "Security",
+      "predicted": "Security",
+      "correct": true,
+      "confidence": 0.698,
+      "agreement": "2/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Security",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Network",
+          "confidence": 0.602
+        },
+        "centroid": {
+          "category": "Security",
+          "confidence": 0.659
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 0.4
+        }
+      },
+      "elapsed_ms": 8789
+    },
+    {
+      "id": 26,
+      "title": "New employee cannot access JIRA and Confluence",
+      "expected": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.948,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Access Management",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Access Management",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Access Management",
+          "confidence": 0.752
+        },
+        "keyword": {
+          "category": "Access Management",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 6595
+    },
+    {
+      "id": 27,
+      "title": "MFA token not working after phone replacement",
+      "expected": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.85,
+      "agreement": "4/4",
+      "quality_score": "MEDIUM",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Access Management",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Access Management",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Access Management",
+          "confidence": 0.892
+        },
+        "keyword": {
+          "category": "Access Management",
+          "confidence": 0.667
+        }
+      },
+      "elapsed_ms": 7898
+    },
+    {
+      "id": 28,
+      "title": "Service account password expired breaking CI/CD",
+      "expected": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.887,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Access Management",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Access Management",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Access Management",
+          "confidence": 0.744
+        },
+        "keyword": {
+          "category": "Access Management",
+          "confidence": 0.6
+        }
+      },
+      "elapsed_ms": 6769
+    },
+    {
+      "id": 29,
+      "title": "LDAP sync failing between AD and cloud directory",
+      "expected": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.843,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "clear",
+      "votes": {
+        "llm": {
+          "category": "Access Management",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Access Management",
+          "confidence": 0.606
+        },
+        "centroid": {
+          "category": "Access Management",
+          "confidence": 0.694
+        },
+        "keyword": {
+          "category": "Access Management",
+          "confidence": 0.75
+        }
+      },
+      "elapsed_ms": 8466
+    },
+    {
+      "id": 30,
+      "title": "RBAC policy preventing team from accessing production namesp",
+      "expected": "Access Management",
+      "predicted": "Access Management",
+      "correct": true,
+      "confidence": 0.727,
+      "agreement": "3/4",
+      "quality_score": "HIGH",
+      "difficulty": "boundary",
+      "votes": {
+        "llm": {
+          "category": "Access Management",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Access Management",
+          "confidence": 0.625
+        },
+        "centroid": {
+          "category": "Access Management",
+          "confidence": 0.535
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 0.429
+        }
+      },
+      "elapsed_ms": 7838
+    },
+    {
+      "id": 31,
+      "title": "Something is broken",
+      "expected": null,
+      "predicted": "Application",
+      "correct": null,
+      "confidence": 0.672,
+      "agreement": "2/3",
+      "quality_score": "MEDIUM",
+      "difficulty": "edge_vague",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.8
+        },
+        "knn": {
+          "category": "Network",
+          "confidence": 0.409
+        },
+        "centroid": {
+          "category": "Application",
+          "confidence": 0.551
+        },
+        "keyword": {
+          "category": null,
+          "confidence": 0.0
+        }
+      },
+      "elapsed_ms": 6063
+    },
+    {
+      "id": 32,
+      "title": "prod-db-01 high CPU",
+      "expected": "Database",
+      "predicted": "Infrastructure",
+      "correct": false,
+      "confidence": 0.75,
+      "agreement": "4/4",
+      "quality_score": "LOW",
+      "difficulty": "edge_short",
+      "votes": {
+        "llm": {
+          "category": "Infrastructure",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.555
+        },
+        "keyword": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 9305
+    },
+    {
+      "id": 33,
+      "title": "Nginx returning 504 gateway timeout",
+      "expected": "Application",
+      "predicted": "Application",
+      "correct": true,
+      "confidence": 0.863,
+      "agreement": "4/4",
+      "quality_score": "HIGH",
+      "difficulty": "edge_boundary",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Application",
+          "confidence": 0.595
+        },
+        "centroid": {
+          "category": "Application",
+          "confidence": 0.589
+        },
+        "keyword": {
+          "category": "Application",
+          "confidence": 1.0
+        }
+      },
+      "elapsed_ms": 8008
+    },
+    {
+      "id": 34,
+      "title": "firewall blocking database connections from app servers",
+      "expected": "Network",
+      "predicted": "Network",
+      "correct": true,
+      "confidence": 0.627,
+      "agreement": "2/4",
+      "quality_score": "HIGH",
+      "difficulty": "edge_multidomain",
+      "votes": {
+        "llm": {
+          "category": "Network",
+          "confidence": 0.9
+        },
+        "knn": {
+          "category": "Database",
+          "confidence": 0.591
+        },
+        "centroid": {
+          "category": "Database",
+          "confidence": 0.536
+        },
+        "keyword": {
+          "category": "Network",
+          "confidence": 0.5
+        }
+      },
+      "elapsed_ms": 8524
+    },
+    {
+      "id": 35,
+      "title": "Kubernetes pod OOMKilled running data migration",
+      "expected": "Application",
+      "predicted": "Infrastructure",
+      "correct": false,
+      "confidence": 0.7,
+      "agreement": "2/4",
+      "quality_score": "HIGH",
+      "difficulty": "edge_multidomain",
+      "votes": {
+        "llm": {
+          "category": "Application",
+          "confidence": 0.85
+        },
+        "knn": {
+          "category": "Infrastructure",
+          "confidence": 1.0
+        },
+        "centroid": {
+          "category": "Infrastructure",
+          "confidence": 0.607
+        },
+        "keyword": {
+          "category": "Database",
+          "confidence": 0.6
+        }
+      },
+      "elapsed_ms": 9012
+    }
+  ]
+}
