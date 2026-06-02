@@ -1,8 +1,8 @@
 # DeskMind — Data Flow Diagrams
 
-> **Nasscom Agentic AI Hackathon — Round 2 Submission**
+> **Nasscom AI-Code-Sarathi Excel Hackathon — Final Round (Jury)**
 > **Team**: Arif Asadullah, Aakarsh, Mohit Tomar
-> **Date**: April 2026
+> **Date**: June 2026
 
 ---
 
@@ -19,7 +19,7 @@ flowchart TB
     end
 
     subgraph Infrastructure Services
-        OLLAMA["fa:fa-brain Ollama LLM Runtime\nQwen 2.5:3B\n(Port 11434)"]
+        OLLAMA["fa:fa-brain Ollama LLM Runtime\nQwen 2.5:7B\n(Port 11434)"]
         ARANGO["fa:fa-database ArangoDB 3.12\nGraph + Vector + Document\n(Port 8530)"]
         REDIS["fa:fa-bolt Redis 7\nCache Layer\n(Port 6379)"]
     end
@@ -51,7 +51,7 @@ flowchart TB
 |--------|------|---------------|---------------|
 | IT Staff / End User | Human actor | Ticket text, status updates, resolutions | Routed ticket, AI reasoning, suggested fixes |
 | React Frontend | Application | HTTP requests (POST, GET, PATCH) | TicketResponse JSON |
-| Ollama (Qwen 2.5:3B) | LLM service | Classification JSON (category, priority, confidence, reasoning) | Prompt with ticket text + retrieval context |
+| Ollama (Qwen 2.5:7B) | LLM service | Classification JSON (category, priority, confidence, reasoning) | Prompt with ticket text + retrieval context |
 | ArangoDB 3.12 | Database | Documents, edges, vectors, graph traversal results | AQL queries, document inserts, edge creation |
 | Redis 7 | Cache | Cached health status, cached entity lists | Health check results, entity lists |
 
@@ -202,11 +202,11 @@ flowchart TB
     INPUT(["From P2: Orchestrator\ntitle, description,\ncontext: RetrievalResult,\nembedding: float[384],\nhealth: HealthStatus"])
 
     %% External services
-    OLLAMA(["Ollama LLM\nQwen 2.5:3B"])
+    OLLAMA(["Ollama LLM\nQwen 2.5:7B"])
     D1[("D1: ArangoDB\ncategory_centroids\ncollection")]
 
     %% Sub-processes
-    P51["P5.1: LLM Classifier\nclassify_llm(title, description, context)\nWeight: 0.40 | Accuracy: ~85%\n\n1. _build_context_section(context)\n2. Build SYSTEM_PROMPT (12 disambiguation rules\n   + 6 few-shot examples)\n3. POST /v1/chat/completions\n   {model: qwen2.5:3b, temperature: 0.1}\n4. _parse_llm_response(content)\n5. Validate category in 6 valid categories\n\nSkipped when: health.ollama == false"]
+    P51["P5.1: LLM Classifier\nclassify_llm(title, description, context)\nWeight: 0.40 | Accuracy: 94.1%\n\n1. _build_context_section(context)\n2. Build SYSTEM_PROMPT (12 disambiguation rules\n   + 6 few-shot examples)\n3. POST /v1/chat/completions\n   {model: qwen2.5:7b, temperature: 0.1}\n4. _parse_llm_response(content)\n5. Validate category in 6 valid categories\n\nSkipped when: health.ollama == false"]
 
     P52["P5.2: KNN Classifier\nclassify_knn(similar_tickets, k=5)\nWeight: 0.15 | Accuracy: ~80%\n\n1. Take top K similar tickets\n2. Weighted vote by similarity score\n3. confidence = agreeing / total\n\nSkipped when: health.db_has_data == false\nor similar_tickets is empty"]
 
@@ -574,14 +574,14 @@ ClassificationResult(
 | Stage 2 | search_by_error_codes() | ~10-20 ms | Edge traversal per error code |
 | Stage 2 | traverse_graph() | ~15-30 ms | Multi-hop AQL traversal |
 | Stage 2 | search_fulltext() | ~10-20 ms | Fulltext index lookup per term |
-| Stage 3 | classify_llm() | **2,000-5,000 ms** | Qwen 2.5:3B inference via Ollama |
+| Stage 3 | classify_llm() | **5,000-7,000 ms** | Qwen 2.5:7B inference via Ollama |
 | Stage 3 | classify_knn() | ~1 ms | Pure math on 5 tickets |
 | Stage 3 | classify_centroid() | ~2 ms | 6 cosine similarity calculations |
 | Stage 3 | classify_keyword() | ~1 ms | String matching against 150+ keywords |
 | Stage 4 | aggregate() | < 1 ms | Weighted arithmetic |
 | Stage 5 | lookup_team() + find_runbook() | ~5-10 ms | 2 AQL queries |
 | Post-pipeline | DB inserts (ticket + edge + audit) | ~10-20 ms | 3 document inserts |
-| **Total** | **End-to-end** | **~2,000-5,000 ms** | **Classifiers run in parallel (asyncio.gather) — LLM dominates** |
+| **Total** | **End-to-end** | **~5,000-7,000 ms** | **Classifiers run in parallel (asyncio.gather) — LLM dominates** |
 | **Level 2 (No LLM)** | **Without classify_llm()** | **~150-300 ms** | **Sub-second without LLM** |
 
 ### Data Volume Summary

@@ -1,8 +1,8 @@
 # DeskMind — Sequence Diagrams
 
-> **Nasscom Agentic AI Hackathon — Round 2 Submission**
+> **Nasscom AI-Code-Sarathi Excel Hackathon — Final Round (Jury)**
 > **Team**: Arif Asadullah, Aakarsh, Mohit Tomar
-> **Date**: April 2026
+> **Date**: June 2026
 
 ---
 
@@ -28,7 +28,7 @@ sequenceDiagram
     participant Ret as Retrieval<br/>retrieval.py
     participant ArangoDB as ArangoDB 3.12
     participant LLM as LLM Classifier<br/>llm_classifier.py
-    participant Ollama as Ollama<br/>Qwen 2.5:3B
+    participant Ollama as Ollama<br/>Qwen 2.5:7B
     participant KNN as KNN Classifier<br/>knn_classifier.py
     participant Cent as Centroid Classifier<br/>centroid_classifier.py
     participant KW as Keyword Classifier<br/>keyword_classifier.py
@@ -104,7 +104,7 @@ sequenceDiagram
         Orch ->> LLM: classify_llm(title, description, context)
         activate LLM
         LLM ->> LLM: _build_context_section(context)<br/>Build SYSTEM_PROMPT + user_prompt
-        LLM ->> Ollama: POST /v1/chat/completions<br/>{model: "qwen2.5:3b",<br/>messages: [system, user],<br/>temperature: 0.1}
+        LLM ->> Ollama: POST /v1/chat/completions<br/>{model: "qwen2.5:7b",<br/>messages: [system, user],<br/>temperature: 0.1}
         Ollama -->> LLM: {choices: [{message: {content: "JSON..."}}]}
         LLM ->> LLM: _parse_llm_response(content)<br/>Validate category in 6 valid_cats<br/>Validate priority in valid_pris<br/>Clamp confidence to [0.0, 1.0]
         LLM -->> Orch: {category: "Database", priority: "critical",<br/>confidence: 0.96, reasoning: "Root cause is..."}

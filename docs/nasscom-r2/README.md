@@ -1,7 +1,8 @@
-# DeskMind — Nasscom Agentic AI Hackathon Round 2 Submission
+# DeskMind — Nasscom AI-Code-Sarathi Excel Hackathon — Final Round (Jury)
 
-> **Deadline**: 15 May 2026
+> **Deadline**: 15 June 2026 (artifacts) | Jury meeting after 30 June 2026
 > **Team**: Arif Asadullah, Aakarsh, Mohit Tomar
+> **Status**: Top 9 per use case — competing for Gold/Silver/Bronze
 
 ## Deliverables
 

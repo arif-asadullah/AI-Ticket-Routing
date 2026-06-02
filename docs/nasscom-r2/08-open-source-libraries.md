@@ -1,6 +1,6 @@
 # DeskMind — Open Source & Libraries
 
-> **Nasscom Agentic AI Hackathon — Round 2 Submission**
+> **Nasscom AI-Code-Sarathi Excel Hackathon — Final Round (Jury)**
 
 ---
 
@@ -12,7 +12,7 @@
 |-----------|---------|---------|-----------------|
 | **ArangoDB** | 3.12 Community | Apache 2.0 | Multi-model database — graph engine + document store + vector search in one. Stores the entire knowledge graph (1,796 documents, 3,831 edges). Provides native vector similarity search for semantic ticket matching. |
 | **Redis** | 7.x | BSD 3-Clause | In-memory cache for health check results (5s TTL), entity lists (5min TTL), and performance optimization. |
-| **Ollama** | Latest | MIT | Local LLM runtime. Hosts Qwen 2.5:3B model with OpenAI-compatible API. Enables fully local inference with no cloud dependency. |
+| **Ollama** | Latest | MIT | Local LLM runtime. Hosts Qwen 2.5:7B model with OpenAI-compatible API. Enables fully local inference with no cloud dependency. |
 | **Docker** | Latest | Apache 2.0 | Container runtime for all services. Ensures consistent environments across Mac and Windows development machines. |
 | **Docker Compose** | Latest | Apache 2.0 | Multi-container orchestration. Single `docker compose up` starts the entire stack. |
 
@@ -20,7 +20,7 @@
 
 | Model | Parameters | License | Role in DeskMind |
 |-------|-----------|---------|-----------------|
-| **Qwen 2.5:3B** | 3 billion | Apache 2.0 | Primary LLM classifier (weight: 0.40). Reads ticket text + retrieved context and classifies by root cause. Also powers the Chat AI interface. |
+| **Qwen 2.5:7B** | 7 billion | Apache 2.0 | Primary LLM classifier (weight: 0.40, accuracy: 94.1%). Reads ticket text + retrieved context and classifies by root cause. Also powers the AI Resolution Generator and Chat AI interface. Upgraded from 3B for better reasoning. |
 | **all-MiniLM-L6-v2** | 22 million | Apache 2.0 | Sentence embedding model. Converts ticket text to 384-dimensional vectors for semantic similarity search, KNN classification, and centroid distance classification. |
 
 ---
@@ -39,8 +39,10 @@
 | **pydantic-settings** | Latest | MIT | Configuration management. Loads settings from `.env` file with type validation and defaults. |
 | **spaCy** | Latest | MIT | NLP library for text processing. Used in entity extraction and text normalization pipeline. |
 | **python-jose** | Latest | MIT | JWT token creation, signing, and validation. Creates access tokens (30 min) and refresh tokens (7 days) for authentication. Uses HS256 algorithm. |
-| **passlib** | Latest | BSD 3-Clause | Password hashing framework. Uses bcrypt scheme to hash user passwords before storing in ArangoDB. Verifies passwords during login. |
-| **bcrypt** | 4.1.3 | Apache 2.0 | Backend for passlib's bcrypt hashing. Pinned to 4.1.3 for compatibility with passlib on Python 3.12+. |
+| **bcrypt** | 4.1.3 | Apache 2.0 | Password hashing. Direct bcrypt calls for hashing and verifying user passwords. |
+| **pytesseract** | Latest | Apache 2.0 | OCR engine wrapper for Tesseract. Extracts text from uploaded screenshots for classification. |
+| **python-multipart** | Latest | MIT | Multipart form data parsing for file upload endpoint (required by FastAPI for file handling). |
+| **python-socketio** | Latest | MIT | Socket.IO server for real-time ticket update events (ticket:created, ticket:updated). |
 | **python-dotenv** | Latest | BSD 3-Clause | Loads environment variables from `.env` file at application startup. |
 | **PyYAML** | Latest | MIT | Parses seed data YAML files during database ingestion. |
 
@@ -53,7 +55,9 @@
 | **React** | 19.1.0 | MIT | UI component library. Builds the ticket form, ticket list, chat interface, and landing page. |
 | **React DOM** | 19.1.0 | MIT | React renderer for web browsers. |
 | **Vite** | 6.3.5 | MIT | Build tool and dev server. Provides instant hot module replacement (HMR) and API proxy to backend during development. |
-| **Recharts** | 3.x | MIT | Interactive charts for analytics dashboard (bar, donut, area charts). Built on React and D3. Powers the AnalyticsDashboard component with category distribution, status breakdown, daily trend, and feedback visualizations. |
+| **Recharts** | 3.x | MIT | Interactive charts for analytics dashboard (bar, donut, area charts). Built on React and D3. |
+| **react-force-graph-2d** | 1.29.1 | MIT | Force-directed graph visualization for the knowledge graph explorer. |
+| **socket.io-client** | 4.8.3 | MIT | Real-time WebSocket client for live ticket update notifications. |
 
 ---
 
@@ -83,9 +87,9 @@ Traditional GraphRAG requires 3 separate databases: Neo4j (graph), Pinecone (vec
 - **Reliability**: Works offline, no rate limits
 - **Control**: Can switch models without code changes
 
-### Qwen 2.5:3B over larger models
+### Qwen 2.5:7B over larger models
 - Runs on CPU (no GPU required)
-- 3B parameters is the sweet spot for classification accuracy vs speed
+- 7B parameters provides strong reasoning for root-cause analysis (upgraded from 3B for better accuracy)
 - OpenAI-compatible API means easy model swapping
 
 ### MiniLM over OpenAI Embeddings
@@ -108,6 +112,6 @@ Traditional GraphRAG requires 3 separate databases: Neo4j (graph), Pinecone (vec
 |---------|-----------|---------------|
 | MIT | FastAPI, React, Vite, Recharts, Pydantic, python-arango, redis, python-jose, spaCy | Allowed |
 | Apache 2.0 | ArangoDB, Docker, sentence-transformers, Qwen 2.5, MiniLM, Ollama, bcrypt | Allowed |
-| BSD 3-Clause | Uvicorn, httpx, python-dotenv, Redis, passlib | Allowed |
+| BSD 3-Clause | Uvicorn, httpx, python-dotenv, Redis | Allowed |
 
 All libraries used are **permissively licensed** and allow commercial use, modification, and distribution.

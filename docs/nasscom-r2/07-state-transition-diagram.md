@@ -1,8 +1,8 @@
 # DeskMind — State Transition Diagrams
 
-> **Nasscom Agentic AI Hackathon — Round 2 Submission**
+> **Nasscom AI-Code-Sarathi Excel Hackathon — Final Round (Jury)**
 > **Team**: Arif Asadullah, Aakarsh, Mohit Tomar
-> **Date**: April 2026
+> **Date**: June 2026
 
 ---
 
@@ -352,7 +352,7 @@ All active classifiers run in parallel via `asyncio.gather()` — total Stage 3 
 
 | Classifier | Weight | Method | Available When | Description |
 |-----------|--------|--------|---------------|-------------|
-| **LLM** (Qwen 2.5:3B) | 0.40 | Prompt-based reasoning | Ollama UP (Level 3, 4) | Sends the ticket text + all retrieved context to Qwen 2.5:3B via Ollama's OpenAI-compatible API. The prompt includes category definitions and instructs the model to identify the root cause. Returns a category and confidence. Slowest but most accurate classifier. |
+| **LLM** (Qwen 2.5:7B) | 0.40 | Prompt-based reasoning | Ollama UP (Level 3, 4) | Sends the ticket text + all retrieved context to Qwen 2.5:7B via Ollama's OpenAI-compatible API. The prompt includes category definitions and instructs the model to identify the root cause. Returns a category and confidence. Slowest but most accurate classifier. |
 | **KNN** | 0.15 | Weighted voting by 5 nearest neighbors | DB has data (Level 2, 4) | Takes the top 5 similar tickets from vector search. Each neighbor votes for its category, weighted by similarity score. The majority category wins. Fast and data-driven. |
 | **Centroid** | 0.30 | Distance to 6 category centroids | DB has data (Level 2, 4) | Compares the ticket's 384-dim embedding to the 6 pre-computed category centroids. The category with the smallest cosine distance wins. Robust even when no single past ticket is very similar. |
 | **Keyword** | 0.15 | Dictionary-based word-boundary matching | Always | Uses `re.search(r'\b...\b')` to match 25+ keywords per category (prevents "access" matching "accessibility"). The category with the highest keyword match count wins. Fastest classifier (sub-millisecond). Always available as the last line of defense. |

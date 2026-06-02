@@ -1,8 +1,8 @@
 # DeskMind — Entity-Relationship Diagram
 
-> **Nasscom Agentic AI Hackathon — Round 2 Submission**
+> **Nasscom AI-Code-Sarathi Excel Hackathon — Final Round (Jury)**
 > **Team**: Arif Asadullah, Aakarsh, Mohit Tomar
-> **Date**: April 2026
+> **Date**: June 2026
 
 ---
 
@@ -365,7 +365,7 @@ All signals converge:
 
 | Signal Source | Category | Confidence |
 |--------------|----------|------------|
-| LLM Classifier (Qwen 2.5:3B) | Database | 0.94 |
+| LLM Classifier (Qwen 2.5:7B) | Database | 0.94 |
 | KNN Classifier (5 neighbors) | Database | 0.88 |
 | Centroid Classifier | Database | 0.84 |
 | Keyword Classifier | Database | 0.75 |
