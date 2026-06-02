@@ -1,8 +1,8 @@
 # DeskMind — Low Level Design Document
 
-> **Nasscom Agentic AI Hackathon — Round 2 Submission**
+> **Nasscom AI-Code-Sarathi Excel Hackathon — Final Round (Jury)**
 > **Team**: Arif Asadullah, Aakarsh, Mohit Tomar
-> **Date**: April 2026
+> **Date**: June 2026 (updated from R2 submission)
 
 ---
 
@@ -276,7 +276,7 @@ class Settings(BaseSettings):
     )
 
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "qwen2.5:3b"
+    OLLAMA_MODEL: str = "qwen2.5:7b"
     ARANGO_URL: str = "http://localhost:8529"
     ARANGO_DB: str = "ticket_agent"
     ARANGO_USER: str = "root"
@@ -493,7 +493,7 @@ All 4 classifiers run concurrently. Total time = LLM time (~2s), not the sum of 
 
 | Step | Classifier | Input | Output | Latency |
 |------|-----------|-------|--------|---------|
-| 3a | LLM (Qwen 2.5:3B) | title + description + full Stage 2 context + 12 disambiguation rules + 6 few-shot examples | {category, priority, confidence, reasoning} | ~2,000ms |
+| 3a | LLM (Qwen 2.5:7B) | title + description + full Stage 2 context + 12 disambiguation rules + 6 few-shot examples | {category, priority, confidence, reasoning} | ~5,000-7,000ms |
 | 3b | KNN Voting | `context.similar_tickets` (top 5) | {category, confidence, neighbors, vote_counts} | ~1ms |
 | 3c | Centroid Distance | 384-dim embedding + cached centroids | {category, confidence, distances} | ~2ms |
 | 3d | Keyword Rules | description text | {category, confidence, scores} | ~1ms |
@@ -524,9 +524,9 @@ All 4 classifiers run concurrently. Total time = LLM time (~2s), not the sum of 
 
 ## 5. Classifier Algorithms — Detailed Logic
 
-### 5.1 LLM Classifier (weight: 0.40, accuracy: ~85%)
+### 5.1 LLM Classifier (weight: 0.40, accuracy: 94.1%)
 
-**Algorithm**: Context-injected root-cause classification via Qwen 2.5:3B.
+**Algorithm**: Context-injected root-cause classification via Qwen 2.5:7B (upgraded from 3B for better reasoning).
 
 **Step-by-step**:
 
@@ -594,7 +594,7 @@ confidence = max(0.0, min(1.0, float(confidence)))
 
 ---
 
-### 5.2 KNN Classifier (weight: 0.15, accuracy: ~80%)
+### 5.2 KNN Classifier (weight: 0.15, accuracy: 76.5%)
 
 **Algorithm**: Similarity-weighted K-Nearest Neighbors voting on vector search results.
 
@@ -642,7 +642,7 @@ confidence = count(neighbors agreeing with winner) / K
 
 ---
 
-### 5.3 Centroid Classifier (weight: 0.30, accuracy: ~75%)
+### 5.3 Centroid Classifier (weight: 0.30, accuracy: 73.5%)
 
 **Algorithm**: Cosine distance to pre-computed category centroid embeddings.
 
@@ -710,7 +710,7 @@ confidence = min(0.5 + gap * 5, 0.99)
 
 ---
 
-### 5.4 Keyword Classifier (weight: 0.15, accuracy: ~60%)
+### 5.4 Keyword Classifier (weight: 0.15, accuracy: 67.7%)
 
 **Algorithm**: Dictionary-based keyword counting per category.
 
@@ -1693,3 +1693,123 @@ Status transitions enforced by API:
   - Cannot update resolved/closed tickets
   - Valid PATCH statuses: {in_progress, escalated, routed}
 ```
+
+---
+
+## 15. Post-R2 Improvements (Finals)
+
+### 15.1 AI Resolution Generator (`resolution_generator.py`)
+
+**Purpose**: When no good historical resolution exists (effectiveness < 0.50), the LLM generates a custom step-by-step fix grounded in real data.
+
+```python
+async def generate_resolution(
+    title, description, category, priority,
+    entities, similar_tickets, graph_context, error_codes,
+) -> dict | None:
+    """Returns {steps: [...], reasoning: str, confidence: str, sources_used: [...]}"""
+```
+
+**Quality gate**: Only generates when at least 1 reference resolution OR graph context OR error codes exist. Returns `None` otherwise (no hallucination).
+
+**LLM prompt**: System prompt instructs "Base your steps ONLY on the reference solutions provided. Do NOT invent server names or commands." Temperature: 0.2 (slightly creative but grounded).
+
+**Integration point**: Orchestrator Stage 5, after historical resolution lookup:
+```python
+if (not suggested_resolution or effectiveness < 0.5) and confidence >= 0.60:
+    generated = await generate_resolution(...)
+```
+
+### 15.2 Text Preprocessing (`orchestrator.preprocess_text()`)
+
+Cleans ticket text before embedding to reduce noise:
+```python
+def preprocess_text(title, description) -> str:
+    text = f"{title}. {description}"
+    # Remove timestamps (ISO, syslog)
+    # Replace IP addresses with IP_ADDR token
+    # Remove UUIDs
+    # Remove long file paths
+    # Collapse whitespace, truncate to 2000 chars
+```
+
+Applied both at classification time and during seed data loading (consistent embedding space).
+
+### 15.3 Title + Description Co-Embedding
+
+**Before (R2)**: Only description was embedded: `model.encode(description)`
+**After**: Title and description are co-encoded: `model.encode(preprocess_text(title, description))`
+
+This was the single biggest accuracy improvement: **+8.8%** (85.3% → 94.1%). Titles like "RBAC policy preventing access" immediately suggest Access Management, but if only the description ("kubectl commands return Forbidden...") is embedded, the vector lands near Infrastructure.
+
+### 15.4 KNN Weighted Confidence
+
+**Before**: `confidence = agreeing_neighbors / k` (count-based)
+**After**: `confidence = winner_weighted_score / total_weighted_score` (proportional to similarity strength)
+
+When 3 neighbors vote Database with 0.95 similarity and 2 vote Application with 0.30, the old formula says 60%. The new formula says 83%.
+
+### 15.5 Retrieval Re-ranking
+
+After vector search returns top 5 similar tickets, results are re-ranked by combined score:
+```
+rank_score = 0.60 × similarity + 0.20 × recency + 0.20 × effectiveness
+```
+Recent, proven resolutions surface above old/unverified ones.
+
+### 15.6 Cache Invalidation on Corrections
+
+When an engineer overrides a ticket category:
+1. Correction recorded in `corrections` collection (tracks which classifiers were wrong/right)
+2. Centroids optionally recomputed from corrected tickets
+3. **Both cache tiers flushed** — Tier A (exact match deleted), Tier B (all entries cleared)
+
+### 15.7 Multi-Signal Quality Scorer
+
+**Before**: Simple 50-char threshold
+**After**: 5-signal scorer:
+- Infrastructure entities (servers/services): +3
+- Error codes: +3
+- Description length (>40/+1, >100/+2)
+- Technical keywords: +1
+- Title specificity (>15 chars): +1
+
+Score >= 5 = HIGH, >= 3 = MEDIUM, < 3 = LOW. "PostgreSQL down on prod-db-01" correctly scores HIGH (was LOW before).
+
+### 15.8 Evaluation Benchmark (`scripts/evaluate.py`)
+
+Fixed 35-ticket test set with hand-labeled ground truth covering:
+- 5 tickets per category (clear + boundary cases)
+- 5 edge cases (very short, multi-domain, vague)
+- Supports `--tag` for naming runs and `--compare` for side-by-side comparison
+
+Metrics: overall accuracy, per-category accuracy/confidence, per-difficulty accuracy, individual classifier accuracy, confusion matrix, misclassification details.
+
+### 15.9 Majority-Aware Voting Algorithm
+
+Replaced simple weighted voting with 6-phase algorithm:
+- Phase 0: Single classifier (cap 0.50)
+- Phase 1: Unanimous (cap 0.95)
+- Phase 2: Supermajority 3+ with strength check
+- Phase 3: Pair beats singles 2/1/1
+- Phase 4: 2v2 split with known boundary overrides (e.g., Database vs Infrastructure)
+- Phase 5: Total disagreement → weighted fallback (cap 0.50)
+
+Confidence formula: `0.60 × supporter_avg_conf + 0.25 × vote_share + 0.15 × weight_share`
+
+### 15.10 Incident Prediction (`api/incidents.py`)
+
+Proactive detection of 3 pattern types:
+- **Cluster**: 3+ tickets routed to same team in 4 hours
+- **Trend**: Category volume 50%+ higher than last week
+- **Spike**: 5+ new tickets in 1 hour
+
+Role-based filtering: Admin sees all, Engineer sees own team + spikes, User sees spikes only. Cached 60s per role+team.
+
+### 15.11 OCR Screenshot Analysis (`services/ocr_engine.py`)
+
+Processes uploaded screenshots with Tesseract OCR:
+- Preprocesses images (grayscale, contrast 1.5x, sharpen, resize)
+- Classifies screenshot type: stack_trace, http_error, log_output, terminal, monitoring_dashboard, general
+- Extracts text → runs entity extraction → feeds to all 4 classifiers
+- Max 5 attachments per ticket, 5MB each
