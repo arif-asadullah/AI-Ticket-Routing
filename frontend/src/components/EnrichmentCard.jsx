@@ -8,13 +8,10 @@ export default function EnrichmentCard({ enrichment, ticket, interactive = false
   const [answers, setAnswers] = useState({});
   const [customInputs, setCustomInputs] = useState({});
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  if (!enrichment?.needed) return null;
-
-  // Read-only mode — show what was answered
-  if (!interactive && enrichment.answers) {
+  // Read-only mode — show what was answered (after enrichment, 'needed' may not exist)
+  if (!interactive && enrichment?.answers) {
     return (
       <div style={{
         background: "rgba(34,197,94,0.04)",
@@ -59,58 +56,8 @@ export default function EnrichmentCard({ enrichment, ticket, interactive = false
     );
   }
 
-  // Success state after enrichment
-  if (result) {
-    return (
-      <div style={{
-        background: "rgba(34,197,94,0.06)",
-        border: "1px solid rgba(34,197,94,0.25)",
-        borderLeft: "4px solid #22c55e",
-        borderRadius: 14,
-        padding: 22,
-        marginTop: 16,
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" fill="rgba(34,197,94,0.15)" stroke="#22c55e" strokeWidth="1.5" />
-            <path d="M8 12.5l2.5 2.5 5-5.5" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <div>
-            <h4 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.success, fontFamily: "'Inter', system-ui" }}>
-              Details added successfully
-            </h4>
-            <p style={{ margin: "2px 0 0", fontSize: 12, color: T.textMuted }}>
-              Ticket re-classified with enriched information
-            </p>
-          </div>
-        </div>
-        <div style={{
-          display: "flex", gap: 10, flexWrap: "wrap",
-        }}>
-          <span style={{
-            padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-            background: "rgba(249,115,22,0.1)", color: T.accent,
-          }}>
-            {result.category}
-          </span>
-          <span style={{
-            padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-            background: "rgba(34,197,94,0.1)", color: T.success,
-          }}>
-            Quality: {result.quality_score || "HIGH"}
-          </span>
-          {result.routed_to && (
-            <span style={{
-              padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-              background: "rgba(59,130,246,0.1)", color: "#3b82f6",
-            }}>
-              {result.routed_to}
-            </span>
-          )}
-        </div>
-      </div>
-    );
-  }
+  // Interactive mode requires 'needed' flag
+  if (!enrichment?.needed) return null;
 
   function setAnswer(qId, value) {
     setAnswers((prev) => ({ ...prev, [qId]: value }));
@@ -138,7 +85,6 @@ export default function EnrichmentCard({ enrichment, ticket, interactive = false
     setError(null);
     try {
       const updated = await enrichTicket(ticket.id, filled);
-      setResult(updated);
       onEnriched?.(updated);
     } catch (err) {
       setError(err.message);

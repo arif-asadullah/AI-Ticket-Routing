@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "../theme/ThemeContext";
 import { updateTicketStatus, resolveTicket, submitFeedback } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
@@ -77,7 +77,9 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
   // Override modal state
   const [showOverride, setShowOverride] = useState(false);
 
-  const t = ticket;
+  // Local ticket state — updates immediately on enrichment without waiting for parent re-render
+  const [t, setT] = useState(ticket);
+  useEffect(() => { setT(ticket); }, [ticket]);
   const p = priorityStyles[t.priority] || priorityStyles.medium;
   const s = statusStyles[t.status] || statusStyles.routed;
   const confidencePct = Math.round((t.confidence_score || 0) * 100);
@@ -113,12 +115,13 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
     }
   }
 
-  // Classifier votes data
+  // Classifier votes data — read from nested classifier_votes dict or flat fields (legacy)
+  const votes = t.classifier_votes || {};
   const classifierVotes = [
-    { name: "LLM", key: "llm", category: t.llm_category, confidence: t.llm_confidence },
-    { name: "KNN", key: "knn", category: t.knn_category, confidence: t.knn_confidence },
-    { name: "Centroid", key: "centroid", category: t.centroid_category, confidence: t.centroid_confidence },
-    { name: "Keyword", key: "keyword", category: t.keyword_category, confidence: t.keyword_confidence },
+    { name: "LLM", key: "llm", category: votes.llm?.category || t.llm_category, confidence: votes.llm?.confidence || t.llm_confidence },
+    { name: "KNN", key: "knn", category: votes.knn?.category || t.knn_category, confidence: votes.knn?.confidence || t.knn_confidence },
+    { name: "Centroid", key: "centroid", category: votes.centroid?.category || t.centroid_category, confidence: votes.centroid?.confidence || t.centroid_confidence },
+    { name: "Keyword", key: "keyword", category: votes.keyword?.category || t.keyword_category, confidence: votes.keyword?.confidence || t.keyword_confidence },
   ];
   const hasVotes = classifierVotes.some((v) => v.category);
 
@@ -607,19 +610,21 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
           )}
 
           {/* ── Enrichment ── */}
-          {t.enrichment?.answers ? (
-            <EnrichmentCard enrichment={t.enrichment} ticket={t} interactive={false} />
-          ) : t.enrichment?.needed && canAct ? (
-            <EnrichmentCard
-              enrichment={t.enrichment}
-              ticket={t}
-              interactive={true}
-              onEnriched={(updated) => {
-                onTicketUpdate?.(updated);
-                onStatusChange?.(t.id, updated.status);
-              }}
-            />
-          ) : null}
+          <div key={t.enrichment?.answers ? "enriched" : "pending"}>
+            {t.enrichment?.answers ? (
+              <EnrichmentCard enrichment={t.enrichment} ticket={t} interactive={false} />
+            ) : t.enrichment?.needed && canAct ? (
+              <EnrichmentCard
+                enrichment={t.enrichment}
+                ticket={t}
+                interactive={true}
+                onEnriched={(updated) => {
+                  setT(updated);
+                  onTicketUpdate?.(updated);
+                }}
+              />
+            ) : null}
+          </div>
 
           {/* ── Suggested Resolution ── */}
           {t.suggested_resolution && t.suggested_resolution.length > 0 && (
