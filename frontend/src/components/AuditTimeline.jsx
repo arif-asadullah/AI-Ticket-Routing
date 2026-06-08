@@ -321,11 +321,14 @@ function TimelineEntry({ event, isLast }) {
   );
 }
 
-export default function AuditTimeline({ ticketId }) {
+export default function AuditTimeline({ ticketId, refreshKey }) {
   const { T } = useTheme();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Re-fetch on ticketId change AND whenever refreshKey changes (e.g. after an
+  // override / enrich / status change) so new audit entries appear without
+  // needing to close and reopen the detail view.
   useEffect(() => {
     if (!ticketId) return;
     setLoading(true);
@@ -333,7 +336,7 @@ export default function AuditTimeline({ ticketId }) {
       .then(setEvents)
       .catch(() => setEvents([]))
       .finally(() => setLoading(false));
-  }, [ticketId]);
+  }, [ticketId, refreshKey]);
 
   if (loading) {
     return (

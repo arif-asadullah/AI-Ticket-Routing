@@ -1075,7 +1075,21 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
               )}
 
               {/* ── Audit Timeline ── */}
-              <AuditTimeline ticketId={t.id} />
+              {/* refreshKey changes whenever an auditable field mutates (override,
+                  enrich, pickup/escalate, resolve, feedback) so the timeline re-fetches
+                  the new entry without needing to close and reopen the detail view. */}
+              <AuditTimeline
+                ticketId={t.id}
+                refreshKey={[
+                  t.status,
+                  t.category,
+                  t.quality_score,
+                  t.picked_up_by,
+                  t.resolved_at,
+                  t.override?.overridden_at,
+                  t.feedback_rating,
+                ].join("|")}
+              />
             </div>
           )}
         </div>
