@@ -11,6 +11,7 @@ function getActionConfig(T) {
     in_progress: { color: T.blue, label: "Picked Up", icon: "play" },
     resolved: { color: T.success, label: "Resolved", icon: "check" },
     feedback: { color: T.purple, label: "Feedback", icon: "star" },
+    override: { color: T.purple, label: "Overridden", icon: "arrow" },
     closed: { color: T.success, label: "Closed", icon: "check" },
   };
 }
@@ -294,6 +295,22 @@ function TimelineEntry({ event, isLast }) {
           </div>
         )}
 
+        {event.action === "override" && event.new_value && (
+          <div style={{ marginTop: 4, fontSize: 12, color: T.textMuted }}>
+            {event.old_value?.category && event.new_value.category && event.old_value.category !== event.new_value.category && (
+              <span>
+                Category: <strong style={{ color: T.textDim }}>{event.old_value.category}</strong> → <strong style={{ color: config.color }}>{event.new_value.category}</strong>
+              </span>
+            )}
+            {event.old_value?.priority && event.new_value.priority && event.old_value.priority !== event.new_value.priority && (
+              <span> • Priority: {event.old_value.priority} → <strong>{event.new_value.priority}</strong></span>
+            )}
+            {event.new_value.team && event.new_value.team !== event.old_value?.team && (
+              <span> • Team: <strong>{event.new_value.team}</strong></span>
+            )}
+          </div>
+        )}
+
         {event.reasoning && event.action !== "classified" && (
           <div style={{ marginTop: 4, fontSize: 11, color: T.textDim, fontStyle: "italic" }}>
             {event.reasoning}
@@ -304,11 +321,14 @@ function TimelineEntry({ event, isLast }) {
   );
 }
 
-export default function AuditTimeline({ ticketId }) {
+export default function AuditTimeline({ ticketId, refreshKey }) {
   const { T } = useTheme();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Re-fetch on ticketId change AND whenever refreshKey changes (e.g. after an
+  // override / enrich / status change) so new audit entries appear without
+  // needing to close and reopen the detail view.
   useEffect(() => {
     if (!ticketId) return;
     setLoading(true);
@@ -316,7 +336,7 @@ export default function AuditTimeline({ ticketId }) {
       .then(setEvents)
       .catch(() => setEvents([]))
       .finally(() => setLoading(false));
-  }, [ticketId]);
+  }, [ticketId, refreshKey]);
 
   if (loading) {
     return (
