@@ -415,8 +415,9 @@ async def update_ticket_status(
     if update.status not in valid_statuses:
         raise HTTPException(400, f"Invalid status. Must be one of: {valid_statuses}")
 
-    if doc.get("status") in ("resolved", "closed"):
-        raise HTTPException(400, "Cannot update status of resolved/closed ticket")
+    # Closed is terminal; a resolved ticket may be reopened back to an active status.
+    if doc.get("status") == "closed":
+        raise HTTPException(400, "Cannot update status of a closed ticket")
 
     # Prevent double pick-up — if ticket is already picked up by another engineer
     if update.status == "in_progress" and doc.get("picked_up_by"):
@@ -440,6 +441,10 @@ async def update_ticket_status(
         update_fields["picked_up_by"] = user["email"]
     elif update.status in ("escalated", "routed"):
         update_fields["picked_up_by"] = None
+
+    # Reopening a resolved ticket — clear the resolution timestamp
+    if old_status == "resolved":
+        update_fields["resolved_at"] = None
 
     # If reassigning to a different team
     new_team = None
