@@ -35,10 +35,13 @@ DEGRADED_WEIGHTS = {
 }
 
 # Quality-based confidence caps
+# LOW is kept below the 0.70 auto-route threshold (api/tickets.py) so that
+# low-quality/vague tickets always land in "escalated" (or "pending_human")
+# for human review instead of being silently auto-routed.
 QUALITY_CAPS = {
     "HIGH": 0.99,
     "MEDIUM": 0.85,
-    "LOW": 0.75,
+    "LOW": 0.69,
 }
 
 # Scenario caps for each selection method
