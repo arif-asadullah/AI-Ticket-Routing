@@ -11,6 +11,7 @@ function getActionConfig(T) {
     in_progress: { color: T.blue, label: "Picked Up", icon: "play" },
     resolved: { color: T.success, label: "Resolved", icon: "check" },
     feedback: { color: T.purple, label: "Feedback", icon: "star" },
+    override: { color: T.purple, label: "Overridden", icon: "arrow" },
     closed: { color: T.success, label: "Closed", icon: "check" },
   };
 }
@@ -288,6 +289,22 @@ function TimelineEntry({ event, isLast }) {
         {(event.action === "in_progress" || event.action === "escalated") && event.new_value && (
           <div style={{ marginTop: 4, fontSize: 12, color: T.textMuted }}>
             Status: {event.old_value?.status} → <strong style={{ color: config.color }}>{event.new_value.status}</strong>
+            {event.new_value.team && event.new_value.team !== event.old_value?.team && (
+              <span> • Team: <strong>{event.new_value.team}</strong></span>
+            )}
+          </div>
+        )}
+
+        {event.action === "override" && event.new_value && (
+          <div style={{ marginTop: 4, fontSize: 12, color: T.textMuted }}>
+            {event.old_value?.category && event.new_value.category && event.old_value.category !== event.new_value.category && (
+              <span>
+                Category: <strong style={{ color: T.textDim }}>{event.old_value.category}</strong> → <strong style={{ color: config.color }}>{event.new_value.category}</strong>
+              </span>
+            )}
+            {event.old_value?.priority && event.new_value.priority && event.old_value.priority !== event.new_value.priority && (
+              <span> • Priority: {event.old_value.priority} → <strong>{event.new_value.priority}</strong></span>
+            )}
             {event.new_value.team && event.new_value.team !== event.old_value?.team && (
               <span> • Team: <strong>{event.new_value.team}</strong></span>
             )}
