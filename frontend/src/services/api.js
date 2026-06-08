@@ -222,6 +222,15 @@ export async function deleteTicket(id) {
   if (!res.ok) throw new Error("Failed to delete ticket");
 }
 
+export async function getRunbook(id) {
+  const res = await authFetch(`${API_BASE}/runbooks/${encodeURIComponent(id)}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to load runbook");
+  }
+  return res.json();
+}
+
 // ── Chat (authenticated) ──
 
 export async function sendChat(message, history = []) {

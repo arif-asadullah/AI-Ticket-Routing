@@ -6,6 +6,7 @@ import ResolveForm from "./ResolveForm";
 import FeedbackWidget from "./FeedbackWidget";
 import AuditTimeline from "./AuditTimeline";
 import OverrideModal from "./OverrideModal";
+import RunbookModal from "./RunbookModal";
 import EnrichmentCard from "./EnrichmentCard";
 
 
@@ -76,6 +77,8 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
   const [showFeedback, setShowFeedback] = useState(false);
   // Override modal state
   const [showOverride, setShowOverride] = useState(false);
+  // Runbook modal state
+  const [showRunbook, setShowRunbook] = useState(false);
 
   // Local ticket state — updates immediately on enrichment without waiting for parent re-render
   const [t, setT] = useState(ticket);
@@ -774,28 +777,43 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
 
           {/* ── Recommended Runbook ── */}
           {t.suggested_runbook && (
-            <div style={{
-              padding: "14px 18px",
-              borderRadius: 12,
-              background: "rgba(249,115,22,0.06)",
-              border: "1px solid rgba(249,115,22,0.15)",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}>
+            <div
+              onClick={() => setShowRunbook(true)}
+              style={{
+                padding: "14px 18px",
+                borderRadius: 12,
+                background: "rgba(249,115,22,0.06)",
+                border: "1px solid rgba(249,115,22,0.15)",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                cursor: "pointer",
+              }}
+            >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <rect x="2" y="1" width="14" height="16" rx="2" stroke={T.accent} strokeWidth="1.3" fill="none" />
                 <line x1="5.5" y1="6" x2="12.5" y2="6" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5" />
                 <line x1="5.5" y1="9" x2="12.5" y2="9" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5" />
                 <line x1="5.5" y1="12" x2="10" y2="12" stroke={T.accent} strokeWidth="1" strokeLinecap="round" opacity="0.5" />
               </svg>
-              <div>
+              <div style={{ flex: 1 }}>
                 <div style={labelStyle}>Recommended Runbook</div>
                 <div style={{ fontSize: 13, color: T.accent, fontWeight: 600, marginTop: 2 }}>
                   {t.suggested_runbook}
                 </div>
               </div>
+              <span style={{ fontSize: 12, color: T.accent, fontWeight: 600, whiteSpace: "nowrap" }}>
+                View →
+              </span>
             </div>
+          )}
+
+          {/* Runbook modal */}
+          {showRunbook && t.suggested_runbook && (
+            <RunbookModal
+              runbookId={t.suggested_runbook.split(":")[0].trim()}
+              onClose={() => setShowRunbook(false)}
+            />
           )}
 
           {/* ── Recommended Expert ── */}
@@ -1050,6 +1068,7 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
                   ticket={t}
                   onClose={() => setShowOverride(false)}
                   onOverride={(updated) => {
+                    onTicketUpdate?.(updated);
                     onStatusChange?.(t.id, updated.status);
                   }}
                 />
