@@ -12,6 +12,7 @@ export default function LoginPage({ onLogin }) {
   const { labelStyle, inputStyle } = getLoginStyles(T, isDark);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -109,16 +110,51 @@ export default function LoginPage({ onLogin }) {
             />
 
             <label style={{ ...labelStyle, marginTop: 18 }}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-              style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = T.accent}
-              onBlur={(e) => e.target.style.borderColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.12)"}
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                style={{ ...inputStyle, paddingRight: 44 }}
+                onFocus={(e) => e.target.style.borderColor = T.accent}
+                onBlur={(e) => e.target.style.borderColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.12)"}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                style={{
+                  position: "absolute",
+                  right: 6,
+                  top: 0,
+                  bottom: 0,
+                  width: 34,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  color: T.textMuted,
+                }}
+              >
+                {showPassword ? (
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                    <path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="10" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.4" />
+                    <path d="M3 3l14 14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                    <path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="10" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.4" />
+                  </svg>
+                )}
+              </button>
+            </div>
 
             <button
               type="submit"
