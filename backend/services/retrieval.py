@@ -70,39 +70,74 @@ def _rerank(tickets: list[dict]) -> list[dict]:
     return tickets
 
 
+# AQL that uses the ArangoDB vector index via APPROX_NEAR_COSINE. The ANN sort
+# can't be combined with a pre-FILTER on status in the same loop, so we over-fetch
+# nearest neighbours, then filter status and compute exact cosine on the survivors.
+_VECTOR_INDEX_QUERY = """
+FOR ticket IN (
+    FOR t IN tickets
+        SORT APPROX_NEAR_COSINE(t.embedding, @embedding) DESC
+        LIMIT @overfetch
+        RETURN t
+)
+    FILTER ticket.status IN ["closed", "resolved"]
+    LIMIT @limit
+    LET sim = COSINE_SIMILARITY(ticket.embedding, @embedding)
+    LET resolution = FIRST(
+        FOR res IN 1..1 OUTBOUND ticket resolved_with
+            RETURN res
+    )
+    RETURN {
+        key: ticket._key, title: ticket.title, category: ticket.category,
+        priority: ticket.priority, description: LEFT(ticket.description, 200),
+        similarity: sim, resolution_steps: resolution.steps,
+        effectiveness: resolution.effectiveness, created_at: ticket.created_at
+    }
+"""
+
+# Brute-force fallback (exact, no index) — used only if APPROX_NEAR_COSINE is
+# unavailable (e.g. vector index not built on a fresh deploy).
+_BRUTE_FORCE_QUERY = """
+FOR ticket IN tickets
+    FILTER ticket.status IN ["closed", "resolved"]
+    LET sim = COSINE_SIMILARITY(ticket.embedding, @embedding)
+    SORT sim DESC
+    LIMIT @limit
+    LET resolution = FIRST(
+        FOR res IN 1..1 OUTBOUND ticket resolved_with
+            RETURN res
+    )
+    RETURN {
+        key: ticket._key, title: ticket.title, category: ticket.category,
+        priority: ticket.priority, description: LEFT(ticket.description, 200),
+        similarity: sim, resolution_steps: resolution.steps,
+        effectiveness: resolution.effectiveness, created_at: ticket.created_at
+    }
+"""
+
+
 def search_similar_tickets(db: StandardDatabase, embedding: list[float], limit: int = 5) -> list[SimilarTicket]:
-    """Vector similarity search — find top N similar past tickets."""
+    """Vector similarity search via the ArangoDB vector index (APPROX_NEAR_COSINE),
+    with an exact brute-force fallback if the index path is unavailable."""
+    overfetch = max(limit * 5, 25)  # room to drop open/non-resolved tickets after ANN
     try:
-        query = """
-        FOR ticket IN tickets
-            FILTER ticket.status IN ["closed", "resolved"]
-            LET sim = COSINE_SIMILARITY(ticket.embedding, @embedding)
-            SORT sim DESC
-            LIMIT @limit
-            LET resolution = FIRST(
-                FOR res IN 1..1 OUTBOUND ticket resolved_with
-                    RETURN res
-            )
-            RETURN {
-                key: ticket._key,
-                title: ticket.title,
-                category: ticket.category,
-                priority: ticket.priority,
-                description: LEFT(ticket.description, 200),
-                similarity: sim,
-                resolution_steps: resolution.steps,
-                effectiveness: resolution.effectiveness,
-                created_at: ticket.created_at
-            }
-        """
-        cursor = db.aql.execute(query, bind_vars={"embedding": embedding, "limit": limit})
+        cursor = db.aql.execute(
+            _VECTOR_INDEX_QUERY,
+            bind_vars={"embedding": embedding, "limit": limit, "overfetch": overfetch},
+        )
         results = list(cursor)
-        results = _rerank(results)
-        logger.info("Vector search: found %d similar tickets (re-ranked)", len(results))
-        return results
     except Exception as exc:
-        logger.warning("Vector search failed: %s", exc)
-        return []
+        logger.warning("APPROX_NEAR_COSINE unavailable (%s) — falling back to brute-force cosine", exc)
+        try:
+            cursor = db.aql.execute(_BRUTE_FORCE_QUERY, bind_vars={"embedding": embedding, "limit": limit})
+            results = list(cursor)
+        except Exception as exc2:
+            logger.warning("Vector search failed: %s", exc2)
+            return []
+
+    results = _rerank(results)
+    logger.info("Vector search: found %d similar tickets (re-ranked)", len(results))
+    return results
 
 
 def search_by_error_codes(db: StandardDatabase, error_codes: list[dict]) -> list[dict]:

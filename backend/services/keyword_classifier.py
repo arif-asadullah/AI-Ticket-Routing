@@ -3,7 +3,7 @@ Keyword Classifier — Classifier 4 (weight: 0.15)
 
 Counts keyword matches per category using word-boundary matching.
 Fastest classifier (~1ms). Fallback when everything else is down.
-Accuracy: ~55-60% alone.
+Accuracy: ~68% alone (35-ticket benchmark).
 """
 
 import re
