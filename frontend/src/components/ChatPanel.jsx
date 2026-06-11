@@ -4,14 +4,22 @@ import { sendChat } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
 import RichMessage from "./RichMessage";
 
+const WELCOME_MESSAGE = {
+  role: "assistant",
+  content: "Hi! I'm Mindy, your DeskMind AI assistant. Ask me about tickets, teams, or IT issues.\n\nTry: \"status of ticket #206129\" or \"which team handles database?\"",
+};
+
 export default function ChatPanel({ onClose, compact }) {
   const { T } = useTheme();
-  const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi! I'm Mindy, your DeskMind AI assistant. Ask me about tickets, teams, or IT issues.\n\nTry: \"status of ticket #206129\" or \"which team handles database?\"" },
-  ]);
+  const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
+
+  function clearChat() {
+    setMessages([WELCOME_MESSAGE]);
+    setInput("");
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -74,14 +82,43 @@ export default function ChatPanel({ onClose, compact }) {
               grounded
             </span>
           </div>
-          {onClose && (
-            <button
-              onClick={onClose}
-              style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", fontSize: 16, padding: 4 }}
-            >
-              ✕
-            </button>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {messages.length > 1 && (
+              <button
+                onClick={clearChat}
+                disabled={loading}
+                aria-label="Clear chat"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  background: "none",
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 8,
+                  color: T.textMuted,
+                  cursor: loading ? "not-allowed" : "pointer",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  padding: "4px 8px",
+                  fontFamily: "'Inter', system-ui",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 3.5h10M5.5 3.5V2.5a1 1 0 011-1h1a1 1 0 011 1v1M3 3.5l.5 8a1 1 0 001 1h5a1 1 0 001-1l.5-8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Clear
+              </button>
+            )}
+            {onClose && (
+              <button
+                onClick={onClose}
+                aria-label="Close chat"
+                style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", fontSize: 16, padding: 4 }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
       )}
 
