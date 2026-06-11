@@ -46,8 +46,11 @@ async function authFetch(url, options = {}) {
     if (refreshed) {
       headers.Authorization = `Bearer ${getAccessToken()}`;
       res = await fetch(url, { ...options, headers });
-    } else {
-      // Refresh failed — force logout so user isn't stuck in broken auth state
+    } else if (!getRefreshToken()) {
+      // Refresh token was cleared → genuinely invalid session; force a clean logout.
+      // If the refresh token is still present, the failure was transient (backend
+      // down/restarting) — keep the session and let the caller handle the error so a
+      // restart doesn't log the user out.
       logout();
       window.location.reload();
     }
@@ -81,15 +84,19 @@ export async function refreshTokens() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh_token: rt }),
     });
-    if (!res.ok) {
-      clearTokens();
-      return false;
+    if (res.ok) {
+      const data = await res.json();
+      setTokens(data.access_token, data.refresh_token);
+      return true;
     }
-    const data = await res.json();
-    setTokens(data.access_token, data.refresh_token);
-    return true;
+    // Only a real auth rejection means the refresh token is invalid → clear the session.
+    // A 5xx (backend unhealthy/restarting) is transient — keep tokens so the session recovers.
+    if (res.status === 401 || res.status === 403) {
+      clearTokens();
+    }
+    return false;
   } catch {
-    clearTokens();
+    // Network error (backend unreachable, e.g. during a Docker restart) — transient; keep tokens.
     return false;
   }
 }
