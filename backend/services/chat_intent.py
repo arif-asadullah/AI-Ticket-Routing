@@ -49,6 +49,19 @@ def parse_intent(message: str) -> dict:
         # Default: full ticket lookup
         return {"intent": "ticket_lookup", "entities": {"ticket_id": tid}}
 
+    # ── Server info (graph: ownership, dependencies, hosted services) ──
+    # Matches seeded server keys like prod-db-01, prod-k8s-master, staging-db-01.
+    server_match = re.search(r'\b((?:prod|staging)-[a-z0-9]+(?:-[a-z0-9]+)*)\b', text)
+    if server_match:
+        server_directed = _has_any(text, [
+            "own", "manage", "responsible", "depend", "dependenc",
+            "host", "runs on", "run on", "services on", "service on",
+            "what's on", "whats on", "about",
+        ])
+        # Trigger unless it's clearly a ticket-list query that happens to name a server
+        if server_directed or not _has_any(text, ["ticket", "tickets"]):
+            return {"intent": "server_info", "entities": {"server": server_match.group(1)}}
+
     # ── Stats queries ──
     if _has_any(text, [
         "how many tickets", "total tickets", "ticket count",

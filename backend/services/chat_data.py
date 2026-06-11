@@ -37,6 +37,9 @@ async def fetch_chat_data(intent: dict, db, user: dict) -> dict:
         if intent_type == "resolution_info":
             return _fetch_resolution_info(db, entities, user)
 
+        if intent_type == "server_info":
+            return _fetch_server_info(db, entities)
+
     except Exception as exc:
         logger.error("Chat data fetch failed for %s: %s", intent_type, exc)
         return {"found": False, "data": {}, "summary": "Sorry, I encountered an error looking that up. Please try again."}
@@ -408,6 +411,46 @@ def _get_team_members(db, team_key: str) -> list[dict]:
         return []
 
 
+def _fetch_server_info(db, entities: dict) -> dict:
+    """Fetch a server's owner team, hosted services and dependent services from the graph."""
+    server_key = entities.get("server")
+    if not server_key:
+        return {"found": False, "data": {}, "summary": "Please specify a server (e.g., 'who owns prod-db-01')."}
+
+    if not db.collection("servers").get(server_key):
+        return {"found": False, "data": {}, "summary": f"I don't have a record of server {server_key}."}
+
+    query = """
+    LET srv = DOCUMENT(CONCAT("servers/", @key))
+    LET team = FIRST(FOR t IN 1..1 OUTBOUND srv managed_by RETURN t)
+    LET hosted = (FOR svc IN 1..1 OUTBOUND srv hosts RETURN svc.name)
+    LET dependents = UNIQUE(
+        FOR svc IN 1..1 OUTBOUND srv hosts
+            FOR dep IN 1..1 INBOUND svc depends_on
+                RETURN dep.name
+    )
+    LET experts = team == null ? [] : (
+        FOR eng IN 1..1 INBOUND team member_of
+            RETURN { name: eng.name, expertise: eng.expertise }
+    )
+    RETURN {
+        server: srv._key,
+        type: srv.type,
+        datacenter: srv.datacenter,
+        owner_team: team.name,
+        team_domain: team.domain,
+        hosted_services: hosted,
+        dependent_services: dependents,
+        experts: experts
+    }
+    """
+    data = next(db.aql.execute(query, bind_vars={"key": server_key}), None)
+    if not data:
+        return {"found": False, "data": {}, "summary": f"I don't have graph details for server {server_key}."}
+
+    return {"found": True, "data": data, "summary": ""}
+
+
 def build_grounded_prompt(intent: dict, data: dict) -> str:
     """Build a system prompt with ONLY the fetched data.
     The LLM is instructed to answer ONLY from this context.
@@ -517,6 +560,16 @@ def _format_data_as_text(intent_type: str, data: dict) -> str:
             if data.get("suggested_runbook"):
                 lines.append(f"  Runbook: {data['suggested_runbook']}")
 
+    elif intent_type == "server_info":
+        lines.append(f"Server: {data.get('server')}")
+        lines.append(f"  Type: {data.get('type')}")
+        lines.append(f"  Datacenter: {data.get('datacenter')}")
+        lines.append(f"  Owned/managed by team: {data.get('owner_team') or 'Unknown'}")
+        if data.get("experts"):
+            lines.append(f"  Team experts: {', '.join(e['name'] for e in data['experts'])}")
+        lines.append(f"  Hosted services: {', '.join(data.get('hosted_services') or []) or 'None'}")
+        lines.append(f"  Dependent services (rely on this server): {', '.join(data.get('dependent_services') or []) or 'None'}")
+
     return "\n".join(lines) if lines else "No data available."
 
 
@@ -607,5 +660,19 @@ def extract_entities(intent: dict, data: dict) -> list[dict]:
             "id": data.get("ticket_id"), "title": data.get("title"),
             "status": data.get("status"),
         })
+
+    elif intent_type == "server_info":
+        _add("server", data.get("server"), {
+            "type": data.get("type"), "datacenter": data.get("datacenter"),
+            "owner_team": data.get("owner_team"),
+        })
+        if data.get("owner_team"):
+            _add("team", data["owner_team"], {"name": data["owner_team"], "domain": data.get("team_domain")})
+        for e in data.get("experts", []):
+            _add("engineer", e["name"], e)
+        for svc in data.get("hosted_services", []):
+            _add("service", svc, {"hosted_on": data.get("server")})
+        for svc in data.get("dependent_services", []):
+            _add("service", svc, {"depends_on_server": data.get("server")})
 
     return entities
