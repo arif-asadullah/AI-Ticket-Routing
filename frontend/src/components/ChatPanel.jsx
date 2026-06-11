@@ -91,22 +91,17 @@ export default function ChatPanel({ onClose, compact }) {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 5,
+                  justifyContent: "center",
                   background: "none",
-                  border: `1px solid ${T.border}`,
-                  borderRadius: 8,
+                  border: "none",
                   color: T.textMuted,
                   cursor: loading ? "not-allowed" : "pointer",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  padding: "4px 8px",
-                  fontFamily: "'Inter', system-ui",
+                  padding: 4,
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
                   <path d="M2 3.5h10M5.5 3.5V2.5a1 1 0 011-1h1a1 1 0 011 1v1M3 3.5l.5 8a1 1 0 001 1h5a1 1 0 001-1l.5-8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Clear
               </button>
             )}
             {onClose && (
