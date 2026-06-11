@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate batch 2 of Claude tickets — 101 more unique tickets."""
+"""Batch 2 of Claude-generated tickets (source_model="claude") — 101 more unique tickets.
+
+Authored by Anthropic's Claude via the Claude API in a one-time batch and committed
+here as static data for reproducible builds (no live API calls at seed time).
+"""
 
 import json
 import random

@@ -12,7 +12,7 @@ DeskMind uses **5 data sources** to build its knowledge graph and train its clas
 |---|--------|------|---------|-------------------|
 | 1 | Seed Data (YAML) | Hand-crafted | 55 tickets + infrastructure graph | Manual design by team |
 | 2 | GPT-4o Generated | AI-generated | 396 tickets | OpenAI API with category-specific prompts |
-| 3 | Claude Hand-crafted | AI-generated | 191 tickets | Hand-crafted edge cases and complex scenarios |
+| 3 | Claude Generated | AI-generated (Claude API) | 164 tickets | Edge cases and complex scenarios |
 | 4 | Noise Generator | Programmatic | 200 tickets | Python template + noise injection script |
 | 5 | User Submissions | Runtime | Growing | Live tickets submitted through the frontend |
 
@@ -71,11 +71,11 @@ Hand-crafted YAML containing the **core infrastructure topology** that forms the
 
 **Why imbalanced**: Mirrors real-world IT ticket distribution where Infrastructure and Application tickets dominate.
 
-### 2.3 Claude Hand-Crafted Tickets
+### 2.3 Claude-Generated Tickets
 
-**Output**: `data/synthetic/claude/` (191 tickets)
+**Output**: `data/synthetic/strategy1_multimodel/claude_tickets.json` (164 tickets)
 
-**Method**: Manually crafted by the team using Claude as a writing assistant. Focus on:
+**Method**: Generated via Anthropic's Claude API in a one-time batch, then committed as static data for reproducible builds. Focus on:
 - **Edge cases**: Tickets that span two categories (e.g., "database issue caused by network timeout")
 - **Ambiguous tickets**: Vague descriptions that test the system's escalation logic
 - **Multi-hop scenarios**: Issues requiring graph traversal to identify root cause

@@ -66,7 +66,7 @@ We used **3 different strategies** to create diverse, realistic tickets:
 | Model | How | Tickets generated |
 |-------|-----|------------------|
 | **GPT-4o** (OpenAI API) | Script calls API with prompts | 396 |
-| **Claude** (hand-crafted templates) | High-quality templates written directly | 191 |
+| **Claude** (Claude API) | High-quality tickets generated via Claude API | 164 |
 | **Phi-4-mini** (local Ollama) | Script calls local model | 13 (unreliable JSON output) |
 
 **3 Personas per model**: Each model generated tickets in 3 different writing styles:
@@ -106,7 +106,7 @@ data/synthetic/
   strategy1_multimodel/
     gpt4o_tickets.json         (198 tickets)
     gpt4o_tickets_batch2.json  (198 tickets)
-    claude_tickets.json        (191 tickets)
+    claude_tickets.json        (164 tickets)
     phi4_tickets.json          (13 tickets)
   strategy2_noise/
     noise_tickets.json         (200 tickets)

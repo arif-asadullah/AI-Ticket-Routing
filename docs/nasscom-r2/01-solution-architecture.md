@@ -398,7 +398,7 @@ python scripts/seed_db.py       # Load data (first time only, ~40 seconds)
 |--------|------|---------|---------|
 | `data/seed/seed_data.yaml` | Hand-crafted | 55 tickets, 6 teams, 15 servers, 12 services, 12 engineers, 20 error codes, 10 runbooks, 30 resolutions, 24 routing rules | Core knowledge graph — infrastructure topology, team structure, known error patterns |
 | GPT-4o generated | AI-generated | 396 tickets | Diverse synthetic tickets across 6 categories |
-| Claude hand-crafted | AI-generated | 191 tickets | High-quality edge cases and complex scenarios |
+| Claude generated | AI-generated (Claude API) | 164 tickets | High-quality edge cases and complex scenarios |
 | Noise generator script | Programmatic | 200 tickets | Realistic noise: typos, abbreviations, truncation, irrelevant details |
 | User submissions | Runtime | Growing | Real tickets submitted through the frontend |
 
