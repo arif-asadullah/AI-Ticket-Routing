@@ -237,7 +237,7 @@ This is **grounded generation** — the LLM doesn't hallucinate from nothing. It
 
 And when an engineer resolves this ticket, the AI-generated steps are pre-filled. They can use them as-is, modify them, or write their own. Either way, the effectiveness is tracked — creating a feedback loop.
 
-> **KEY TALKING POINT**: DeskMind doesn't just route — it SOLVES. True agentic AI. Grounded generation, no hallucination.
+> **KEY TALKING POINT**: DeskMind doesn't just route — it SOLVES. True agentic AI. Grounded generation — hallucination-resistant.
 
 ---
 
@@ -327,7 +327,7 @@ And here's the analytics dashboard — category distribution, status breakdown, 
 
 > *[Click the "Ask Mindy" floating button]*
 
-This is Mindy, our AI assistant. The key feature: **zero hallucination**. [pause]
+This is Mindy, our AI assistant. The key feature: **it's hallucination-resistant**. [pause]
 
 How? It uses a **three-step approach**:
 1. Rule-based intent parser — figures out what you're asking
@@ -348,9 +348,9 @@ Team name, engineers, their expertise — all from the knowledge graph.
 
 > **Type:** `how many tickets are escalated right now`
 
-Real-time stats, not hallucinated. The LLM never makes things up because it only formats what the database returns.
+Real-time stats, not hallucinated. The LLM doesn't invent data — it only formats what the database returns.
 
-> **KEY TALKING POINT**: Every answer backed by real data. Rule-based parsing + real DB queries + LLM formatting = zero hallucination.
+> **KEY TALKING POINT**: Every answer backed by real data. Rule-based parsing + real DB queries + LLM formatting = hallucination-resistant by design.
 
 ---
 
@@ -431,7 +431,7 @@ So to recap what makes DeskMind different:
 
 **Four** — **Knowledge graph powered** — real infrastructure relationships driving context-aware decisions.
 
-**Five** — **Zero hallucination** — every AI response grounded in real data.
+**Five** — **Hallucination-resistant** — every AI response grounded in real data.
 
 **Six** — **100% on-premise** — no cloud APIs, full data privacy, works offline.
 

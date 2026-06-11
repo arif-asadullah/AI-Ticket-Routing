@@ -107,7 +107,10 @@ New ticket: "prod-db-01 throwing FATAL: too many connections"
 │ 3. Restart PostgreSQL             │
 │ effectiveness: 0.95               │
 │                                  │
-│ References: KB-0001               │
+│ Runbook? only if title overlaps  │
+│ ticket text — here KB-0001        │
+│ "PostgreSQL connection limit      │
+│ exceeded" matches; else hidden    │
 └──────────────────────────────────┘
 ```
 
@@ -162,9 +165,20 @@ FOR ticket IN past_tickets
       past_ticket: ticket.title,
       resolution_steps: res.steps,
       effectiveness: res.effectiveness,
+      // candidate runbook only — surfaced downstream solely if it
+      // genuinely matches the ticket (see note below)
       runbook: runbook.title
     }
 ```
+
+> **Note — runbooks are relevance-gated, not auto-attached.** The `references`
+> edge above only yields a *candidate* runbook. The application layer
+> (`find_runbook` in `orchestrator.py`) surfaces a runbook **only when its
+> title shares at least one meaningful word** (generic stopwords like
+> "recovery"/"troubleshooting"/"process" excluded) with the ticket text
+> (title + description + resolution). If nothing overlaps, it returns `None`
+> and **no runbook is shown** — a wrong, cross-topic runbook is never
+> surfaced.
 
 ## When Does Error Matching NOT Work?
 

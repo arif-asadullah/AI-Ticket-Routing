@@ -69,7 +69,7 @@ flowchart TB
     OLLAMA(["Ollama LLM"])
 
     %% Data stores
-    D1[("D1: ArangoDB\n13 doc collections\n9 edge collections\n1 named graph")]
+    D1[("D1: ArangoDB\n15 doc collections\n9 edge collections\n1 named graph")]
     D2[("D2: Redis\nHealth cache (5s TTL)\nEntity cache (5m TTL)")]
     D3[("D3: MiniLM Model\nall-MiniLM-L6-v2\n384-dim embeddings")]
 
@@ -152,7 +152,7 @@ flowchart TB
     D1[("D1: ArangoDB\ntickets collection\nerror_codes collection\nservers collection\nservices collection\nresolved_with edges\ntriggered_by edges\nhosts edges\nmanaged_by edges\naffects edges\nmember_of edges\ndepends_on edges")]
 
     %% Sub-processes
-    P41["P4.1: Vector Similarity Search\nsearch_similar_tickets(db, embedding, limit=5)\n\nAQL: COSINE_SIMILARITY(ticket.embedding, @embedding)\nFILTER ticket.status IN ['closed', 'resolved']\nSORT sim DESC, LIMIT 5\n+ resolved_with edge traversal\n\nNote: includes user-resolved tickets,\ncreating a live feedback loop"]
+    P41["P4.1: Vector Similarity Search\nsearch_similar_tickets(db, embedding, limit=5)\n\nPrimary AQL: SORT APPROX_NEAR_COSINE(t.embedding, @embedding) DESC\nLIMIT @overfetch (ANN vector index), then\nFILTER ticket.status IN ['closed', 'resolved']\n+ recompute exact COSINE_SIMILARITY on survivors\nFallback: brute-force COSINE_SIMILARITY full-scan\n+ resolved_with edge traversal\n\nNote: includes user-resolved tickets,\ncreating a live feedback loop"]
 
     P42["P4.2: Error Code Match\nsearch_by_error_codes(db, error_codes)\n\nAQL: 1..1 OUTBOUND error_codes triggered_by\nFILTER ticket.status == 'closed'\n+ resolved_with edge for resolution\nDeduplicate by ticket key"]
 
@@ -184,7 +184,7 @@ flowchart TB
 
 | Method | Function | AQL Pattern | Data Traversal | Output Fields |
 |--------|----------|-------------|----------------|---------------|
-| Vector Similarity | `search_similar_tickets(db, embedding, limit=5)` | `COSINE_SIMILARITY(ticket.embedding, @embedding)` on closed and resolved tickets (`status IN ["closed", "resolved"]`), sorted DESC, LIMIT 5. Including resolved tickets creates a live feedback loop where engineer resolutions improve future suggestions. | `tickets` -> `resolved_with` -> `resolutions` | key, title, category, priority, description (200 chars), similarity, resolution_steps, effectiveness |
+| Vector Similarity | `search_similar_tickets(db, embedding, limit=5)` | Primary: `SORT APPROX_NEAR_COSINE(t.embedding, @embedding) DESC LIMIT @overfetch` (ANN vector index), then `FILTER status IN ["closed", "resolved"]` and recompute exact `COSINE_SIMILARITY` on the survivors. Brute-force `COSINE_SIMILARITY` full-scan is the fallback only (when the index is unavailable). Including resolved tickets creates a live feedback loop where engineer resolutions improve future suggestions. | `tickets` -> `resolved_with` -> `resolutions` | key, title, category, priority, description (200 chars), similarity, resolution_steps, effectiveness |
 | Error Code Match | `search_by_error_codes(db, error_codes)` | `1..1 OUTBOUND error_codes triggered_by` per matched error code | `error_codes` -> `triggered_by` -> `tickets` -> `resolved_with` -> `resolutions` | key, title, category, error_code, resolution_steps, effectiveness |
 | Graph Traversal | `traverse_graph(db, entities)` | Multi-hop: server -> hosts -> services, server -> managed_by -> teams, teams <- member_of <- engineers | `servers` -> `hosts` -> `services`, `servers` -> `managed_by` -> `teams`, `teams` <- `member_of` <- `engineers`, `servers` <- `affects` <- `tickets` | server_type, datacenter, team, domain, services, past_tickets, experts |
 | Full-text Search | `search_fulltext(db, text, limit=5)` | `FULLTEXT(tickets, "description", @term)` per keyword (up to 5 terms, len > 3) | `tickets` fulltext index | key, title, category, description (150 chars) |
@@ -289,7 +289,7 @@ flowchart TB
 
 ## 5. Data Store Schema Summary
 
-### Document Collections (13)
+### Document Collections (15)
 
 | Collection | Key Fields | Records | Purpose |
 |------------|-----------|---------|---------|
@@ -301,11 +301,13 @@ flowchart TB
 | `network_devices` | _key, type, location, model | varies | Network hardware |
 | `error_codes` | _key, pattern, service, severity, description | 20 | Known error patterns |
 | `runbooks` | _key, title, category, steps[] | 10 | Standard operating procedures |
-| `resolutions` | _key, steps[], effectiveness, embedding[384] | 830 | Past resolution records |
+| `resolutions` | _key, steps[], effectiveness, embedding[384] | 30 | Past resolution records (seed; grows as tickets are resolved) |
 | `routing_rules` | _key, category, priority, target_team, is_active | 24 | Category+priority to team mapping |
 | `audit_log` | _key, ticket_id, action, actor, old_value, new_value, confidence_score, confidence_signals, reasoning, created_at | growing | Full audit trail |
 | `category_centroids` | _key, category, embedding[384], ticket_count | 6 | Average embedding per category |
 | `users` | _key, email (unique), password_hash, role, first_name, last_name, engineer_key, team_key, is_active | growing | Authentication accounts (RBAC) |
+| `corrections` | _key, ticket_id, original_category, corrected_category, original_priority, corrected_priority, classifier_votes, classifiers_wrong, classifiers_right, corrected_by, corrector_role, reason, is_trusted, embedding, created_at | growing | Human correction feedback (which classifiers were wrong/right) |
+| `repeated_issues` | _key, ticket_ids[], ticket_titles[], count, category, representative_title, center_embedding[384], first_seen, last_seen, detected_at | growing | Detected recurring-issue clusters |
 
 ### Edge Collections (9)
 
@@ -465,43 +467,59 @@ All 4 classifiers run concurrently — total Stage 3 time = max(individual times
 
 **aggregate(votes, quality_score="HIGH", error_codes=[...], graph_confirms_category=True):**
 
+`aggregate()` is a 6-phase, majority-aware voting algorithm. It selects a winner by
+counting votes (not by summing weights), then derives confidence from a fixed
+formula. There is no agreement bonus and no calibration multiplier.
+
 ```
-Step 1 -- Weighted category scores:
-  Database:    (0.40 * 0.96) + (0.15 * 0.80) + (0.30 * 0.87) + (0.15 * 0.60) = 0.855
-  Application: (small residual from KNN + Keyword) = ~0.06
+Phase routing (which branch fires):
+  Phase 0  single classifier active
+  Phase 1  unanimous (all active classifiers agree)        <-- this ticket: 4/4
+  Phase 2  supermajority (3+ agree, strength-gated)
+  Phase 3  pair beats singles (2/1/1)
+  Phase 4  2v2 split (Database/Infrastructure boundary override,
+           else weighted / avg-conf / centroid tiebreak)
+  Phase 5  total disagreement (weighted fallback)
 
-Step 2 -- Agreement: 4/4 agree on Database
-  bonus = +0.05
+Winner selection -- sort categories by (vote_count desc, weighted_score desc, name asc):
+  Database     4 votes  (LLM, KNN, Centroid, Keyword)  -->  winner
+  scenario = unanimous_4  -->  scenario_cap = 0.95
 
-Step 3 -- Contextual bonuses:
+Confidence formula:
+  supporter_avg_conf = (0.96 + 0.80 + 0.87 + 0.60) / 4 = 0.8075
+  vote_share         = 4 / 4 = 1.0
+  weight_share       = (0.40 + 0.15 + 0.30 + 0.15) / 1.00 = 1.0
+
+  base = 0.60 * 0.8075 + 0.25 * 1.0 + 0.15 * 1.0 = 0.8845
+
+Contextual bonuses:
   errors_confirm_category(["ERR-DB-003"], "Database") = true  -->  +0.03
   graph_confirms_category = true                              -->  +0.02
-  Total bonus = +0.10
+  bonus = +0.05
+  base + bonus = 0.8845 + 0.05 = 0.9345
 
-Step 4 -- Raw confidence: 0.855 + 0.10 = 0.955
+Safety check (low-confidence cap):
+  max_supporter_conf = 0.96 >= 0.60 (and >= 3 classifiers active)  -->  not capped
+  (If max_supporter_conf < 0.60 with >= 3 active classifiers, base is capped at 0.55.)
 
-Step 5 -- Calibration: 4/4 agree and raw >= 0.90
-  calibrated = 0.955 * 0.98 = 0.936
-
-Step 6 -- Quality cap: HIGH --> 0.99
-  final_confidence = min(0.936, 0.99) = 0.936
-
-Step 5.5 -- Disagreement safety check:
-  max_individual_conf = 0.96 (LLM) > 0.60 --> skip cap
-  (If no classifier had >60% confidence, cap at 0.55 to force escalation)
+Apply caps -- final = round(min(base + bonus, SCENARIO_CAP, QUALITY_CAP), 3):
+  min(0.9345, unanimous_4 cap 0.95, HIGH cap 0.99) = 0.9345
+  final_confidence = round(0.9345, 3) = 0.934
 
 Result:
   { category: "Database", secondary_category: null, priority: "critical",
-    confidence: 0.936, agreement: "4/4", quality_score: "HIGH" }
+    confidence: 0.934, agreement: "4/4", quality_score: "HIGH" }
 ```
 
 ### Stage 5 -- Decision & Enrichment
 
 ```
-confidence = 0.939 >= 0.70  -->  status = "routed"
+confidence = 0.934 >= 0.70  -->  status = "routed"
 
 lookup_team(db, "Database", "critical")  -->  "Database Admin"
-find_runbook(db, "Database", [...])      -->  "KB-0003: PostgreSQL Emergency Recovery"
+find_runbook(db, "Database", [...])      -->  "KB-0001: PostgreSQL connection limit exceeded"
+  (relevance-gated: a runbook is returned only when its title shares >=1
+   meaningful word with the ticket text; otherwise None and no runbook is shown)
 
 Best resolution (from 3 sources, highest effectiveness):
   Source 2 (error match): T-042, effectiveness = 0.95
@@ -518,7 +536,7 @@ ClassificationResult(
     category="Database",
     secondary_category=None,
     priority="critical",
-    confidence=0.939,
+    confidence=0.934,
     agreement="4/4",
     quality_score="HIGH",
     classifier_votes={
@@ -532,7 +550,7 @@ ClassificationResult(
     embedding=[0.0231, -0.0145, ...],   # 384 floats
     suggested_resolution=["Increase max_connections to 200", "Restart PostgreSQL"],
     resolution_effectiveness=0.95,
-    suggested_runbook="KB-0003: PostgreSQL Emergency Recovery",
+    suggested_runbook="KB-0001: PostgreSQL connection limit exceeded",
     recommended_team="Database Admin",
     recommended_expert="Priya Sharma",
     processing_time_ms=2847,
@@ -588,8 +606,8 @@ ClassificationResult(
 
 | Metric | Value |
 |--------|-------|
-| Total documents in ArangoDB | 1,796 |
-| Total edges in ArangoDB | 3,831 |
+| Total documents in ArangoDB | ~1,800 (approximate, at seed time; grows with usage) |
+| Total edges in ArangoDB | ~3,500 (generated at seed time; grows with usage) |
 | Embedding dimensions | 384 (MiniLM all-MiniLM-L6-v2) |
 | Embedding size per ticket | ~1.5 KB (384 x 4 bytes) |
 | Average ticket description | ~150-300 characters |

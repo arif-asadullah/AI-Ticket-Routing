@@ -184,7 +184,7 @@ ArangoDB 3.12 supports vectors natively — we get **graph + vectors + documents
 
 | Event | What happens |
 |-------|-------------|
-| Seed data loaded (`seed_db.py`) | MiniLM computes embeddings for all 50 seed tickets + runbooks + resolutions |
+| Seed data loaded (`seed_db.py`) | MiniLM computes embeddings for all 55 seed tickets + 10 runbooks + resolutions |
 | New ticket submitted | Backend computes embedding before saving to ArangoDB |
 | New resolution created | Backend computes embedding before saving |
 
@@ -194,8 +194,8 @@ The embedding is computed once when the document is created. It doesn't change u
 
 A vector index is created on the `embedding` field to make similarity search fast:
 
-- **Without index**: Compare the new ticket to ALL 10,000 tickets one by one → slow
-- **With index**: Uses HNSW algorithm to find the 5 most similar tickets in milliseconds → fast
+- **Without index**: Compare the new ticket against every stored ticket one by one (e.g. tens of thousands at scale) → slow
+- **With index**: Uses ArangoDB's faiss-based IVF vector index (queried via `APPROX_NEAR_COSINE`) to find the 5 most similar tickets in milliseconds → fast
 
 The index is created once during database initialization. ArangoDB maintains it automatically.
 
@@ -222,7 +222,7 @@ Step 4: GRAPH TRAVERSAL (find context)
    teams/db-admin ←──member_of── Alex Chen (PostgreSQL expert)
          ↓
 Step 5: LLM CLASSIFICATION
-   Qwen 2.5:3B reads ticket + graph context
+   Qwen 2.5:7B reads ticket + graph context
    → category: "Database", priority: "high", confidence: 0.95
          ↓
 Step 6: ROUTING RULE LOOKUP
@@ -236,13 +236,13 @@ Step 7: ROUTE TICKET
    Recommended engineer: Alex Chen
 ```
 
-This is why we need all 10 collections, 9 edges, and 3 types of indexes working together. Each piece plays a role in making the routing intelligent.
+This is why we need all 15 collections, 9 edges, and 3 types of indexes working together. Each piece plays a role in making the routing intelligent.
 
 ---
 
 ## Detailed Documentation
 
-- [collections.md](collections.md) — All 13 document collections explained field-by-field
+- [collections.md](collections.md) — The 13 core document collections explained field-by-field (15 total, incl. `corrections` and `repeated_issues`)
 - [edges.md](edges.md) — All 9 edge collections with examples
 - [indexes.md](indexes.md) — Index types and why each is needed
 - [graph.md](graph.md) — Graph definition + real query examples

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# ATR-10: Install Ollama and pull Phi-3-mini model
+# ATR-10: Install Ollama and pull the Qwen 2.5:7B model
 # ============================================================================
 # This script automates the Ollama setup for the AI-Ticket-Routing project.
 #
@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-MODEL="phi3:mini"
+MODEL="qwen2.5:7b"
 OLLAMA_URL="http://localhost:11434"
 
 # ---------- Helper ----------
@@ -58,7 +58,7 @@ else
 fi
 
 # ---------- Step 3: Pull model ----------
-info "Pulling model: $MODEL (~2.5 GB, may take a few minutes)..."
+info "Pulling model: $MODEL (~4.7 GB, may take a few minutes)..."
 ollama pull "$MODEL"
 ok "Model $MODEL pulled successfully"
 

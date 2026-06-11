@@ -8,7 +8,7 @@
 
 ## 1. Entity-Relationship Diagram
 
-The following Mermaid diagram models all **13 document collections** as entities and all **9 edge collections** as relationships within DeskMind's ArangoDB knowledge graph.
+The following Mermaid diagram models the **13 graph-participating document collections** as entities and all **9 edge collections** as relationships within DeskMind's ArangoDB knowledge graph. (The schema defines **15 document collections** in total; the auxiliary `corrections` and `repeated_issues` collections are not part of the graph and are omitted from this diagram.)
 
 ```mermaid
 erDiagram
@@ -163,7 +163,7 @@ Every document collection in the `deskmind_graph`, its purpose, key fields, and 
 
 | # | Collection | Purpose | Key Fields | Records |
 |---|-----------|---------|------------|---------|
-| 1 | `tickets` | Every support ticket submitted to or ingested by DeskMind. This is the central collection -- all other entities exist to help classify, route, and resolve these tickets. AI enrichment fields (`suggested_resolution`, `resolution_effectiveness`, `suggested_runbook`, `recommended_expert`) are stored directly in the document. The `picked_up_by` field tracks which engineer has claimed ownership of the ticket. | `title`, `description`, `category`, `priority`, `status`, `confidence_score`, `embedding` (384-dim), `classifier_votes`, `routed_to`, `suggested_resolution`, `resolution_effectiveness`, `suggested_runbook`, `recommended_expert`, `picked_up_by` | **855** (55 seed + 355 GPT-4o + 13 Phi-4 + 164 handwritten templates + 174 noise + user-submitted) |
+| 1 | `tickets` | Every support ticket submitted to or ingested by DeskMind. This is the central collection -- all other entities exist to help classify, route, and resolve these tickets. AI enrichment fields (`suggested_resolution`, `resolution_effectiveness`, `suggested_runbook`, `recommended_expert`) are stored directly in the document. The `picked_up_by` field tracks which engineer has claimed ownership of the ticket. | `title`, `description`, `category`, `priority`, `status`, `confidence_score`, `embedding` (384-dim), `classifier_votes`, `routed_to`, `suggested_resolution`, `resolution_effectiveness`, `suggested_runbook`, `recommended_expert`, `picked_up_by` | **855** training set (55 seed + 800 synthetic: 355 GPT-4o + 164 Claude + 13 Phi-4 + 174 template noise + 94 untagged); live DB ~900 (2026-06-11) |
 | 2 | `teams` | The 6 IT specialist teams that own ticket resolution. Each team maps to one of the 6 classification categories and defines SLA targets per priority level. | `name`, `domain`, `escalation_contact`, `sla_hours` | **6** |
 | 3 | `engineers` | Individual team members with named expertise. Used by the graph traversal to recommend a specific expert for each ticket based on matching skills. | `name`, `role`, `expertise` (array), `email` | **12** (2 per team) |
 | 4 | `servers` | Physical or virtual machines in the managed infrastructure. Entity extraction recognizes server hostnames in ticket text and uses them to enter the knowledge graph. | `ip`, `type`, `datacenter`, `os`, `cpu`, `ram_gb` | **15** |
@@ -171,13 +171,15 @@ Every document collection in the `deskmind_graph`, its purpose, key fields, and 
 | 6 | `network_devices` | Network infrastructure -- firewalls, switches, routers, load balancers. Enables investigation of network-layer causes when a server is unreachable. | `type`, `ip`, `model` | **5** |
 | 7 | `error_codes` | A catalog of 20 known error patterns that the error scanner matches against ticket text. Each pattern maps to a service and a pre-defined severity, giving a confidence bonus when matched. | `pattern`, `service`, `severity` | **20** |
 | 8 | `runbooks` | Pre-written step-by-step guides for common IT issues. Attached to routing decisions so engineers get documented procedures alongside the ticket. | `title`, `steps` (array), `category`, `embedding` (384-dim) | **10** |
-| 9 | `resolutions` | Actual fixes applied to specific past tickets. Different from runbooks: resolutions are concrete actions taken on a real incident. The AI suggests the highest-effectiveness resolution from similar past tickets. | `steps` (array), `effectiveness` (0.0--1.0), `embedding` (384-dim) | **830** |
+| 9 | `resolutions` | Actual fixes applied to specific past tickets. Different from runbooks: resolutions are concrete actions taken on a real incident. The primary suggestion path is similarity-gated: a past resolution is surfaced only if it shares the same category AND its similarity to the new ticket is >= 0.55 (`RES_SIM_THRESHOLD`), taking the first relevance-reranked match (score = 0.60·similarity + 0.20·recency + 0.20·effectiveness) -- not simply the highest-effectiveness one. | `steps` (array), `effectiveness` (0.0--1.0), `embedding` (384-dim) | **30** (seed; grows as tickets are resolved) |
 | 10 | `routing_rules` | A configurable lookup table mapping `{category, priority}` pairs to target teams. 4 rules per category (one per priority level). Updateable without code changes. | `category`, `priority`, `target_team`, `is_active` | **24** |
 | 11 | `audit_log` | Immutable log of every action taken on every ticket -- classification, routing, escalation, human overrides, resolution. Provides full decision traceability for compliance and debugging. | `ticket_id`, `action`, `actor`, `old_value`, `new_value`, `confidence_score`, `confidence_signals`, `reasoning`, `created_at` | **Growing** (1 per classification + 1 per status change) |
 | 12 | `category_centroids` | The average embedding (centroid) for each of the 6 ticket categories. Used by the centroid classifier to determine which category center a new ticket is closest to. Recomputed periodically. | `category`, `embedding` (384-dim), `ticket_count`, `last_updated` | **6** |
 | 13 | `users` | Authentication accounts for RBAC. Each user has an email, bcrypt-hashed password, role (admin/engineer/user), and optional links to an engineer and team. Engineers are team-scoped — they can only see tickets routed to their team. | `email` (unique), `password_hash`, `role`, `first_name`, `last_name`, `engineer_key`, `team_key`, `is_active` | **Growing** (1 admin seeded, rest created via UI) |
+| 14 | `corrections` | *Auxiliary (not in the graph).* Records human overrides of AI classifications -- the original predicted category, the corrected category, and who made the change. Feeds the learning loop and the repeated-issue detector. | `ticket_id`, `predicted_category`, `corrected_category`, `actor`, `created_at` | **Growing** (1 per human correction) |
+| 15 | `repeated_issues` | *Auxiliary (not in the graph).* Clusters of tickets identified as recurring problems, used to surface systemic issues to operators. | `signature`, `ticket_ids`, `count`, `last_seen` | **Growing** (computed from ticket history) |
 
-**Totals**: 1,796 documents across 13 collections; 3,831 edges across 9 edge collections.
+**Totals**: **15 document collections** (13 graph-participating + the auxiliary `corrections` and `repeated_issues`); **9 edge collections** holding ~3,500 edges generated at seed time. Document and edge totals are runtime figures and are reported here as approximate seed-time values.
 
 ---
 
@@ -373,9 +375,23 @@ All signals converge:
 | Error code: ERR-PG-001 | Database | confirms |
 | Historical tickets on server | Database | confirms |
 
-Aggregated confidence: **0.92** (all 4 classifiers agree = +0.05 agreement bonus; error code match = +0.03; graph confirmation = +0.02; quality = HIGH, no cap).
+The aggregator (`aggregator.py`) is a 6-phase majority-aware voting scheme, not a weighted sum with agreement bonuses. The six phases are: **Phase 0** single classifier; **Phase 1** unanimous; **Phase 2** supermajority (3+ agree, gated by vote strength); **Phase 3** pair-beats-singles (2/1/1); **Phase 4** 2v2 split (known boundary override, else weighted / avg-confidence / centroid tiebreak); **Phase 5** total disagreement (weighted fallback). The winning scenario sets a SCENARIO_CAP, and the result is also capped by the QUALITY_CAP.
 
-Since 0.92 >= 0.70 threshold, the ticket is **auto-routed** (not escalated).
+Here all 4 classifiers agree on Database, so this resolves in **Phase 1 (unanimous_4)**, which sets a scenario cap of **0.95**. Confidence is then computed as:
+
+```
+base = 0.60·supporter_avg_conf + 0.25·vote_share + 0.15·weight_share
+     = 0.60·((0.94+0.88+0.84+0.75)/4) + 0.25·(4/4) + 0.15·(1.0/1.0)
+     = 0.60·0.8525 + 0.25 + 0.15
+     = 0.5115 + 0.25 + 0.15 = 0.9115
+bonus = +0.03 (error code ERR-PG-001 confirms Database) + 0.02 (graph confirms) = +0.05
+final = round(min(0.9115 + 0.05, scenario_cap 0.95, quality_cap 0.99), 3)
+      = round(min(0.9615, 0.95, 0.99), 3) = 0.95
+```
+
+Aggregated confidence: **0.95** (clamped by the unanimous_4 scenario cap; quality = HIGH, cap 0.99 not binding).
+
+Since 0.95 >= 0.70 threshold, the ticket is **auto-routed** (not escalated).
 
 **Final output:**
 
@@ -384,7 +400,7 @@ Since 0.92 >= 0.70 threshold, the ticket is **auto-routed** (not escalated).
 | Category | Database |
 | Priority | High |
 | Status | Routed |
-| Confidence | 0.92 |
+| Confidence | 0.95 |
 | Team | Database Admin |
 | Expert | Arjun Nair (Senior DBA) |
 | Suggested Resolution | "Increased max_connections from 100 to 200; Restarted PostgreSQL; Verified with pg_isready" (effectiveness: 0.95) |

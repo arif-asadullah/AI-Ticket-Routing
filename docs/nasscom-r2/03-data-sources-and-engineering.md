@@ -6,17 +6,18 @@
 
 ## 1. Data Sources Overview
 
-DeskMind uses **5 data sources** to build its knowledge graph and train its classifiers:
+DeskMind uses **6 data sources** to build its knowledge graph and train its classifiers:
 
 | # | Source | Type | Records | Generation Method |
 |---|--------|------|---------|-------------------|
 | 1 | Seed Data (YAML) | Hand-crafted | 55 tickets + infrastructure graph | Manual design by team |
-| 2 | GPT-4o Generated | AI-generated | 396 tickets | OpenAI API with category-specific prompts |
+| 2 | GPT-4o Generated | AI-generated | 355 tickets | OpenAI API with category-specific prompts |
 | 3 | Claude Generated | AI-generated (Claude API) | 164 tickets | Edge cases and complex scenarios |
-| 4 | Noise Generator | Programmatic | 200 tickets | Python template + noise injection script |
-| 5 | User Submissions | Runtime | Growing | Live tickets submitted through the frontend |
+| 4 | Phi-4 Generated | AI-generated (local) | 13 tickets | Phi-4-mini local generation |
+| 5 | Noise Generator | Programmatic | 174 tickets | Python template + noise injection script |
+| 6 | User Submissions | Runtime | Growing | Live tickets submitted through the frontend |
 
-**Total training data**: 855 tickets (55 seed + 800 synthetic)
+**Total training data**: 855 tickets (55 seed + 800 synthetic). The 800 synthetic tickets are the merged, de-duplicated corpus in `data/synthetic/final/all_generated_tickets.json`: 355 GPT-4o + 164 Claude + 13 Phi-4 + 174 template-noise + 94 untagged.
 
 ---
 
@@ -48,7 +49,7 @@ Hand-crafted YAML containing the **core infrastructure topology** that forms the
 ### 2.2 GPT-4o Generated Tickets
 
 **Script**: `scripts/generate_tickets.py`
-**Output**: `data/synthetic/gpt4o/` (396 tickets)
+**Output**: `data/synthetic/strategy1_multimodel/gpt4o_tickets.json` + `gpt4o_tickets_batch2.json` (396 raw, pre-dedup; 355 in the final merged corpus)
 
 **Method**:
 1. Category-specific system prompts define the scope and expected detail level
@@ -59,17 +60,17 @@ Hand-crafted YAML containing the **core infrastructure topology** that forms the
 3. Generated in batches of 25 tickets via OpenAI Chat Completions API
 4. Each ticket includes: title, description, category, priority, error_codes, server_names, service_names
 
-**Category distribution**:
-| Category | Target % | Tickets |
-|----------|----------|---------|
-| Infrastructure | 30% | ~119 |
-| Application | 25% | ~99 |
-| Database | 15% | ~59 |
-| Network | 12% | ~48 |
-| Security | 10% | ~40 |
-| Access Management | 8% | ~32 |
+**Category distribution** (GPT-4o subset in the final merged corpus, 355 tickets):
+| Category | Share | Tickets |
+|----------|-------|---------|
+| Infrastructure | 23% | 83 |
+| Application | 20% | 72 |
+| Network | 18% | 63 |
+| Database | 17% | 61 |
+| Security | 17% | 60 |
+| Access Management | 5% | 16 |
 
-**Why imbalanced**: Mirrors real-world IT ticket distribution where Infrastructure and Application tickets dominate.
+**Distribution note**: Across the full 800-ticket synthetic corpus the categories are near-balanced (Infrastructure 168, Application 134, Database 134, Network 130, Access Management 128, Security 106). The GPT-4o subset above skews toward Infrastructure/Application/Network, with the remaining categories topped up by the other generators.
 
 ### 2.3 Claude-Generated Tickets
 
@@ -81,10 +82,16 @@ Hand-crafted YAML containing the **core infrastructure topology** that forms the
 - **Multi-hop scenarios**: Issues requiring graph traversal to identify root cause
 - **Realistic error messages**: Actual PostgreSQL, Kubernetes, Nginx error snippets
 
-### 2.4 Noise Generator — Template + Injection
+### 2.4 Phi-4 Generated Tickets
+
+**Output**: `data/synthetic/strategy1_multimodel/phi4_tickets.json` (13 tickets)
+
+**Method**: Generated locally with the Phi-4-mini model to add small-model variety to the corpus. A deliberately small slice — included for generator diversity rather than volume.
+
+### 2.5 Noise Generator — Template + Injection
 
 **Script**: `scripts/generate_noise_tickets.py`
-**Output**: `data/synthetic/noise/` (200 tickets)
+**Output**: `data/synthetic/strategy2_noise/noise_tickets.json` (200 raw; 174 template-noise tickets in the final merged corpus)
 
 **Method**: Python-based template engine with realistic noise injection:
 
@@ -105,7 +112,7 @@ Word banks per category → fill templates → apply noise
 
 **Why we need noise**: LLM-generated tickets are unnaturally clean. Real user input has typos, abbreviations, and irrelevant information. The noise generator tests classifier robustness.
 
-### 2.5 User Submissions (Runtime)
+### 2.6 User Submissions (Runtime)
 
 Tickets submitted through the DeskMind frontend at runtime. Tagged with `_source: "user"` to distinguish from training data. Each user ticket:
 - Gets a 384-dim MiniLM embedding
@@ -156,8 +163,8 @@ Tickets submitted through the DeskMind frontend at runtime. Tagged with `_source
                     ┌────────▼─────────┐
                     │  ArangoDB Insert │
                     │                  │
-                    │  1,796 documents │
-                    │  3,831 edges     │
+                    │ ~1,800 documents │
+                    │ ~3,500 edges     │
                     └────────┬─────────┘
                              │
                     ┌────────▼─────────┐
@@ -241,11 +248,11 @@ for category in ["Infrastructure", "Application", "Database", "Network", "Securi
 | Max tickets per category | ~168 (Infrastructure) |
 | Tickets with error codes | ~40% |
 | Tickets with server names | ~60% |
-| Tickets with noise | ~23% (200/855) |
+| Tickets with noise | ~20% (174/855) |
 | Cross-reference integrity | 100% (all edges point to valid documents) |
 | Embedding coverage | 100% (all tickets have 384-dim embeddings) |
 | **Labels verified** | **48 mislabeled tickets corrected** (6 rounds of eval-driven cleanup) |
-| **Eval accuracy** | **94.1%** on 35-ticket fixed benchmark (up from 83.7% at R2) |
+| **Eval accuracy** | **94.1%** on 35-ticket fixed benchmark (up from 85.3% baseline, `eval_baseline.json`) |
 
 ### 4.1 Label Quality Cleanup
 
@@ -259,7 +266,7 @@ After building the eval script (`scripts/eval_classifier.py`), we discovered 48 
 | "Can't login to system" | Security | Access Management | Login issue ≠ security breach |
 | "Grafana dashboards empty" | Infrastructure | Application | Grafana is an application |
 
-These were fixed iteratively — run eval → find misclassifications → determine if label or AI is wrong → fix labels → re-eval. 6 rounds brought accuracy from 78% to 83.7%. Post-R2 improvements (title+description co-embedding, text preprocessing, retrieval re-ranking, KNN confidence fix, quality scorer upgrade) further improved accuracy to **94.1%** on a fixed 35-ticket benchmark. 3 seed data tickets were also corrected.
+These were fixed iteratively — run eval → find misclassifications → determine if label or AI is wrong → fix labels → re-eval, over 6 rounds. The committed baseline on the fixed 35-ticket benchmark is **85.3%** (`eval_baseline.json` = 0.8529). Post-R2 improvements (title+description co-embedding — the single largest gain at +8.8% per `classification-improvements.md` — plus text preprocessing, retrieval re-ranking, KNN confidence fix, quality scorer upgrade) improved accuracy to **94.1%** on that benchmark (`eval_leakfree.json` = 0.9412). (A separate 49-ticket eval, `data/eval_results_50.json`, scored 83.7% — that is a different benchmark, not the baseline cited here.) 3 seed data tickets were also corrected.
 
 ---
 

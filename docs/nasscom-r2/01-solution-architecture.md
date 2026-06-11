@@ -42,11 +42,11 @@
   └──────────┘     │                │  │  PREPARE   │─▶│  RETRIEVE  │─▶│  CLASSIFY  │  │  │
                    │                │  │            │  │            │  │            │  │  │
                    │                │  │- Entities  │  │- Vector    │  │- LLM (40%) │  │  │
-                   │                │  │- Errors    │  │- Error     │  │- KNN (30%) │  │  │
+                   │                │  │- Errors    │  │- Error     │  │- KNN (15%) │  │  │
                    │                │  │- Quality   │  │- Graph     │  │- Centroid  │  │  │
-                   │                │  │- Embedding │  │- Fulltext  │  │  (20%)     │  │  │
+                   │                │  │- Embedding │  │- Fulltext  │  │  (30%)     │  │  │
                    │                │  └───────────┘  └───────────┘  │- Keyword   │  │  │
-                   │                │                                │  (10%)     │  │  │
+                   │                │                                │  (15%)     │  │  │
                    │                │  ┌───────────┐  ┌───────────┐  └────────────┘  │  │
                    │                │  │  Stage 5   │  │  Stage 4   │                 │  │
                    │                │  │  DECIDE    │◀─│  AGGREGATE │◀────────────────┘  │
@@ -93,7 +93,7 @@
 | Analytics Dashboard | `AnalyticsDashboard.jsx` | Interactive charts (Recharts): category bar chart, status donut, priority breakdown, daily trend area chart, team workload, feedback stats, classifier agreement |
 | Audit Timeline | `AuditTimeline.jsx` | Visual timeline of all actions on a ticket (classified, routed, picked up, resolved, feedback) |
 | Stats Summary Bar | `StatsSummaryBar.jsx` | Animated counters showing total tickets, avg confidence, escalation rate, avg resolution time |
-| Chat AI | `ChatPanel.jsx` | Zero-hallucination chat with Mindy AI, grounded in ArangoDB data |
+| Chat AI | `ChatPanel.jsx` | Hallucination-resistant chat with Mindy AI, grounded in ArangoDB data |
 | Status Bar | `StatusBar.jsx` | Real-time ArangoDB/Redis/Ollama health indicators |
 | Enrichment Card | `EnrichmentCard.jsx` | Interactive Q&A for vague tickets with clickable suggestions |
 | Screenshot Upload | `ScreenshotUpload.jsx` | Drag-drop image upload with OCR entity extraction |
@@ -135,7 +135,7 @@
 | `/api/corrections/recompute-centroids` | POST | Admin | Recompute category centroids from corrected tickets |
 | `/api/corrections/export` | GET | Admin | Export corrections as training data |
 | `/api/upload` | POST | Any authenticated | Upload screenshot with OCR processing |
-| `/api/chat` | POST | Any authenticated | Zero-hallucination chat grounded in ArangoDB data |
+| `/api/chat` | POST | Any authenticated | Hallucination-resistant chat grounded in ArangoDB data |
 | `/api/graph` | GET | Any authenticated | Knowledge graph nodes and edges for visualization |
 | `/health` | GET | Public | System health check + degradation level |
 
@@ -237,9 +237,11 @@ Measured on a hand-labeled test set of 35 tickets covering all 6 categories + bo
 **By difficulty level:**
 | Difficulty | Accuracy |
 |------------|----------|
-| Clear (25 tickets) | **100%** |
-| Boundary (5 tickets) | **80%** |
-| Edge: multi-domain (2 tickets) | **100%** |
+| Clear (25 tickets) | **100%** (25/25) |
+| Boundary (5 tickets) | **80%** (4/5) |
+| Edge: multi-domain (2 tickets) | **100%** (2/2) |
+| Edge: boundary (1 ticket) | **100%** (1/1) |
+| Edge: short (1 ticket) | **0%** (0/1) |
 
 **Improvement journey** (each step measured independently):
 | Step | Accuracy | Delta |
@@ -397,9 +399,11 @@ python scripts/seed_db.py       # Load data (first time only, ~40 seconds)
 | Source | Type | Records | Purpose |
 |--------|------|---------|---------|
 | `data/seed/seed_data.yaml` | Hand-crafted | 55 tickets, 6 teams, 15 servers, 12 services, 12 engineers, 20 error codes, 10 runbooks, 30 resolutions, 24 routing rules | Core knowledge graph — infrastructure topology, team structure, known error patterns |
-| GPT-4o generated | AI-generated | 396 tickets | Diverse synthetic tickets across 6 categories |
+| GPT-4o generated | AI-generated | 355 tickets | Diverse synthetic tickets across 6 categories |
 | Claude generated | AI-generated (Claude API) | 164 tickets | High-quality edge cases and complex scenarios |
-| Noise generator script | Programmatic | 200 tickets | Realistic noise: typos, abbreviations, truncation, irrelevant details |
+| Phi-4 generated | AI-generated | 13 tickets | Additional model diversity for synthetic spread |
+| Noise generator script | Programmatic | 174 tickets | Realistic noise: typos, abbreviations, truncation, irrelevant details |
+| Untagged synthetic | AI-generated | 94 tickets | Merged synthetic tickets without per-model tag |
 | User submissions | Runtime | Growing | Real tickets submitted through the frontend |
 
 ### Data Pipeline
@@ -412,14 +416,14 @@ Seed YAML + Synthetic JSON
          │
          ├── Parse YAML/JSON
          ├── Compute 384-dim embeddings (MiniLM)
-         ├── Insert documents (13 collections)
+         ├── Insert documents (15 collections)
          ├── Create edges (9 edge collections)
          ├── Build vector indexes
          ├── Compute category centroids (avg embedding per category)
          └── Create named graph
          │
          ▼
-  ArangoDB (1,795 documents, 3,831 edges)
+  ArangoDB (~1,800 documents, ~3,500 edges; generated at seed time)
          │
          ▼
   Ready for classification queries
@@ -429,8 +433,8 @@ Seed YAML + Synthetic JSON
 
 | Metric | Count |
 |--------|-------|
-| Total documents | 1,702 |
-| Total edges | 3,492 |
+| Total documents | ~1,800 |
+| Total edges | ~3,500 |
 | Tickets (seed + synthetic) | 855 |
 | Resolutions | 736 |
 | Category centroids | 6 |

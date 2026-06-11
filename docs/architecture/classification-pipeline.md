@@ -40,8 +40,8 @@
                             ▼
                 ┌───────────────────────┐
                 │   STAGE 4: AGGREGATE  │
-                │   Weighted voting +   │
-                │   confidence calc     │
+                │   6-phase majority    │
+                │   voting + conf calc  │
                 └───────────┬───────────┘
                             │
                             ▼
@@ -108,7 +108,8 @@ Quality signals:
 Quality score: HIGH → proceed with all 4 classifiers
 
 If quality = LOW (very short, no entities, no error):
-  → Still classify, but cap maximum confidence at 0.75
+  → Still classify, but cap maximum confidence at 0.69
+    (just below the 0.70 auto-route line, so vague tickets escalate)
   → Always add a flag: "low_quality_input: true"
 ```
 
@@ -217,7 +218,7 @@ This is the core of the improved architecture. Instead of one classifier, we use
 │ LLM + Context  │  │ KNN Voting     │  │ Centroid       │  │ Keyword Rules  │
 │                │  │                │  │ Distance       │  │                │
 │ Accuracy: ~85% │  │ Accuracy: ~80% │  │ Accuracy: ~75% │  │ Accuracy: ~55% │
-│ Weight: 0.40   │  │ Weight: 0.30   │  │ Weight: 0.20   │  │ Weight: 0.10   │
+│ Weight: 0.40   │  │ Weight: 0.15   │  │ Weight: 0.30   │  │ Weight: 0.15   │
 └───────┬────────┘  └───────┬────────┘  └───────┬────────┘  └───────┬────────┘
         │                   │                   │                   │
         ▼                   ▼                   ▼                   ▼
@@ -227,7 +228,7 @@ This is the core of the improved architecture. Instead of one classifier, we use
 
 ### Classifier 1: LLM with Context (Weight: 0.40)
 
-The strongest classifier. Qwen 2.5:3B reads the ticket **plus all context gathered in Stage 2**.
+The strongest classifier. Qwen 2.5:7B reads the ticket **plus all context gathered in Stage 2**.
 
 **Why it's the strongest**: It understands natural language, can reason about root cause vs symptom, and uses context from similar past tickets.
 
@@ -302,7 +303,7 @@ Return ONLY valid JSON (no other text):
 }
 ```
 
-### Classifier 2: KNN Voting (Weight: 0.30)
+### Classifier 2: KNN Voting (Weight: 0.15)
 
 **K-Nearest Neighbors** — purely mathematical, no LLM involved.
 
@@ -332,7 +333,7 @@ KNN confidence: 4/5 = 0.80 (80% of neighbors agree)
 
 **When it fails**: When the database has few tickets, or the new ticket is unlike anything seen before.
 
-### Classifier 3: Category Centroid Distance (Weight: 0.20)
+### Classifier 3: Category Centroid Distance (Weight: 0.30)
 
 **Pre-computed**: For each category, we compute the **average embedding** (centroid) of all tickets in that category.
 
@@ -367,7 +368,7 @@ Centroid confidence: 1 - (0.12 / 0.74) = 0.84  (normalized distance ratio)
 
 **When it fails**: When a ticket is genuinely between two categories (the embedding sits exactly between two centroids).
 
-### Classifier 4: Keyword Rule Engine (Weight: 0.10)
+### Classifier 4: Keyword Rule Engine (Weight: 0.15)
 
 The simplest classifier — no AI, just keyword counting:
 
@@ -406,79 +407,93 @@ Winner: Database (score 3)
 
 ---
 
-## Stage 4: AGGREGATE (Weighted Voting + Confidence Calibration)
+## Stage 4: AGGREGATE (6-Phase Majority-Aware Voting + Confidence)
 
-Now we combine all 4 classifiers' votes:
+Now we combine all 4 classifiers' votes. The aggregator is **not** a flat weighted sum.
+It is a **6-phase majority-aware voting** scheme: it first decides *who wins* by counting
+votes (with strength checks), then computes a calibrated confidence and clamps it to a
+**scenario cap** for the winning phase and a **quality cap**.
 
 ```
 Classifier results:
   1. LLM + Context:     Database  (confidence: 0.94)  weight: 0.40
-  2. KNN Voting:        Database  (4/5 agree = 0.80)  weight: 0.30
-  3. Centroid Distance:  Database  (dist ratio = 0.84) weight: 0.20
-  4. Keyword Rules:      Database  (score: 3/1 = 0.75) weight: 0.10
+  2. KNN Voting:        Database  (4/5 agree = 0.80)  weight: 0.15
+  3. Centroid Distance:  Database  (dist ratio = 0.84) weight: 0.30
+  4. Keyword Rules:      Database  (score: 3/1 = 0.75) weight: 0.15
 ```
 
-### Step 4.1: Weighted Category Vote
+### Step 4.1: Pick the Winner via the 6 Phases
+
+The aggregator walks the phases in order and stops at the first one that applies:
 
 ```
-For each category, sum the weighted confidences:
-
-Database:
-  = (0.40 × 0.94) + (0.30 × 0.80) + (0.20 × 0.84) + (0.10 × 0.75)
-  = 0.376 + 0.240 + 0.168 + 0.075
-  = 0.859
-
-Application:
-  = (0.40 × 0.00) + (0.30 × 0.11) + (0.20 × 0.00) + (0.10 × 0.25)
-  = 0.000 + 0.033 + 0.000 + 0.025
-  = 0.058
-
-(other categories ≈ 0)
-
-Winner: Database (0.859)
-Runner-up: Application (0.058)
+Phase 0  Single classifier   → only one classifier active → cap 0.50
+Phase 1  Unanimous           → all active classifiers agree → cap 0.95/0.88/0.75 (4/3/2)
+Phase 2  Supermajority (3+)  → 3+ agree, strength-checked:
+                                strong (avg conf ≥0.60) cap 0.85
+                                weak                     cap 0.65
+                                dissenter override       cap 0.60
+Phase 3  Pair beats singles  → 2/1/1 vote split, strength-checked:
+                                pair_wins cap 0.70 / pair_fallback cap 0.60
+Phase 4  2v2 split           → boundary override (Database/Infrastructure) cap 0.65,
+                                else weighted / avg-conf / centroid tiebreak (0.50–0.65)
+Phase 5  Total disagreement  → weighted fallback → cap 0.50
 ```
 
-### Step 4.2: Agreement Bonus/Penalty
+Ties are broken **deterministically** by sorting categories on
+`(vote_count desc, weighted_score desc, category_name asc)`.
 
 ```
-All 4 classifiers agree on Database?
-  YES → Agreement bonus: +0.05
-
-Final score: 0.859 + 0.05 = 0.909
-
-If classifiers disagreed (e.g., LLM says Network, KNN says Database):
-  → Agreement penalty: -0.10
-  → Forces escalation for ambiguous cases
+Our case: all 4 classifiers say Database → PHASE 1 (unanimous_4)
+  Winner: Database
+  Scenario cap: 0.95
 ```
 
-### Step 4.3: Contextual Adjustments
+### Step 4.2: Base Confidence (supporter avg + vote share + weight share)
+
+Confidence is computed only over the **supporters** of the winning category:
 
 ```
-Error code found (ERR-PG-001) and its service = postgresql = Database?
-  YES → Error code bonus: +0.03
+base = 0.60 × supporter_avg_conf + 0.25 × vote_share + 0.15 × weight_share
+
+supporter_avg_conf = (0.94 + 0.80 + 0.84 + 0.75) / 4 = 0.833
+vote_share         = 4 supporters / 4 active            = 1.00
+weight_share       = (0.40+0.15+0.30+0.15) / 1.00       = 1.00
+
+base = 0.60 × 0.833 + 0.25 × 1.00 + 0.15 × 1.00
+     = 0.500 + 0.250 + 0.150
+     = 0.900
+```
+
+### Step 4.3: Contextual Bonuses
+
+```
+Error code found (ERR-PG-001) and its category = Database?
+  YES → +0.03
 
 Graph says server type = "database" and managed_by domain = "Database"?
-  YES → Graph bonus: +0.02
+  YES → +0.02
 
-Adjusted confidence: 0.909 + 0.03 + 0.02 = 0.959
-Cap at 0.99 (never 1.0 — always leave room for error)
-
-Final confidence: 0.959
+base + bonus = 0.900 + 0.03 + 0.02 = 0.950
 ```
 
-### Step 4.4: Confidence Calibration
+(Safety rule: if the most confident supporter is below 0.60 and 3+ classifiers are active,
+`base` is capped at 0.55 before bonuses. Not triggered here — max supporter conf is 0.94.)
 
-Raw confidence numbers are often **overconfident**. We calibrate using a simple mapping learned from evaluation data:
+### Step 4.4: Apply Caps
 
 ```
-If raw confidence ≥ 0.90 and all 4 agree → calibrated = raw × 0.98 (slight reduction)
-If raw confidence ≥ 0.70 and 3/4 agree  → calibrated = raw × 0.95
-If raw confidence ≥ 0.70 but only 2 agree → calibrated = raw × 0.80 (significant reduction)
-If raw confidence < 0.70                  → calibrated = raw × 0.75
+final = min(base + bonus, scenario_cap, quality_cap)
 
-Our case: 0.959 × 0.98 = 0.940 (calibrated)
+  base + bonus  = 0.950
+  scenario_cap  = 0.95   (Phase 1, unanimous_4)
+  quality_cap   = 0.99   (quality = HIGH)
+
+final = min(0.950, 0.95, 0.99) = 0.950   (rounded to 3 dp)
 ```
+
+There is **no** flat agreement bonus and **no** post-hoc calibration multiplier — the scenario
+and quality caps do the calibration by bounding what each agreement pattern can claim.
 
 ### Output of Stage 4:
 
@@ -486,7 +501,7 @@ Our case: 0.959 × 0.98 = 0.940 (calibrated)
 {
   "category": "Database",
   "priority": "high",
-  "confidence": 0.940,
+  "confidence": 0.950,
   "classifier_votes": {
     "llm": { "category": "Database", "confidence": 0.94 },
     "knn": { "category": "Database", "confidence": 0.80 },
@@ -494,6 +509,8 @@ Our case: 0.959 × 0.98 = 0.940 (calibrated)
     "keyword": { "category": "Database", "confidence": 0.75 }
   },
   "agreement": "4/4",
+  "phase": "unanimous_4",
+  "scenario_cap": 0.95,
   "bonuses": ["error_code_match", "graph_confirms"],
   "reasoning": "PostgreSQL connection limit is a database configuration issue..."
 }
@@ -504,7 +521,7 @@ Our case: 0.959 × 0.98 = 0.940 (calibrated)
 ## Stage 5: DECIDE (Route or Escalate)
 
 ```
-Final confidence: 0.940
+Final confidence: 0.950
 Threshold: 0.70
 
 Decision tree:
@@ -515,7 +532,7 @@ Decision tree:
   confidence < 0.50                     → ESCALATE + flag as "uncertain"
 
 Our case:
-  confidence = 0.940, agreement = 4/4
+  confidence = 0.950, agreement = 4/4
   → AUTO-ROUTE (high confidence) ✅
 
 Action:
@@ -533,23 +550,26 @@ Action:
 
 ```
 Stage 3 results:
-  LLM:      Database (0.82)  — "root cause is dropped index"
-  KNN:      Mixed — 2 Database, 2 Application, 1 Infrastructure
+  LLM:      Database (0.82)    — "root cause is dropped index"
+  KNN:      Application (0.40) — neighbors tie, alphabetical → Application
   Centroid: Application (0.45) — embedding is between App and DB centroids
-  Keyword:  Application (api) and Database (index) — TIE
+  Keyword:  Application (0.50) — api + index both match, App breaks the tie
 
-Stage 4:
-  Database:    (0.40×0.82) + (0.30×0.40) + (0.20×0.30) + (0.10×0.50) = 0.558
-  Application: (0.40×0.10) + (0.30×0.40) + (0.20×0.45) + (0.10×0.50) = 0.300
+Stage 4 (6-phase voting):
+  Votes:  Application 3 (KNN, Centroid, Keyword)  vs  Database 1 (LLM)
+  Phase 2: supermajority for Application, but supporter avg conf
+           = (0.40+0.45+0.50)/3 = 0.45 (< 0.60) → WEAK supermajority, cap 0.65
 
-  Agreement: 1/4 (only LLM says Database clearly)
-  Calibrated confidence: 0.558 × 0.80 = 0.446
+  base = 0.60×0.45 + 0.25×(3/4) + 0.15×((0.15+0.30+0.15)/1.00)
+       = 0.270 + 0.188 + 0.090 = 0.548
+  (no error-code / graph bonus)
+  final = min(0.548, 0.65, 0.99) = 0.548
 
 Stage 5:
-  0.446 < 0.70 → ESCALATE ⚠️
+  0.548 < 0.70 → ESCALATE ⚠️
 
-  Result: Escalated with AI's best guess "Database (45%)"
-  Human reviews and decides
+  Result: Escalated with AI's best guess "Application (55%)" and dissenting
+  LLM vote "Database" noted. Human reviews and decides.
 ```
 
 ### Case 2: "Firewall blocking database port 5432"
@@ -557,23 +577,25 @@ Stage 5:
 ```
 Stage 3 results:
   LLM:      Network (0.78)  — "firewall is a network device, root cause is rule change"
-  KNN:      Network (3/5)   — similar firewall tickets were Network
+  KNN:      Network (0.60)  — similar firewall tickets were Network
   Centroid: Network (0.62)  — closer to Network centroid
-  Keyword:  TIE — firewall (Network) + database, 5432 (Database)
+  Keyword:  Database (0.50) — firewall (Network) + database/5432 (Database), DB edges it out
 
-Stage 4:
-  Network:  (0.40×0.78) + (0.30×0.60) + (0.20×0.62) + (0.10×0.50) = 0.666
-  Database: (0.40×0.10) + (0.30×0.20) + (0.20×0.20) + (0.10×0.50) = 0.190
+Stage 4 (6-phase voting):
+  Votes:  Network 3 (LLM, KNN, Centroid)  vs  Database 1 (Keyword)
+  Phase 2: supermajority for Network, supporter avg conf
+           = (0.78+0.60+0.62)/3 = 0.667 (≥ 0.60) → STRONG supermajority, cap 0.85
 
-  Agreement: 3/4 (LLM, KNN, centroid agree on Network)
-  Calibrated: 0.666 × 0.95 = 0.633
+  base = 0.60×0.667 + 0.25×(3/4) + 0.15×((0.40+0.15+0.30)/1.00)
+       = 0.400 + 0.188 + 0.128 = 0.715
+  (no error-code / graph bonus on the winner)
+  final = min(0.715, 0.85, 0.99) = 0.715
 
 Stage 5:
-  0.633 < 0.70 → ESCALATE ⚠️ (borderline)
-  But 3/4 agree → could argue for routing with warning
+  0.715 ≥ 0.70, agreement 3/4 → AUTO-ROUTE (good confidence) ✅
 
-  Result: Route to Network Engineering with warning "borderline confidence"
-  CC: Database Admin team (secondary category)
+  Result: Route to Network Engineering
+  CC: Database Admin team (secondary category, the dissenting Keyword vote)
 ```
 
 ### Case 3: "server down" (vague ticket)
@@ -581,22 +603,25 @@ Stage 5:
 ```
 Stage 1:
   Quality score: LOW (only 11 characters, no entities, no error codes)
-  Maximum confidence capped at 0.75
+  Quality cap: 0.69 (LOW sits just below the 0.70 auto-route line by design,
+                     so vague tickets escalate)
 
 Stage 3 results:
   LLM:      Infrastructure (0.60) — "server" = infrastructure, but very uncertain
-  KNN:      No strong match (best similarity: 0.35) — too vague
+  KNN:      Infrastructure (0.30) — best similarity only 0.35, too vague
   Centroid: Infrastructure (0.40) — weakly similar
-  Keyword:  Infrastructure (server) → score: 1
+  Keyword:  Infrastructure (0.50) — server → score 1
 
-Stage 4:
-  Infrastructure: 0.40×0.60 + 0.30×0.30 + 0.20×0.40 + 0.10×0.50 = 0.460
-  Capped at 0.75 due to low quality
-  Agreement: 3/4 but all low confidence
-  Calibrated: 0.460 × 0.75 = 0.345
+Stage 4 (6-phase voting):
+  Votes:  Infrastructure 4 → PHASE 1 (unanimous_4, cap 0.95) — but weak confidence
+
+  base = 0.60×((0.60+0.30+0.40+0.50)/4) + 0.25×(4/4) + 0.15×1.00
+       = 0.60×0.45 + 0.250 + 0.150 = 0.670
+  (no error-code / graph bonus)
+  final = min(0.670, 0.95, 0.69) = 0.670   ← held under 0.70 by the LOW quality cap
 
 Stage 5:
-  0.345 < 0.70 → ESCALATE ⚠️
+  0.670 < 0.70 → ESCALATE ⚠️
 
   Result: Escalated with request for more info
   "Please provide: Which server? What error do you see? When did it start?"

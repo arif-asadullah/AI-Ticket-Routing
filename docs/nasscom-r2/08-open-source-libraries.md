@@ -10,7 +10,7 @@
 
 | Technology | Version | License | Role in DeskMind |
 |-----------|---------|---------|-----------------|
-| **ArangoDB** | 3.12 Community | Apache 2.0 | Multi-model database — graph engine + document store + vector search in one. Stores the entire knowledge graph (1,796 documents, 3,831 edges). Provides native vector similarity search for semantic ticket matching. |
+| **ArangoDB** | 3.12 Community | Apache 2.0 | Multi-model database — graph engine + document store + vector search in one. Stores the entire knowledge graph (~1,800 documents, ~3,500 edges, generated at seed time). Provides native vector similarity search for semantic ticket matching. |
 | **Redis** | 7.x | BSD 3-Clause | In-memory cache for health check results (5s TTL), entity lists (5min TTL), and performance optimization. |
 | **Ollama** | Latest | MIT | Local LLM runtime. Hosts Qwen 2.5:7B model with OpenAI-compatible API. Enables fully local inference with no cloud dependency. |
 | **Docker** | Latest | Apache 2.0 | Container runtime for all services. Ensures consistent environments across Mac and Windows development machines. |
@@ -44,7 +44,6 @@
 | **python-multipart** | Latest | MIT | Multipart form data parsing for file upload endpoint (required by FastAPI for file handling). |
 | **python-socketio** | Latest | MIT | Socket.IO server for real-time ticket update events (ticket:created, ticket:updated). |
 | **python-dotenv** | Latest | BSD 3-Clause | Loads environment variables from `.env` file at application startup. |
-| **PyYAML** | Latest | MIT | Parses seed data YAML files during database ingestion. |
 
 ---
 
@@ -65,8 +64,9 @@
 
 | Tool | License | Purpose |
 |------|---------|---------|
-| **OpenAI API (GPT-4o)** | Commercial | Used offline to generate 396 synthetic training tickets. Not used at runtime. |
+| **OpenAI API (GPT-4o)** | Commercial | Used offline to generate 355 synthetic training tickets (of the 800-ticket corpus). Not used at runtime. |
 | **Claude** | Commercial | Used via the Claude API to generate 164 edge-case training tickets. Not used at runtime. |
+| **Phi-4 (phi4-mini)** | MIT | Used offline to generate 13 synthetic training tickets. Not used at runtime. |
 | **Git + GitHub** | Open Source | Version control and collaboration. Monorepo structure with backend/ and frontend/ directories. |
 | **GitHub Flow** | - | Branching strategy: feature branches → PR → main. No develop branch. |
 

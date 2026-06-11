@@ -89,7 +89,7 @@ TKT-042 ──resolved_with──→ Resolution: "Killed idle connections, incre
 TKT-078 ──resolved_with──→ Resolution: "Increased connection pool size in app config"
 ```
 
-The system picks the resolution with the highest `effectiveness` score and suggests it for the new ticket.
+For the primary source (similar past tickets), the suggestion is **similarity-gated**: a past resolution is used only if it is the **same category** AND `similarity >= 0.55` (`RES_SIM_THRESHOLD`), and the system takes the **first relevance-reranked match** — where the re-rank score is `0.60 * similarity + 0.20 * recency + 0.20 * effectiveness` (`retrieval.py` `_rerank`) — not simply the highest-effectiveness resolution. (Secondary sources — error-code matches and same-server tickets — still pick the highest `effectiveness`.)
 
 ## Which Database Fields Are Involved?
 
@@ -107,13 +107,21 @@ The system picks the resolution with the highest `effectiveness` score and sugge
 
 This is the actual database query that finds the 5 most similar tickets:
 
+**Primary path** — the ANN vector index. Because the `APPROX_NEAR_COSINE` sort can't be combined with a pre-`FILTER` on status in the same loop, we over-fetch the nearest neighbors in a subquery, then filter status and recompute exact cosine on the survivors:
+
 ```aql
 // @newEmbedding = the 384-number embedding of the new ticket
+// @overfetch    = max(limit * 5, 25)   @limit = 5
 
-FOR ticket IN tickets
-  FILTER ticket.status == "closed"               // only search resolved tickets
-  SORT APPROX_NEAR_COSINE(ticket.embedding, @newEmbedding)  // sort by similarity
-  LIMIT 5                                        // top 5 only
+FOR ticket IN (
+    FOR t IN tickets
+      SORT APPROX_NEAR_COSINE(t.embedding, @newEmbedding) DESC  // ANN vector index
+      LIMIT @overfetch                              // over-fetch nearest neighbors
+      RETURN t
+  )
+  FILTER ticket.status IN ["closed", "resolved"]    // only resolved tickets
+  LIMIT @limit                                      // top 5 survivors
+  LET sim = COSINE_SIMILARITY(ticket.embedding, @newEmbedding)  // exact, on survivors
 
   // For each similar ticket, get its resolution
   LET resolution = FIRST(
@@ -125,10 +133,13 @@ FOR ticket IN tickets
     ticket_key: ticket._key,
     title: ticket.title,
     category: ticket.category,
+    similarity: sim,
     resolution_steps: resolution.steps,
     effectiveness: resolution.effectiveness
   }
 ```
+
+A brute-force `COSINE_SIMILARITY` full scan (single loop, no index) is used **only as a fallback** when the `APPROX_NEAR_COSINE` index path is unavailable.
 
 ## Why 384 Numbers? Why Not 2 or 10?
 
@@ -170,11 +181,13 @@ Without the vector index, ArangoDB would have to:
 2. Calculate cosine similarity with the new ticket
 3. For 10,000 tickets = 10,000 calculations
 
-With the vector index (HNSW algorithm), ArangoDB:
-1. Uses a pre-built "map" of where similar embeddings are located
-2. Jumps directly to the neighborhood of similar tickets
-3. Only checks ~50-100 candidates instead of all 10,000
+With the vector index (ArangoDB faiss-based IVF index — dimension 384, metric cosine, `nLists` 10 — queried via `APPROX_NEAR_COSINE`), ArangoDB:
+1. Uses a pre-built set of cluster "lists" grouping where similar embeddings are located
+2. Jumps directly to the neighborhood (nearest lists) of similar tickets
+3. Over-fetches the approximate nearest neighbors (5x the requested limit, minimum 25), then recomputes exact cosine similarity on the survivors
 4. Returns results in **milliseconds** instead of seconds
+
+If the index path is unavailable (e.g. on a fresh deploy where the vector index is not yet built), it falls back to an exact brute-force `COSINE_SIMILARITY` full scan.
 
 ## When Does Vector Search NOT Work Well?
 
@@ -184,4 +197,4 @@ With the vector index (HNSW algorithm), ArangoDB:
 | Very short ticket ("server down") | Too little text → vague embedding | Error code matching, graph traversal |
 | Ticket about a completely new issue type | No similar past ticket exists | LLM classifies from its own knowledge |
 
-That's why DeskMind uses **3 methods** (vector + error matching + graph), not just vector search alone.
+That's why DeskMind uses **4 methods** (vector similarity + error-code matching + graph traversal + full-text keyword search, per `retrieval.py` `retrieve_all()`), not just vector search alone.

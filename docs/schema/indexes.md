@@ -139,8 +139,8 @@ This finds the 5 tickets most similar in meaning to the query embedding. The vec
 #### Technical details:
 - **384 dimensions**: The MiniLM model (all-MiniLM-L6-v2) produces 384-dimensional vectors. Each dimension captures one aspect of meaning.
 - **Cosine similarity**: We measure similarity by the angle between two vectors. 1.0 = identical meaning, 0.0 = completely unrelated.
-- **HNSW algorithm**: The index uses Hierarchical Navigable Small World algorithm for fast approximate nearest neighbor search. Don't worry about the name — just know it makes similarity search fast.
-- **Approximate**: The index trades a tiny bit of accuracy for a lot of speed. It might miss the #6 best match, but it will find the top 5 correctly 99% of the time.
+- **faiss-based IVF index**: ArangoDB builds a faiss-based IVF (inverted file) vector index — dimension 384, metric cosine, nLists 10 — queried via `APPROX_NEAR_COSINE` for fast approximate nearest neighbor search. If the index is unavailable, the query falls back to an exact brute-force `COSINE_SIMILARITY` scan. Don't worry about the name — just know it makes similarity search fast.
+- **Approximate**: The index trades a tiny bit of accuracy for a lot of speed. To compensate, the ANN query over-fetches candidates (5× the requested limit, minimum 25) and recomputes exact cosine similarity on the survivors so the returned top matches are accurate.
 
 ---
 

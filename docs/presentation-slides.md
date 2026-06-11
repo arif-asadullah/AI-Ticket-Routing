@@ -60,8 +60,8 @@
 **Title**: System Architecture
 
 **Diagram showing 4 components:**
-- React Frontend (24 components)
-- FastAPI Backend (24 services, 22 API endpoints)
+- React Frontend (26 components)
+- FastAPI Backend (24 services, 32 API endpoints)
 - ArangoDB 3.12 (Graph + Vector + Document — 3-in-1 database)
 - Ollama + Qwen 2.5:7B (Local LLM, no cloud)
 - Redis 7 (Cache + SLA + Rate Limiting)
@@ -92,7 +92,7 @@ Stage 5: DECIDE (route + generate resolution + enrich)
 | Keyword | 15% | Pattern matching on 100+ domain terms | 67.7% |
 
 **Key insight (highlighted box)**:
-"Ensemble accuracy (94.1%) matches the best individual classifier — but with graceful degradation. If LLM goes down, remaining 3 classifiers still achieve ~70%."
+"Ensemble accuracy (94.1%) matches the best individual classifier — but with graceful degradation. If LLM goes down, remaining 3 classifiers still achieve ~70% (projected)."
 
 **Bottom**: Majority-Aware Voting: 6-phase algorithm with boundary overrides, strength checks, and tiebreaker protocols
 
@@ -158,7 +158,7 @@ Engineer verifies → feedback loop → system improves
   4. Increase connection timeout settings in Okta
   5. Monitor for successful provisioning
 
-**Quality Gate**: "Only generates when reference data exists. No hallucination."
+**Quality Gate**: "Only generates when reference data exists. Hallucination-resistant."
 
 **Speaker Notes**: This is the "wow" feature. Most systems just route — we SOLVE. Explain the quality gate: grounded generation, not guessing. If no reference data, returns nothing.
 
@@ -204,8 +204,8 @@ Engineer verifies → feedback loop → system improves
 
 **Stats:**
 - 15 document collections, 9 edge collections
-- 3,492 edges connecting the IT organization
-- 855 tickets with embeddings
+- ~3,500 edges connecting the IT organization (generated at seed time)
+- 855 tickets with embeddings (55 seed + 800 synthetic)
 
 **How it helps classification:**
 - Ticket mentions "prod-db-01" → graph reveals:
@@ -241,9 +241,9 @@ Engineer verifies → feedback loop → system improves
 
 ---
 
-## SLIDE 11: Zero Hallucination Chat
+## SLIDE 11: Hallucination-Resistant Chat
 
-**Title**: Mindy AI — Zero Hallucination Conversational AI
+**Title**: Mindy AI — Hallucination-Resistant Conversational AI
 
 **3-step approach (flow diagram):**
 1. **Rule-based Intent Parser** — Understands what you're asking (no LLM needed)
@@ -255,9 +255,9 @@ Engineer verifies → feedback loop → system improves
 - "Which team handles database issues?" → Database Admin team + engineers
 - "How many tickets are escalated?" → Real-time count from DB
 
-**Key callout**: "The LLM never makes things up because it never has to. It only formats what the database returns."
+**Key callout**: "The LLM doesn't invent data — it never has to. It only formats what the database returns."
 
-**Speaker Notes**: Demo this live. Type a query, show the colored entity chips. Emphasize the 3-step approach — it's architecturally impossible to hallucinate.
+**Speaker Notes**: Demo this live. Type a query, show the colored entity chips. Emphasize the 3-step approach — the architecture makes hallucination very unlikely — rule-based parsing + real DB queries, the LLM only formats the results.
 
 ---
 
@@ -271,10 +271,10 @@ Engineer verifies → feedback loop → system improves
 2. **Agentic AI** — classifies, generates resolutions, predicts incidents, enriches tickets
 3. **Self-learning** — 3 feedback loops, gets smarter with every ticket
 4. **Knowledge graph** — real infrastructure relationships powering decisions
-5. **Zero hallucination** — every AI response grounded in real data
+5. **Hallucination-resistant** — every AI response grounded in real data
 6. **100% on-premise** — no cloud APIs, full data privacy, works offline
 
-**Bottom (large)**: 24 backend services | 24 frontend components | 22 API endpoints | 12 AI features | 40 documentation files
+**Bottom (large)**: 24 backend services | 26 frontend components | 32 API endpoints | 10 AI features | 40 documentation files
 
 **Final line**: "DeskMind — Intelligent IT Ticket Routing That Actually Solves Problems"
 
@@ -287,7 +287,7 @@ Engineer verifies → feedback loop → system improves
 | Question | Key Answer |
 |----------|-----------|
 | How handle misclassification? | Override → correction tracked → cache flushed → centroids retrained |
-| What if LLM goes down? | Circuit breaker → Level 2 (3 classifiers, ~70%) → Level 1 (keyword, ~55%) |
+| What if LLM goes down? | Circuit breaker → Level 2 (3 classifiers, ~70% projected) → Level 1 (keyword, ~68% measured) |
 | Why not GPT-4? | Data privacy + zero cost + no latency + works offline |
 | How does graph help? | prod-db-01 → database server → DB Admin team → PostgreSQL → past fixes → experts |
 | Can it scale? | Cache handles repeats (<10ms), Ollama supports concurrency, keyword fallback is instant |

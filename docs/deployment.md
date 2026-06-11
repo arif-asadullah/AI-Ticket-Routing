@@ -44,7 +44,7 @@ ARANGO_PASSWORD=your-secure-password
 
 # Optional — tune as needed
 OLLAMA_BASE_URL=http://localhost:11434    # host machine Ollama
-OLLAMA_MODEL=qwen2.5:3b                  # or qwen2.5:7b for better accuracy
+OLLAMA_MODEL=qwen2.5:7b                  # 7B is the benchmarked default; qwen2.5:3b is lighter but less accurate
 CONFIDENCE_THRESHOLD=0.70                 # lower = more auto-routing, higher = more escalation
 LOG_LEVEL=INFO                            # DEBUG for troubleshooting
 ```
@@ -54,7 +54,7 @@ LOG_LEVEL=INFO                            # DEBUG for troubleshooting
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
-| `OLLAMA_MODEL` | `qwen2.5:3b` | LLM model for classification |
+| `OLLAMA_MODEL` | `qwen2.5:7b` | LLM model for classification |
 | `ARANGO_URL` | `http://localhost:8530` | ArangoDB endpoint |
 | `ARANGO_DB` | `ticket_agent` | Database name |
 | `ARANGO_USER` | `root` | Database user |
@@ -75,7 +75,7 @@ Ollama runs on the **host machine** (not inside Docker) because it needs GPU/CPU
 ```bash
 brew install ollama
 ollama serve                  # start the server (keep running)
-ollama pull qwen2.5:3b        # download model (~1.9 GB)
+ollama pull qwen2.5:7b        # download model (~4.7 GB)
 ```
 
 ### Windows
@@ -85,7 +85,7 @@ ollama pull qwen2.5:3b        # download model (~1.9 GB)
 3. Open terminal:
 
 ```bash
-ollama pull qwen2.5:3b
+ollama pull qwen2.5:7b
 ```
 
 ### Verify Ollama
@@ -157,9 +157,9 @@ docker compose exec backend python scripts/seed_db.py
 This loads:
 - 6 teams with SLA definitions
 - 12 engineers with skills
-- 16 servers, 12 services, 5 network devices
+- 15 servers, 12 services, 5 network devices
 - 20 error codes with patterns
-- 30 routing rules
+- 24 routing rules
 - 55 curated seed tickets (with embeddings)
 - 800 synthetic tickets (with embeddings)
 - 10 runbooks
@@ -172,11 +172,11 @@ This loads:
 Loading seed data...
   teams: 6
   engineers: 12
-  servers: 16
+  servers: 15
   ...
   users: 1 accounts (passwords hashed)
 Computing category centroids...
-Done! Loaded 864 tickets with embeddings.
+Done! Loaded 855 tickets with embeddings.
 ```
 
 ---
@@ -223,14 +223,31 @@ curl -X POST http://localhost:8000/api/tickets \
 
 ---
 
-## Running the Evaluation Suite
+## Running the Test Suite
 
-To evaluate classification accuracy on the test set:
+The repo ships a 68-function pytest unit suite (`tests/unit/` — aggregator, knn,
+keyword, quality_scorer, circuit_breaker, find_runbook). These are correctness
+unit tests; they do **not** produce the accuracy figure:
 
 ```bash
 docker compose exec backend python scripts/seed_db.py    # ensure data is loaded
-docker compose exec backend python -m pytest tests/ -v    # run test suite
+docker compose exec backend python -m pytest tests/ -v    # run unit test suite
 ```
+
+> **Note:** This suite is **not** run in CI (there is no `.github/workflows`
+> configuration). Run it locally before pushing.
+
+### Accuracy benchmark
+
+The 94.1% classification accuracy is produced by the evaluation scripts, **not**
+by pytest. Run them against the fixed benchmark set:
+
+```bash
+docker compose exec backend python scripts/evaluate.py          # full ensemble eval
+docker compose exec backend python scripts/eval_classifier.py   # per-classifier eval
+```
+
+These score against `data/eval/test_tickets.json`.
 
 ---
 
@@ -338,6 +355,6 @@ docker system prune -a    # removes unused images/containers
 ### 7. Ollama model download stuck
 
 ```bash
-ollama rm qwen2.5:3b      # remove partial download
-ollama pull qwen2.5:3b    # retry
+ollama rm qwen2.5:7b      # remove partial download
+ollama pull qwen2.5:7b    # retry
 ```

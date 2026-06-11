@@ -194,7 +194,7 @@ class ClassificationResult(TypedDict):
     category: str | None                        # Winning category
     secondary_category: str | None              # Runner-up (if score > 0.15)
     priority: str                               # "critical" | "high" | "medium" | "low"
-    confidence: float                           # Final calibrated confidence (0.0 - cap)
+    confidence: float                           # Final confidence after scenario + quality caps (0.0 - cap)
     agreement: str                              # "4/4", "3/4", "2/4", etc.
     quality_score: str                          # "HIGH" | "MEDIUM" | "LOW"
     classifier_votes: dict                      # Raw votes from each classifier
@@ -318,7 +318,7 @@ class Settings(BaseSettings):
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `init_schema` | `(db: StandardDatabase) -> None` | Idempotent: creates 13 doc collections, 9 edge collections, 1 named graph, all indexes |
+| `init_schema` | `(db: StandardDatabase) -> None` | Idempotent: creates 15 doc collections, 9 edge collections, 1 named graph, all indexes |
 | `_create_indexes` | `(db: StandardDatabase) -> None` | Creates persistent, fulltext, vector, and unique indexes with retry logic |
 
 ### 3.5 `services/orchestrator.py` — Classification Pipeline Controller
@@ -352,7 +352,7 @@ class Settings(BaseSettings):
 | Function | Signature | Returns | Description |
 |----------|-----------|---------|-------------|
 | `score_quality` | `(title, description, entities) -> str` | `"HIGH" \| "MEDIUM" \| "LOW"` | Score based on description length (>50 chars) and entity presence |
-| `get_confidence_cap` | `(quality_score) -> float` | `float` | HIGH=0.99, MEDIUM=0.85, LOW=0.75 |
+| `get_confidence_cap` | `(quality_score) -> float` | `float` | HIGH=0.99, MEDIUM=0.85, LOW=0.69 — LOW is intentionally kept below the 0.70 auto-route threshold so low-quality/vague tickets always escalate to human review. (`quality_scorer.py` still carries a stale local 0.75 that should be reconciled to 0.69; the aggregator's `QUALITY_CAPS` LOW=0.69 is what gates routed confidence.) |
 
 ### 3.9 `services/retrieval.py` — Hybrid Retrieval (4 methods)
 
@@ -392,11 +392,11 @@ class Settings(BaseSettings):
 |----------|-----------|---------|-------------|
 | `classify_keyword` | `(text: str) -> dict` | `dict` | Counts keyword hits across 6 category dictionaries (25+ keywords each) |
 
-### 3.14 `services/aggregator.py` — Weighted Aggregator
+### 3.14 `services/aggregator.py` — Majority-Aware Aggregator
 
 | Function | Signature | Returns | Description |
 |----------|-----------|---------|-------------|
-| `aggregate` | `(votes, quality_score, error_codes, graph_confirms_category) -> dict` | `dict` | 7-step weighted voting with bonuses, calibration, and quality cap |
+| `aggregate` | `(votes, quality_score, error_codes, graph_confirms_category) -> dict` | `dict` | 6-phase majority-aware voting; selection sets a SCENARIO_CAP, then confidence = 0.60·supporter_avg_conf + 0.25·vote_share + 0.15·weight_share (+0.03 error, +0.02 graph), capped by scenario + quality |
 | `_get_weights` | `(active_votes) -> dict` | `dict` | Returns appropriate weight set based on which classifiers are active |
 
 ### 3.15 `api/tickets.py` — Ticket API Endpoints (all protected)
@@ -502,11 +502,11 @@ All 4 classifiers run concurrently. Total time = LLM time (~2s), not the sum of 
 
 | Step | Operation | Input | Output | Latency |
 |------|-----------|-------|--------|---------|
-| 4a | Weighted Voting | 4 classifier votes + weight set | category_scores dict | <1ms |
-| 4b | Agreement Bonus/Penalty | vote count for winner | bonus: -0.10 to +0.05 | <1ms |
+| 4a | Phase Detection | 4 classifier votes + weight set | winning category + scenario (unanimous / supermajority / pair / 2v2 / disagreement) + scenario_cap | <1ms |
+| 4b | Base Confidence | supporter avg conf, vote_share, weight_share | base = 0.60·supporter_avg + 0.25·vote_share + 0.15·weight_share | <1ms |
 | 4c | Contextual Bonuses | error_codes, graph_confirms | +0.03 (errors), +0.02 (graph) | <1ms |
-| 4d | Confidence Calibration | raw score, agreement level | calibrated score | <1ms |
-| 4e | Quality Cap | quality_score | final confidence (capped) | <1ms |
+| 4d | Safety Check | max supporter conf, active count | base capped at 0.55 if max supporter conf < 0.60 and ≥3 active | <1ms |
+| 4e | Caps | scenario_cap, quality_cap | final = min(base + bonus, scenario_cap, quality_cap) | <1ms |
 
 ### Stage 5: DECIDE + ENRICH
 
@@ -621,24 +621,24 @@ score(category_c) = SUM( similarity_i )  for all neighbors i where category_i ==
 winner = argmax_c( score(category_c) )
 ```
 
-3. **Compute confidence** — Proportion of neighbors that agree with the winner (unweighted count):
+3. **Compute confidence** — Similarity-weighted vote share: the winner's summed similarity divided by the total summed similarity across all neighbors (unweighted vote counts are kept only for transparency):
 
 ```python
 # From knn_classifier.py
-vote_counts = dict(Counter(t.get("category") for t in top_k if t.get("category")))
-agreeing = vote_counts.get(winner, 0)
-confidence = agreeing / len(top_k)
+winner_score = weighted_votes[winner]
+total_score = sum(weighted_votes.values())
+confidence = winner_score / total_score if total_score > 0 else 0.0
 ```
 
 **Formula**:
 
 ```
-confidence = count(neighbors agreeing with winner) / K
+confidence = SUM(similarity_i for neighbors agreeing with winner) / SUM(similarity_i for all neighbors)
 ```
 
 **Example**: If top 5 are [Database(0.95), Database(0.91), Database(0.88), Application(0.82), Database(0.80)]:
 - `weighted_votes = {"Database": 3.54, "Application": 0.82}`
-- Winner = Database, confidence = 4/5 = 0.80
+- Winner = Database, confidence = 3.54 / 4.36 ≈ 0.812
 
 ---
 
@@ -778,7 +778,7 @@ Note: Despite Application winning keyword count, the KNN and Centroid classifier
 
 ---
 
-## 6. Aggregation Algorithm — 7-Step Process
+## 6. Aggregation Algorithm — 6-Phase Majority-Aware Voting
 
 ### Constants
 
@@ -800,7 +800,25 @@ DEGRADED_WEIGHTS = {
 QUALITY_CAPS = {
     "HIGH":   0.99,
     "MEDIUM": 0.85,
-    "LOW":    0.75,
+    "LOW":    0.69,   # below the 0.70 auto-route line → vague tickets always escalate
+}
+
+SCENARIO_CAPS = {
+    "unanimous_4":          0.95,
+    "unanimous_3":          0.88,
+    "unanimous_2":          0.75,
+    "strong_supermajority": 0.85,
+    "weak_supermajority":   0.65,
+    "dissenter_override":   0.60,
+    "pair_wins":            0.70,
+    "pair_fallback":        0.60,
+    "boundary_override":    0.65,
+    "weighted_2v2":         0.65,
+    "avgconf_2v2":          0.60,
+    "centroid_tiebreak":    0.60,
+    "unresolved_2v2":       0.50,
+    "total_disagreement":   0.50,
+    "single_classifier":    0.50,
 }
 ```
 
@@ -821,86 +839,78 @@ Weight selection logic:
 - Keywords only: `{keyword: 1.0}`
 - Other combination: even split `1.0 / n` per active classifier
 
-**Step 1: Weighted Category Scores**
+**Step 1: Tally votes and weighted scores**
 
 ```python
-category_scores = {}
+# vote_count = how many classifiers chose each category
+# weighted_score = SUM(weight_i) per category, used only as a tiebreaker
+category_voters = defaultdict(list)   # cat -> [{weight, confidence}, ...]
 for classifier, vote in active_votes.items():
-    weight = weights.get(classifier, 0)
     cat = vote["category"]
-    conf = vote.get("confidence", 0.5)
-    category_scores[cat] = category_scores.get(cat, 0) + (weight * conf)
-
-winner = max(category_scores, key=category_scores.get)
-```
-
-Formula: `score(c) = SUM( weight_i * confidence_i )` for all classifiers voting for category c.
-
-**Step 2: Agreement Bonus/Penalty**
-
-```python
+    category_voters[cat].append({
+        "weight": weights.get(classifier, 0),
+        "confidence": vote.get("confidence", 0.5),
+    })
 total_active = len(active_votes)
-agreeing = sum(1 for v in active_votes.values() if v["category"] == winner)
-
-if agreeing == total_active and total_active >= 3:
-    bonus = 0.05       # Unanimous (3+ classifiers)
-elif agreeing >= total_active - 1 and total_active >= 3:
-    bonus = 0.00       # Near-unanimous
-elif agreeing >= 2:
-    bonus = -0.05      # Split vote
-else:
-    bonus = -0.10      # Lone dissenter wins only on weight
 ```
 
-**Step 3: Contextual Bonuses**
+Winner selection is deterministic: sort categories by `(vote_count desc, weighted_score desc, category_name asc)`.
+
+**Step 2: Phase detection (which scenario applies)**
+
+The winner and its `scenario_cap` are chosen by the first matching phase, not by a weighted sum:
+
+| Phase | Scenario | Trigger | scenario_cap |
+|-------|----------|---------|--------------|
+| 0 | `single_classifier` | only 1 active classifier | 0.50 |
+| 1 | unanimous | all active agree | `unanimous_4` 0.95 / `unanimous_3` 0.88 / `unanimous_2` 0.75 |
+| 2 | supermajority | 3+ agree | `strong_supermajority` 0.85 / `weak_supermajority` 0.65 / `dissenter_override` 0.60 (by strength) |
+| 3 | pair beats singles (2/1/1) | a 2-vote category vs two 1-vote categories | `pair_wins` 0.70 / `pair_fallback` 0.60 (strength-checked) |
+| 4 | 2v2 split | known boundary (Database/Infrastructure) → `boundary_override` 0.65; else `weighted_2v2` 0.65 / `avgconf_2v2` 0.60 / `centroid_tiebreak` 0.60 / `unresolved_2v2` 0.50 | 0.50–0.65 |
+| 5 | total disagreement | all categories tied at 1 vote | `total_disagreement` 0.50 (weighted fallback) |
+
+**Step 3: Base confidence (computed over the winner's supporters)**
 
 ```python
+voters = category_voters[winner]
+supporter_avg_conf = sum(v["confidence"] for v in voters) / len(voters)
+vote_share         = len(voters) / max(total_active, 1)
+total_weight       = sum(v["weight"] for cv in category_voters.values() for v in cv)
+weight_share       = sum(v["weight"] for v in voters) / max(total_weight, 0.01)
+
+base = (0.60 * supporter_avg_conf) + (0.25 * vote_share) + (0.15 * weight_share)
+```
+
+**Step 4: Contextual bonuses**
+
+```python
+bonus = 0.0
 if error_codes and errors_confirm_category(error_codes, winner):
     bonus += 0.03       # Error code confirms category
 if graph_confirms_category:
     bonus += 0.02       # Graph context confirms category
 ```
 
-**Step 4: Raw Confidence**
+**Step 5: Disagreement safety check**
+
+Prevents dangerous high-confidence wrong routing. If no supporter of the winner is itself >60% confident (and ≥3 classifiers are active), the base is capped at 0.55 to trigger escalation:
 
 ```python
-raw = category_scores[winner] + bonus
+max_supporter_conf = max(v["confidence"] for v in voters)
+if max_supporter_conf < 0.60 and total_active >= 3:
+    base = min(base, 0.55)
 ```
 
-**Step 5: Calibration**
+**Step 6: Caps (scenario + quality)**
 
 ```python
-if agreeing == total_active and raw >= 0.90:
-    calibrated = raw * 0.98     # Unanimous + strong → slight dampening
-elif agreeing >= total_active - 1 and raw >= 0.70:
-    calibrated = raw * 0.95     # Near-unanimous → moderate dampening
-elif agreeing >= 2:
-    calibrated = raw * 0.80     # Split → significant dampening
-else:
-    calibrated = raw * 0.75     # Weak agreement → heavy dampening
+quality_cap = QUALITY_CAPS.get(quality_score, 0.99)
+final_confidence = round(min(base + bonus, scenario_cap, quality_cap), 3)
 ```
 
-**Step 5.5: Disagreement Safety Check**
+There is **no** agreement bonus (+0.05/-0.10) and **no** calibration multiplier (×0.98/×0.95/×0.80/×0.75); the scenario cap and quality cap are the only ceilings.
 
-Prevents dangerous high-confidence wrong routing. If no individual classifier has >60% confidence on the winning category, force low confidence to trigger escalation:
-
-```python
-max_individual_conf = max(
-    vote.get("confidence", 0) for vote in active_votes.values()
-    if vote["category"] == winner
-)
-if max_individual_conf < 0.60 and total_active >= 3:
-    calibrated = min(calibrated, 0.55)  # Force escalation
-```
-
-**Step 6: Quality Cap**
-
-```python
-cap = QUALITY_CAPS.get(quality_score, 0.99)
-final_confidence = min(max(calibrated, 0.0), cap)
-```
-
-**Step 7: Secondary Category**
+**Secondary Category**
 
 ```python
 sorted_cats = sorted(category_scores.items(), key=lambda x: -x[1])
@@ -928,32 +938,37 @@ if len(sorted_cats) >= 2 and sorted_cats[1][1] > 0.15:
 
 **Step 0**: All 4 active. Weights = `{llm: 0.40, knn: 0.15, centroid: 0.30, keyword: 0.15}`.
 
-**Step 1**: Weighted scores:
+**Step 1**: Vote tally — `Database = 3 votes` (LLM, KNN, Centroid), `Application = 1 vote` (Keyword). Weighted (tiebreaker only) scores:
 ```
-Database    = (0.40 * 0.92) + (0.15 * 0.80) + (0.30 * 0.84) + (0.15 * 0.60) = 0.368 + 0.120 + 0.252 + 0.090 = 0.830
-Application = (0.10 * 0.60) = 0.060
+Database    = 0.40 + 0.15 + 0.30 = 0.85   (weight sum of its 3 supporters)
+Application = 0.15                          (Keyword weight = 0.15 × ... , vote weight 0.15)
 ```
-Winner = **Database** (0.776).
+Winner = **Database** by `(vote_count=3 desc)`.
 
-**Step 2**: Agreement = 3/4 classifiers agree on Database. `total_active=4`, `agreeing=3`.
-- `agreeing >= total_active - 1` and `total_active >= 3` → `bonus = 0.00`
+**Step 2**: Phase detection — 3 of 4 agree on Database (a 3/1 split) → **Phase 2 supermajority**. Supporter confidences are all ≥ 0.80, so this is a **strong supermajority** → `scenario_cap = 0.85`.
 
-**Step 3**: Contextual bonuses:
+**Step 3**: Base confidence over the 3 Database supporters:
+```
+supporter_avg_conf = (0.92 + 0.80 + 0.84) / 3 = 0.853
+vote_share         = 3 / 4 = 0.75
+weight_share       = (0.40 + 0.15 + 0.30) / 1.00 = 0.85
+base = 0.60·0.853 + 0.25·0.75 + 0.15·0.85
+     = 0.512 + 0.1875 + 0.1275 = 0.827
+```
+
+**Step 4**: Contextual bonuses:
 - `errors_confirm_category(["ERR-PG-003" service="postgresql"], "Database")` → `postgresql` maps to `Database` → **match**: `bonus += 0.03`
 - Graph context: `managed_by_domain == "Database"` → **match**: `bonus += 0.02`
-- Total bonus = 0.00 + 0.03 + 0.02 = **0.05**
+- Total bonus = 0.03 + 0.02 = **0.05** → `base + bonus = 0.827 + 0.05 = 0.877`
 
-**Step 4**: Raw = 0.776 + 0.05 = **0.826**
+**Step 5**: Safety check — max supporter confidence is 0.92 (≥ 0.60), so no 0.55 cap applies.
 
-**Step 5**: Calibration:
-- `agreeing (3) >= total_active - 1 (3)` and `raw (0.826) >= 0.70` → `calibrated = 0.826 * 0.95 = 0.785`
+**Step 6**: Caps:
+- `scenario_cap = 0.85` (strong supermajority), `quality_cap = 0.99` (HIGH)
+- `final_confidence = round(min(0.877, 0.85, 0.99), 3) = 0.85`
 
-**Step 6**: Quality cap:
-- Quality = `"HIGH"` → cap = 0.99
-- `final_confidence = min(max(0.785, 0.0), 0.99) = 0.785`
-
-**Step 7**: Secondary category:
-- `Application` score = 0.060. Is 0.060 > 0.15? No → **secondary = None**
+**Secondary category**:
+- `Application` weighted score = 0.15. Is 0.15 > 0.15? No → **secondary = None**
 
 **Final output**:
 ```json
@@ -961,14 +976,14 @@ Winner = **Database** (0.776).
     "category": "Database",
     "secondary_category": null,
     "priority": "high",
-    "confidence": 0.785,
+    "confidence": 0.85,
     "agreement": "3/4",
     "quality_score": "HIGH",
     "reasoning": "PostgreSQL connection pool exhaustion is a database-layer issue..."
 }
 ```
 
-**Decision**: 0.785 >= 0.70 → **Auto-routed** to Database Admin team.
+**Decision**: 0.85 >= 0.70 → **Auto-routed** to Database Admin team.
 
 ---
 
@@ -977,17 +992,23 @@ Winner = **Database** (0.776).
 ### 7.1 Vector Similarity Search
 
 ```sql
--- From retrieval.py — search_similar_tickets()
--- Finds top 5 semantically similar past tickets using cosine similarity
--- on 384-dimensional MiniLM embeddings stored in the vector index.
--- Includes both "closed" (seed/synthetic) and "resolved" (user-resolved) tickets,
--- creating a live feedback loop where engineer resolutions improve future suggestions.
+-- From retrieval.py — search_similar_tickets()  (PRIMARY path: ANN vector index)
+-- Finds top 5 semantically similar past tickets using the ArangoDB vector index
+-- via APPROX_NEAR_COSINE on 384-dimensional MiniLM embeddings.
+-- APPROX_NEAR_COSINE cannot be combined with a pre-FILTER in the same loop, so we
+-- over-fetch the nearest neighbours, then filter status and recompute EXACT cosine
+-- on the survivors. Includes both "closed" (seed/synthetic) and "resolved"
+-- (user-resolved) tickets — a live feedback loop where resolutions improve suggestions.
 
-FOR ticket IN tickets
+FOR ticket IN (
+    FOR t IN tickets
+        SORT APPROX_NEAR_COSINE(t.embedding, @embedding) DESC
+        LIMIT @overfetch
+        RETURN t
+)
     FILTER ticket.status IN ["closed", "resolved"]
-    LET sim = COSINE_SIMILARITY(ticket.embedding, @embedding)
-    SORT sim DESC
     LIMIT @limit
+    LET sim = COSINE_SIMILARITY(ticket.embedding, @embedding)
     LET resolution = FIRST(
         FOR res IN 1..1 OUTBOUND ticket resolved_with
             RETURN res
@@ -1004,9 +1025,11 @@ FOR ticket IN tickets
     }
 ```
 
-**Bind vars**: `{"embedding": [0.012, -0.034, ...], "limit": 5}`
+A brute-force exact full-scan (`FOR ticket IN tickets FILTER status IN ["closed","resolved"] LET sim = COSINE_SIMILARITY(...) SORT sim DESC LIMIT @limit`) is the **fallback only**, used when the vector index / `APPROX_NEAR_COSINE` is unavailable (e.g. index not yet built on a fresh deploy).
 
-**Index used**: `idx_tickets_embedding` (vector, 384-dim, cosine, nLists=10)
+**Bind vars**: `{"embedding": [0.012, -0.034, ...], "limit": 5, "overfetch": 25}`
+
+**Index used**: `idx_tickets_embedding` (vector, faiss-based IVF, 384-dim, cosine, nLists=10) — matches the Key Indexes table in 05.
 
 ### 7.2 Error Code → Ticket Traversal
 
@@ -1344,7 +1367,7 @@ Request arrives
 | `network_devices` | `_key`, type, location | Routers, switches, firewalls |
 | `error_codes` | `_key`, pattern, service, severity | Known error patterns (20) |
 | `runbooks` | `_key`, title, category, embedding(384) | Resolution playbooks (10) |
-| `resolutions` | `_key`, steps, effectiveness, embedding(384) | Past resolution records (830) |
+| `resolutions` | `_key`, steps, effectiveness, embedding(384) | Past resolution records (30 seed; grows as tickets are resolved) |
 | `routing_rules` | `_key`, category, priority, target_team, is_active | Category+priority → team mapping (24) |
 | `audit_log` | `_key`, ticket_id, action, actor, old_value, new_value, confidence_score, confidence_signals, reasoning, created_at | Full audit trail |
 | `category_centroids` | `_key`, category, embedding(384), ticket_count | Pre-computed average embedding per category (6) |
@@ -1466,7 +1489,7 @@ col.add_index({
   │            │               └──────────────┘
   │            │  resolved_with ┌──────────────┐  references  ┌──────────────┐
   │            │───────────────▶│ resolutions  │─────────────▶│   runbooks   │
-  └──────┬─────┘               │  (830 docs)  │              │  (10 docs)   │
+  └──────┬─────┘               │  (30 docs)   │              │  (10 docs)   │
          ▲                     └──────────────┘              └──────────────┘
          │ triggered_by
   ┌──────┴─────┐
@@ -1642,7 +1665,7 @@ service_to_category = {
     "redis": "Database",
     "nginx": "Application",
     "order-service": "Application",
-    "auth-service": "Application",
+    "auth-service": "Access Management",
     "kubernetes": "Infrastructure",
     "linux": "Infrastructure",
     "firewall": "Network",

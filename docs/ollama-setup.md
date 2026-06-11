@@ -1,6 +1,6 @@
 # Ollama Setup Guide
 
-Local LLM inference for DeskMind using Ollama with Qwen 2.5:3B.
+Local LLM inference for DeskMind using Ollama with Qwen 2.5:7B.
 
 ## Automated setup
 
@@ -29,10 +29,10 @@ ollama serve
 
 Runs on `http://localhost:11434` by default.
 
-### 3. Pull Qwen 2.5:3B
+### 3. Pull Qwen 2.5:7B
 
 ```bash
-ollama pull qwen2.5:3b
+ollama pull qwen2.5:7b
 ```
 
 Download size is ~2 GB.
@@ -42,13 +42,13 @@ Download size is ~2 GB.
 ```bash
 # Check model is listed
 ollama list
-# Should show: qwen2.5:3b
+# Should show: qwen2.5:7b
 
 # Test the OpenAI-compatible endpoint
 curl http://localhost:11434/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen2.5:3b",
+    "model": "qwen2.5:7b",
     "messages": [{"role": "user", "content": "Say hello"}],
     "temperature": 0
   }'
@@ -62,7 +62,7 @@ You should get a valid JSON response with the model's reply.
 curl http://localhost:11434/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen2.5:3b",
+    "model": "qwen2.5:7b",
     "messages": [{"role": "user", "content": "Classify this IT ticket: PostgreSQL not accepting connections on prod-db-01"}],
     "temperature": 0.1
   }'
@@ -77,14 +77,14 @@ If you previously installed `phi3:mini`, remove it and pull the correct model:
 ollama rm phi3:mini
 
 # Pull the correct model
-ollama pull qwen2.5:3b
+ollama pull qwen2.5:7b
 
 # Verify
 ollama list
-# Should show ONLY: qwen2.5:3b
+# Should show ONLY: qwen2.5:7b
 ```
 
-Make sure your `.env` has `OLLAMA_MODEL=qwen2.5:3b`. Then restart the backend:
+Make sure your `.env` has `OLLAMA_MODEL=qwen2.5:7b`. Then restart the backend:
 
 ```bash
 docker compose restart backend
@@ -96,7 +96,7 @@ Ensure your `.env` has:
 
 ```ini
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=qwen2.5:3b
+OLLAMA_MODEL=qwen2.5:7b
 ```
 
 ## Docker setup
@@ -114,7 +114,7 @@ This is already configured in `docker-compose.yml`.
 | Issue | Fix |
 |-------|-----|
 | `connection refused` on :11434 | Run `ollama serve` first |
-| Model not found | Run `ollama pull qwen2.5:3b` |
-| Slow responses | Qwen 2.5:3B needs ~4 GB RAM; close other heavy apps |
+| Model not found | Run `ollama pull qwen2.5:7b` |
+| Slow responses | Qwen 2.5:7B needs ~6 GB RAM; close other heavy apps |
 | GPU not used | Ollama auto-detects GPU. Check `ollama ps` for GPU info |
 | Backend can't reach Ollama | Check `OLLAMA_BASE_URL` in `.env`. Inside Docker use `host.docker.internal` |

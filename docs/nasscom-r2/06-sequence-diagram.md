@@ -83,7 +83,7 @@ sequenceDiagram
     activate Ret
 
     par Vector Similarity Search
-        Ret ->> ArangoDB: search_similar_tickets(db, embedding, limit=5)<br/>AQL: COSINE_SIMILARITY, SORT DESC, LIMIT 5<br/>+ resolved_with traversal
+        Ret ->> ArangoDB: search_similar_tickets(db, embedding, limit=5)<br/>AQL (primary): subquery SORT APPROX_NEAR_COSINE DESC LIMIT overfetch,<br/>then FILTER status IN ['closed','resolved'], recompute exact COSINE_SIMILARITY<br/>(brute-force COSINE_SIMILARITY full-scan is fallback only)<br/>+ resolved_with traversal
         ArangoDB -->> Ret: similar_tickets: list[SimilarTicket] (5 results)
     and Error Code Match
         Ret ->> ArangoDB: search_by_error_codes(db, error_codes)<br/>AQL: 1..1 OUTBOUND error_codes triggered_by<br/>+ resolved_with traversal
@@ -137,14 +137,13 @@ sequenceDiagram
     Orch ->> Agg: aggregate(votes, quality_score="HIGH",<br/>error_codes=[{error_key: "ERR-DB-003", ...}],<br/>graph_confirms_category=true)
     activate Agg
     Agg ->> Agg: _get_weights(active_votes)<br/>{llm: 0.40, knn: 0.15, centroid: 0.30, keyword: 0.15}
-    Agg ->> Agg: Step 1: Weighted category scores<br/>Database = 0.40*0.96 + 0.15*0.80 + 0.30*0.87 + 0.15*0.60 = 0.855
-    Agg ->> Agg: Step 2: Agreement 4/4 -> bonus +0.05
-    Agg ->> Agg: Step 3: errors_confirm_category() -> +0.03<br/>graph_confirms -> +0.02
-    Agg ->> Agg: Step 4: Raw = 0.855 + 0.10 = 0.955
-    Agg ->> Agg: Step 5: Calibrate (4/4, raw>=0.90) -> 0.955 * 0.98 = 0.936
-    Agg ->> Agg: Step 5.5: Disagreement safety: max_individual=0.96 > 0.60 -> skip cap
-    Agg ->> Agg: Step 6: Quality cap HIGH=0.99 -> min(0.936, 0.99) = 0.936
-    Agg -->> Orch: {category: "Database", secondary_category: null,<br/>priority: "critical", confidence: 0.936,<br/>agreement: "4/4", quality_score: "HIGH"}
+    Agg ->> Agg: Phase select (6-phase majority-aware voting):<br/>all 4 classifiers vote Database -> Phase 1 unanimous<br/>scenario = unanimous_4 (SCENARIO_CAP = 0.95)
+    Agg ->> Agg: Winner: sort by (vote_count desc, weighted_score desc, name asc)<br/>Database = 4 votes -> winner
+    Agg ->> Agg: Confidence base = 0.60*supporter_avg + 0.25*vote_share + 0.15*weight_share<br/>supporter_avg = (0.96+0.80+0.87+0.60)/4 = 0.8075<br/>vote_share = 4/4 = 1.0, weight_share = 1.0<br/>base = 0.60*0.8075 + 0.25*1.0 + 0.15*1.0 = 0.8845
+    Agg ->> Agg: Contextual bonus: errors_confirm_category() -> +0.03<br/>graph_confirms -> +0.02<br/>base + bonus = 0.8845 + 0.05 = 0.9345
+    Agg ->> Agg: Safety: max_supporter_conf=0.96 >= 0.60 -> no 0.55 cap
+    Agg ->> Agg: final = round(min(0.9345, SCENARIO_CAP 0.95, QUALITY_CAP HIGH 0.99), 3) = 0.934
+    Agg -->> Orch: {category: "Database", secondary_category: null,<br/>priority: "critical", confidence: 0.934,<br/>agreement: "4/4", quality_score: "HIGH"}
     deactivate Agg
 
     Note over Orch, ArangoDB: Stage 5 -- Decision & Enrichment
@@ -155,7 +154,7 @@ sequenceDiagram
     ArangoDB -->> Orch: "KB-0003: PostgreSQL Emergency Recovery"
     Orch ->> Orch: recommended_expert = graph_context.experts[0].name<br/>= "Priya Sharma"
 
-    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.936, recommended_team: "Database Admin",<br/>suggested_resolution: [...], recommended_expert: "Priya Sharma",<br/>processing_time_ms: 2147, ...17 fields total}
+    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.934, recommended_team: "Database Admin",<br/>suggested_resolution: [...], recommended_expert: "Priya Sharma",<br/>processing_time_ms: 2147, ...17 fields total}
     deactivate Orch
 
     Note over API, ArangoDB: Post-Pipeline -- Persist & Respond
@@ -166,16 +165,16 @@ sequenceDiagram
         API ->> API: status = "escalated"
     end
 
-    API ->> ArangoDB: collection("tickets").insert({<br/>title, description, category: "Database",<br/>priority: "critical", status: "routed",<br/>confidence_score: 0.936, embedding: float[384],<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>resolution_effectiveness: 0.95,<br/>suggested_runbook: "KB-0003: PostgreSQL Emergency Recovery",<br/>recommended_expert: "Priya Sharma",<br/>_source: "user", ...})
+    API ->> ArangoDB: collection("tickets").insert({<br/>title, description, category: "Database",<br/>priority: "critical", status: "routed",<br/>confidence_score: 0.934, embedding: float[384],<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>resolution_effectiveness: 0.95,<br/>suggested_runbook: "KB-0003: PostgreSQL Emergency Recovery",<br/>recommended_expert: "Priya Sharma",<br/>_source: "user", ...})
     ArangoDB -->> API: {_key: "T-856"}
     Note right of ArangoDB: AI enrichment fields (suggested_resolution,<br/>resolution_effectiveness, suggested_runbook,<br/>recommended_expert) are stored directly<br/>in the ticket document — not just<br/>returned in the API response.
 
     API ->> API: _lookup_team_key(db, "Database Admin")
     API ->> ArangoDB: collection("assigned_to").insert({<br/>_from: "tickets/T-856", _to: "teams/db-admin"})
 
-    API ->> ArangoDB: collection("audit_log").insert({<br/>ticket_id: "T-856", action: "classified",<br/>actor: "ai-4-classifier-ensemble",<br/>new_value: {category: "Database", priority: "critical",<br/>team: "Database Admin"},<br/>confidence_score: 0.936,<br/>confidence_signals: {llm: 0.96, knn: 0.80,<br/>centroid: 0.87, keyword: 0.60}})
+    API ->> ArangoDB: collection("audit_log").insert({<br/>ticket_id: "T-856", action: "classified",<br/>actor: "ai-4-classifier-ensemble",<br/>new_value: {category: "Database", priority: "critical",<br/>team: "Database Admin"},<br/>confidence_score: 0.934,<br/>confidence_signals: {llm: 0.96, knn: 0.80,<br/>centroid: 0.87, keyword: 0.60}})
 
-    API -->> React: 201 Created<br/>TicketResponse {id: "T-856", category: "Database",<br/>status: "routed", confidence_score: 0.936,<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>recommended_expert: "Priya Sharma", ...}
+    API -->> React: 201 Created<br/>TicketResponse {id: "T-856", category: "Database",<br/>status: "routed", confidence_score: 0.934,<br/>routed_to: "Database Admin",<br/>suggested_resolution: ["Increase max_connections..."],<br/>recommended_expert: "Priya Sharma", ...}
     React -->> User: Display routed ticket with<br/>AI reasoning, confidence, team,<br/>suggested resolution, expert
 ```
 
@@ -423,20 +422,21 @@ sequenceDiagram
     Orch ->> Agg: aggregate(votes={knn, centroid, keyword},<br/>quality_score="HIGH", error_codes=[...],<br/>graph_confirms_category=true)
     activate Agg
     Agg ->> Agg: _get_weights(active_votes)<br/>llm not in active_keys<br/>Return DEGRADED_WEIGHTS["no_llm"]<br/>{knn: 0.25, centroid: 0.50, keyword: 0.25}
-    Agg ->> Agg: Weighted score:<br/>Database = 0.25*0.80 + 0.50*0.87 + 0.25*0.60 = 0.785
-    Agg ->> Agg: Agreement: 3/3 -> +0.05<br/>Error confirm: +0.03<br/>Graph confirm: +0.02<br/>Raw = 0.785 + 0.10 = 0.885
-    Agg ->> Agg: Calibrate (3/3, raw>=0.70): 0.885 * 0.95 = 0.841
-    Agg ->> Agg: Quality cap HIGH=0.99: min(0.841, 0.99) = 0.841
-    Agg -->> Orch: {category: "Database", confidence: 0.841,<br/>agreement: "3/3"}
+    Agg ->> Agg: Winner sort (votes desc, weighted desc, name asc):<br/>Database weighted = 0.25*0.80 + 0.50*0.87 + 0.25*0.60 = 0.785
+    Agg ->> Agg: Phase 1 -- unanimous (3/3 Database)<br/>scenario = unanimous_3, SCENARIO_CAP = 0.88
+    Agg ->> Agg: base = 0.60*supporter_avg + 0.25*vote_share + 0.15*weight_share<br/>supporter_avg=(0.80+0.87+0.60)/3=0.757, vote_share=1.0, weight_share=1.0<br/>base = 0.854
+    Agg ->> Agg: Contextual bonus: error confirm +0.03, graph confirm +0.02<br/>base + bonus = 0.854 + 0.05 = 0.904
+    Agg ->> Agg: final = round(min(0.904, SCENARIO_CAP 0.88, HIGH cap 0.99), 3) = 0.88
+    Agg -->> Orch: {category: "Database", confidence: 0.88,<br/>agreement: "3/3"}
     deactivate Agg
 
     Note over Orch: Stage 5 -- Decision
-    Orch ->> Orch: confidence 0.841 >= 0.70 -> status = "routed"<br/>Still routed successfully without LLM!
+    Orch ->> Orch: confidence 0.88 >= 0.70 -> status = "routed"<br/>Still routed successfully without LLM!
 
-    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.841, degradation_level: 2,<br/>processing_time_ms: ~250, ...}
+    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.88, degradation_level: 2,<br/>processing_time_ms: ~250, ...}
     deactivate Orch
 
-    Note right of API: Level 2 Result:<br/>Correct category: Database<br/>Confidence: 0.841 (vs 0.936 at Level 4)<br/>Latency: ~250ms (vs ~2100ms at Level 4)<br/>LLM reasoning: not available<br/>Priority: "medium" (LLM not available for priority)
+    Note right of API: Level 2 Result:<br/>Correct category: Database<br/>Confidence: 0.88 (vs 0.934 at Level 4)<br/>Latency: ~250ms (vs ~2100ms at Level 4)<br/>LLM reasoning: not available<br/>Priority: "medium" (LLM not available for priority)
 ```
 
 ### Scenario B -- Level 1: Emergency Mode (Ollama Down, Database Empty)
@@ -502,28 +502,26 @@ sequenceDiagram
     Orch ->> Agg: aggregate(votes={keyword: {...}},<br/>quality_score="MEDIUM",<br/>error_codes=[], graph_confirms_category=false)
     activate Agg
     Agg ->> Agg: _get_weights(active_votes)<br/>active_keys == {"keyword"}<br/>Return DEGRADED_WEIGHTS["emergency"]<br/>{keyword: 1.0}
-    Agg ->> Agg: Weighted score: Database = 1.0 * 0.667 = 0.667
-    Agg ->> Agg: Agreement: 1/1 (< 3 classifiers) -> bonus = -0.10
-    Agg ->> Agg: No error confirmation, no graph confirmation
-    Agg ->> Agg: Raw = 0.667 + (-0.10) = 0.567
-    Agg ->> Agg: Calibrate (1/1, agreeing < 2): 0.567 * 0.75 = 0.425
-    Agg ->> Agg: Quality cap MEDIUM=0.85: min(0.425, 0.85) = 0.425
-    Agg -->> Orch: {category: "Database", confidence: 0.425,<br/>agreement: "1/1"}
+    Agg ->> Agg: Phase 0 -- single classifier (only keyword active)<br/>scenario = single_classifier, SCENARIO_CAP = 0.50
+    Agg ->> Agg: base = 0.60*supporter_avg + 0.25*vote_share + 0.15*weight_share<br/>= 0.60*0.667 + 0.25*1.0 + 0.15*1.0 = 0.800
+    Agg ->> Agg: No error confirmation, no graph confirmation -> bonus = 0<br/>(single classifier, so no &lt;0.60 supporter safety cap either)
+    Agg ->> Agg: final = round(min(0.800, SCENARIO_CAP 0.50, MEDIUM cap 0.85), 3) = 0.50
+    Agg -->> Orch: {category: "Database", confidence: 0.50,<br/>agreement: "1/1"}
     deactivate Agg
 
     Note over Orch: Stage 5 -- Decision
-    Orch ->> Orch: confidence 0.425 < 0.70 -> status = "escalated"<br/>System correctly escalates to human review
+    Orch ->> Orch: confidence 0.50 < 0.70 -> status = "escalated"<br/>System correctly escalates to human review
 
-    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.425, degradation_level: 1,<br/>recommended_team: null (no routing_rules in empty DB),<br/>processing_time_ms: ~120, ...}
+    Orch -->> API: ClassificationResult {category: "Database",<br/>confidence: 0.50, degradation_level: 1,<br/>recommended_team: null (no routing_rules in empty DB),<br/>processing_time_ms: ~120, ...}
     deactivate Orch
 
     API ->> API: status = "escalated"
-    API ->> ArangoDB: collection("tickets").insert({<br/>status: "escalated", confidence_score: 0.425, ...})
+    API ->> ArangoDB: collection("tickets").insert({<br/>status: "escalated", confidence_score: 0.50, ...})
 
-    API -->> React: 201 Created<br/>TicketResponse {status: "escalated",<br/>confidence_score: 0.425,<br/>ai_reasoning: "",<br/>routed_to: null}
+    API -->> React: 201 Created<br/>TicketResponse {status: "escalated",<br/>confidence_score: 0.50,<br/>ai_reasoning: "",<br/>routed_to: null}
     React -->> Eng: Display escalated ticket<br/>Banner: "Low confidence -- needs human review"
 
-    Note right of API: Level 1 Emergency Result:<br/>Category suggestion: Database (likely correct)<br/>Confidence: 0.425 (below 0.70 threshold)<br/>Status: ESCALATED to human<br/>Latency: ~120ms (fastest possible)<br/>No resolution, no expert, no runbook<br/>No LLM reasoning<br/><br/>The system never fully crashes --<br/>it always provides a best-effort<br/>classification with appropriate<br/>confidence signaling.
+    Note right of API: Level 1 Emergency Result:<br/>Category suggestion: Database (likely correct)<br/>Confidence: 0.50 (below 0.70 threshold)<br/>Status: ESCALATED to human<br/>Latency: ~120ms (fastest possible)<br/>No resolution, no expert, no runbook<br/>No LLM reasoning<br/><br/>The system never fully crashes --<br/>it always provides a best-effort<br/>classification with appropriate<br/>confidence signaling.
 ```
 
 ### Degradation Summary

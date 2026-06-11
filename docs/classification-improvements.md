@@ -23,7 +23,7 @@ We built a **fixed, hand-labeled test set** of 35 tickets covering:
 **Difficulty levels:**
 - **Clear** (25 tickets): Unambiguous category
 - **Boundary** (5 tickets): Two plausible categories, requires root-cause reasoning
-- **Edge** (4 tickets): Very short, multi-domain, or genuinely ambiguous
+- **Edge** (5 tickets): Very short, multi-domain, or genuinely ambiguous
 
 Each ticket runs through the full classification pipeline (LLM + KNN + Centroid + Keyword + Majority-Aware Voting) with cache disabled to ensure fresh results.
 

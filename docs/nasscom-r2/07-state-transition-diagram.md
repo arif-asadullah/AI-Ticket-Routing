@@ -138,7 +138,7 @@ stateDiagram-v2
         [*] --> KeywordOnly
         KeywordOnly : Ollama DOWN + DB empty
         KeywordOnly : Classifiers: Keyword(1.00)
-        KeywordOnly : Expected accuracy ~55%
+        KeywordOnly : Expected accuracy ~68%
     }
 
     Level4_Full --> Level3_NoData : DB loses data / emptied
@@ -164,7 +164,7 @@ stateDiagram-v2
 | **4** | Full | Ollama UP, DB has data | LLM + KNN + Centroid + Keyword | 0.40, 0.15, 0.30, 0.15 | ~90%+ | Normal operating mode. All 4 classifiers run in parallel via `asyncio.gather`. Graph traversal, vector search, error matching, and full-text search all available. Maximum context for decisions. |
 | **3** | No Data | Ollama UP, DB empty or inaccessible | LLM + Keyword | 0.80, 0.20 | ~80% | Occurs on fresh deployment before `seed_db.py` runs, or if ArangoDB loses its data volume. KNN and Centroid classifiers are disabled because there are no past tickets to compare against. The LLM compensates with higher weight. No graph traversal or resolution suggestions. |
 | **2** | No LLM | Ollama DOWN, DB has data | KNN + Centroid + Keyword | 0.25, 0.50, 0.25 | ~70% | Occurs if Ollama crashes, runs out of memory, or the host machine is unreachable. The three data-driven classifiers take over. Still has access to similar tickets, centroids, and graph context. No LLM reasoning or chat. |
-| **1** | Emergency | Ollama DOWN, DB empty | Keyword | 1.00 | ~55% | Worst case. Only the keyword dictionary classifier is available. It uses 25+ keywords per category to make a best-effort classification. No context, no similarity, no graph, no LLM. The system is still operational and still routes tickets -- just with lower accuracy. |
+| **1** | Emergency | Ollama DOWN, DB empty | Keyword | 1.00 | ~68% | Worst case. Only the keyword dictionary classifier is available. It uses 25+ keywords per category to make a best-effort classification. No context, no similarity, no graph, no LLM. The keyword-only classifier measures ~68% standalone (eval_leakfree.json keyword = 0.6765); the system is still operational and still routes tickets -- just with lower accuracy. |
 
 ### 2.2 Transition Descriptions
 
@@ -256,12 +256,14 @@ stateDiagram-v2
     Classifying --> Aggregating : Stage 3 complete (1-4 votes collected)
 
     state Aggregating {
-        [*] --> WeightedVoting
-        WeightedVoting --> AgreementCheck : Weighted scores computed
-        AgreementCheck --> ConfidenceBonuses : Agreement level determined
-        ConfidenceBonuses --> DisagreementSafety : Bonuses applied
-        DisagreementSafety --> QualityCap : Cap at 0.55 if no classifier >60%
-        QualityCap --> [*] : Final confidence set
+        [*] --> VoteTally
+        VoteTally --> PhaseSelection : Votes counted, categories sorted
+        PhaseSelection --> ScenarioCap : Phase 0-5 winner + scenario cap chosen
+        ScenarioCap --> ConfidenceFormula : Scenario cap set
+        ConfidenceFormula --> ContextBonuses : base = 0.60*avg + 0.25*share + 0.15*wshare
+        ContextBonuses --> DisagreementSafety : +0.03 error, +0.02 graph
+        DisagreementSafety --> CapApplication : Cap at 0.55 if no supporter >=60% (>=3 active)
+        CapApplication --> [*] : final = min(base+bonus, scenario_cap, quality_cap)
     }
 
     Aggregating --> Deciding : Stage 4 complete
@@ -317,7 +319,7 @@ This stage runs 4 sequential sub-steps:
 | **Health Check** | `check_health()` | Checks Ollama, ArangoDB, and Redis. Determines the degradation level (1-4). Results are cached for 5 seconds to avoid repeated network calls. |
 | **Entity Extraction** | `entity_extractor.extract()` | Scans the ticket text against cached lists of known server names (15), service names (12), and error code patterns (20). Entity lists are cached from ArangoDB with a 5-minute TTL. Output: `{"servers": [...], "services": [...], "error_codes": [...]}`. |
 | **Error Scanning** | `errors_confirm_category()` | For each matched error code, maps it to a service and then to a category. If the error-implied category matches the eventual classification, a +0.03 confidence bonus is awarded in Stage 4. |
-| **Quality Scoring** | `score_quality()` | Rates the input as HIGH, MEDIUM, or LOW based on text length and entity presence. This sets a maximum confidence cap: HIGH = 0.99, MEDIUM = 0.85, LOW = 0.75. Prevents the system from being overconfident on vague tickets. |
+| **Quality Scoring** | `score_quality()` | Rates the input as HIGH, MEDIUM, or LOW based on text length and entity presence. This sets a maximum confidence cap: HIGH = 0.99, MEDIUM = 0.85, LOW = 0.69. LOW is intentionally kept below the 0.70 auto-route threshold so low-quality/vague tickets always escalate to human review. (Note: `quality_scorer.py` still carries a stale local 0.75 that should be reconciled to 0.69; only the aggregator's 0.69 cap is applied to final routed confidence.) Prevents the system from being overconfident on vague tickets. |
 | **Embedding Computation** | `SentenceTransformer` (MiniLM) | Encodes the description into a 384-dimensional vector using the `all-MiniLM-L6-v2` model. This embedding is used by the vector search (Stage 2), KNN classifier (Stage 3), and centroid classifier (Stage 3). |
 
 #### Stage 2: Retrieving
@@ -361,20 +363,30 @@ All active classifiers run in parallel via `asyncio.gather()` — total Stage 3 
 
 | Attribute | Value |
 |-----------|-------|
-| **Purpose** | Combine all classifier votes into a single decision with calibrated confidence |
+| **Purpose** | Combine all classifier votes into a single decision via majority-aware voting with a scenario-capped confidence |
 | **Input** | 1-4 classifier votes, quality score, error codes, graph confirmation |
-| **Output** | Final category, priority, confidence, agreement level |
+| **Output** | Final category, priority, confidence, scenario (agreement) label |
 | **Duration** | <1ms (arithmetic only) |
 
-This stage applies weighted voting and confidence calibration:
+This stage runs a **6-phase majority-aware voting** scheme (not a flat weighted sum). It counts votes per category, sorts candidates deterministically by `(vote_count desc, weighted_score desc, category_name asc)`, and walks the phases below until one resolves. The resolving phase selects the winner **and** sets a `SCENARIO_CAP`:
+
+| Phase | Scenario | Winner & Cap |
+|-------|----------|--------------|
+| **Phase 0** | Single classifier (0 or 1 active) | The lone vote wins; cap `single_classifier` = 0.50 |
+| **Phase 1** | Unanimous (all active agree) | Agreed category wins; cap `unanimous_4` = 0.95, `unanimous_3` = 0.88, `unanimous_2` = 0.75 |
+| **Phase 2** | Supermajority (3+ agree) + strength check | If majority avg conf >= 0.60: `strong_supermajority` = 0.85, else `weak_supermajority` = 0.65; a confident lone dissenter can force `dissenter_override` = 0.60 |
+| **Phase 3** | Pair beats singles (2/1/1) + strength check | If pair avg conf >= 0.60 and pair score is competitive: `pair_wins` = 0.70, else `pair_fallback` = 0.60 |
+| **Phase 4** | 2v2 split + boundary override | Known Database/Infrastructure boundary override → `boundary_override` = 0.65; otherwise weighted / avg-conf / centroid tiebreak → `weighted_2v2` = 0.65, `avgconf_2v2` = 0.60, `centroid_tiebreak` = 0.60, `unresolved_2v2` = 0.50 |
+| **Phase 5** | Total disagreement | Weighted fallback winner; cap `total_disagreement` = 0.50 |
+
+Once the winner and scenario cap are known, the confidence is computed from the **supporting** voters:
 
 | Sub-step | Description |
 |----------|-------------|
-| **Weighted Voting** | Each classifier's confidence is multiplied by its weight. The category with the highest weighted sum wins. Weights are redistributed based on degradation level (e.g., at Level 2, LLM's 0.40 weight is split among KNN, Centroid, and Keyword). |
-| **Agreement Check** | Determines how many classifiers agree on the winning category. If 4/4 agree: "unanimous" (+0.05 bonus). If 3/4 agree: "majority" (no adjustment). If only 1/4 or 2/4 agree: "split" (-0.10 penalty). |
-| **Confidence Bonuses** | Error code match adds +0.03 if the error-implied category matches the winning category. Graph context confirmation adds +0.02 if the `managed_by` domain from the graph matches the winning category. |
-| **Disagreement Safety** | If no individual classifier has >60% confidence and at least 3 classifiers are active, the final confidence is capped at 0.55 — forcing escalation to human review. This prevents the weighted sum from producing a deceptively high confidence when all classifiers are uncertain. |
-| **Quality Cap** | The final confidence is capped by the quality score from Stage 1: HIGH = 0.99, MEDIUM = 0.85, LOW = 0.75. This prevents overconfident classifications on vague or short tickets. |
+| **Confidence Formula** | `base = 0.60 * supporter_avg_conf + 0.25 * vote_share + 0.15 * weight_share`, where supporter_avg_conf is the mean confidence of the voters who backed the winner, vote_share is their fraction of active classifiers, and weight_share is their fraction of total weight. |
+| **Context Bonuses** | Error code match adds +0.03 if the error-implied category matches the winning category. Graph context confirmation adds +0.02 if the `managed_by` domain from the graph matches the winning category. |
+| **Disagreement Safety** | If no supporting classifier has >= 60% confidence and at least 3 classifiers are active, `base` is capped at 0.55 — forcing escalation to human review. This prevents a deceptively high confidence when all classifiers are uncertain. |
+| **Cap Application** | `final = round(min(base + bonus, scenario_cap, quality_cap), 3)`, where quality_cap from Stage 1 is HIGH = 0.99, MEDIUM = 0.85, LOW = 0.69. The scenario cap (above) and quality cap together prevent overconfident classifications. |
 
 #### Stage 5: Deciding
 
@@ -393,7 +405,7 @@ The decision splits into two paths:
 |----------|-------------|
 | **Team Lookup** | Queries `routing_rules` collection for a matching `{category, priority}` pair where `is_active == true`. Joins to `teams` to get the team name. |
 | **Resolution Search** | Searches 3 sources for the best resolution: (1) similar tickets from vector search, (2) error-matched tickets, (3) graph context past tickets on the same server. Picks the resolution with the highest `effectiveness` score. |
-| **Runbook Match** | Queries `runbooks` collection for entries matching the ticket's category. If multiple match, attempts to match runbook title keywords against resolution text. |
+| **Runbook Match** | Queries `runbooks` for entries matching the ticket's category, then scores each candidate by meaningful title-word overlap with the ticket text (title + description + resolution, generic stopwords excluded). A runbook is returned **only** when its title genuinely overlaps the ticket text (at least one meaningful word); otherwise `find_runbook` returns `None` and no runbook is shown — a wrong cross-topic runbook is never surfaced. |
 | **Expert Recommendation** | If graph traversal returned team members, recommends the first expert from the list (typically the one with the most relevant expertise). |
 
 **Escalate path** (confidence < 0.70):

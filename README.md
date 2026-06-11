@@ -7,12 +7,12 @@
 ## Key Features
 
 - **4-Classifier Ensemble** — LLM (40%), Centroid (30%), KNN (15%), Keyword (15%) with 6-phase majority-aware voting. **94.1% accuracy** on 35-ticket benchmark.
-- **AI Resolution Generator** — LLM generates custom step-by-step fixes grounded in past resolutions + knowledge graph context. No hallucination.
+- **AI Resolution Generator** — LLM generates custom step-by-step fixes grounded in past resolutions + knowledge graph context (hallucination-resistant: a quality gate returns nothing when no reference data exists).
 - **Knowledge Graph** — ArangoDB graph with teams, engineers, servers, services, error codes powering context-aware routing
 - **Enrichment Agent** — Detects vague tickets, generates personalized follow-up questions from user history
 - **Incident Prediction** — Proactive detection of clusters (3+ same team/4h), trends (50%+ spike), and volume spikes (5+/hour)
 - **Self-Learning** — 3 feedback loops: human corrections retrain centroids, resolution quality tracking, repeated issue detection
-- **Zero Hallucination Chat** — Mindy AI uses rule-based intent parsing + real DB queries; LLM only formats responses
+- **Hallucination-resistant Chat** — Mindy AI uses rule-based intent parsing + real DB queries; the LLM only formats responses, it never invents data
 - **OCR Screenshot Analysis** — Tesseract OCR extracts text from uploaded screenshots, classifies screenshot type, feeds to classifiers
 - **On-Premise** — Ollama (Qwen 2.5:7B), MiniLM embeddings, no cloud APIs; your data stays with you
 - **Graceful Degradation** — 4 levels of fallback with circuit breaker; system never fully crashes
@@ -25,7 +25,7 @@
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | **Frontend** | React 19 + Vite 6 | Dashboard, analytics, knowledge graph viz, 24 components |
-| **Backend** | FastAPI (Python 3.12) | REST API (22 endpoints), classification pipeline, Socket.IO |
+| **Backend** | FastAPI (Python 3.12) | REST API (32 endpoints), classification pipeline, Socket.IO |
 | **LLM** | Ollama + Qwen 2.5:7B | Local LLM inference for classification + resolution generation |
 | **Embeddings** | all-MiniLM-L6-v2 | 384-dim sentence embeddings (title + description co-encoded) |
 | **Graph DB** | ArangoDB 3.12 | Knowledge graph + vector search + document store (3-in-1) |
@@ -96,7 +96,7 @@ Ticket → Preprocess → Entity Extract → Embed (MiniLM) → 4 Classifiers (p
 | KNN | 76.5% | -- |
 | Keyword | 67.7% | -- |
 
-The ensemble matches the best classifier but adds **resilience** — if Ollama crashes, the remaining 3 classifiers still achieve ~70%.
+The ensemble matches the best classifier but adds **resilience** — if Ollama crashes, the remaining 3 classifiers are projected to still achieve ~70% (estimate; not separately benchmarked).
 
 ---
 
@@ -152,7 +152,7 @@ docker compose exec backend python scripts/seed_db.py
 
 ---
 
-## API Endpoints (22)
+## API Endpoints (32)
 
 ### Auth
 | Method | Endpoint | Description |
@@ -184,14 +184,19 @@ docker compose exec backend python scripts/seed_db.py
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/health` | System health + degradation level |
-| `POST` | `/api/chat` | Mindy AI chat (zero hallucination) |
+| `POST` | `/api/chat` | Mindy AI chat (grounded, hallucination-resistant) |
 | `GET` | `/api/stats` | Dashboard statistics (team-scoped for engineers) |
 | `GET` | `/api/stats/tickets/{id}/timeline` | Ticket audit timeline |
 | `GET` | `/api/graph` | Knowledge graph nodes and edges |
 | `GET` | `/api/incidents` | Proactive incident predictions (role-filtered) |
 | `POST` | `/api/upload` | Upload screenshot with OCR processing |
+| `GET` | `/api/upload/{file_id}` | Retrieve uploaded file metadata |
+| `GET` | `/api/runbooks/{runbook_id}` | Get runbook by ID |
 | `GET` | `/api/corrections/stats` | Correction analytics |
 | `POST` | `/api/corrections/recompute-centroids` | Retrain centroids from corrections |
+| `GET` | `/api/corrections/repeated-issues` | List detected recurring issue clusters |
+| `POST` | `/api/corrections/detect-repeated-issues` | Trigger repeated-issue detection |
+| `GET` | `/api/corrections/export` | Export corrections dataset |
 
 Interactive docs: http://localhost:8000/docs
 
@@ -228,9 +233,9 @@ Infrastructure, Application, Database, Network, Security, Access Management
 | Level | Condition | Classifiers Active | Accuracy |
 |-------|-----------|-------------------|----------|
 | 4 (Full) | All systems up | LLM + Centroid + KNN + Keyword | **94.1%** |
-| 3 (No Data) | DB empty | LLM + Keyword | ~80% |
-| 2 (No LLM) | Ollama down | Centroid + KNN + Keyword | ~70% |
-| 1 (Emergency) | Both down | Keyword only | ~55% |
+| 3 (No Data) | DB empty | LLM + Keyword | ~80% (projected) |
+| 2 (No LLM) | Ollama down | Centroid + KNN + Keyword | ~70% (projected) |
+| 1 (Emergency) | Both down | Keyword only | ~68% (keyword-only, measured) |
 
 ---
 
@@ -238,7 +243,7 @@ Infrastructure, Application, Database, Network, Security, Access Management
 
 | Feature | Description |
 |---------|-------------|
-| **AI Resolution Generator** | LLM generates custom fix steps grounded in past resolutions + graph context. Quality gate: no hallucination. |
+| **AI Resolution Generator** | LLM generates custom fix steps grounded in past resolutions + graph context. Quality gate: only generates when reference data exists (hallucination-resistant). |
 | **Enrichment Agent** | Generates personalized follow-up questions for vague tickets using user history + knowledge graph |
 | **Incident Prediction** | Cluster (3+ same team/4h), Trend (50%+ week-over-week), Spike (5+/hour). Role-filtered. |
 | **Self-Learning** | 3 loops: correction → centroid retrain, resolution feedback → effectiveness, repeated issue detection |
@@ -247,7 +252,7 @@ Infrastructure, Application, Database, Network, Security, Access Management
 | **Circuit Breaker** | Ollama fast-fail after 3 failures, 30s recovery test (CLOSED → OPEN → HALF_OPEN) |
 | **SLA Timers** | Redis TTL keys — Critical=2h, High=4h, Medium=8h, Low=24h. Breach detection. |
 | **Rate Limiting** | 50/user/min, 200/global/min, Redis sliding window |
-| **Zero Hallucination Chat** | Mindy: rule-based intent → ArangoDB query → LLM formats response |
+| **Hallucination-resistant Chat** | Mindy: rule-based intent → ArangoDB query → LLM formats response |
 
 ---
 
@@ -285,7 +290,7 @@ backend/
     centroid_classifier.py Embedding centroid distance (weight: 0.30)
     knn_classifier.py      K-nearest neighbor weighted voting (weight: 0.15)
     keyword_classifier.py  Pattern matching (weight: 0.15)
-    resolution_generator.py AI resolution generation (grounded, no hallucination)
+    resolution_generator.py AI resolution generation (grounded, hallucination-resistant)
     enrichment_agent.py    Follow-up questions for vague tickets
     cache.py               Two-tier Redis cache (text hash + semantic)
     corrections.py         Human override tracking + centroid retraining
@@ -345,7 +350,7 @@ docker-compose.yml         4 services: ArangoDB, Redis, Backend, Frontend
 | Error codes | 20 |
 | Runbooks | 10 |
 | Routing rules | 24 |
-| Graph edges | 3,492 |
+| Graph edges | ~3,500 (generated at seed time) |
 | Evaluation benchmark | 35 hand-labeled tickets |
 
 ---

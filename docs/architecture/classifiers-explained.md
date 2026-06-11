@@ -10,12 +10,12 @@ DeskMind uses **4 independent classifiers** that vote on each ticket. No single 
 
 | # | Classifier | Weight | Method | Accuracy | Speed |
 |---|-----------|--------|--------|----------|-------|
-| 1 | LLM (Qwen 2.5:3B) | 0.40 | Reads ticket + context, reasons about root cause | ~85% | ~2-5s |
-| 2 | KNN (K-Nearest Neighbors) | 0.30 | Top 5 similar tickets vote by category | ~80% | ~10ms |
-| 3 | Centroid Distance | 0.20 | Compares to 6 category center points | ~75% | ~2ms |
-| 4 | Keyword Rules | 0.10 | Counts keyword matches per category | ~55% | ~1ms |
+| 1 | LLM (Qwen 2.5:7B) | 0.40 | Reads ticket + context, reasons about root cause | ~85% | ~2-5s |
+| 2 | KNN (K-Nearest Neighbors) | 0.15 | Top 5 similar tickets vote by category | ~80% | ~10ms |
+| 3 | Centroid Distance | 0.30 | Compares to 6 category center points | ~75% | ~2ms |
+| 4 | Keyword Rules | 0.15 | Counts keyword matches per category | ~55% | ~1ms |
 
-They run independently, then the **Aggregator** combines their votes with weighted scoring, agreement bonuses, and confidence calibration.
+They run independently, then the **Aggregator** combines their votes with a 6-phase majority-aware voting scheme, scenario-based confidence caps, and a transparent confidence formula.
 
 ---
 
@@ -25,7 +25,7 @@ They run independently, then the **Aggregator** combines their votes with weight
 
 ### How it works
 
-The LLM (Qwen 2.5:3B running locally on Ollama) reads the ticket text plus all the context gathered from the knowledge graph, and reasons about the root cause.
+The LLM (Qwen 2.5:7B running locally on Ollama) reads the ticket text plus all the context gathered from the knowledge graph, and reasons about the root cause.
 
 ### The prompt
 
@@ -48,7 +48,7 @@ The user prompt includes:
 
 ### Why it's not the only one
 
-- Small models (3B params) can hallucinate — confidently give wrong answers
+- Even local LLMs can hallucinate — confidently give wrong answers
 - Slow (~2-5 seconds per ticket)
 - If Ollama goes down, this classifier is unavailable
 
@@ -65,7 +65,7 @@ The user prompt includes:
 
 ---
 
-## Classifier 2: KNN — K-Nearest Neighbors (weight: 0.30)
+## Classifier 2: KNN — K-Nearest Neighbors (weight: 0.15)
 
 **File**: `backend/services/knn_classifier.py`
 
@@ -89,7 +89,7 @@ These numbers capture the **meaning** of the text. Similar meanings → similar 
 
 #### Step 2: Find K=5 nearest neighbors
 
-Compare the new ticket's embedding against all 855 stored tickets using **cosine similarity**:
+Compare the new ticket's embedding against the stored tickets (800 synthetic training corpus; ~900 in the live DB as of 2026-06-11) using **cosine similarity**:
 
 ```
                     A · B
@@ -134,20 +134,26 @@ winner = argmax(score(c))
 
 #### Step 4: Confidence
 
-What fraction of neighbors agree with the winner:
+Confidence is the winner's **similarity-weighted vote share** — the sum of the winner's
+neighbor similarities divided by the sum of all neighbor similarities (not a simple
+count/K):
 
 ```
-confidence = count of neighbors voting for winner / K
-           = 4 / 5
-           = 0.80
+confidence = sum(winner neighbor similarities) / sum(all neighbor similarities)
+           = (0.94 + 0.91 + 0.88 + 0.85) / (0.94 + 0.91 + 0.88 + 0.85 + 0.79)
+           = 3.58 / 4.37
+           ≈ 0.819
 ```
+
+(For a mixed example with neighbors `[Database 0.95, 0.91, 0.88, 0.80; Application 0.82]`,
+this gives `3.54 / 4.36 ≈ 0.812`.)
 
 ### Output
 
 ```json
 {
   "category": "Access Management",
-  "confidence": 0.80,
+  "confidence": 0.819,
   "vote_counts": {"Access Management": 4, "Security": 1},
   "neighbors": [... top 5 tickets ...]
 }
@@ -164,7 +170,7 @@ confidence = count of neighbors voting for winner / K
 
 ---
 
-## Classifier 3: Centroid Distance (weight: 0.20)
+## Classifier 3: Centroid Distance (weight: 0.30)
 
 **File**: `backend/services/centroid_classifier.py`
 
@@ -176,13 +182,16 @@ Each of the 6 categories has a **center point** (centroid) — the average embed
 
 #### Step 1: Group all tickets by category
 
+Counts below are from the 800-ticket synthetic training corpus
+(`data/synthetic/final/all_generated_tickets.json`) — near-balanced across the 6 categories:
+
 ```
-Infrastructure tickets (177):    [emb₁, emb₂, ..., emb₁₇₇]
-Application tickets (162):       [emb₁, emb₂, ..., emb₁₆₂]
-Database tickets (133):          [emb₁, emb₂, ..., emb₁₃₃]
-Network tickets (139):           [emb₁, emb₂, ..., emb₁₃₉]
-Security tickets (141):          [emb₁, emb₂, ..., emb₁₄₁]
-Access Management tickets (103): [emb₁, emb₂, ..., emb₁₀₃]
+Infrastructure tickets (168):    [emb₁, emb₂, ..., emb₁₆₈]
+Application tickets (134):       [emb₁, emb₂, ..., emb₁₃₄]
+Database tickets (134):          [emb₁, emb₂, ..., emb₁₃₄]
+Network tickets (130):           [emb₁, emb₂, ..., emb₁₃₀]
+Security tickets (106):          [emb₁, emb₂, ..., emb₁₀₆]
+Access Management tickets (128): [emb₁, emb₂, ..., emb₁₂₈]
 ```
 
 #### Step 2: Average all embeddings per category
@@ -223,7 +232,7 @@ new_embedding = [0.39, -0.14, 0.35, ...]
 
 #### Step 2: Cosine similarity to each centroid
 
-Same formula as KNN, but only 6 comparisons instead of 855:
+Same formula as KNN, but only 6 comparisons instead of one per stored ticket:
 
 ```
 sim(new, Infrastructure)    = 0.58
@@ -300,7 +309,7 @@ confidence = min(0.5 + 0.03 × 5, 0.99)
 
 ```
 KNN:       "Which 5 INDIVIDUAL past tickets are most similar?"
-           Compares to 855 tickets → 5 nearest → they vote
+           Compares to the stored tickets (800 training corpus) → 5 nearest → they vote
 
 Centroid:  "Which CATEGORY CENTER is this ticket closest to?"
            Compares to 6 centroids → picks closest
@@ -308,7 +317,7 @@ Centroid:  "Which CATEGORY CENTER is this ticket closest to?"
 
 | Aspect | KNN | Centroid |
 |--------|-----|---------|
-| Compares to | 855 individual tickets | 6 category averages |
+| Compares to | 800 individual tickets (training corpus) | 6 category averages |
 | Speed | ~10ms (vector index) | ~2ms (6 comparisons) |
 | Good at | Finding specific similar incidents | Capturing the "general feel" of a category |
 | Weakness | Influenced by outliers | Loses detail (edge cases averaged out) |
@@ -316,7 +325,7 @@ Centroid:  "Which CATEGORY CENTER is this ticket closest to?"
 
 ---
 
-## Classifier 4: Keyword Rules (weight: 0.10)
+## Classifier 4: Keyword Rules (weight: 0.15)
 
 **File**: `backend/services/keyword_classifier.py`
 
@@ -388,7 +397,7 @@ Application keywords: 3 (502, error, app)
 Winner: Application (wrong! Root cause is Database)
 ```
 
-The keyword classifier votes Application because "502" and "error" are application keywords, even though the root cause is a database connection issue. But with only 0.10 weight, it gets outvoted by the other 3 classifiers.
+The keyword classifier votes Application because "502" and "error" are application keywords, even though the root cause is a database connection issue. But with only 0.15 weight, it gets outvoted by the other 3 classifiers.
 
 ### Output
 
@@ -422,20 +431,45 @@ The keyword classifier votes Application because "502" and "error" are applicati
 
 **File**: `backend/services/aggregator.py`
 
-### The 7-step process
+### The 6-phase majority-aware voting process
+
+The aggregator does **not** use a weighted-sum + agreement-bonus + calibration-multiplier
+scheme. It first picks the winning category through majority-aware voting phases, then
+computes a calibrated confidence with a transparent formula bounded by scenario- and
+quality-based caps.
 
 #### Step 0: Select weights based on which classifiers are available
 
 ```
-All 4 active: {llm: 0.40, knn: 0.30, centroid: 0.20, keyword: 0.10}
-No LLM:       {knn: 0.45, centroid: 0.35, keyword: 0.20}
+All 4 active: {llm: 0.40, knn: 0.15, centroid: 0.30, keyword: 0.15}
+No LLM:       {knn: 0.25, centroid: 0.50, keyword: 0.25}
 No data:      {llm: 0.80, keyword: 0.20}
 Emergency:    {keyword: 1.00}
 ```
 
-#### Step 1: Weighted category scores
+#### Winner selection: 6 phases
 
-For each category, sum (weight × confidence) across all classifiers voting for it:
+The aggregator walks through phases until one resolves a winner. Each phase that
+resolves also sets a **scenario cap** on the final confidence:
+
+```
+Phase 0  Single classifier active            → cap 0.50 (single_classifier)
+Phase 1  Unanimous (all active agree)         → cap 0.95/0.88/0.75 (unanimous_4/3/2)
+Phase 2  Supermajority (3+ agree),            → cap 0.85 (strong_supermajority)
+         conditional on strength               cap 0.65 (weak_supermajority)
+                                                cap 0.60 (dissenter_override)
+Phase 3  Pair beats singles (2/1/1),          → cap 0.70 (pair_wins)
+         strength-checked                       cap 0.60 (pair_fallback)
+Phase 4  2v2 split: known boundary override   → cap 0.65 (boundary_override)
+         (Database/Infrastructure), else        cap 0.65 (weighted_2v2)
+         weighted / avg-conf / centroid          cap 0.60 (avgconf_2v2 / centroid_tiebreak)
+         tiebreak                                 cap 0.50 (unresolved_2v2)
+Phase 5  Total disagreement (weighted         → cap 0.50 (total_disagreement)
+         fallback)
+```
+
+**Deterministic tiebreak:** categories are sorted by
+`(vote_count desc, weighted_score desc, category_name asc)`.
 
 ```
 Example votes:
@@ -444,28 +478,31 @@ Example votes:
   Centroid: Access Management (0.99)
   Keyword:  Application       (0.60)
 
-Access Management = (0.40 × 0.94) + (0.30 × 0.80) + (0.20 × 0.99)
-                  = 0.376 + 0.240 + 0.198
-                  = 0.814
+3 vote Access Management, 1 votes Application → Phase 2 supermajority.
+The dissenter (Keyword, weight 0.15) is weak, so this is a strong supermajority.
 
-Application       = (0.10 × 0.60)
-                  = 0.060
-
-Winner: Access Management (0.814)
+Winner: Access Management   (scenario cap = 0.85, strong_supermajority)
 ```
 
-#### Step 2: Agreement bonus/penalty
+#### Confidence formula
+
+Confidence is computed from the winner's supporters — not a weighted sum:
 
 ```
-4/4 agree: +0.05 (unanimous)
-3/4 agree:  0.00 (near-unanimous)
-2/4 agree: -0.05 (split vote)
-1/4 agree: -0.10 (lone dissenter wins only on weight)
+base = 0.60 × supporter_avg_conf + 0.25 × vote_share + 0.15 × weight_share
 ```
 
-In this example: 3/4 agree → bonus = 0.00
+```
+supporter_avg_conf = (0.94 + 0.80 + 0.99) / 3 = 0.910
+vote_share         = 3 / 4                     = 0.75
+weight_share       = (0.40 + 0.15 + 0.30) / 1.00 = 0.85
 
-#### Step 3: Contextual bonuses
+base = 0.60 × 0.910 + 0.25 × 0.75 + 0.15 × 0.85
+     = 0.546 + 0.1875 + 0.1275
+     = 0.861
+```
+
+#### Contextual bonuses
 
 ```
 Error code confirms category?  → +0.03
@@ -473,49 +510,39 @@ Error code confirms category?  → +0.03
 
 Graph context confirms?        → +0.02
   (e.g., managed_by team domain is "Access Management" → match!)
+
+base + bonus = 0.861 + 0.03 + 0.02 = 0.911
 ```
 
-#### Step 4: Raw confidence
+**Safety check:** if no individual supporter reaches 0.60 confidence and ≥3 classifiers
+are active, `base` is capped at 0.55 before bonuses.
 
-```
-raw = 0.814 + 0.00 + 0.03 + 0.02 = 0.864
-```
+#### Apply caps (scenario cap + quality cap)
 
-#### Step 5: Calibration
-
-Dampens overconfidence based on agreement level:
-
-```
-4/4 agree AND raw ≥ 0.90: calibrated = raw × 0.98
-3/4 agree AND raw ≥ 0.70: calibrated = raw × 0.95
-2/4 agree:                 calibrated = raw × 0.80
-1/4 agree:                 calibrated = raw × 0.75
-
-In this example: 3/4 agree, raw = 0.864 ≥ 0.70
-  calibrated = 0.864 × 0.95 = 0.821
-```
-
-#### Step 6: Quality cap
-
-The input quality score (from Stage 1) sets a maximum:
+The final confidence is bounded by both the scenario cap (set during winner selection)
+and the quality cap (from the Stage 1 quality score):
 
 ```
 HIGH quality (long text + entities + errors): cap = 0.99
 MEDIUM quality (long text, no entities):      cap = 0.85
-LOW quality (short text, no info):            cap = 0.75
+LOW quality (short text, no info):            cap = 0.69
 
-final = min(calibrated, cap)
-      = min(0.821, 0.99)
-      = 0.821
+LOW is intentionally kept below the 0.70 auto-route threshold so low-quality/vague
+tickets always escalate to human review. (quality_scorer.py still carries a stale
+local 0.75 that is NOT applied to the final routed confidence — reconcile to 0.69.)
+
+final = round(min(base + bonus, scenario_cap, quality_cap), 3)
+      = round(min(0.911, 0.85, 0.99), 3)
+      = 0.85
 ```
 
-#### Step 7: Route or escalate
+#### Route or escalate
 
 ```
 confidence ≥ 0.70 → status = "routed" (auto-sent to team)
 confidence < 0.70 → status = "escalated" (human reviews)
 
-0.821 ≥ 0.70 → ROUTED to Access Management team
+0.85 ≥ 0.70 → ROUTED to Access Management team
 ```
 
 ---
