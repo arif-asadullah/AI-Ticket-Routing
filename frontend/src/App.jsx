@@ -15,7 +15,6 @@ import { ThemeProvider, useTheme } from "./theme/ThemeContext";
 
 import logoLandscapeDark from "./assets/logo/deskmind-logo-landscape-dark.svg";
 import logoLandscapeLight from "./assets/logo/deskmind-logo-landscape.svg";
-import icon from "./assets/logo/deskmind-icon.svg";
 
 function getInputBase(T) {
   return {
@@ -59,6 +58,9 @@ function AppContent() {
   const { T, mode, toggleTheme } = useTheme();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // True while we hold tokens and are still verifying the session (e.g. backend
+  // starting after a restart). Lets us show a "reconnecting" screen instead of login.
+  const [authChecking, setAuthChecking] = useState(isLoggedIn());
   const [splashDone, setSplashDone] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showNewTicket, setShowNewTicket] = useState(false);
@@ -75,13 +77,40 @@ function AppContent() {
   const [attachments, setAttachments] = useState([]);
   const [uploadError, setUploadError] = useState(null);
 
-  // Check if already logged in on mount
+  // Verify the session on mount. The backend/DB can be briefly unavailable after a
+  // restart (e.g. /auth/me returns 5xx while ArangoDB is still starting). In that case
+  // keep the tokens and retry — showing a "reconnecting" screen — instead of logging
+  // out. Only a genuinely invalid session (tokens cleared by authFetch after a failed
+  // 401 refresh) drops to the login page.
   useEffect(() => {
-    if (isLoggedIn()) {
-      fetchMe()
-        .then((u) => { setUser(u); setIsAuthenticated(true); })
-        .catch(() => { logout(); setIsAuthenticated(false); });
+    if (!isLoggedIn()) { setAuthChecking(false); return; }
+    let cancelled = false;
+    let attempts = 0;
+
+    async function bootstrap() {
+      try {
+        const u = await fetchMe();
+        if (cancelled) return;
+        setUser(u);
+        setIsAuthenticated(true);
+        setAuthChecking(false);
+      } catch {
+        if (cancelled) return;
+        if (!isLoggedIn()) {            // tokens cleared by a real 401 → genuinely logged out
+          setIsAuthenticated(false);
+          setAuthChecking(false);
+          return;
+        }
+        if (attempts++ < 45) {          // transient (backend/DB still starting) → keep checking, retry ~90s
+          setTimeout(bootstrap, 2000);
+        } else {
+          setAuthChecking(false);       // gave up — fall back to login
+        }
+      }
     }
+
+    bootstrap();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -220,8 +249,26 @@ function AppContent() {
       {/* ── Splash ── */}
       {!splashDone && <DeskMindSplash onFinished={() => setSplashDone(true)} />}
 
+      {/* ── Reconnecting (valid tokens, backend still verifying/starting) ── */}
+      {splashDone && !isAuthenticated && authChecking && (
+        <div style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 16,
+          background: T.bg,
+        }}>
+          <DeskMindSpinner size="md" label="Reconnecting…" />
+          <span style={{ fontSize: 12, color: T.textDim, fontFamily: "'JetBrains Mono', monospace" }}>
+            Waiting for the backend to come back online
+          </span>
+        </div>
+      )}
+
       {/* ── Login Gate ── */}
-      {splashDone && !isAuthenticated && (
+      {splashDone && !isAuthenticated && !authChecking && (
         <LoginPage onLogin={handleLogin} />
       )}
 

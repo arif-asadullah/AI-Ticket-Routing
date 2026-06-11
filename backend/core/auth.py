@@ -89,11 +89,17 @@ async def get_current_user(
     if db is None:
         raise HTTPException(503, "Database unavailable")
 
-    cursor = db.aql.execute(
-        "FOR u IN users FILTER u.email == @email LIMIT 1 RETURN u",
-        bind_vars={"email": email},
-    )
-    user = next(cursor, None)
+    try:
+        cursor = db.aql.execute(
+            "FOR u IN users FILTER u.email == @email LIMIT 1 RETURN u",
+            bind_vars={"email": email},
+        )
+        user = next(cursor, None)
+    except Exception:
+        # DB briefly unavailable (e.g. ArangoDB still starting after a restart).
+        # Return 503 (transient) instead of a raw 500 so clients can retry.
+        raise HTTPException(503, "Database temporarily unavailable")
+
     if user is None or not user.get("is_active"):
         raise HTTPException(401, "User not found or deactivated")
 
