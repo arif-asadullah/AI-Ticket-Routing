@@ -70,10 +70,12 @@ async def upload_file(
 
 
 @router.get("/{file_id}")
-async def serve_file(file_id: str):
-    """Serve an uploaded file."""
-    # Find file with any extension
+async def serve_file(file_id: str, user: dict = Depends(require_any_authenticated)):
+    """Serve an uploaded file. Requires authentication."""
+    # Match the file id exactly (filename without extension), not a loose prefix.
     for fname in os.listdir(UPLOAD_DIR):
-        if fname.startswith(file_id) and not fname.endswith(".json"):
+        if fname.endswith(".json"):
+            continue
+        if fname.rsplit(".", 1)[0] == file_id:
             return FileResponse(os.path.join(UPLOAD_DIR, fname))
     raise HTTPException(404, "File not found")

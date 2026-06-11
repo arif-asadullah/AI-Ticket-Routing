@@ -66,7 +66,7 @@
 | Tool | License | Purpose |
 |------|---------|---------|
 | **OpenAI API (GPT-4o)** | Commercial | Used offline to generate 396 synthetic training tickets. Not used at runtime. |
-| **Claude** | Commercial | Used offline to hand-craft 191 edge-case training tickets. Not used at runtime. |
+| **Claude** | Commercial | Used via the Claude API to generate 164 edge-case training tickets. Not used at runtime. |
 | **Git + GitHub** | Open Source | Version control and collaboration. Monorepo structure with backend/ and frontend/ directories. |
 | **GitHub Flow** | - | Branching strategy: feature branches → PR → main. No develop branch. |
 

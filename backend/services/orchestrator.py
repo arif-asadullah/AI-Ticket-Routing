@@ -61,6 +61,7 @@ class ClassificationResult(TypedDict):
     cache_tier: str | None  # "A", "B", or None (miss)
     enrichment: dict | None  # Enrichment questions for vague tickets
     ai_generated_resolution: dict | None  # LLM-generated resolution steps
+    automation_suggestion: dict | None  # Repeated-issue automation recommendation
 
 
 class HealthStatus(TypedDict):
@@ -166,10 +167,24 @@ def preprocess_text(title: str, description: str) -> str:
 
 # ── Routing Lookup ──
 
-def find_runbook(db, category: str, resolution_steps: list[str] | None) -> str | None:
-    """Find the most relevant runbook for this category."""
+# Generic words in runbook titles that should NOT count as a content match
+# (otherwise filler like "process"/"resolution" causes false runbook suggestions).
+_RUNBOOK_STOPWORDS = {
+    "process", "resolution", "troubleshooting", "recovery",
+    "management", "procedure", "issue", "error", "guide", "steps",
+}
+
+
+def find_runbook(db, category: str, resolution_steps: list[str] | None,
+                 title: str | None = None, description: str | None = None) -> str | None:
+    """Return a runbook ONLY if it genuinely matches the ticket; otherwise None (hide it).
+
+    A wrong/cross-topic runbook is worse than none, so we require real keyword
+    overlap between the runbook's title and the ticket text rather than blindly
+    defaulting to the first runbook of the category.
+    """
     try:
-        # First: try to find runbook matching category
+        # Candidate runbooks for this category
         query = """
         FOR rb IN runbooks
             FILTER rb.category == @category
@@ -181,22 +196,27 @@ def find_runbook(db, category: str, resolution_steps: list[str] | None) -> str |
         if not runbooks:
             return None
 
-        # If only one, return it
-        if len(runbooks) == 1:
-            return f"{runbooks[0]['key']}: {runbooks[0]['title']}"
-
-        # If multiple, try to match by resolution text
+        # Build the ticket text we score relevance against
+        parts = [title or "", description or ""]
         if resolution_steps:
-            res_text = " ".join(resolution_steps).lower()
-            for rb in runbooks:
-                # Check if runbook title keywords appear in resolution
-                title_words = rb["title"].lower().split()
-                matches = sum(1 for w in title_words if w in res_text)
-                if matches >= 2:
-                    return f"{rb['key']}: {rb['title']}"
+            parts.append(" ".join(resolution_steps))
+        query_text = " ".join(parts).lower()
 
-        # Default to first matching runbook
-        return f"{runbooks[0]['key']}: {runbooks[0]['title']}"
+        # Score each candidate by meaningful title-word overlap with the ticket text
+        best_rb, best_score = None, 0
+        for rb in runbooks:
+            title_words = {
+                w for w in re.findall(r"[a-z0-9]+", (rb["title"] or "").lower())
+                if len(w) >= 3 and not w.isdigit() and w not in _RUNBOOK_STOPWORDS
+            }
+            score = sum(1 for w in title_words if w in query_text)
+            if score > best_score:
+                best_rb, best_score = rb, score
+
+        # Only show a runbook if it's a genuine content match; otherwise hide it.
+        if best_rb and best_score >= 1:
+            return f"{best_rb['key']}: {best_rb['title']}"
+        return None
     except Exception:
         return None
 
@@ -259,10 +279,18 @@ async def classify(
     level = health["level"]
 
     # ── Stage 1: Prepare ──
-    entities = entity_extractor.extract(description, db=db) if db else {"servers": [], "services": [], "error_codes": []}
+    # Offload blocking DB/CPU work onto worker threads so the async event loop
+    # stays free to service other requests (entity extract + embedding are the
+    # heaviest synchronous steps).
+    if db:
+        entities = await asyncio.to_thread(entity_extractor.extract, description, db=db)
+    else:
+        entities = {"servers": [], "services": [], "error_codes": []}
     quality = score_quality(title, description, entities)
     model = get_embedding_model()
-    embedding = model.encode(preprocess_text(title, description)).tolist()
+    embedding = await asyncio.to_thread(
+        lambda: model.encode(preprocess_text(title, description)).tolist()
+    )
 
     # ── Cache Check: Tier B (semantic similarity — needs embedding) ──
     if skip_cache:
@@ -280,7 +308,7 @@ async def classify(
     # ── Stage 2: Retrieve (skip if no data) ──
     context = None
     if db and health["db_has_data"]:
-        context = retrieve_all(db, embedding, entities, description)
+        context = await asyncio.to_thread(retrieve_all, db, embedding, entities, description)
     else:
         context = {
             "similar_tickets": [],
@@ -312,7 +340,7 @@ async def classify(
 
     async def run_centroid():
         if health["db_has_data"] and db:
-            return classify_centroid(embedding, db=db)
+            return await asyncio.to_thread(classify_centroid, embedding, db)
         logger.info("Skipping Centroid classifier (no data)")
         return None
 
@@ -362,15 +390,25 @@ async def classify(
         # Best resolution — check multiple sources, pick highest effectiveness
         best_effectiveness = 0
 
-        # Source 1: Resolutions from similar tickets (same category)
+        # Minimum similarity for a past ticket's resolution to be considered relevant.
+        # Without this, the highest-effectiveness same-category resolution was used
+        # regardless of topic (e.g. an email ticket getting a Kubernetes fix).
+        RES_SIM_THRESHOLD = 0.55
+
+        # Source 1: similar past tickets (same category). similar_tickets are already
+        # re-ranked by relevance (similarity + recency + effectiveness), so take the
+        # FIRST genuinely-similar match rather than the globally highest-effectiveness
+        # one — this keeps the suggested fix topically on-point.
         if context["similar_tickets"]:
             for t in context["similar_tickets"]:
-                if t.get("resolution_steps") and t["category"] == result["category"]:
-                    eff = t.get("effectiveness") or 0.8
-                    if eff > best_effectiveness:
-                        suggested_resolution = t["resolution_steps"]
-                        resolution_effectiveness = eff
-                        best_effectiveness = eff
+                if not t.get("resolution_steps") or t.get("category") != result["category"]:
+                    continue
+                if (t.get("similarity") or 0) < RES_SIM_THRESHOLD:
+                    continue  # too dissimilar — would be an irrelevant resolution
+                suggested_resolution = t["resolution_steps"]
+                resolution_effectiveness = t.get("effectiveness") or 0.8
+                best_effectiveness = resolution_effectiveness
+                break
 
         # Source 2: Resolutions from error-matched tickets
         if context["error_matched_tickets"]:
@@ -393,7 +431,7 @@ async def classify(
                         best_effectiveness = eff
 
         # Find matching runbook
-        suggested_runbook = find_runbook(db, result["category"], suggested_resolution)
+        suggested_runbook = find_runbook(db, result["category"], suggested_resolution, title, description)
 
         # Best expert from graph
         if graph_ctx and graph_ctx.get("experts"):
@@ -437,6 +475,37 @@ async def classify(
     except Exception as exc:
         logger.warning("Enrichment agent failed: %s", exc)
 
+    # ── Agentic: repeated-issue detection → automation suggestion ──
+    # If this ticket matches a known recurring cluster, recommend automating it
+    # (closes the "detect repeated issue -> suggest automation" agentic loop).
+    automation_suggestion = None
+    if db and embedding:
+        try:
+            from backend.services.repeated_issues import check_repeated_match
+            match = check_repeated_match(db, embedding)
+            if match:
+                action = (
+                    f"auto-apply runbook {suggested_runbook}"
+                    if suggested_runbook else
+                    f"create a remediation runbook for {result['category']}"
+                )
+                automation_suggestion = {
+                    "is_repeated": True,
+                    "cluster_id": match["cluster_id"],
+                    "occurrences": match["count"],
+                    "representative": match["representative_title"],
+                    "category": match["category"],
+                    "similarity": match["similarity"],
+                    "suggestion": (
+                        f"This matches a recurring issue seen {match['count']} times "
+                        f"(\"{match['representative_title']}\"). Suggested automation: {action}, "
+                        f"and add an alert rule so future occurrences are auto-remediated or fast-tracked."
+                    ),
+                }
+                logger.info("Repeated-issue match: %s (x%d)", match["cluster_id"], match["count"])
+        except Exception as exc:
+            logger.warning("Repeated-issue check failed: %s", exc)
+
     logger.info(
         "Classification: %s (%.3f) | level=%d | agreement=%s | %dms",
         result["category"], result["confidence"], level, result["agreement"], elapsed_ms,
@@ -462,6 +531,7 @@ async def classify(
         cache_tier=None,
         enrichment=enrichment,
         ai_generated_resolution=ai_generated_resolution,
+        automation_suggestion=automation_suggestion,
     )
 
     # ── Cache Write (both tiers) ──

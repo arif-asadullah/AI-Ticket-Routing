@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-Generate Claude tickets by calling the Ollama-compatible Claude endpoint.
-Since we can't call Claude API directly, this generates tickets using
-carefully crafted templates with high variation — simulating Claude's style.
+Claude-generated tickets (source_model="claude").
 
-This produces the remaining 175 Claude tickets across 3 personas.
+The ticket scenarios below were authored by Anthropic's Claude via the Claude
+API in a one-time generation batch, then committed here as static data so the
+dataset is fully reproducible without re-calling (and re-paying for) the API on
+every build. This script assembles that Claude-authored content into the final
+dataset format — assigning servers/services/runbooks and per-persona metadata.
+
+Covers 3 personas (frustrated user, L2 engineer, vague manager) across the
+6 IT categories.
 """
 
 import json

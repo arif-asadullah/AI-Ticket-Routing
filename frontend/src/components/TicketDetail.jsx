@@ -8,6 +8,7 @@ import AuditTimeline from "./AuditTimeline";
 import OverrideModal from "./OverrideModal";
 import RunbookModal from "./RunbookModal";
 import EnrichmentCard from "./EnrichmentCard";
+import AuthedImage from "./AuthedImage";
 
 
 const priorityStyles = {
@@ -549,17 +550,17 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
               </div>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
                 {t.attachments.map((att, i) => (
-                  <a key={i} href={att.file_url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
-                    <img
-                      src={att.file_url}
-                      alt={att.filename || "Screenshot"}
-                      style={{
-                        width: 120, height: 90, objectFit: "cover",
-                        borderRadius: 8, border: `1px solid ${T.border}`,
-                        cursor: "pointer",
-                      }}
-                    />
-                  </a>
+                  <AuthedImage
+                    key={i}
+                    src={att.file_url}
+                    alt={att.filename || "Screenshot"}
+                    openOnClick
+                    style={{
+                      width: 120, height: 90, objectFit: "cover",
+                      borderRadius: 8, border: `1px solid ${T.border}`,
+                      cursor: "pointer",
+                    }}
+                  />
                 ))}
               </div>
               {t.attachments.filter((a) => a.ocr_result?.raw_text).map((att, i) => (
@@ -772,6 +773,45 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
                   <strong>Sources:</strong> {t.ai_generated_resolution.sources_used.join(" | ")}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* ── Recurring Issue — Automation Suggestion (agentic loop) ── */}
+          {t.automation_suggestion && t.automation_suggestion.is_repeated && (
+            <div style={{
+              background: "linear-gradient(135deg, rgba(245,158,11,0.10), rgba(239,68,68,0.08))",
+              border: "1px solid rgba(245,158,11,0.35)",
+              borderRadius: 14,
+              padding: 22,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                <span style={{ fontSize: 18 }}>&#128260;</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.text, fontFamily: "'Inter', system-ui" }}>
+                      Recurring Issue Detected
+                    </h3>
+                    <span style={{
+                      fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 6,
+                      background: "rgba(245,158,11,0.2)", color: "#f59e0b",
+                      letterSpacing: 0.5, textTransform: "uppercase",
+                    }}>
+                      seen {t.automation_suggestion.occurrences}&times;
+                    </span>
+                  </div>
+                  <p style={{ margin: "4px 0 0", fontSize: 11, color: T.muted, lineHeight: 1.4 }}>
+                    Matches a known pattern ({Math.round((t.automation_suggestion.similarity || 0) * 100)}% similar): &ldquo;{t.automation_suggestion.representative}&rdquo;
+                  </p>
+                </div>
+              </div>
+              <div style={{
+                marginTop: 12, padding: "12px 14px", borderRadius: 8,
+                background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.18)",
+                fontSize: 13, color: T.text, lineHeight: 1.5,
+              }}>
+                <strong style={{ color: "#f59e0b" }}>Suggested automation:&nbsp;</strong>
+                {t.automation_suggestion.suggestion}
+              </div>
             </div>
           )}
 

@@ -1,9 +1,9 @@
 """
-Centroid Classifier — Classifier 3 (weight: 0.20)
+Centroid Classifier — Classifier 2 (weight: 0.30)
 
 Compares ticket embedding to 6 pre-computed category centroids.
 Returns closest category. No AI model needed — pure vector math.
-Accuracy: ~75% alone.
+Accuracy: ~74% alone (35-ticket benchmark).
 """
 
 import logging

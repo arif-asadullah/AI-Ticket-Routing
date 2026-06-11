@@ -64,6 +64,17 @@ SCENARIO_CAPS = {
     "no_votes": 0.0,
 }
 
+
+def _pick_winner(category_scores: dict) -> str:
+    """Deterministically pick the highest-scoring category.
+
+    On an exact score tie, break alphabetically by category name so the result
+    is reproducible — otherwise the winner depended on classifier execution order
+    (non-deterministic under asyncio.gather), and two identical tickets could
+    route to different teams.
+    """
+    return min(category_scores, key=lambda c: (-category_scores[c], c))
+
 # Known boundary-confusion pairs (where LLM makes domain mistakes)
 KNOWN_BOUNDARY_PAIRS = {
     frozenset({"Database", "Infrastructure"}),
@@ -111,11 +122,11 @@ def aggregate(
             "confidence": vote.get("confidence", 0.5),
         })
 
-    # Sort by vote count then by weighted score
+    # Sort by vote count, then weighted score, then category name (deterministic tiebreak).
+    # Counts/scores descending (negated), name ascending — so ties never depend on dict order.
     sorted_cats = sorted(
         category_voters.keys(),
-        key=lambda c: (len(category_voters[c]), category_scores.get(c, 0)),
-        reverse=True,
+        key=lambda c: (-len(category_voters[c]), -category_scores.get(c, 0), c),
     )
 
     top_cat = sorted_cats[0]
@@ -212,7 +223,7 @@ def aggregate(
             method = "pair_wins"
             cap = SCENARIO_CAPS["pair_wins"]
         else:
-            winner = max(category_scores, key=category_scores.get)
+            winner = _pick_winner(category_scores)
             method = "pair_fallback"
             cap = SCENARIO_CAPS["pair_fallback"]
 
@@ -277,7 +288,7 @@ def aggregate(
         )
 
     # ── Phase 5: Total disagreement ──
-    winner = max(category_scores, key=category_scores.get)
+    winner = _pick_winner(category_scores)
     method = "total_disagreement"
     cap = SCENARIO_CAPS["total_disagreement"]
     logger.info("Aggregator: %s via %s (1/%d)", winner, method, total_active)
@@ -414,5 +425,16 @@ def _get_weights(active_votes: dict) -> dict:
     if active_keys == {"keyword"}:
         return DEGRADED_WEIGHTS["emergency"]
 
+    # Fallback (e.g. a single classifier like KNN or Centroid dropped out):
+    # renormalize the TUNED global weights over whichever classifiers are active,
+    # instead of collapsing to uniform 1/N. This preserves the LLM's intended
+    # dominance on novel tickets rather than demoting it to equal footing with
+    # the weak keyword matcher.
+    subset = {k: WEIGHTS[k] for k in active_keys if k in WEIGHTS}
+    total = sum(subset.values())
+    if total > 0:
+        return {k: v / total for k, v in subset.items()}
+
+    # Last resort (no active classifier is in WEIGHTS — should never happen)
     n = len(active_keys)
     return {k: 1.0 / n for k in active_keys}

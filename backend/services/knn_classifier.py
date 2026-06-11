@@ -1,9 +1,9 @@
 """
-KNN Classifier — Classifier 2 (weight: 0.30)
+KNN Classifier — Classifier 3 (weight: 0.15)
 
 Takes top 5 similar tickets from vector search and votes by their categories.
 No AI model needed — pure math on pre-computed similarities.
-Accuracy: ~80% alone.
+Accuracy: ~76% alone (35-ticket benchmark).
 """
 
 from collections import Counter

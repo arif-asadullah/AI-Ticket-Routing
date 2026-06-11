@@ -137,6 +137,7 @@ async def create_ticket(
         "sla_hours": sla_hours,
         "enrichment": result.get("enrichment"),
         "ai_generated_resolution": result.get("ai_generated_resolution"),
+        "automation_suggestion": result.get("automation_suggestion"),
         "attachments": attachments_data if attachments_data else None,
         "created_at": now,
         "resolved_at": None,
@@ -220,6 +221,7 @@ async def create_ticket(
         sla_hours=sla_hours,
         enrichment=result.get("enrichment"),
         ai_generated_resolution=result.get("ai_generated_resolution"),
+        automation_suggestion=result.get("automation_suggestion"),
         attachments=attachments_data if attachments_data else None,
         created_at=now,
         resolved_at=None,
@@ -307,6 +309,7 @@ async def enrich_ticket(
         "recommended_expert": new_result["recommended_expert"],
         "ai_generated_resolution": new_result.get("ai_generated_resolution"),
         "enrichment": {
+            "needed": False,  # enrichment complete — no longer pending questions
             "answers": body.answers,
             "enriched_at": now,
             "enriched_by": user["email"],
@@ -315,7 +318,9 @@ async def enrich_ticket(
             "improved": new_confidence > old_confidence,
         },
     }
-    collection.update(update_fields)
+    # merge=False so the enrichment object is REPLACED (clearing the stale
+    # needed/questions keys) rather than deep-merged with the old pending version.
+    collection.update(update_fields, merge=False)
 
     # Update graph edges if team changed
     if new_result["recommended_team"] and new_result["recommended_team"] != doc.get("routed_to"):
@@ -879,6 +884,7 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         sla_hours=doc.get("sla_hours"),
         enrichment=doc.get("enrichment"),
         ai_generated_resolution=doc.get("ai_generated_resolution"),
+        automation_suggestion=doc.get("automation_suggestion"),
         attachments=doc.get("attachments"),
         picked_up_by=doc.get("picked_up_by"),
         created_at=doc.get("created_at"),

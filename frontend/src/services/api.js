@@ -58,6 +58,19 @@ async function authFetch(url, options = {}) {
   return res;
 }
 
+// ── Authenticated media loading ──
+
+// Fetch a protected file (e.g. an uploaded screenshot) WITH the auth token and
+// return a temporary in-memory object URL the browser can render. Needed because
+// the /api/upload/{id} endpoint now requires auth, and plain <img src> / <a href>
+// requests don't carry the Authorization header. Caller must URL.revokeObjectURL().
+export async function fetchAuthedObjectUrl(path) {
+  const res = await authFetch(path);
+  if (!res.ok) throw new Error("Failed to load file");
+  const blob = await res.blob();
+  return URL.createObjectURL(blob);
+}
+
 // ── Auth Endpoints ──
 
 export async function login(email, password) {

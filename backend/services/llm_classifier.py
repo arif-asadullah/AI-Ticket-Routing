@@ -1,9 +1,9 @@
 """
 LLM Classifier — Classifier 1 (weight: 0.40)
 
-Sends ticket + all Stage 2 context to Qwen 2.5:3B via Ollama.
+Sends ticket + all Stage 2 context to Qwen 2.5 (model from OLLAMA_MODEL) via Ollama.
 Uses root-cause analysis prompt with few-shot examples.
-Accuracy: ~85% alone.
+Accuracy: ~94% alone (35-ticket benchmark).
 """
 
 import json
