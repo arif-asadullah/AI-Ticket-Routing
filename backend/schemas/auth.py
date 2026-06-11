@@ -1,18 +1,31 @@
 """Auth request/response schemas."""
 
-from pydantic import BaseModel
+import re
+from typing import Literal
+
+from pydantic import BaseModel, Field, field_validator
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 class UserRegister(BaseModel):
-    email: str
-    password: str
-    role: str = "user"  # "admin", "engineer", "user"
+    email: str = Field(min_length=3, max_length=254)
+    password: str = Field(min_length=8, max_length=128)
+    role: Literal["admin", "engineer", "user"] = "user"
     engineer_key: str | None = None  # required if role == "engineer"
+
+    @field_validator("email")
+    @classmethod
+    def _valid_email(cls, v: str) -> str:
+        v = v.strip().lower()
+        if not _EMAIL_RE.match(v):
+            raise ValueError("Invalid email address")
+        return v
 
 
 class UserLogin(BaseModel):
-    email: str
-    password: str
+    email: str = Field(max_length=254)
+    password: str = Field(max_length=128)
 
 
 class TokenResponse(BaseModel):

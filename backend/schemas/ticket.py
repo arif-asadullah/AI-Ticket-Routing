@@ -1,12 +1,14 @@
 """Ticket request/response schemas."""
 
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 
 class TicketCreate(BaseModel):
-    title: str
-    description: str
-    priority: str = "medium"  # critical, high, medium, low
+    title: str = Field(min_length=1, max_length=300)
+    description: str = Field(min_length=1, max_length=10000)
+    priority: Literal["critical", "high", "medium", "low"] = "medium"
     submitted_by: str | None = None
     attachment_ids: list[str] | None = None  # file_ids from /api/upload
 
@@ -63,6 +65,7 @@ class TicketResponse(BaseModel):
     sla_hours: int | None = None
     enrichment: dict | None = None
     ai_generated_resolution: dict | None = None
+    automation_suggestion: dict | None = None
     attachments: list[dict] | None = None
     picked_up_by: str | None = None
     created_at: str | None = None

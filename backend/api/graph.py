@@ -68,13 +68,18 @@ async def get_graph(
                 logger.warning("Failed to load %s: %s", col_name, exc)
 
         # ── Load user tickets as nodes ──
+        # Use a bind variable (@category) instead of string interpolation so the
+        # user-supplied value can never be treated as AQL code (prevents injection).
         ticket_filter = "t._source != null"
+        bind_vars = {}
         if category:
-            ticket_filter += f' AND t.category == "{category}"'
+            ticket_filter += " AND t.category == @category"
+            bind_vars["category"] = category
 
         try:
             cursor = db.aql.execute(
-                f"FOR t IN tickets FILTER {ticket_filter} SORT t.created_at DESC LIMIT 200 RETURN t"
+                f"FOR t IN tickets FILTER {ticket_filter} SORT t.created_at DESC LIMIT 200 RETURN t",
+                bind_vars=bind_vars,
             )
             config = NODE_CONFIG["tickets"]
             for doc in cursor:
