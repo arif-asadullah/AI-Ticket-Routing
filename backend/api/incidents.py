@@ -2,6 +2,7 @@
 
 import json
 import logging
+import time
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Request
@@ -14,6 +15,28 @@ router = APIRouter(prefix="/api/incidents", tags=["incidents"])
 
 CACHE_KEY = "incidents:predictions"
 CACHE_TTL = 60  # seconds
+
+# Throttled auto-detection of repeated-issue clusters. Runs at most once per
+# interval (instead of a separate scheduler/cron) so the repeated_issues
+# collection stays fresh and check_repeated_match() can flag recurring tickets.
+_last_repeated_scan = 0.0
+REPEATED_SCAN_INTERVAL = 300  # seconds (5 min)
+
+
+def _maybe_refresh_repeated_issues(db):
+    """Run repeated-issue detection if it hasn't run recently (throttled)."""
+    global _last_repeated_scan
+    now_ts = time.time()
+    if now_ts - _last_repeated_scan < REPEATED_SCAN_INTERVAL:
+        return
+    _last_repeated_scan = now_ts
+    try:
+        from backend.services.repeated_issues import detect_repeated_issues, save_repeated_issues
+        clusters = detect_repeated_issues(db)
+        save_repeated_issues(db, clusters)
+        logger.info("Auto repeated-issue scan: %d cluster(s)", len(clusters))
+    except Exception as exc:
+        logger.warning("Auto repeated-issue detection failed: %s", exc)
 
 
 @router.get("")
@@ -34,6 +57,10 @@ async def get_incidents(request: Request, user: dict = Depends(get_current_user)
 
     if db is None:
         return []
+
+    # Keep the repeated-issue clusters fresh (throttled) so recurring tickets
+    # get flagged with automation suggestions in the classification pipeline.
+    _maybe_refresh_repeated_issues(db)
 
     incidents = []
 

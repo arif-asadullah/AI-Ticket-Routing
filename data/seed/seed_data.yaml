@@ -476,7 +476,7 @@ runbooks:
   - Submit CSR to Certificate Authority
   - 'Install new certificate: cp new-cert.pem /etc/ssl/certs/'
   - 'Reload service: sudo systemctl reload nginx'
-  category: Security
+  category: Network
 - _key: KB-0006
   title: LDAP account lockout resolution
   steps:
@@ -512,7 +512,7 @@ runbooks:
   - 'Unlock account: Unlock-ADAccount -Identity username'
   - 'Reset password if needed: Set-ADAccountPassword -Identity username'
   - 'Verify login: Test-ADAuthentication -Username username'
-  category: Security
+  category: Access Management
 - _key: KB-0010
   title: Firewall rule change procedure
   steps:
