@@ -91,6 +91,10 @@ def _fetch_ticket_list(db, entities: dict, user: dict) -> dict:
     if entities.get("category"):
         filters.append(f"t.category == '{entities['category']}'")
 
+    # "my tickets" → scope to the asking user, whatever their role
+    if entities.get("mine"):
+        filters.append(f"t.submitted_by == '{user['email']}'")
+
     # Team scoping
     if user["role"] == "engineer":
         team_name = _resolve_team_name(db, user)
@@ -203,12 +207,25 @@ def _fetch_stats(db, user: dict) -> dict:
     )
     LET avg_conf = AVERAGE(FOR t IN user_tickets FILTER t.confidence_score != null RETURN t.confidence_score)
     LET escalated = LENGTH(FOR t IN user_tickets FILTER t.status == "escalated" RETURN 1)
+    LET resolved_tickets = (
+        FOR t IN user_tickets
+            FILTER t.resolved_at != null AND t.created_at != null
+            RETURN {{ category: t.category, hours: DATE_DIFF(t.created_at, t.resolved_at, "h", true) }}
+    )
+    LET avg_resolution_hours = AVERAGE(FOR r IN resolved_tickets RETURN r.hours)
+    LET resolution_by_category = (
+        FOR r IN resolved_tickets
+            COLLECT cat = r.category AGGREGATE avg_h = AVERAGE(r.hours), cnt = LENGTH(1)
+            RETURN {{ category: cat, avg_hours: ROUND(avg_h * 10) / 10, resolved_count: cnt }}
+    )
     RETURN {{
         total: total,
         by_status: by_status,
         by_category: by_category,
         avg_confidence: ROUND((avg_conf OR 0) * 1000) / 1000,
-        escalation_rate: total > 0 ? ROUND(escalated * 1000 / total) / 1000 : 0
+        escalation_rate: total > 0 ? ROUND(escalated * 1000 / total) / 1000 : 0,
+        avg_resolution_hours: avg_resolution_hours == null ? null : ROUND(avg_resolution_hours * 10) / 10,
+        resolution_by_category: resolution_by_category
     }}
     """
     try:
@@ -221,7 +238,30 @@ def _fetch_stats(db, user: dict) -> dict:
     if not result or result.get("total", 0) == 0:
         return {"found": False, "data": {}, "summary": "No ticket data available yet."}
 
-    return {"found": True, "data": result, "summary": ""}
+    # Stats are pure numbers — answer from a fixed template instead of letting
+    # the LLM paraphrase them (a small model can garble "escalated: 5" into
+    # "#5 is the only escalated ticket"). Numbers never pass through the LLM.
+    return {"found": True, "data": result, "summary": "", "direct_reply": _format_stats_reply(result)}
+
+
+def _format_stats_reply(data: dict) -> str:
+    """Deterministic, human-readable stats summary (no LLM involved)."""
+    lines = [f"Here are the current ticket statistics:", ""]
+    lines.append(f"Total tickets: {data.get('total', 0)}")
+    for s in data.get("by_status") or []:
+        label = (s.get("status") or "unknown").replace("_", " ")
+        lines.append(f"  - {label}: {s['count']}")
+    lines.append(f"Average AI confidence: {round((data.get('avg_confidence') or 0) * 100)}%")
+    lines.append(f"Escalation rate: {round((data.get('escalation_rate') or 0) * 100)}%")
+    if data.get("avg_resolution_hours") is not None:
+        lines.append(f"Average resolution time: {data['avg_resolution_hours']} hours")
+        for r in data.get("resolution_by_category") or []:
+            lines.append(f"  - {r['category']}: {r['avg_hours']} hours ({r['resolved_count']} resolved)")
+    if data.get("by_category"):
+        lines.append("Tickets by category:")
+        for c in data["by_category"]:
+            lines.append(f"  - {c['category']}: {c['count']}")
+    return "\n".join(lines)
 
 
 def _fetch_engineer_info(db, entities: dict, user: dict) -> dict:
@@ -497,7 +537,7 @@ def _format_data_as_text(intent_type: str, data: dict) -> str:
     elif intent_type == "ticket_list":
         lines.append(f"Found {data.get('count', 0)} ticket(s):")
         for t in data.get("tickets", []):
-            lines.append(f"  #{t['id']} | {t['title']} | {t['status']} | {t['priority']} | {t['category']} | routed to: {t.get('routed_to', 'N/A')}")
+            lines.append(f"  #{t['id']} | {t['title']} | {t['status']} | {t['priority']} | {t['category']} | routed to: {t.get('routed_to', 'N/A')} | submitted by: {t.get('submitted_by', 'N/A')}")
 
     elif intent_type == "team_info":
         if "teams" in data:
