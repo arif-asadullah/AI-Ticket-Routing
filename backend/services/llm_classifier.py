@@ -33,7 +33,14 @@ RULES:
    - Access Management: LDAP, Active Directory, SSO, SAML, OAuth, MFA, RBAC, permissions, account lockouts, password issues, user provisioning, service account credentials, identity governance, group memberships
 
 3. DISAMBIGUATION (critical — follow these strictly):
-   - "locked out" / "can't login" / "login failed" → Access Management (NOT Security, unless explicitly a brute force attack or breach)
+   - ATTACK CHECK FIRST — before applying any lockout/login rule, scan for attack signals:
+     many failed login attempts (dozens or more), an external/unknown/foreign source IP,
+     or words like "brute force", "breach", "attack", "intrusion", "compromised",
+     "credential stuffing", "suspicious activity". If ANY attack signal is present,
+     the ticket is Security — even if an account ended up locked. The lockout is the
+     symptom; the attack is the root cause.
+   - "locked out" / "can't login" / "login failed" with NO attack signals (password
+     reset/rotation, expired credentials, missing permissions, user error) → Access Management
    - "firewall blocking traffic" → Network (NOT Security, unless explicitly a security policy violation)
    - "someone logged into my account" → Security (unauthorized access IS a security incident)
    - "nginx crashing" / "Grafana not loading" / "Prometheus errors" → Application (these are APPLICATION services, not Infrastructure)
@@ -52,6 +59,7 @@ RULES:
    Database: "PostgreSQL replication lag exceeding 30 seconds on prod-db-02, WAL replay falling behind"
    Network: "VPN users reporting intermittent disconnections, MTU mismatch suspected between tunnel endpoints"
    Security: "Detected unauthorized SSH login from unknown IP 45.33.xx.xx on prod-app-02 at 3am, not in our IP whitelist"
+   Security: "Service account locked after hundreds of failed login attempts from an unknown external IP within minutes — possible intrusion attempt" (lockout caused by an attack = Security, not Access Management)
    Access Management: "50 users locked out of Active Directory after quarterly password rotation policy kicked in"
 
 5. Priority:
