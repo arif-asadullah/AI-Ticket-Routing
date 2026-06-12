@@ -405,7 +405,7 @@ The decision splits into two paths:
 |----------|-------------|
 | **Team Lookup** | Queries `routing_rules` collection for a matching `{category, priority}` pair where `is_active == true`. Joins to `teams` to get the team name. |
 | **Resolution Search** | Searches 3 sources for the best resolution: (1) similar tickets from vector search, (2) error-matched tickets, (3) graph context past tickets on the same server. Picks the resolution with the highest `effectiveness` score. |
-| **Runbook Match** | Queries `runbooks` for entries matching the ticket's category, then scores each candidate by meaningful title-word overlap with the ticket text (title + description + resolution, generic stopwords excluded). A runbook is returned **only** when its title genuinely overlaps the ticket text (at least one meaningful word); otherwise `find_runbook` returns `None` and no runbook is shown — a wrong cross-topic runbook is never surfaced. |
+| **Runbook Match** | Queries `runbooks` for entries matching the ticket's category, then scores each candidate by meaningful title-word overlap with the ticket text (title + description, generic stopwords excluded). A runbook is returned **only** when its title genuinely overlaps the ticket text (at least one meaningful word); otherwise `find_runbook` returns `None` and no runbook is shown — a wrong cross-topic runbook is never surfaced. |
 | **Expert Recommendation** | If graph traversal returned team members, recommends the first expert from the list (typically the one with the most relevant expertise). |
 
 **Escalate path** (confidence < 0.70):

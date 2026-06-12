@@ -93,7 +93,7 @@ Call graph (function-level):
       │       ├── aggregate(votes, quality, errors, graph_confirms)
       │       │
       │       ├── lookup_team(db, category, priority)
-      │       ├── find_runbook(db, category, resolution_steps)
+      │       ├── find_runbook(db, category, title, description)
       │       └── [resolution selection from 3 sources]
       │
       ├── db.collection("tickets").insert({
@@ -328,7 +328,7 @@ class Settings(BaseSettings):
 | `check_health` | `async (db, redis_client) -> HealthStatus` | `HealthStatus` | Cached (5s TTL) health check for Ollama, ArangoDB, Redis |
 | `get_embedding_model` | `() -> SentenceTransformer` | `SentenceTransformer` | Singleton loader for `all-MiniLM-L6-v2` |
 | `classify` | `async (title, description, db, redis_client) -> ClassificationResult` | `ClassificationResult` | Full 5-stage pipeline execution |
-| `find_runbook` | `(db, category, resolution_steps) -> str \| None` | `str \| None` | AQL lookup of runbook by category, matched by resolution text |
+| `find_runbook` | `(db, category, title, description) -> str \| None` | `str \| None` | AQL lookup of runbook by category, relevance-gated by title-word overlap with the ticket text |
 | `lookup_team` | `(db, category, priority) -> str \| None` | `str \| None` | AQL lookup of team via routing_rules join |
 
 ### 3.6 `services/entity_extractor.py` — Entity Extraction
