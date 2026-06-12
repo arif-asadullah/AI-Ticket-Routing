@@ -1,39 +1,41 @@
 """Unit tests for PII masking (test-plan P7).
 
-SSNs and Luhn-valid card numbers must be redacted before storage; technical
+SSNs and Luhn-valid card numbers must be masked before storage; technical
 numbers (ticket IDs, ports, IPs, timestamps) must pass through untouched.
+Masks are shape-preserving and user-friendly: ***-**-**** for SSNs,
+receipt-style **** **** **** 1111 (last 4 kept) for cards.
 """
-from backend.services.pii_masker import CARD_TOKEN, SSN_TOKEN, mask_pii
+from backend.services.pii_masker import SSN_TOKEN, mask_pii
 
 
 def test_ssn_is_masked():
     out = mask_pii("John Smith (SSN 123-45-6789) can't log in")
     assert "123-45-6789" not in out
-    assert SSN_TOKEN in out
+    assert SSN_TOKEN in out  # ***-**-****
 
 
-def test_valid_card_with_spaces_is_masked():
+def test_valid_card_with_spaces_masked_keeping_last4():
     out = mask_pii("card 4111 1111 1111 1111 was charged twice")
-    assert "4111 1111 1111 1111" not in out
-    assert CARD_TOKEN in out
+    assert "card **** **** **** 1111 was charged twice" == out
 
 
-def test_valid_card_with_dashes_is_masked():
+def test_valid_card_with_dashes_masked_keeping_last4():
     out = mask_pii("paid with 4111-1111-1111-1111 yesterday")
-    assert CARD_TOKEN in out
+    assert "paid with ****-****-****-1111 yesterday" == out
 
 
-def test_valid_card_without_separators_is_masked():
+def test_valid_card_without_separators_masked_keeping_last4():
     out = mask_pii("card number 4111111111111111 on file")
-    assert "4111111111111111" not in out
-    assert CARD_TOKEN in out
+    assert "card number ************1111 on file" == out
 
 
 def test_p7_ticket_fully_masked():
     # The exact adversarial input from test-plan P7
     out = mask_pii("John Smith (SSN 123-45-6789, card 4111 1111 1111 1111) can't log in from 10.0.1.55")
     assert "123-45-6789" not in out
-    assert "4111" not in out
+    assert "4111 1111 1111" not in out
+    assert "***-**-****" in out
+    assert "**** **** **** 1111" in out
     assert "10.0.1.55" in out  # IPs are operational data, kept
 
 
