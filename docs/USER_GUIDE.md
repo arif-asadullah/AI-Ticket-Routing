@@ -1,18 +1,45 @@
+<img src="images/user-guide/deskmind-logo.svg" alt="DeskMind" width="190" style="border:none;">
+
 # DeskMind — Product User Guide
 
+## Table of Contents
+
+1. [Introduction](#1-introduction)
+    - [About DeskMind](#about-deskmind)
+    - [About this guide](#about-this-guide)
+    - [Conventions](#conventions)
+2. [Getting Started](#2-getting-started)
+    - [Logging in](#logging-in)
+    - [Finding your way around](#finding-your-way-around)
+3. [For Users](#3-for-users)
+    - [Submitting a ticket](#submitting-a-ticket)
+    - [Understanding the result](#understanding-the-result)
+    - [Answering follow-up questions (enrichment)](#answering-follow-up-questions-enrichment)
+    - [Tracking your ticket](#tracking-your-ticket)
+    - [Asking Mindy (the AI assistant)](#asking-mindy-the-ai-assistant)
+4. [For Engineers](#4-for-engineers)
+    - [Your queue](#your-queue)
+    - [Reading a ticket](#reading-a-ticket)
+    - [Picking up and resolving](#picking-up-and-resolving)
+    - [Correcting the AI (override)](#correcting-the-ai-override)
+    - [Giving feedback](#giving-feedback)
+5. [For Admins](#5-for-admins)
+    - [Managing users](#managing-users)
+    - [Exploring the knowledge graph](#exploring-the-knowledge-graph)
+    - [Viewing analytics](#viewing-analytics)
+6. [Reference](#6-reference)
+    - [The 6 domains and their teams](#the-6-domains-and-their-teams)
+    - [Ticket statuses](#ticket-statuses)
+    - [Confidence &amp; routing](#confidence--routing)
+    - [Priority &amp; SLA targets](#priority--sla-targets)
+    - [Roles &amp; permissions](#roles--permissions)
+7. [Glossary](#glossary)
+
+## 1. Introduction
+
+### About DeskMind
+
 > **Classify · Route · Resolve** — DeskMind is an AI-powered IT support desk that automatically classifies every ticket into the right domain, routes it to the right team, and suggests a resolution — using a 4-classifier ensemble, a knowledge graph of your infrastructure, and a local LLM (no cloud, no data leaving your network).
-
-This guide walks through DeskMind from a user's point of view. It's organized by **the three roles** in the system, so jump to the section that matches how you use the product.
-
-| Role | What you do | Jump to |
-|------|-------------|---------|
-| **Requester** | Submit IT tickets, answer follow-up questions, track status, ask the AI assistant | [§3 For Requesters](#3-for-requesters) |
-| **Engineer** | Work your team's queue — pick up, resolve, escalate, or correct the AI | [§4 For Engineers](#4-for-engineers) |
-| **Admin** | Manage users, explore the knowledge graph, and view system-wide analytics | [§5 For Admins](#5-for-admins) |
-
----
-
-## 1. What is DeskMind?
 
 When an IT issue is reported, DeskMind reads the description, figures out **which of 6 IT domains** it belongs to, **how confident** it is, and **which team** should handle it — in a few seconds, with no manual triage.
 
@@ -26,17 +53,36 @@ Every ticket flows through a five-stage pipeline:
 
 The result: faster routing, fewer misrouted tickets, and a suggested fix grounded in what actually worked before.
 
+### About this guide
+
+This guide walks through DeskMind from a user's point of view. It's organized by **the three roles** in the system, so jump to the section that matches how you use the product.
+
+| Role | What you do | Jump to |
+|------|-------------|---------|
+| **User** | Submit IT tickets, answer follow-up questions, track status, ask the AI assistant | [§3 For Users](#3-for-users) |
+| **Engineer** | Work your team's queue — pick up, resolve, escalate, or correct the AI | [§4 For Engineers](#4-for-engineers) |
+| **Admin** | Manage users, explore the knowledge graph, and view system-wide analytics | [§5 For Admins](#5-for-admins) |
+
+### Conventions
+
+This guide uses a few consistent conventions:
+
+- **Bold** marks UI labels and buttons (e.g. **New Ticket**).
+- Orange callout boxes flag important notes and tips.
+- Screenshots show the real DeskMind interface; **red boxes** highlight the relevant control.
+- Status badges (Routed, In Progress, Resolved, …) are defined in [§6 → Ticket statuses](#ticket-statuses).
+
 ---
 
 ## 2. Getting Started
 
 ### Logging in
 
-Open DeskMind in your browser (e.g. `http://localhost:3000`) and sign in with your email and password.
+Open DeskMind in your browser at the address provided by your administrator and sign in with your email and password.
 
 ![DeskMind login screen](images/user-guide/01-login.png)
 
-> **Demo instance:** sign in as the seeded administrator `arif.asadullah@schwettmann.in` (password as configured during setup — see the [Deployment Guide](deployment.md)). Admins create all other accounts from the **Users** screen (see [§5](#5-for-admins)).
+> **Demo instance:** sign in as the seeded administrator `arif.asadullah@schwettmann.in` (password as configured during setup — see the Deployment Guide). Admins create all other accounts from the **Users** screen (see [§5](#5-for-admins)).
 
 ### Finding your way around
 
@@ -52,13 +98,20 @@ After signing in you land on the **Domain Dashboard**. The top bar is your main 
 - **Theme toggle** (sun/moon), your **email + role badge**, and **Logout** on the right
 - **Ask Mindy** — the floating AI-assistant button (bottom-right)
 
-The cards across the top show at-a-glance health: **Total Tickets, Avg Confidence, Escalation Rate, Avg Resolution time, AI Agreement,** and **AI Helpfulness**.
+The cards across the top show at-a-glance health:
+
+- **Total Tickets** — volume in the current view
+- **Avg Confidence** — how certain the AI is, on average
+- **Escalation Rate** — share of tickets sent for human review
+- **Avg Resolution** — mean time to resolve a ticket
+- **AI Agreement** — how often the four classifiers agree
+- **AI Helpfulness** — share of resolutions users rated Helpful
 
 > **Degraded-mode banner:** if a component (the LLM, database, or cache) is unavailable, a banner appears showing the degradation level (1–4). DeskMind keeps working with fewer classifiers rather than going offline — it just routes more conservatively.
 
 ---
 
-## 3. For Requesters
+## 3. For Users
 
 ### Submitting a ticket
 
@@ -69,7 +122,7 @@ Click **New Ticket**, then describe the issue in plain language:
 - **Title** — a short summary
 - **Description** — the details: affected systems, error messages, impact
 - **Priority** — `low`, `medium`, or `high`
-- **Screenshots (optional)** — drag-and-drop an image (e.g. an error log or stack trace). DeskMind runs OCR to read the text and pull out servers, services, and error codes automatically.
+- **Screenshots (optional)** — drag-and-drop a screenshot (e.g. of an error message or stack trace). DeskMind runs OCR to read the text and pull out servers, services, and error codes automatically.
 
 Click **Submit** and DeskMind classifies and routes the ticket in a few seconds.
 
@@ -89,7 +142,7 @@ If your description is too vague to classify confidently, DeskMind asks a few ta
 
 ![Enrichment — DeskMind asks for the affected server, symptom, and business impact](images/user-guide/07-enrichment.png)
 
-It even personalizes the questions based on your past tickets and shows similar issues it found. Once you answer, the ticket is re-classified with the new detail — usually jumping straight to a confident route.
+It even personalizes the questions based on your past tickets and shows similar issues it found. Once you answer, the ticket is re-classified with the new detail — usually jumping straight to a confident routing decision.
 
 ### Tracking your ticket
 
@@ -122,7 +175,7 @@ Open a ticket to see the full AI analysis:
 - **AI Classification** — the category, a **quality** badge (HIGH/MEDIUM/LOW), the **confidence** bar, and the AI's **reasoning**
 - **Classifier Votes** — how each of the four classifiers voted, with a check on the ones that agree with the final decision. This is the transparency layer: you can see *why* a category won (and when one classifier dissents — e.g. Keyword voting "Application" while the ensemble holds "Security").
 
-Scroll down for the **Suggested Resolution** (with an effectiveness score), a **Recommended Runbook**, any **Automation Suggestion** for recurring issues, and the **Recommended Expert**:
+Scroll down for the **Suggested Resolution** (with an **effectiveness score** — how well that fix worked before), a **Recommended Runbook**, any **Automation Suggestion** (flags a recurring issue so it can be automated), and the **Recommended Expert**:
 
 ![Suggested resolution steps and recommended runbook](images/user-guide/05-ticket-detail-resolution.png)
 
@@ -146,7 +199,9 @@ If the AI got the category wrong, click **Override Classification**. You'll see 
 
 ### Giving feedback
 
-After a ticket is resolved, rate the AI's suggestion **👍 Helpful / 👎 Not Helpful**. This feedback loop is how DeskMind's accuracy keeps improving.
+After a ticket is resolved, rate the AI's suggestion **Helpful** or **Not Helpful**. This feedback loop is how DeskMind's accuracy keeps improving.
+
+![AI Feedback — overall share of resolutions users rated helpful](images/user-guide/15-ai-feedback.png)
 
 ---
 
@@ -156,7 +211,7 @@ Admins have full visibility across all teams and domains, plus three admin-only 
 
 ### Managing users
 
-The **Users** screen lets you create accounts, assign each user a **role** (admin / engineer / requester) and a **team**, and activate/deactivate accounts:
+The **Users** screen lets you create accounts, assign each user a **role** (admin / engineer / user) and a **team**, and activate/deactivate accounts:
 
 ![User management screen](images/user-guide/14-users.png)
 
@@ -164,13 +219,13 @@ The **Users** screen lets you create accounts, assign each user a **role** (admi
 
 ### Exploring the knowledge graph
 
-The **Graph** screen visualizes the infrastructure DeskMind reasons over — teams, engineers, servers, services, tickets, and error codes, and the relationships between them. Filter by node type or domain, and click a node to inspect its connections:
+The **Graph** screen visualizes the infrastructure DeskMind reasons over — teams, engineers, servers, services, tickets, error codes, and network devices — along with the relationships between them. Filter by node type or domain, and click a node to inspect its connections:
 
 ![Interactive knowledge graph](images/user-guide/13-graph.png)
 
 ### Viewing analytics
 
-The **Analytics** screen shows system-wide trends — tickets by category, status, and priority; confidence distribution; classifier agreement; resolution times; and AI-helpfulness:
+The **Analytics** screen shows system-wide trends — tickets by category, status, and priority; daily ticket volume; confidence by category; and AI-helpfulness:
 
 ![Analytics dashboard](images/user-guide/12-analytics.png)
 
@@ -220,18 +275,36 @@ Admins also have access to the **SLA-breach report** to spot tickets at risk of 
 
 ### Roles & permissions
 
-| Capability | Requester | Engineer | Admin |
+| Capability | User | Engineer | Admin |
 |------------|:---------:|:--------:|:-----:|
-| Submit tickets | ✅ | ✅ | ✅ |
-| Track own tickets | ✅ | ✅ | ✅ |
-| Ask Mindy | ✅ | ✅ | ✅ |
-| Work / resolve tickets | — | ✅ (own team) | ✅ (all) |
-| Override classification | — | ✅ (own team) | ✅ (all) |
-| Give AI feedback | ✅ | ✅ | ✅ |
+| Submit tickets | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> |
+| Track own tickets | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> |
+| Ask Mindy | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> |
+| Work / resolve tickets | <span style="color:#dc2626;font-weight:700;font-size:1.25em">✗</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> (own team) | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> (all) |
+| Override classification | <span style="color:#dc2626;font-weight:700;font-size:1.25em">✗</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> (own team) | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> (all) |
+| Give AI feedback | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> |
 | Analytics | own | team | global |
-| Knowledge graph | — | — | ✅ |
-| Manage users | — | — | ✅ |
+| Knowledge graph | <span style="color:#dc2626;font-weight:700;font-size:1.25em">✗</span> | <span style="color:#dc2626;font-weight:700;font-size:1.25em">✗</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> |
+| Manage users | <span style="color:#dc2626;font-weight:700;font-size:1.25em">✗</span> | <span style="color:#dc2626;font-weight:700;font-size:1.25em">✗</span> | <span style="color:#16a34a;font-weight:700;font-size:1.25em">✓</span> |
 
 ---
 
-*DeskMind — Classify · Route · Resolve. For setup and deployment, see the [Deployment Guide](deployment.md). For architecture and design, see [docs/nasscom-r2/](nasscom-r2/).*
+## Glossary
+
+- **Centroid classifier** — classifies by comparing a ticket to the average ("centroid") of each domain's past tickets.
+- **Confidence** — how sure the AI is of its classification (0–100%); drives routing vs. escalation.
+- **Degraded mode** — reduced operation when the LLM, database, or cache is unavailable; DeskMind keeps working with fewer classifiers.
+- **Effectiveness score** — how well a past resolution actually worked, used to rank suggested fixes.
+- **Enrichment** — the follow-up questions DeskMind asks when a ticket is too vague to classify confidently.
+- **Escalation** — sending a medium-confidence ticket to a human to confirm the AI's classification.
+- **Keyword classifier** — classifies by matching domain-specific keywords in the ticket text.
+- **KNN classifier** — classifies by the categories of the most similar past tickets (k-nearest neighbours).
+- **Knowledge graph** — a map of your infrastructure (teams, servers, services, error codes, network devices) DeskMind reasons over.
+- **LLM** — the local large language model (via Ollama) that reads and classifies tickets; no data leaves your network.
+- **Pending Human** — a very low-confidence ticket (in degraded mode) queued for an analyst to handle.
+- **Runbook** — a step-by-step fix procedure, shown only when it genuinely matches the ticket.
+- **SLA** — service-level agreement: the target time to resolve a ticket, set by priority.
+
+---
+
+*DeskMind — Classify · Route · Resolve. For setup and deployment, see the Deployment Guide.*
