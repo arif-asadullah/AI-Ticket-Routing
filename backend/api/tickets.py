@@ -15,6 +15,7 @@ from backend.core.auth import (
 )
 from backend.schemas.ticket import TicketCreate, TicketEnrich, TicketFeedback, TicketOverride, TicketResolve, TicketResponse, TicketStatusUpdate
 from backend.services.orchestrator import classify
+from backend.services.pii_masker import mask_pii
 from backend.services.router import cancel_sla_timer, get_breached_tickets, get_top3_predictions, start_sla_timer
 from backend.services.socketio_manager import emit_ticket_event
 
@@ -61,8 +62,13 @@ async def create_ticket(
 
     redis_client = getattr(request.app.state, "redis", None)
 
+    # ── Mask PII at the boundary — everything downstream (DB, embeddings,
+    # LLM prompts, audit log, retrieval) only ever sees the masked text ──
+    masked_title = mask_pii(ticket.title)
+    masked_description = mask_pii(ticket.description)
+
     # ── Combine OCR text from attachments with description ──
-    classify_description = ticket.description
+    classify_description = masked_description
     attachments_data = []
     if ticket.attachment_ids:
         import json as _json
@@ -79,11 +85,13 @@ async def create_ticket(
                     classify_description += f"Extracted text: {ocr['raw_text'][:500]}\n"
                     if ocr.get("summary"):
                         classify_description += f"Summary: {ocr['summary']}"
+        # OCR text comes from user screenshots and can contain PII too
+        classify_description = mask_pii(classify_description)
 
     # ── Run the 4-classifier pipeline ──
     try:
         result = await classify(
-            title=ticket.title,
+            title=masked_title,
             description=classify_description,
             db=db,
             redis_client=redis_client,
@@ -115,8 +123,8 @@ async def create_ticket(
     # ── Save ticket to database ──
     collection = db.collection("tickets")
     doc = collection.insert({
-        "title": ticket.title,
-        "description": ticket.description,
+        "title": masked_title,
+        "description": masked_description,
         "category": result["category"],
         "secondary_category": result["secondary_category"],
         "priority": result["priority"],
@@ -257,9 +265,9 @@ async def enrich_ticket(
     if doc is None:
         raise HTTPException(404, "Ticket not found")
 
-    # Build enriched description
+    # Build enriched description (mask PII in the user's answers, same as ticket creation)
     from backend.services.enrichment_agent import build_enriched_description
-    enriched_desc = build_enriched_description(doc.get("description", ""), body.answers)
+    enriched_desc = mask_pii(build_enriched_description(doc.get("description", ""), body.answers))
 
     # Re-classify with enriched text (skip cache, pure 4-classifier ensemble)
     try:
