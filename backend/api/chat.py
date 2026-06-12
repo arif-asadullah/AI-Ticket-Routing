@@ -54,6 +54,11 @@ async def chat_endpoint(req: ChatRequest, request: Request, user: dict = Depends
         if not result["found"]:
             return ChatResponse(reply=result["summary"], model="database", entities=None)
 
+        # Deterministic answers (e.g. stats) — numbers must not be paraphrased by the LLM
+        if result.get("direct_reply"):
+            return ChatResponse(reply=result["direct_reply"], model="database",
+                                entities=extract_entities(intent, result["data"]) or None)
+
         # Extract entities for frontend chips
         ents = extract_entities(intent, result["data"])
 

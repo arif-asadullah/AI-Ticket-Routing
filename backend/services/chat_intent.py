@@ -105,6 +105,9 @@ def parse_intent(message: str) -> dict:
             entities["status"] = matched_status
         if matched_cat:
             entities["category"] = matched_cat
+        # "my tickets" / "tickets I raised" → scope to the asking user
+        if re.search(r"\b(?:my|mine)\b|i (?:submitted|raised|created|opened)", text):
+            entities["mine"] = True
         return {"intent": "ticket_list", "entities": entities}
 
     # ── Category info (category + ticket words) ──
