@@ -651,8 +651,10 @@ async def resolve_ticket(
     if user["role"] == "engineer" and doc.get("picked_up_by") and doc["picked_up_by"] != user["email"]:
         raise HTTPException(403, f"Only {doc['picked_up_by']} can resolve this ticket (they picked it up)")
 
-    if doc.get("status") == "closed":
-        raise HTTPException(400, "Ticket is already closed")
+    # Resolved tickets must be reopened first — a second resolve would create a
+    # duplicate resolution doc + resolved_with edge and pollute the learning data.
+    if doc.get("status") in ("resolved", "closed"):
+        raise HTTPException(400, f"Ticket is already {doc['status']}")
 
     now = datetime.now(timezone.utc).isoformat()
 

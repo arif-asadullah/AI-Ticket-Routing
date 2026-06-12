@@ -150,7 +150,7 @@ sequenceDiagram
     Orch ->> ArangoDB: lookup_team(db, "Database", "critical")<br/>AQL: routing_rules FILTER category+priority<br/>JOIN teams
     ArangoDB -->> Orch: "Database Admin"
     Orch ->> Orch: Select best resolution from 3 sources<br/>Source 1: similar_tickets (same category)<br/>Source 2: error_matched_tickets (highest effectiveness)<br/>Source 3: graph past_tickets_on_server
-    Orch ->> ArangoDB: find_runbook(db, "Database", resolution_steps)<br/>AQL: runbooks FILTER category
+    Orch ->> ArangoDB: find_runbook(db, "Database", title, description)<br/>AQL: runbooks FILTER category
     ArangoDB -->> Orch: "KB-0003: PostgreSQL Emergency Recovery"
     Orch ->> Orch: recommended_expert = graph_context.experts[0].name<br/>= "Priya Sharma"
 

@@ -175,13 +175,18 @@ _RUNBOOK_STOPWORDS = {
 }
 
 
-def find_runbook(db, category: str, resolution_steps: list[str] | None,
+def find_runbook(db, category: str,
                  title: str | None = None, description: str | None = None) -> str | None:
     """Return a runbook ONLY if it genuinely matches the ticket; otherwise None (hide it).
 
     A wrong/cross-topic runbook is worse than none, so we require real keyword
     overlap between the runbook's title and the ticket text rather than blindly
     defaulting to the first runbook of the category.
+
+    Relevance is scored against the ticket's own title + description ONLY —
+    never the suggested resolution. Resolutions are ranked by effectiveness
+    without a relevance floor, so an off-topic resolution's wording would
+    otherwise drag in an equally off-topic runbook.
     """
     try:
         # Candidate runbooks for this category
@@ -197,10 +202,7 @@ def find_runbook(db, category: str, resolution_steps: list[str] | None,
             return None
 
         # Build the ticket text we score relevance against
-        parts = [title or "", description or ""]
-        if resolution_steps:
-            parts.append(" ".join(resolution_steps))
-        query_text = " ".join(parts).lower()
+        query_text = f"{title or ''} {description or ''}".lower()
 
         # Score each candidate by meaningful title-word overlap with the ticket text
         best_rb, best_score = None, 0
@@ -431,7 +433,7 @@ async def classify(
                         best_effectiveness = eff
 
         # Find matching runbook
-        suggested_runbook = find_runbook(db, result["category"], suggested_resolution, title, description)
+        suggested_runbook = find_runbook(db, result["category"], title, description)
 
         # Best expert from graph
         if graph_ctx and graph_ctx.get("experts"):
