@@ -108,12 +108,20 @@ function MetricCard({ label, value, suffix = "", color, format = "number", icon 
 
 export default function StatsSummaryBar({ stats, loading }) {
   const { T } = useTheme();
-  if (loading) {
+  // Spinner only on the FIRST load (no stats yet). On a refresh (e.g. when
+  // tickets finish loading and re-trigger stats) we keep showing the current
+  // cards instead of flashing the spinner — which otherwise made the grid
+  // below jump as this bar's height toggled.
+  if (loading && !stats) {
+    // Reserve the same height as the loaded 6-card row (122px) so the card
+    // grid below does not shift when stats finish loading.
     return (
       <div style={{
         display: "flex",
+        alignItems: "center",
         justifyContent: "center",
-        padding: 20,
+        minHeight: 122,
+        marginBottom: 24,
       }}>
         <DeskMindSpinner size="sm" />
       </div>

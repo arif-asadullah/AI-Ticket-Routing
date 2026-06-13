@@ -318,7 +318,11 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
             </p>
           </div>
 
-          <StatsSummaryBar stats={stats} loading={statsLoading} />
+          {/* Fixed-height slot so the card grid below never shifts while
+              stats load/animate (prevents the dashboard cards from "jumping"). */}
+          <div style={{ minHeight: 146 }}>
+            <StatsSummaryBar stats={stats} loading={statsLoading} />
+          </div>
 
           {/* AI Card Animations */}
           <style>{`
