@@ -503,7 +503,9 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
           </div>
         )}
 
-        {/* ── Stats Summary Bar ── */}
+        {/* ── Stats Summary Bar (fixed-height slot so the ticket list below
+              never shifts while stats load/animate — same as the selector view) ── */}
+        <div style={{ minHeight: 146 }}>
         {(() => {
           // For specific domains, compute stats from local tickets
           if (selectedDomain && selectedDomain !== "ALL") {
@@ -524,6 +526,7 @@ export default function DomainDashboard({ user, onBack, refreshKey }) {
           }
           return <StatsSummaryBar stats={stats} loading={statsLoading} />;
         })()}
+        </div>
 
         {/* ── Incident Predictions Banner ── */}
         {(() => {
