@@ -2,7 +2,7 @@ teams:
 - _key: infra-ops
   name: Infrastructure Ops
   domain: Infrastructure
-  escalation_contact: infra-lead@company.com
+  escalation_contact: infra-lead@schwettmann.in
   sla_hours:
     critical: 2
     high: 4
@@ -11,7 +11,7 @@ teams:
 - _key: app-support
   name: Application Support
   domain: Application
-  escalation_contact: app-lead@company.com
+  escalation_contact: app-lead@schwettmann.in
   sla_hours:
     critical: 2
     high: 4
@@ -20,7 +20,7 @@ teams:
 - _key: security-ops
   name: Security Ops
   domain: Security
-  escalation_contact: security-lead@company.com
+  escalation_contact: security-lead@schwettmann.in
   sla_hours:
     critical: 2
     high: 4
@@ -29,7 +29,7 @@ teams:
 - _key: db-admin
   name: Database Admin
   domain: Database
-  escalation_contact: db-lead@company.com
+  escalation_contact: db-lead@schwettmann.in
   sla_hours:
     critical: 2
     high: 4
@@ -38,7 +38,7 @@ teams:
 - _key: access-mgmt
   name: Access Management
   domain: Access Management
-  escalation_contact: access-mgmt-lead@company.com
+  escalation_contact: access-mgmt-lead@schwettmann.in
   sla_hours:
     critical: 2
     high: 4
@@ -47,7 +47,7 @@ teams:
 - _key: network-eng
   name: Network Engineering
   domain: Network
-  escalation_contact: network-lead@company.com
+  escalation_contact: network-lead@schwettmann.in
   sla_hours:
     critical: 2
     high: 4
@@ -228,7 +228,7 @@ engineers:
   - PostgreSQL
   - Redis
   - backup-recovery
-  email: arjun.nair@company.com
+  email: arjun.nair@schwettmann.in
 - _key: eng-002
   name: Meera Patel
   role: DBA
@@ -236,7 +236,7 @@ engineers:
   - PostgreSQL
   - replication
   - performance-tuning
-  email: meera.patel@company.com
+  email: meera.patel@schwettmann.in
 - _key: eng-003
   name: Priya Sharma
   role: Infrastructure Engineer
@@ -245,7 +245,7 @@ engineers:
   - Kubernetes
   - Docker
   - monitoring
-  email: priya.sharma@company.com
+  email: priya.sharma@schwettmann.in
 - _key: eng-004
   name: Raj Kumar
   role: Senior SysAdmin
@@ -254,7 +254,7 @@ engineers:
   - Ubuntu
   - hardware
   - networking
-  email: raj.kumar@company.com
+  email: raj.kumar@schwettmann.in
 - _key: eng-005
   name: Kavitha Rajan
   role: Application Engineer
@@ -263,7 +263,7 @@ engineers:
   - Spring Boot
   - microservices
   - debugging
-  email: kavitha.rajan@company.com
+  email: kavitha.rajan@schwettmann.in
 - _key: eng-006
   name: Vikram Singh
   role: DevOps Engineer
@@ -272,7 +272,7 @@ engineers:
   - Docker
   - Kubernetes
   - deployments
-  email: vikram.singh@company.com
+  email: vikram.singh@schwettmann.in
 - _key: eng-007
   name: Ayesha Khan
   role: Security Analyst
@@ -281,7 +281,7 @@ engineers:
   - IDS
   - vulnerability-scanning
   - compliance
-  email: ayesha.khan@company.com
+  email: ayesha.khan@schwettmann.in
 - _key: eng-008
   name: Imran Sheikh
   role: Security Engineer
@@ -290,7 +290,7 @@ engineers:
   - certificates
   - encryption
   - IAM
-  email: imran.sheikh@company.com
+  email: imran.sheikh@schwettmann.in
 - _key: eng-009
   name: Deepak Verma
   role: Network Engineer
@@ -300,7 +300,7 @@ engineers:
   - VPN
   - DNS
   - routing
-  email: deepak.verma@company.com
+  email: deepak.verma@schwettmann.in
 - _key: eng-010
   name: Farhana Begum
   role: Network Analyst
@@ -309,7 +309,7 @@ engineers:
   - TCP/IP
   - load-balancing
   - monitoring
-  email: farhana.begum@company.com
+  email: farhana.begum@schwettmann.in
 - _key: eng-011
   name: Amit Joshi
   role: IAM Engineer
@@ -319,7 +319,7 @@ engineers:
   - SSO
   - RBAC
   - OAuth
-  email: amit.joshi@company.com
+  email: amit.joshi@schwettmann.in
 - _key: eng-012
   name: Zainab Siddiqui
   role: Access Management Admin
@@ -328,7 +328,7 @@ engineers:
   - SAML
   - MFA
   - identity-governance
-  email: zainab.siddiqui@company.com
+  email: zainab.siddiqui@schwettmann.in
 network_devices:
 - _key: fw-prod-01
   type: firewall

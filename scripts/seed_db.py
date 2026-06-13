@@ -411,27 +411,64 @@ def compute_centroids(db, all_ticket_docs):
 
 # ── Compute runbook embeddings ──
 
-def load_users(db, users_data):
-    """Load user accounts with hashed passwords."""
-    if not users_data:
-        return
+def load_users(db, users_data, engineers=None, member_of_edges=None):
+    """Load user accounts with hashed passwords.
+
+    Loads the explicit accounts from users_data (e.g. the admin), then adds one
+    engineer-role login per engineer — all sharing the password "eng123" —
+    assigned to the engineer's team via the member_of edges, so the team-scoped
+    views can be tested.
+    """
     import bcrypt as _bcrypt
 
-    docs = []
-    for u in users_data:
-        docs.append({
+    def _hash(pw):
+        return _bcrypt.hashpw(pw.encode(), _bcrypt.gensalt()).decode()
+
+    docs_by_email = {}
+
+    # ── Engineer logins (added first; an explicit users_data entry wins on clash) ──
+    eng_team = {}
+    for e in (member_of_edges or []):
+        try:
+            eng_team[e["_from"].split("/", 1)[1]] = e["_to"].split("/", 1)[1]
+        except (KeyError, IndexError):
+            continue
+    for eng in (engineers or []):
+        email = eng.get("email")
+        if not email:
+            continue
+        first, _, last = (eng.get("name") or "").strip().partition(" ")
+        docs_by_email[email] = {
+            "email": email,
+            "password_hash": _hash("eng123"),
+            "role": "engineer",
+            "first_name": first,
+            "last_name": last,
+            "engineer_key": eng.get("_key"),
+            "team_key": eng_team.get(eng.get("_key")),
+            "is_active": True,
+        }
+
+    # ── Explicit accounts from YAML (admin) ──
+    for u in (users_data or []):
+        docs_by_email[u["email"]] = {
             "email": u["email"],
-            "password_hash": _bcrypt.hashpw(u["password"].encode(), _bcrypt.gensalt()).decode(),
+            "password_hash": _hash(u["password"]),
             "role": u["role"],
             "first_name": u.get("first_name", ""),
             "last_name": u.get("last_name", ""),
             "engineer_key": u.get("engineer_key"),
             "team_key": u.get("team_key"),
             "is_active": True,
-        })
+        }
+
+    docs = list(docs_by_email.values())
+    if not docs:
+        return
     col = db.collection("users")
     col.import_bulk(docs, on_duplicate="replace")
-    print(f"  users: {len(docs)} accounts (passwords hashed)")
+    n_eng = sum(1 for d in docs if d["role"] == "engineer")
+    print(f"  users: {len(docs)} accounts ({len(docs) - n_eng} admin + {n_eng} engineers, passwords hashed)")
 
 
 def load_runbooks_with_embeddings(db, model, runbooks):
@@ -479,7 +516,9 @@ def main():
     load_simple_collection(db, "error_codes", seed_data.get("error_codes", []))
     load_runbooks_with_embeddings(db, model, seed_data.get("runbooks", []))
     load_simple_collection(db, "routing_rules", seed_data.get("routing_rules", []))
-    load_users(db, seed_data.get("users", []))
+    load_users(db, seed_data.get("users", []),
+               seed_data.get("engineers", []),
+               seed_data.get("edges", {}).get("member_of", []))
 
     # Load manual edges
     print("\n  Loading manual edges...")
