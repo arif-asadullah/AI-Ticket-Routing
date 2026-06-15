@@ -298,7 +298,6 @@ For deploying beyond local development:
 3. **Enable HTTPS** — update CORS origins in `backend/app/main.py`
 4. **Ollama on GPU** — significantly faster classification with CUDA/Metal
 5. **Redis persistence** — enable AOF or RDB snapshots for SLA timer durability
-6. **Kubernetes** — see `k8s/` directory for manifests
 
 ---
 
