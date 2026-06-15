@@ -379,7 +379,6 @@ docker-compose.yml         4 services: ArangoDB, Redis, Backend, Frontend
 
 ## Documentation
 
-- **[Product User Guide](docs/USER_GUIDE.md)** — How to use DeskMind (Requesters, Engineers, Admins) with screenshots
 - **[Solution Architecture](docs/nasscom-r2/01-solution-architecture.md)** — System design, components, pipeline
 - **[Low Level Design](docs/nasscom-r2/02-low-level-design.md)** — Module specs, algorithms, data structures
 - **[Classification Improvements](docs/classification-improvements.md)** — 85.3% → 94.1% accuracy story
