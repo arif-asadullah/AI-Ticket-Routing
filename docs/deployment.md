@@ -243,8 +243,7 @@ The 94.1% classification accuracy is produced by the evaluation scripts, **not**
 by pytest. Run them against the fixed benchmark set:
 
 ```bash
-docker compose exec backend python scripts/evaluate.py          # full ensemble eval
-docker compose exec backend python scripts/eval_classifier.py   # per-classifier eval
+docker compose exec backend python scripts/evaluate.py          # full ensemble benchmark (94.1%)
 ```
 
 These score against `data/eval/test_tickets.json`.

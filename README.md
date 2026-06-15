@@ -322,8 +322,6 @@ data/
 scripts/
   seed_db.py               Database seeder with embeddings + centroids
   evaluate.py              Classification benchmark (--tag, --compare)
-  eval_classifier.py       Held-out evaluation with stratified sampling
-  tune_weights.py          Classifier weight optimization (969 combinations tested)
 
 docs/
   nasscom-r2/              Hackathon Final Round documents (8 deliverables)
