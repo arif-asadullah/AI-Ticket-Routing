@@ -100,8 +100,17 @@ def _create_indexes(db: StandardDatabase) -> None:
     logger.info("Created persistent indexes on tickets")
 
     # ── Full-text index on tickets ──
-    tickets.add_fulltext_index(fields=["title"], name="idx_tickets_title_ft")
-    tickets.add_fulltext_index(fields=["description"], name="idx_tickets_description_ft")
+    # python-arango 8.x removed the add_fulltext_index() helper; create the same
+    # fulltext index via the generic add_index() API. minLength=0 preserves the
+    # old add_fulltext_index() default (index words of any length).
+    # Unlike add_fulltext_index(), the generic add_index() is NOT idempotent — it
+    # raises [ERR 1005] on a duplicate name — so skip indexes that already exist
+    # (init_schema runs on every startup).
+    existing_ticket_indexes = {i["name"] for i in tickets.indexes() if "name" in i}
+    for field in ("title", "description"):
+        idx_name = f"idx_tickets_{field}_ft"
+        if idx_name not in existing_ticket_indexes:
+            tickets.add_index({"type": "fulltext", "fields": [field], "minLength": 0, "name": idx_name})
     logger.info("Created full-text indexes on tickets")
 
     # ── Persistent index on routing_rules ──
