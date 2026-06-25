@@ -2,7 +2,7 @@ fastapi
 uvicorn[standard]
 sentence-transformers
 spacy
-python-arango>=8,<9
+python-arango==8.3.2
 redis
 pydantic
 pydantic-settings
