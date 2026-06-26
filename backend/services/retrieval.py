@@ -49,8 +49,23 @@ class RetrievalResult(TypedDict):
     fulltext_matches: list[dict]
 
 
+def _decay_factor(timestamp: str | None, now: datetime, half_life_days: float = 120.0) -> float:
+    """Age-decay multiplier in [0.5, 1.0] for an *explicitly verified* resolution.
+    A fix verified long ago is trusted a little less — configs drift, fixes go stale.
+    Resolutions that were never verified through feedback (no timestamp — e.g. legacy
+    or seed data) are NOT penalized (factor 1.0); we only decay what we once trusted
+    and that has since aged. Floored at 0.5 so an old-but-proven fix still counts."""
+    if not timestamp:
+        return 1.0  # never explicitly verified — leave ranking unchanged
+    try:
+        age_days = (now - datetime.fromisoformat(timestamp.replace("Z", "+00:00"))).days
+        return max(0.5, 1.0 - (age_days / (half_life_days * 2)))
+    except Exception:
+        return 1.0
+
+
 def _rerank(tickets: list[dict]) -> list[dict]:
-    """Re-rank similar tickets by combined score: similarity + recency + effectiveness."""
+    """Re-rank similar tickets by combined score: similarity + recency + (decayed) effectiveness."""
     now = datetime.now(timezone.utc)
     for t in tickets:
         sim = t.get("similarity", 0)
@@ -64,8 +79,12 @@ def _rerank(tickets: list[dict]) -> list[dict]:
                 recency = 0.7
         else:
             recency = 0.7
-        # Combined: 60% similarity + 20% recency + 20% effectiveness
-        t["_rank_score"] = 0.60 * sim + 0.20 * recency + 0.20 * eff
+        # Time-decay the effectiveness by how long ago the fix was last verified, so
+        # stale "helpful" resolutions stop outranking fresher, equally-good ones.
+        # Only verified resolutions carry last_verified_at; others are left unchanged.
+        eff_decayed = eff * _decay_factor(t.get("last_verified_at"), now)
+        # Combined: 60% similarity + 20% recency + 20% (decayed) effectiveness
+        t["_rank_score"] = 0.60 * sim + 0.20 * recency + 0.20 * eff_decayed
     tickets.sort(key=lambda x: x.get("_rank_score", 0), reverse=True)
     return tickets
 
@@ -91,7 +110,8 @@ FOR ticket IN (
         key: ticket._key, title: ticket.title, category: ticket.category,
         priority: ticket.priority, description: LEFT(ticket.description, 200),
         similarity: sim, resolution_steps: resolution.steps,
-        effectiveness: resolution.effectiveness, created_at: ticket.created_at
+        effectiveness: resolution.effectiveness, created_at: ticket.created_at,
+        last_verified_at: resolution.last_verified_at
     }
 """
 
@@ -111,7 +131,8 @@ FOR ticket IN tickets
         key: ticket._key, title: ticket.title, category: ticket.category,
         priority: ticket.priority, description: LEFT(ticket.description, 200),
         similarity: sim, resolution_steps: resolution.steps,
-        effectiveness: resolution.effectiveness, created_at: ticket.created_at
+        effectiveness: resolution.effectiveness, created_at: ticket.created_at,
+        last_verified_at: resolution.last_verified_at
     }
 """
 

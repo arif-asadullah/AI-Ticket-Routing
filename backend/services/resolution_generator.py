@@ -219,6 +219,8 @@ Return ONLY valid JSON: {{"steps": [...], "reasoning": "...", "confidence": "hig
                         {"role": "user", "content": user_prompt},
                     ],
                     "temperature": 0.2,
+                    "max_tokens": settings.LLM_RESOLUTION_MAX_TOKENS,
+                    "keep_alive": settings.LLM_KEEP_ALIVE,
                 },
             )
             resp.raise_for_status()

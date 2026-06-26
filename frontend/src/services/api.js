@@ -323,6 +323,24 @@ export async function fetchCorrectionStats() {
   return res.json();
 }
 
+export async function fetchRepeatedIssues() {
+  const res = await authFetch(`${API_BASE}/corrections/repeated-issues`);
+  if (!res.ok) throw new Error("Failed to fetch repeated issues");
+  return res.json();
+}
+
+export async function recomputeCentroids() {
+  const res = await authFetch(`${API_BASE}/corrections/recompute-centroids`, { method: "POST" });
+  if (!res.ok) throw new Error("Failed to recompute centroids");
+  return res.json();
+}
+
+export async function detectRepeatedIssues() {
+  const res = await authFetch(`${API_BASE}/corrections/detect-repeated-issues`, { method: "POST" });
+  if (!res.ok) throw new Error("Failed to detect repeated issues");
+  return res.json();
+}
+
 // ── Stats (authenticated) ──
 
 export async function fetchStats() {

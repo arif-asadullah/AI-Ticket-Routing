@@ -9,7 +9,56 @@ from datetime import datetime, timezone
 
 import numpy as np
 
+from backend.core.config import settings
+
 logger = logging.getLogger(__name__)
+
+
+def find_correction_precedent(db, embedding, threshold: float | None = None) -> dict | None:
+    """Return the most similar TRUSTED human correction above the threshold, or None.
+
+    Uses exact COSINE_SIMILARITY over the (small) corrections collection rather
+    than the approximate vector index, so a near-identical past correction is
+    found reliably regardless of corpus size or index state. This is what makes
+    self-learning take effect immediately: correct one ticket, and the next
+    near-identical ticket inherits the verified category.
+
+    Only the most recent trusted correction per ticket matters (latest wins),
+    so contradictory re-overrides resolve cleanly.
+    """
+    if not embedding:
+        return None
+    if threshold is None:
+        threshold = settings.CORRECTION_PRECEDENT_MIN_SIMILARITY
+    try:
+        cursor = db.aql.execute(
+            """
+            FOR c IN corrections
+                FILTER c.is_trusted == true AND c.embedding != null
+                COLLECT tid = c.ticket_id INTO group
+                LET latest = (
+                    FOR g IN group SORT g.c.created_at DESC LIMIT 1 RETURN g.c
+                )[0]
+                LET sim = COSINE_SIMILARITY(latest.embedding, @embedding)
+                FILTER sim >= @threshold
+                SORT sim DESC, latest.created_at DESC
+                LIMIT 1
+                RETURN {
+                    category: latest.corrected_category,
+                    similarity: sim,
+                    ticket_id: latest.ticket_id,
+                    title: latest.ticket_title,
+                    reason: latest.reason,
+                    corrected_by: latest.corrected_by,
+                }
+            """,
+            bind_vars={"embedding": embedding, "threshold": threshold},
+        )
+        rows = list(cursor)
+        return rows[0] if rows else None
+    except Exception as exc:
+        logger.warning("Correction-precedent lookup failed: %s", exc)
+        return None
 
 
 def record_correction(db, ticket_id: str, ticket_doc: dict, new_category: str,

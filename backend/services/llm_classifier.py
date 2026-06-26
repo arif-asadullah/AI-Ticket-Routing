@@ -182,6 +182,8 @@ Return ONLY valid JSON: {{"category": "...", "priority": "...", "confidence": 0.
                         {"role": "user", "content": user_prompt},
                     ],
                     "temperature": 0.1,
+                    "max_tokens": settings.LLM_CLASSIFY_MAX_TOKENS,
+                    "keep_alive": settings.LLM_KEEP_ALIVE,
                 },
             )
             resp.raise_for_status()

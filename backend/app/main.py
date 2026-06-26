@@ -42,6 +42,13 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         logger.warning("Failed to preload embedding model: %s", exc)
 
+    # Warm up the LLM (non-blocking) so the first ticket doesn't cold-reload the
+    # 7B model. Runs in the background — startup is not delayed if Ollama is slow.
+    if settings.LLM_WARMUP_ON_STARTUP:
+        import asyncio
+        from backend.services.llm import warm_up
+        asyncio.create_task(warm_up())
+
     yield
 
     # Shutdown
