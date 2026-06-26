@@ -252,6 +252,7 @@ async def run_evaluation(db, tickets, judge=True):
                 db=db,
                 redis_client=None,  # Skip cache for eval
                 skip_cache=True,
+                use_correction_precedent=False,  # keep benchmark a PURE classifier measurement (no leakage)
             )
             predicted = result["category"]
             confidence = result["confidence"]

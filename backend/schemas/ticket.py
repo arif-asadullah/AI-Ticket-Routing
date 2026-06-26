@@ -66,6 +66,7 @@ class TicketResponse(BaseModel):
     enrichment: dict | None = None
     ai_generated_resolution: dict | None = None
     automation_suggestion: dict | None = None
+    learned_from_correction: dict | None = None
     attachments: list[dict] | None = None
     picked_up_by: str | None = None
     created_at: str | None = None

@@ -1,11 +1,13 @@
 """Tickets API — CRUD backed by ArangoDB with 4-classifier AI routing."""
 
+import asyncio
 import logging
 import os
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
+from backend.core.config import settings
 from backend.core.auth import (
     get_current_user,
     require_admin,
@@ -146,6 +148,7 @@ async def create_ticket(
         "enrichment": result.get("enrichment"),
         "ai_generated_resolution": result.get("ai_generated_resolution"),
         "automation_suggestion": result.get("automation_suggestion"),
+        "learned_from_correction": result.get("learned_from_correction"),
         "attachments": attachments_data if attachments_data else None,
         "created_at": now,
         "resolved_at": None,
@@ -230,6 +233,7 @@ async def create_ticket(
         enrichment=result.get("enrichment"),
         ai_generated_resolution=result.get("ai_generated_resolution"),
         automation_suggestion=result.get("automation_suggestion"),
+        learned_from_correction=result.get("learned_from_correction"),
         attachments=attachments_data if attachments_data else None,
         created_at=now,
         resolved_at=None,
@@ -601,9 +605,10 @@ async def override_classification(
         logger.warning("Failed to write audit log: %s", exc)
 
     # ── Record correction for continuous learning ──
+    correction_recorded = None
     try:
         from backend.services.corrections import record_correction
-        record_correction(
+        correction_recorded = record_correction(
             db=db, ticket_id=ticket_id, ticket_doc=doc,
             new_category=body.category, new_priority=body.priority,
             corrected_by=user["email"], corrector_role=user["role"],
@@ -611,6 +616,24 @@ async def override_classification(
         )
     except Exception as exc:
         logger.warning("Failed to record correction: %s", exc)
+
+    # ── Auto-recompute centroids so the centroid classifier learns immediately ──
+    # The override already updated the ticket's category, so recompute reflects it.
+    # Runs in the background (throttled) so the override response isn't blocked.
+    if settings.AUTO_RECOMPUTE_CENTROIDS and correction_recorded:
+        try:
+            n_corrections = db.collection("corrections").count()
+            if n_corrections % settings.AUTO_RECOMPUTE_MIN_NEW_CORRECTIONS == 0:
+                async def _bg_recompute(_db):
+                    try:
+                        from backend.services.corrections import recompute_centroids
+                        await asyncio.to_thread(recompute_centroids, _db)
+                        logger.info("Auto-recomputed centroids after correction on ticket %s", ticket_id)
+                    except Exception as e:
+                        logger.warning("Auto-recompute centroids failed: %s", e)
+                asyncio.create_task(_bg_recompute(db))
+        except Exception as exc:
+            logger.warning("Auto-recompute scheduling failed: %s", exc)
 
     # ── Invalidate cache so stale classification isn't served ──
     redis_client = getattr(request.app.state, "redis", None)
@@ -690,6 +713,7 @@ async def resolve_ticket(
         "embedding": embedding,
         "verified": False,
         "created_at": now,
+        "last_verified_at": now,  # for effectiveness time-decay in retrieval ranking
     })
 
     # ── Create resolved_with edge ──
@@ -810,21 +834,22 @@ async def submit_feedback(
 
     # ── Quality gate: update resolution based on feedback ──
     try:
+        now_fb = datetime.now(timezone.utc).isoformat()
         if feedback.rating == "helpful":
-            # Verify resolution + boost effectiveness
+            # Verify resolution + boost effectiveness; stamp last_verified_at (resets decay)
             db.aql.execute(
                 """FOR res IN 1..1 OUTBOUND CONCAT("tickets/", @tid) resolved_with
                    LET new_eff = res.effectiveness + 0.1
-                   UPDATE res WITH { verified: true, effectiveness: new_eff > 1.0 ? 1.0 : new_eff } IN resolutions""",
-                bind_vars={"tid": ticket_id},
+                   UPDATE res WITH { verified: true, effectiveness: new_eff > 1.0 ? 1.0 : new_eff, last_verified_at: @now } IN resolutions""",
+                bind_vars={"tid": ticket_id, "now": now_fb},
             )
         elif feedback.rating == "not_helpful":
-            # Lower effectiveness, keep unverified
+            # Lower effectiveness, keep unverified; stamp last_verified_at
             db.aql.execute(
                 """FOR res IN 1..1 OUTBOUND CONCAT("tickets/", @tid) resolved_with
                    LET new_eff = res.effectiveness - 0.2
-                   UPDATE res WITH { verified: false, effectiveness: new_eff < 0.3 ? 0.3 : new_eff } IN resolutions""",
-                bind_vars={"tid": ticket_id},
+                   UPDATE res WITH { verified: false, effectiveness: new_eff < 0.3 ? 0.3 : new_eff, last_verified_at: @now } IN resolutions""",
+                bind_vars={"tid": ticket_id, "now": now_fb},
             )
     except Exception as exc:
         logger.warning("Failed to update resolution quality: %s", exc)
@@ -895,6 +920,7 @@ def _doc_to_response(doc: dict) -> TicketResponse:
         enrichment=doc.get("enrichment"),
         ai_generated_resolution=doc.get("ai_generated_resolution"),
         automation_suggestion=doc.get("automation_suggestion"),
+        learned_from_correction=doc.get("learned_from_correction"),
         attachments=doc.get("attachments"),
         picked_up_by=doc.get("picked_up_by"),
         created_at=doc.get("created_at"),

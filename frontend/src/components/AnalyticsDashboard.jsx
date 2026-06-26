@@ -6,6 +6,7 @@ import {
 } from "recharts";
 import { fetchStats } from "../services/api";
 import DeskMindSpinner from "./DeskMindSpinner";
+import SelfLearningPanel from "./SelfLearningPanel";
 import { useTheme } from "../theme/ThemeContext";
 
 const CATEGORY_COLORS = {
@@ -642,6 +643,9 @@ export default function AnalyticsDashboard({ user }) {
           {stats.feedback && (
             <FeedbackPieChart feedback={stats.feedback} />
           )}
+
+          {/* 7. Self-Learning — full width */}
+          <SelfLearningPanel user={user} />
         </div>
       </div>
     </div>

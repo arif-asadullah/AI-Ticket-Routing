@@ -401,6 +401,33 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
               )}
             </div>
 
+            {/* Self-learning: applied a human-correction precedent */}
+            {t.learned_from_correction && (
+              <div style={{
+                display: "flex",
+                gap: 10,
+                alignItems: "flex-start",
+                padding: "10px 14px",
+                marginBottom: 16,
+                background: "rgba(249,115,22,0.08)",
+                border: "1px solid rgba(249,115,22,0.25)",
+                borderRadius: 10,
+              }}>
+                <span style={{ fontSize: 15, lineHeight: "20px" }}>🧠</span>
+                <div style={{ fontFamily: "'Inter', system-ui", fontSize: 12, color: T.text, lineHeight: 1.5 }}>
+                  <strong style={{ color: T.accent }}>Self-learning applied.</strong>{" "}
+                  Routed to <strong>{t.learned_from_correction.to_category}</strong> (not{" "}
+                  {t.learned_from_correction.from_category}) — matched a verified human correction on a near-identical
+                  past ticket{t.learned_from_correction.similarity != null
+                    ? ` (${Math.round(t.learned_from_correction.similarity * 100)}% similar)`
+                    : ""}.
+                  {t.learned_from_correction.precedent_title && (
+                    <span style={{ color: T.textMuted }}> Ref: “{t.learned_from_correction.precedent_title}”.</span>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Confidence score bar */}
             <div style={{ marginBottom: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
@@ -631,7 +658,12 @@ export default function TicketDetail({ ticket, user, onClose, onStatusChange, on
           </div>
 
           {/* ── Suggested Resolution ── */}
-          {t.suggested_resolution && t.suggested_resolution.length > 0 && (
+          {/* Hide when these steps are just the AI-generated ones copied in as a
+              fallback — otherwise the same steps render twice. The richer
+              AI-Generated card below covers that case. */}
+          {t.suggested_resolution && t.suggested_resolution.length > 0 &&
+            !(t.ai_generated_resolution?.steps &&
+              JSON.stringify(t.ai_generated_resolution.steps) === JSON.stringify(t.suggested_resolution)) && (
             <div style={{
               background: T.card,
               border: `1px solid ${T.border}`,

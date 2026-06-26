@@ -62,6 +62,7 @@ class ClassificationResult(TypedDict):
     enrichment: dict | None  # Enrichment questions for vague tickets
     ai_generated_resolution: dict | None  # LLM-generated resolution steps
     automation_suggestion: dict | None  # Repeated-issue automation recommendation
+    learned_from_correction: dict | None  # Set when a human-correction precedent was applied
 
 
 class HealthStatus(TypedDict):
@@ -250,6 +251,7 @@ async def classify(
     redis_client=None,
     user_email: str | None = None,
     skip_cache: bool = False,
+    use_correction_precedent: bool = True,
 ) -> ClassificationResult:
     """
     Full classification pipeline — one function call.
@@ -378,6 +380,50 @@ async def classify(
         graph_confirms_category=graph_confirms,
     )
 
+    # ── Stage 4.5: Honor human-corrected precedent (reliable self-learning) ──
+    # If a TRUSTED, near-identical past correction exists, adopt its category.
+    # Exact cosine over the small corrections set is deterministic — unlike the
+    # approximate ANN that KNN relies on — so a human override reliably teaches
+    # the system for near-identical future tickets. Forced OFF during evaluation
+    # (use_correction_precedent=False) so the benchmark stays a pure classifier
+    # measurement. Fail-safe: any error here is a no-op; classification proceeds.
+    learned_from_correction = None
+    if (
+        use_correction_precedent
+        and settings.CORRECTION_PRECEDENT_ENABLED
+        and db
+        and embedding
+        and result["category"]
+    ):
+        try:
+            from backend.services.corrections import find_correction_precedent
+            precedent = await asyncio.to_thread(find_correction_precedent, db, embedding)
+            if precedent and precedent["category"] and precedent["category"] != result["category"]:
+                logger.info(
+                    "Correction precedent applied: %s → %s (sim %.3f, from ticket %s)",
+                    result["category"], precedent["category"],
+                    precedent["similarity"], precedent.get("ticket_id"),
+                )
+                learned_from_correction = {
+                    "from_category": result["category"],
+                    "to_category": precedent["category"],
+                    "similarity": round(precedent["similarity"], 3),
+                    "precedent_ticket_id": precedent.get("ticket_id"),
+                    "precedent_title": precedent.get("title"),
+                    "reason": precedent.get("reason"),
+                    "corrected_by": precedent.get("corrected_by"),
+                }
+                result["secondary_category"] = result["category"]
+                result["category"] = precedent["category"]
+                result["confidence"] = max(result.get("confidence", 0.0), 0.90)
+                result["reasoning"] = (
+                    f"Applied a verified human correction from a near-identical past "
+                    f"ticket (similarity {precedent['similarity']:.0%}) → reclassified to "
+                    f"{precedent['category']}. " + (result.get("reasoning") or "")
+                )
+        except Exception as exc:
+            logger.warning("Correction-precedent step failed (ignored): %s", exc)
+
     # ── Stage 5: Decide + enrich ──
     suggested_resolution = None
     resolution_effectiveness = None
@@ -440,8 +486,12 @@ async def classify(
             recommended_expert = graph_ctx["experts"][0].get("name")
 
     # ── AI Resolution Generator (when no good historical resolution) ──
+    # AI resolution generation is a SECOND LLM call. By default it's kept off the
+    # critical path (settings.GENERATE_RESOLUTION_INLINE = False) so create-ticket
+    # latency is a single LLM round-trip; the historical/retrieved resolution is
+    # still attached. Flip the flag to generate inline.
     ai_generated_resolution = None
-    if result["category"] and health["ollama"]:
+    if result["category"] and health["ollama"] and settings.GENERATE_RESOLUTION_INLINE:
         should_generate = (
             (not suggested_resolution or (resolution_effectiveness or 0) < 0.5)
             and result["confidence"] >= 0.60
@@ -534,6 +584,7 @@ async def classify(
         enrichment=enrichment,
         ai_generated_resolution=ai_generated_resolution,
         automation_suggestion=automation_suggestion,
+        learned_from_correction=learned_from_correction,
     )
 
     # ── Cache Write (both tiers) ──
